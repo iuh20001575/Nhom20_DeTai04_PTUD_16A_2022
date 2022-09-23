@@ -45,7 +45,7 @@ CREATE TABLE NhanVien (
 	diaChiCuThe NVARCHAR(55) NOT NULL,
 	chucVu NVARCHAR(15) NOT NULL,
 	luong FLOAT NOT NULL,
-	maTaiKhoan CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL UNIQUE,
+	taiKhoan CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL UNIQUE,
 	trangThai NVARCHAR(20) NOT NULL,
 	CONSTRAINT CHK_NhanVien_maNhanVien_ThoaMau CHECK (maNhanVien LIKE 'NV[0-9][0-9][0-9]'), -- Kiểm tra mã nhân viên có dạng: NVxxx
 	CONSTRAINT CHK_NhanVien_cccd_Chua12ChuSo CHECK (cccd like '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), -- Kiểm tra căn cước công dân phải là 12 ký tự số
@@ -55,8 +55,8 @@ CREATE TABLE NhanVien (
 	CONSTRAINT CHK_NhanVien_chucVu CHECK (chucVu = N'Quản lý' or chucVu = N'Nhân viên'), -- Kiểm tra chức vụ nhân viên phải là Quản lý hoặc Nhân viên
 	CONSTRAINT CHK_NhanVien_luong_LonHon0 CHECK (luong > 0), -- Kiểm tra lương nhân viên phải > 0
 	CONSTRAINT CHK_NhanVien_trangThai CHECK (trangThai = N'Đang làm' or trangThai = N'Nghỉ làm'), -- Kiểm tra trạng thái phải là Đang làm hoặc Nghỉ làm
-	CONSTRAINT CHK_NhanVien_maTaiKhoan CHECK (maTaiKhoan = maNhanVien), -- Kiểm tra mã tài khoản phải là mã nhân viên
-	CONSTRAINT FK_NhanVien_TaiKhoan FOREIGN KEY (maTaiKhoan) REFERENCES TaiKhoan(maTaiKhoan)
+	CONSTRAINT CHK_NhanVien_maTaiKhoan CHECK (taiKhoan = maNhanVien), -- Kiểm tra mã tài khoản phải là mã nhân viên
+	CONSTRAINT FK_NhanVien_TaiKhoan FOREIGN KEY (taiKhoan) REFERENCES TaiKhoan(maTaiKhoan)
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
