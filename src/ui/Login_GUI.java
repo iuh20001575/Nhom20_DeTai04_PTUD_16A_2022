@@ -64,7 +64,7 @@ public class Login_GUI extends JFrame {
 		
 		BufferedImage img;
 		try {
-			img = ImageIO.read(new File("images\\loginBackground.jpg"));
+			img = ImageIO.read(new File("Hinh\\loginBackground.jpg"));
 			ImageIcon imageIcon = new ImageIcon(img);
 			JLabel jLabel = new JLabel(imageIcon);
 			jLabel.setBounds(0, 0, 1092, 600);
