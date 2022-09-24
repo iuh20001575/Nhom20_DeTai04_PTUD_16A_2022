@@ -1,16 +1,17 @@
 package ui;
 
-import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import components.pieChart.ModelPieChart;
-import components.pieChart.PieChart;
+import components.jDialog.JDialogCustom;
 
-public class DemoPieChart extends JFrame {
+public class DemoJDialog extends JFrame {
 
 	/**
 	 * 
@@ -25,7 +26,7 @@ public class DemoPieChart extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					DemoPieChart frame = new DemoPieChart();
+					DemoJDialog frame = new DemoJDialog();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -37,7 +38,8 @@ public class DemoPieChart extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public DemoPieChart() {
+	public DemoJDialog() {
+		JFrame jFrame = this;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -45,16 +47,16 @@ public class DemoPieChart extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 436, 263);
-		contentPane.add(panel);
-		panel.setLayout(null);
-		
-		PieChart pieChart = new PieChart();
-		pieChart.addData(new ModelPieChart("Name 1", 56, new Color(254, 239, 58)));
-		pieChart.addData(new ModelPieChart("Name 2", 12, new Color(58, 254, 79)));
-		pieChart.setBounds(0, 0, 436, 263);
-		panel.add(pieChart);
+		JButton btnNewButton = new JButton("Open Dialog");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JDialogCustom jDialogCustom = new JDialogCustom(jFrame);
+				
+				jDialogCustom.showMessage("Message Title", "Java Swing Customize\r\n"
+						+ "Create image inside text using java swing netbean");
+			}
+		});
+		btnNewButton.setBounds(140, 102, 85, 21);
+		contentPane.add(btnNewButton);
 	}
-
 }

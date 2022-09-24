@@ -10,7 +10,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+
+import com.formdev.flatlaf.FlatIntelliJLaf;
+
+import components.panelRound.PanelRound;
+
 import java.awt.Color;
 
 public class Login_GUI extends JFrame {
@@ -25,6 +31,8 @@ public class Login_GUI extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		FlatIntelliJLaf.registerCustomDefaultsSource("style");
+		FlatIntelliJLaf.setup();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -59,7 +67,8 @@ public class Login_GUI extends JFrame {
 		PanelRound panel = new PanelRound();
 		panel.setRounded(24);
 		panel.setBounds(246, 100, 600, 400);
-		panel.setBackground(new Color(255, 255, 255, 60));
+//		panel.setBackground(new Color(255, 255, 255, 60));
+		panel.setBackground(UIManager.getColor("glass.background"));
 		container.add(panel);
 		
 		BufferedImage img;

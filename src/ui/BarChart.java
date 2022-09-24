@@ -7,8 +7,8 @@ import java.awt.event.WindowListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import barChart.Chart;
-import barChart.ModelChart;
+import components.barChart.Chart;
+import components.barChart.ModelChart;
 
 public class BarChart extends JFrame implements WindowListener {
 	/**
