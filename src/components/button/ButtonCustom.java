@@ -18,6 +18,10 @@ public class ButtonCustom extends JButton {
 	private Color colorPressed = new Color(63, 175, 65);
 	private boolean mouseOver = false;
 
+	public ButtonCustom() {
+		init();
+	}
+
 	public ButtonCustom(String string) {
 		setText(string);
 		init();

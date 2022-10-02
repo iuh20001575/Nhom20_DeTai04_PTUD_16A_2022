@@ -40,7 +40,8 @@ public class Home_GUI extends JFrame {
 	 */
 	public Home_GUI() {
 //		Default
-		new DefaultLayout(this, contentPane, "Trang chủ");
+		new DefaultLayout(this, contentPane, "Trang chủ", "");
+
 	}
 
 }

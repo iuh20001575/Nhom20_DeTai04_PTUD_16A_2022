@@ -1,9 +1,11 @@
 package layouts;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -11,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import components.button.Button;
 import javaswingdev.GoogleMaterialDesignIcon;
 import javaswingdev.GoogleMaterialIcon;
 import javaswingdev.drawer.Drawer;
@@ -21,7 +24,7 @@ public class DefaultLayout {
 	private DrawerController drawer;
 	private JPanel jPanel;
 
-	public DefaultLayout(JFrame frame, JPanel contentPane, String title) {
+	public DefaultLayout(JFrame frame, JPanel contentPane, String title, String headingTitle) {
 		frame.setTitle(title);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,20 +32,39 @@ public class DefaultLayout {
 		frame.setLocationRelativeTo(null);
 
 		contentPane = new JPanel();
+		contentPane.setForeground(Color.GRAY);
+		contentPane.setBackground(Color.WHITE);
 		frame.setContentPane(contentPane);
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		contentPane.setLayout(null);
 
-		JButton btnMenu = new JButton("|||");
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(149, 166, 248));
+		panel.setBounds(0, 0, 1100, 65);
+		contentPane.add(panel);
+		panel.setLayout(null);
 
-		btnMenu.setBounds(10, 10, 50, 32);
-		contentPane.add(btnMenu);
+		JButton btnNewButton = new JButton("New button");
+		btnNewButton.setBounds(-20, -20, 0, 0);
+		contentPane.add(btnNewButton);
 
-		JLabel lblTitle = new JLabel("Karaoke Rome");
-		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitle.setBounds(70, 10, 940, 32);
-		contentPane.add(lblTitle);
+		Button btnMenu = new Button("|||");
+		btnMenu.setBounds(23, 16, 38, 38);
+		btnMenu.setForeground(new Color(149, 166, 248));
+		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+		btnMenu.setBorder(BorderFactory.createEmptyBorder());
+		btnMenu.setBackground(Color.WHITE);
+		btnMenu.setBorderColor(new Color(149, 166, 248));
+		btnMenu.setRadius(8);
+		btnMenu.setFocusable(false);
+		panel.add(btnMenu);
+
+		JLabel lblTitle = new JLabel(headingTitle.toUpperCase());
+		lblTitle.setForeground(Color.WHITE);
+		lblTitle.setBounds(76, 17, 948, 32);
+		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
+		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
+		panel.add(lblTitle);
 
 		GoogleMaterialIcon googleIcon = new GoogleMaterialIcon();
 		googleIcon.setIcon(GoogleMaterialDesignIcon.USB);
@@ -59,7 +81,7 @@ public class DefaultLayout {
 		});
 		this.jPanel = contentPane;
 	}
-	
+
 	public JPanel getJPanel() {
 		return jPanel;
 	}

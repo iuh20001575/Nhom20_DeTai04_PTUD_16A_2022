@@ -41,8 +41,8 @@ public class DemoNotification extends JFrame {
 	 */
 	public DemoNotification() {
 		JFrame frame = this;
-		
-		DefaultLayout df = new DefaultLayout(frame, contentPane, "Demo Notification");
+
+		DefaultLayout df = new DefaultLayout(frame, contentPane, "Demo Notification", "");
 		contentPane = df.getJPanel();
 
 		JButton btnNewButton = new JButton("Success Btn");

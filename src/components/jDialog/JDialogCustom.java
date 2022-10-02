@@ -142,8 +142,8 @@ public class JDialogCustom extends JDialog {
 		});
 
 		lblIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		ImageIcon imageIcon = new javax.swing.ImageIcon("Icon\\check.svg");
-		
+		ImageIcon imageIcon = new javax.swing.ImageIcon("Icon\\questionIcon.png");
+
 		lblIcon.setIcon(imageIcon); // NOI18N
 
 		lblTitle.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N

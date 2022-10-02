@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="libs/java-swing-drawer.jar"/>
 	<classpathentry kind="lib" path="libs/miglayout-4.0.jar"/>
 	<classpathentry kind="lib" path="libs/flatlaf-2.4.jar"/>
+	<classpathentry kind="lib" path="libs/datechooser.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
