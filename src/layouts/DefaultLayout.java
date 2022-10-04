@@ -33,7 +33,7 @@ public class DefaultLayout {
 
 		contentPane = new JPanel();
 		contentPane.setForeground(Color.GRAY);
-		contentPane.setBackground(Color.WHITE);
+		contentPane.setBackground(new Color(203, 239, 255));
 		frame.setContentPane(contentPane);
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		contentPane.setLayout(null);
