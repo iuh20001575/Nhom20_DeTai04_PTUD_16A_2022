@@ -1,22 +1,34 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.time.LocalDateTime;
 
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
 import components.panelRound.PanelRound;
-import layouts.DefaultLayout;
+import components.scrollbarCustom.ScrollBarCustom;
+
+import javax.swing.ScrollPaneConstants;
 
 public class QuanLyNhanVien_GUI extends JFrame {
 
@@ -25,8 +37,10 @@ public class QuanLyNhanVien_GUI extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private static JLabel lblNewLabel_1;
-	private JTextField textField;
+	private static JLabel lblTime;
+	private JTextField txtSearch;
+	private JTable tbl;
+	private DefaultTableModel model;
 
 	/**
 	 * Launch the application.
@@ -48,101 +62,251 @@ public class QuanLyNhanVien_GUI extends JFrame {
 	 * Create the frame.
 	 */
 	public QuanLyNhanVien_GUI() {
-		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Quản lý nhân viên", "Quản lý nhân viên");
-		contentPane = defaultLayout.getJPanel();
-		// setTitle("Quản lý nhân viên");
-//		setResizable(false);
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		setBounds(0, 0, 1100, 610);
-//		setLocationRelativeTo(null);
-//
-//		contentPane = new JPanel();
-//		contentPane.setForeground(Color.GRAY);
-//		contentPane.setBackground(new Color(203, 239, 255));
-//		setContentPane(contentPane);
-//		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-//		contentPane.setLayout(null);
-//
-//		JPanel panel = new JPanel();
-//		panel.setBackground(new Color(149, 166, 248));
-//		panel.setBounds(0, 0, 1086, 65);
-//		contentPane.add(panel);
-//		panel.setLayout(null);
-//
-//		JButton btnNewButton = new JButton("New button");
-//		btnNewButton.setBounds(-20, -20, 0, 0);
-//		contentPane.add(btnNewButton);
-//
-//		Button btnMenu = new Button("|||");
-//		btnMenu.setBounds(23, 16, 38, 38);
-//		btnMenu.setForeground(new Color(149, 166, 248));
-//		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-//		btnMenu.setBorder(BorderFactory.createEmptyBorder());
-//		btnMenu.setBackground(Color.WHITE);
-//		btnMenu.setBorderColor(new Color(149, 166, 248));
-//		btnMenu.setRadius(8);
-//		btnMenu.setFocusable(false);
-//		panel.add(btnMenu);
-//
-//		JLabel lblTitle = new JLabel("THÔNG TIN NHÂN VIÊN");
-//		lblTitle.setForeground(Color.WHITE);
-//		lblTitle.setBounds(76, 17, 948, 32);
-//		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
-//		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
-//		panel.add(lblTitle);
+//		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Quản lý nhân viên", "Quản lý nhân viên");
+//		contentPane = defaultLayout.getJPanel();
 
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(new Color(203, 239, 255));
-		panel_1.setBounds(16, 83, 1054, 24);
-		contentPane.add(panel_1);
-		panel_1.setLayout(null);
+		setTitle("Quản lý nhân viên");
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(0, 0, 1100, 610);
+		setLocationRelativeTo(null);
 
-		JLabel lblNewLabel = new JLabel("TÌM KIẾM NHÂN VIÊN THEO TÊN:");
-		lblNewLabel.setBounds(0, -1, 299, 27);
-		lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		panel_1.add(lblNewLabel);
+		contentPane = new JPanel();
+		contentPane.setForeground(Color.GRAY);
+		contentPane.setBackground(new Color(203, 239, 255));
+		setContentPane(contentPane);
+		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		contentPane.setLayout(null);
 
-		lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_1.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		lblNewLabel_1.setBounds(874, 0, 180, 24);
-		panel_1.add(lblNewLabel_1);
+		JPanel pnlHeader = new JPanel();
+		pnlHeader.setBackground(new Color(149, 166, 248));
+		pnlHeader.setBounds(0, 0, 1086, 65);
+		contentPane.add(pnlHeader);
+		pnlHeader.setLayout(null);
+
+		JButton btnNewButton = new JButton("New button");
+		btnNewButton.setBounds(-20, -20, 0, 0);
+		contentPane.add(btnNewButton);
+
+		Button btnMenu = new Button("|||");
+		btnMenu.setBounds(23, 16, 38, 38);
+		btnMenu.setForeground(new Color(149, 166, 248));
+		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+		btnMenu.setBorder(BorderFactory.createEmptyBorder());
+		btnMenu.setBackground(Color.WHITE);
+		btnMenu.setBorderColor(new Color(149, 166, 248));
+		btnMenu.setRadius(8);
+		btnMenu.setFocusable(false);
+		pnlHeader.add(btnMenu);
+
+		JLabel lblTitle = new JLabel("THÔNG TIN NHÂN VIÊN");
+		lblTitle.setForeground(Color.WHITE);
+		lblTitle.setBounds(76, 17, 948, 32);
+		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
+		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
+		pnlHeader.add(lblTitle);
+
+		JPanel pnlSearch = new JPanel();
+		pnlSearch.setBackground(new Color(203, 239, 255));
+		pnlSearch.setBounds(16, 83, 1054, 24);
+		contentPane.add(pnlSearch);
+		pnlSearch.setLayout(null);
+
+		JLabel lblSearch = new JLabel("TÌM KIẾM NHÂN VIÊN THEO TÊN:");
+		lblSearch.setBounds(0, -1, 299, 27);
+		lblSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		pnlSearch.add(lblSearch);
+
+		lblTime = new JLabel("");
+		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
+		lblTime.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		lblTime.setBounds(874, 0, 180, 24);
+		pnlSearch.add(lblTime);
 		clock();
 
-		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(new Color(203, 239, 255));
-		panel_2.setBounds(16, 117, 1054, 36);
-		contentPane.add(panel_2);
-		panel_2.setLayout(null);
+		JPanel pnlSearchForm = new JPanel();
+		pnlSearchForm.setBackground(new Color(203, 239, 255));
+		pnlSearchForm.setBounds(16, 117, 1054, 36);
+		contentPane.add(pnlSearchForm);
+		pnlSearchForm.setLayout(null);
 
-		Button btnNewButton_1 = new Button("Tìm");
-		btnNewButton_1.setIcon(new ImageIcon("Icon\\searching.png"));
-		btnNewButton_1.setRadius(4);
-		btnNewButton_1.setForeground(Color.WHITE);
-		btnNewButton_1.setColor(new Color(134, 229, 138));
-		btnNewButton_1.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnNewButton_1.setBounds(904, -2, 150, 40);
-		btnNewButton_1.setBorderColor(new Color(203, 239, 255));
-		btnNewButton_1.setColorOver(new Color(134, 229, 138));
-		btnNewButton_1.setColorClick(new Color(59, 238, 66));
-		btnNewButton_1.setBorder(new EmptyBorder(0, 0, 0, 0));
-		panel_2.add(btnNewButton_1);
+		Button btnSearch = new Button("Tìm");
+		btnSearch.setIcon(new ImageIcon("Icon\\searching.png"));
+		btnSearch.setRadius(4);
+		btnSearch.setForeground(Color.WHITE);
+		btnSearch.setColor(new Color(134, 229, 138));
+		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnSearch.setBounds(904, -2, 150, 40);
+		btnSearch.setBorderColor(new Color(203, 239, 255));
+		btnSearch.setColorOver(new Color(134, 229, 138));
+		btnSearch.setColorClick(new Color(59, 238, 66));
+		btnSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnlSearchForm.add(btnSearch);
 
-		PanelRound panel_3 = new PanelRound();
-		panel_3.setRounded(4);
-		panel_3.setBackground(new Color(203, 239, 255));
-		panel_3.setBounds(0, 0, 894, 36);
-		panel_3.setBorder(new LineBorder(Color.BLACK));
-		panel_3.setRound(4);
-		panel_2.add(panel_3);
-		panel_3.setLayout(null);
+		PanelRound pnlSearchInput = new PanelRound();
+		pnlSearchInput.setRounded(4);
+		pnlSearchInput.setBackground(new Color(203, 239, 255));
+		pnlSearchInput.setBounds(0, 0, 894, 36);
+		pnlSearchInput.setBorder(new LineBorder(Color.BLACK));
+		pnlSearchInput.setRound(4);
+		pnlSearchForm.add(pnlSearchInput);
+		pnlSearchInput.setLayout(null);
 
-		textField = new JTextField();
-		textField.setBackground(new Color(203, 239, 255));
-		textField.setBorder(new EmptyBorder(0, 0, 0, 0));
-		textField.setBounds(9, 1, 876, 34);
-		panel_3.add(textField);
-		textField.setColumns(10);
+		txtSearch = new JTextField();
+		txtSearch.setBackground(new Color(203, 239, 255));
+		txtSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
+		txtSearch.setBounds(9, 1, 876, 34);
+		pnlSearchInput.add(txtSearch);
+		txtSearch.setColumns(10);
+
+		JPanel pnlActions = new JPanel();
+		pnlActions.setBackground(new Color(203, 239, 255));
+		pnlActions.setBounds(16, 169, 1054, 36);
+		contentPane.add(pnlActions);
+		pnlActions.setLayout(null);
+
+		Button btnEmployeeSearch = new Button("Tìm");
+		btnEmployeeSearch.setIcon(new ImageIcon("Icon\\user 1.png"));
+		btnEmployeeSearch.setBounds(0, 0, 150, 36);
+		btnEmployeeSearch.setRadius(4);
+		btnEmployeeSearch.setForeground(Color.WHITE);
+		btnEmployeeSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnEmployeeSearch.setColorOver(new Color(140, 177, 180));
+		btnEmployeeSearch.setColorClick(new Color(161, 184, 186));
+		btnEmployeeSearch.setColor(new Color(140, 177, 180));
+		btnEmployeeSearch.setBorderColor(new Color(203, 239, 255));
+		btnEmployeeSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnlActions.add(btnEmployeeSearch);
+
+		Button btnEmployeeAdd = new Button("Tìm");
+		btnEmployeeAdd.setIcon(new ImageIcon("Icon\\add-user (2) 1.png"));
+		btnEmployeeAdd.setText("Thêm");
+		btnEmployeeAdd.setRadius(4);
+		btnEmployeeAdd.setForeground(Color.WHITE);
+		btnEmployeeAdd.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnEmployeeAdd.setColorOver(new Color(140, 177, 180));
+		btnEmployeeAdd.setColorClick(new Color(161, 184, 186));
+		btnEmployeeAdd.setColor(new Color(140, 177, 180));
+		btnEmployeeAdd.setBorderColor(new Color(203, 239, 255));
+		btnEmployeeAdd.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnEmployeeAdd.setBounds(165, 0, 150, 36);
+		pnlActions.add(btnEmployeeAdd);
+
+		Button btnEmployeeEdit = new Button("Tìm");
+		btnEmployeeEdit.setIcon(new ImageIcon("Icon\\edit 2.png"));
+		btnEmployeeEdit.setText("Sửa");
+		btnEmployeeEdit.setRadius(4);
+		btnEmployeeEdit.setForeground(Color.WHITE);
+		btnEmployeeEdit.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnEmployeeEdit.setColorOver(new Color(140, 177, 180));
+		btnEmployeeEdit.setColorClick(new Color(161, 184, 186));
+		btnEmployeeEdit.setColor(new Color(140, 177, 180));
+		btnEmployeeEdit.setBorderColor(new Color(203, 239, 255));
+		btnEmployeeEdit.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnEmployeeEdit.setBounds(330, 0, 150, 36);
+		pnlActions.add(btnEmployeeEdit);
+
+		Button btnEmployeeRemove = new Button("Tìm");
+		btnEmployeeRemove.setIcon(new ImageIcon("Icon\\unemployed 1.png"));
+		btnEmployeeRemove.setText("Nghỉ việc");
+		btnEmployeeRemove.setRadius(4);
+		btnEmployeeRemove.setForeground(Color.WHITE);
+		btnEmployeeRemove.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnEmployeeRemove.setColorOver(new Color(140, 177, 180));
+		btnEmployeeRemove.setColorClick(new Color(161, 184, 186));
+		btnEmployeeRemove.setColor(new Color(140, 177, 180));
+		btnEmployeeRemove.setBorderColor(new Color(203, 239, 255));
+		btnEmployeeRemove.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnEmployeeRemove.setBounds(495, 0, 150, 36);
+		pnlActions.add(btnEmployeeRemove);
+
+		JComboBox<String> cboTrangThai = new JComboBox<String>();
+		cboTrangThai.setModel(new DefaultComboBoxModel<String>(new String[] { "Trạng thái" }));
+		cboTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		cboTrangThai.setBackground(new Color(140, 177, 180));
+		cboTrangThai.setBounds(904, 0, 150, 36);
+		pnlActions.add(cboTrangThai);
+
+		JComboBox<String> cboMaNhanVien = new JComboBox<String>();
+		cboMaNhanVien.setModel(new DefaultComboBoxModel<String>(new String[] { "Mã NV" }));
+		cboMaNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		cboMaNhanVien.setBackground(new Color(140, 177, 180));
+		cboMaNhanVien.setBounds(739, 0, 150, 36);
+		cboMaNhanVien.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnlActions.add(cboMaNhanVien);
+
+		JScrollPane scr = new JScrollPane();
+		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scr.setBounds(16, 223, 1054, 340);
+		scr.setBackground(new Color(140, 177, 180));
+		ScrollBarCustom scp = new ScrollBarCustom();
+		scp.setScrollbarColor(new Color(203, 203, 203));
+		scr.setVerticalScrollBar(scp);
+		contentPane.add(scr);
+		tbl = new JTable() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+				Component c = super.prepareRenderer(renderer, row, column);
+				if (row % 2 == 0)
+					c.setBackground(Color.WHITE);
+				else
+					c.setBackground(new Color(232, 232, 232));
+				return c;
+			}
+		};
+		tbl.setModel(new DefaultTableModel(new Object[][] {
+				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
+						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
+				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
+						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
+				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
+						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
+				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
+						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
+				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
+						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
+				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
+						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
+				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
+						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
+				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
+						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
+				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
+						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
+				{ "NV002", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
+						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" } },
+				new String[] { "M\u00E3 NV", "H\u1ECD T\u00EAn", "CCCD", "S\u0110T", "Ng\u00E0y sinh",
+						"Gi\u1EDBi t\u00EDnh", "\u0110\u1ECBa ch\u1EC9", "Tr\u1EA1ng th\u00E1i" }));
+		tbl.getTableHeader().setBackground(new Color(140, 177, 180));
+		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tbl.setBackground(new Color(203, 239, 255));
+		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tbl.getColumnModel().getColumn(0).setPreferredWidth(61);
+		tbl.getColumnModel().getColumn(1).setPreferredWidth(180);
+		tbl.getColumnModel().getColumn(2).setPreferredWidth(120);
+		tbl.getColumnModel().getColumn(3).setPreferredWidth(105);
+		tbl.getColumnModel().getColumn(4).setPreferredWidth(100);
+		tbl.getColumnModel().getColumn(5).setPreferredWidth(90);
+		tbl.getColumnModel().getColumn(6).setPreferredWidth(288);
+		tbl.getColumnModel().getColumn(7).setPreferredWidth(100);
+		tbl.getTableHeader()
+				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
+		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tbl.setRowHeight(36);
+		scr.setViewportView(tbl);
+
 	}
 
 	public static void clock() {
@@ -158,7 +322,7 @@ public class QuanLyNhanVien_GUI extends JFrame {
 						int hour = currTime.getHour();
 						int minute = currTime.getMinute();
 						int second = currTime.getSecond();
-						lblNewLabel_1.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
+						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
 								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
 								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
 						sleep(1000);

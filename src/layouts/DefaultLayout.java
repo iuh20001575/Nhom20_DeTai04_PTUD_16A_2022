@@ -38,11 +38,11 @@ public class DefaultLayout {
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		contentPane.setLayout(null);
 
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(149, 166, 248));
-		panel.setBounds(0, 0, 1100, 65);
-		contentPane.add(panel);
-		panel.setLayout(null);
+		JPanel pnlHeader = new JPanel();
+		pnlHeader.setBackground(new Color(149, 166, 248));
+		pnlHeader.setBounds(0, 0, 1086, 65);
+		contentPane.add(pnlHeader);
+		pnlHeader.setLayout(null);
 
 		JButton btnNewButton = new JButton("New button");
 		btnNewButton.setBounds(-20, -20, 0, 0);
@@ -57,14 +57,14 @@ public class DefaultLayout {
 		btnMenu.setBorderColor(new Color(149, 166, 248));
 		btnMenu.setRadius(8);
 		btnMenu.setFocusable(false);
-		panel.add(btnMenu);
-
+		pnlHeader.add(btnMenu);
+		
 		JLabel lblTitle = new JLabel(headingTitle.toUpperCase());
 		lblTitle.setForeground(Color.WHITE);
 		lblTitle.setBounds(76, 17, 948, 32);
 		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
-		panel.add(lblTitle);
+		pnlHeader.add(lblTitle);
 
 		GoogleMaterialIcon googleIcon = new GoogleMaterialIcon();
 		googleIcon.setIcon(GoogleMaterialDesignIcon.USB);
