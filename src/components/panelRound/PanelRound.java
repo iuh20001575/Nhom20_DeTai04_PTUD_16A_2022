@@ -76,6 +76,11 @@ public class PanelRound extends JPanel {
 		setOpaque(false);
 	}
 
+	public PanelRound(int rounded) {
+		setOpaque(false);
+		setRound(rounded);
+	}
+
 	@Override
 	protected void paintComponent(Graphics grphcs) {
 		Graphics2D g2 = (Graphics2D) grphcs.create();

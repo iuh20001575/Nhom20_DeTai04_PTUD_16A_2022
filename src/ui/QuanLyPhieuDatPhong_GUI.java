@@ -6,10 +6,8 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,7 +16,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -70,13 +67,13 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 //
 //		contentPane = new JPanel();
 //		contentPane.setForeground(Color.GRAY);
-//		contentPane.setBackground(new Color(203, 239, 255));
+//		contentPane.setBackground(Utils.secondaryColor);
 //		setContentPane(contentPane);
 //		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 //		contentPane.setLayout(null);
 //
 //		JPanel pnlHeader = new JPanel();
-//		pnlHeader.setBackground(new Color(140, 177, 180));
+//		pnlHeader.setBackground(Utils.primaryColor);
 //		pnlHeader.setBounds(0, 0, 1086, 65);
 //		contentPane.add(pnlHeader);
 //		pnlHeader.setLayout(null);
@@ -87,11 +84,11 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 //
 //		Button btnMenu = new Button("|||");
 //		btnMenu.setBounds(23, 16, 38, 38);
-//		btnMenu.setForeground(new Color(140, 177, 180));
+//		btnMenu.setForeground(Utils.primaryColor);
 //		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
 //		btnMenu.setBorder(BorderFactory.createEmptyBorder());
 //		btnMenu.setBackground(Color.WHITE);
-//		btnMenu.setBorderColor(new Color(140, 177, 180));
+//		btnMenu.setBorderColor(Utils.primaryColor);
 //		btnMenu.setRadius(8);
 //		btnMenu.setFocusable(false);
 //		pnlHeader.add(btnMenu);
@@ -105,13 +102,13 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 //		End default layout
 
 		JPanel pnlSearch = new JPanel();
-		pnlSearch.setBackground(new Color(203, 239, 255));
+		pnlSearch.setBackground(Utils.secondaryColor);
 		pnlSearch.setBounds(16, 85, 1054, 36);
 		contentPane.add(pnlSearch);
 		pnlSearch.setLayout(null);
 
 		JPanel pnlMaPhieuDat = new JPanel();
-		pnlMaPhieuDat.setBackground(new Color(203, 239, 255));
+		pnlMaPhieuDat.setBackground(Utils.secondaryColor);
 		pnlMaPhieuDat.setBounds(0, 0, 300, 36);
 		pnlSearch.add(pnlMaPhieuDat);
 		pnlMaPhieuDat.setLayout(null);
@@ -124,12 +121,12 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 		JComboBox<String> cboMaPhieuDat = new JComboBox<String>();
 		cboMaPhieuDat.setModel(new DefaultComboBoxModel<String>());
 		cboMaPhieuDat.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cboMaPhieuDat.setBackground(new Color(203, 239, 255));
+		cboMaPhieuDat.setBackground(Utils.secondaryColor);
 		cboMaPhieuDat.setBounds(150, 0, 150, 36);
 		pnlMaPhieuDat.add(cboMaPhieuDat);
 
 		JPanel pnlSoDienThoai = new JPanel();
-		pnlSoDienThoai.setBackground(new Color(203, 239, 255));
+		pnlSoDienThoai.setBackground(Utils.secondaryColor);
 		pnlSoDienThoai.setBounds(315, 0, 275, 36);
 		pnlSearch.add(pnlSoDienThoai);
 		pnlSoDienThoai.setLayout(null);
@@ -140,7 +137,7 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 		pnlSoDienThoai.add(lblSoDienThoai);
 
 		JPanel pnlInputSoDienThoai = new JPanel();
-		pnlInputSoDienThoai.setBackground(new Color(203, 239, 255));
+		pnlInputSoDienThoai.setBackground(Utils.secondaryColor);
 		pnlInputSoDienThoai.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		pnlInputSoDienThoai.setBounds(125, 0, 150, 36);
 		pnlSoDienThoai.add(pnlInputSoDienThoai);
@@ -150,12 +147,12 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 		txtSoDienThoai.setFont(new Font("Segoe UI", Font.PLAIN, 24));
 		txtSoDienThoai.setColumns(10);
 		txtSoDienThoai.setBorder(null);
-		txtSoDienThoai.setBackground(new Color(203, 239, 255));
+		txtSoDienThoai.setBackground(Utils.secondaryColor);
 		txtSoDienThoai.setBounds(8, 1, 134, 34);
 		pnlInputSoDienThoai.add(txtSoDienThoai);
 
 		JPanel pnlTrangThai = new JPanel();
-		pnlTrangThai.setBackground(new Color(203, 239, 255));
+		pnlTrangThai.setBackground(Utils.secondaryColor);
 		pnlTrangThai.setBounds(605, 0, 275, 36);
 		pnlSearch.add(pnlTrangThai);
 		pnlTrangThai.setLayout(null);
@@ -167,7 +164,7 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 
 		JComboBox<String> cboTrangThai = new JComboBox<String>();
 		cboTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cboTrangThai.setBackground(new Color(203, 239, 255));
+		cboTrangThai.setBackground(Utils.secondaryColor);
 		cboTrangThai.setBounds(125, 0, 150, 36);
 		pnlTrangThai.add(cboTrangThai);
 
@@ -179,14 +176,14 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 		btnSearch.setColor(new Color(134, 229, 138));
 		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		btnSearch.setBounds(904, -2, 150, 40);
-		btnSearch.setBorderColor(new Color(203, 239, 255));
+		btnSearch.setBorderColor(Utils.secondaryColor);
 		btnSearch.setColorOver(new Color(134, 229, 138));
 		btnSearch.setColorClick(new Color(59, 238, 66));
 		btnSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlSearch.add(btnSearch);
 
 		JPanel pnlActions = new JPanel();
-		pnlActions.setBackground(new Color(203, 239, 255));
+		pnlActions.setBackground(Utils.secondaryColor);
 		pnlActions.setBounds(16, 141, 1054, 36);
 		contentPane.add(pnlActions);
 		pnlActions.setLayout(null);
@@ -197,10 +194,10 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 		btnXemPhong.setRadius(4);
 		btnXemPhong.setForeground(Color.WHITE);
 		btnXemPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnXemPhong.setColorOver(new Color(140, 177, 180));
+		btnXemPhong.setColorOver(Utils.primaryColor);
 		btnXemPhong.setColorClick(new Color(161, 184, 186));
-		btnXemPhong.setColor(new Color(140, 177, 180));
-		btnXemPhong.setBorderColor(new Color(203, 239, 255));
+		btnXemPhong.setColor(Utils.primaryColor);
+		btnXemPhong.setBorderColor(Utils.secondaryColor);
 		btnXemPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnXemPhong.setBounds(0, 0, 200, 36);
 		pnlActions.add(btnXemPhong);
@@ -211,10 +208,10 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 		btnNhanPhong.setForeground(Color.WHITE);
 		btnNhanPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		btnNhanPhong.setFocusable(false);
-		btnNhanPhong.setColorOver(new Color(140, 177, 180));
+		btnNhanPhong.setColorOver(Utils.primaryColor);
 		btnNhanPhong.setColorClick(new Color(161, 184, 186));
-		btnNhanPhong.setColor(new Color(140, 177, 180));
-		btnNhanPhong.setBorderColor(new Color(203, 239, 255));
+		btnNhanPhong.setColor(Utils.primaryColor);
+		btnNhanPhong.setBorderColor(Utils.secondaryColor);
 		btnNhanPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnNhanPhong.setBounds(220, 0, 200, 36);
 		pnlActions.add(btnNhanPhong);
@@ -225,10 +222,10 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 		btnHuyPhong.setForeground(Color.WHITE);
 		btnHuyPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		btnHuyPhong.setFocusable(false);
-		btnHuyPhong.setColorOver(new Color(140, 177, 180));
+		btnHuyPhong.setColorOver(Utils.primaryColor);
 		btnHuyPhong.setColorClick(new Color(161, 184, 186));
-		btnHuyPhong.setColor(new Color(140, 177, 180));
-		btnHuyPhong.setBorderColor(new Color(203, 239, 255));
+		btnHuyPhong.setColor(Utils.primaryColor);
+		btnHuyPhong.setBorderColor(Utils.secondaryColor);
 		btnHuyPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnHuyPhong.setBounds(440, 0, 200, 36);
 		pnlActions.add(btnHuyPhong);
@@ -239,10 +236,10 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 		btnXuatPDF.setForeground(Color.WHITE);
 		btnXuatPDF.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		btnXuatPDF.setFocusable(false);
-		btnXuatPDF.setColorOver(new Color(140, 177, 180));
+		btnXuatPDF.setColorOver(Utils.primaryColor);
 		btnXuatPDF.setColorClick(new Color(161, 184, 186));
-		btnXuatPDF.setColor(new Color(140, 177, 180));
-		btnXuatPDF.setBorderColor(new Color(203, 239, 255));
+		btnXuatPDF.setColor(Utils.primaryColor);
+		btnXuatPDF.setBorderColor(Utils.secondaryColor);
 		btnXuatPDF.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnXuatPDF.setBounds(660, 0, 200, 36);
 		pnlActions.add(btnXuatPDF);
@@ -251,7 +248,7 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scr.setBounds(16, 197, 1054, 366);
-		scr.setBackground(new Color(140, 177, 180));
+		scr.setBackground(Utils.primaryColor);
 		ScrollBarCustom scp = new ScrollBarCustom();
 		scp.setScrollbarColor(new Color(203, 203, 203));
 		scr.setVerticalScrollBar(scp);
@@ -312,9 +309,9 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 //		Cam
 		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
 //		Xanh
-		tbl.getTableHeader().setBackground(new Color(140, 177, 180));
+		tbl.getTableHeader().setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		tbl.setBackground(new Color(203, 239, 255));
+		tbl.setBackground(Utils.secondaryColor);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tbl.getTableHeader()
 				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));

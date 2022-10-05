@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,28 +36,25 @@ public class DefaultLayout {
 
 		contentPane = new JPanel();
 		contentPane.setForeground(Color.GRAY);
-		contentPane.setBackground(new Color(203, 239, 255));
+		contentPane.setBackground(Utils.secondaryColor);
 		frame.setContentPane(contentPane);
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		contentPane.setLayout(null);
 
 		JPanel pnlHeader = new JPanel();
-		pnlHeader.setBackground(new Color(140, 177, 180));
+		pnlHeader.setBackground(Utils.primaryColor);
 		pnlHeader.setBounds(0, 0, 1086, 65);
 		contentPane.add(pnlHeader);
 		pnlHeader.setLayout(null);
 
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(-20, -20, 0, 0);
-		contentPane.add(btnNewButton);
-
 		Button btnMenu = new Button("|||");
+		btnMenu.setFocusable(false);
 		btnMenu.setBounds(23, 16, 38, 38);
-		btnMenu.setForeground(new Color(140, 177, 180));
+		btnMenu.setForeground(Utils.primaryColor);
 		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
 		btnMenu.setBorder(BorderFactory.createEmptyBorder());
 		btnMenu.setBackground(Color.WHITE);
-		btnMenu.setBorderColor(new Color(140, 177, 180));
+		btnMenu.setBorderColor(Utils.primaryColor);
 		btnMenu.setRadius(8);
 		btnMenu.setFocusable(false);
 		pnlHeader.add(btnMenu);

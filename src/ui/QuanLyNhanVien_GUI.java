@@ -7,10 +7,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.time.LocalDateTime;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -73,13 +71,13 @@ public class QuanLyNhanVien_GUI extends JFrame {
 //
 //		contentPane = new JPanel();
 //		contentPane.setForeground(Color.GRAY);
-//		contentPane.setBackground(new Color(203, 239, 255));
+//		contentPane.setBackground(Utils.secondaryColor);
 //		setContentPane(contentPane);
 //		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 //		contentPane.setLayout(null);
 //
 //		JPanel pnlHeader = new JPanel();
-//		pnlHeader.setBackground(new Color(140, 177, 180));
+//		pnlHeader.setBackground(Utils.primaryColor);
 //		pnlHeader.setBounds(0, 0, 1086, 65);
 //		contentPane.add(pnlHeader);
 //		pnlHeader.setLayout(null);
@@ -90,11 +88,11 @@ public class QuanLyNhanVien_GUI extends JFrame {
 //
 //		Button btnMenu = new Button("|||");
 //		btnMenu.setBounds(23, 16, 38, 38);
-//		btnMenu.setForeground(new Color(140, 177, 180));
+//		btnMenu.setForeground(Utils.primaryColor);
 //		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
 //		btnMenu.setBorder(BorderFactory.createEmptyBorder());
 //		btnMenu.setBackground(Color.WHITE);
-//		btnMenu.setBorderColor(new Color(140, 177, 180));
+//		btnMenu.setBorderColor(Utils.primaryColor);
 //		btnMenu.setRadius(8);
 //		btnMenu.setFocusable(false);
 //		pnlHeader.add(btnMenu);
@@ -108,7 +106,7 @@ public class QuanLyNhanVien_GUI extends JFrame {
 //		End default layout
 
 		JPanel pnlSearch = new JPanel();
-		pnlSearch.setBackground(new Color(203, 239, 255));
+		pnlSearch.setBackground(Utils.secondaryColor);
 		pnlSearch.setBounds(16, 83, 1054, 24);
 		contentPane.add(pnlSearch);
 		pnlSearch.setLayout(null);
@@ -126,7 +124,7 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		clock();
 
 		JPanel pnlSearchForm = new JPanel();
-		pnlSearchForm.setBackground(new Color(203, 239, 255));
+		pnlSearchForm.setBackground(Utils.secondaryColor);
 		pnlSearchForm.setBounds(16, 117, 1054, 36);
 		contentPane.add(pnlSearchForm);
 		pnlSearchForm.setLayout(null);
@@ -139,7 +137,7 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		btnSearch.setColor(new Color(134, 229, 138));
 		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		btnSearch.setBounds(904, -2, 150, 40);
-		btnSearch.setBorderColor(new Color(203, 239, 255));
+		btnSearch.setBorderColor(Utils.secondaryColor);
 		btnSearch.setColorOver(new Color(134, 229, 138));
 		btnSearch.setColorClick(new Color(59, 238, 66));
 		btnSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -147,7 +145,7 @@ public class QuanLyNhanVien_GUI extends JFrame {
 
 		PanelRound pnlSearchInput = new PanelRound();
 		pnlSearchInput.setRounded(4);
-		pnlSearchInput.setBackground(new Color(203, 239, 255));
+		pnlSearchInput.setBackground(Utils.secondaryColor);
 		pnlSearchInput.setBounds(0, 0, 894, 36);
 		pnlSearchInput.setBorder(new LineBorder(Color.BLACK));
 		pnlSearchInput.setRound(4);
@@ -155,14 +153,14 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		pnlSearchInput.setLayout(null);
 
 		txtSearch = new JTextField();
-		txtSearch.setBackground(new Color(203, 239, 255));
+		txtSearch.setBackground(Utils.secondaryColor);
 		txtSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
 		txtSearch.setBounds(9, 1, 876, 34);
 		pnlSearchInput.add(txtSearch);
 		txtSearch.setColumns(10);
 
 		JPanel pnlActions = new JPanel();
-		pnlActions.setBackground(new Color(203, 239, 255));
+		pnlActions.setBackground(Utils.secondaryColor);
 		pnlActions.setBounds(16, 169, 1054, 36);
 		contentPane.add(pnlActions);
 		pnlActions.setLayout(null);
@@ -174,10 +172,10 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		btnEmployeeSearch.setRadius(4);
 		btnEmployeeSearch.setForeground(Color.WHITE);
 		btnEmployeeSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnEmployeeSearch.setColorOver(new Color(140, 177, 180));
+		btnEmployeeSearch.setColorOver(Utils.primaryColor);
 		btnEmployeeSearch.setColorClick(new Color(161, 184, 186));
-		btnEmployeeSearch.setColor(new Color(140, 177, 180));
-		btnEmployeeSearch.setBorderColor(new Color(203, 239, 255));
+		btnEmployeeSearch.setColor(Utils.primaryColor);
+		btnEmployeeSearch.setBorderColor(Utils.secondaryColor);
 		btnEmployeeSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlActions.add(btnEmployeeSearch);
 
@@ -187,10 +185,10 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		btnEmployeeAdd.setRadius(4);
 		btnEmployeeAdd.setForeground(Color.WHITE);
 		btnEmployeeAdd.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnEmployeeAdd.setColorOver(new Color(140, 177, 180));
+		btnEmployeeAdd.setColorOver(Utils.primaryColor);
 		btnEmployeeAdd.setColorClick(new Color(161, 184, 186));
-		btnEmployeeAdd.setColor(new Color(140, 177, 180));
-		btnEmployeeAdd.setBorderColor(new Color(203, 239, 255));
+		btnEmployeeAdd.setColor(Utils.primaryColor);
+		btnEmployeeAdd.setBorderColor(Utils.secondaryColor);
 		btnEmployeeAdd.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnEmployeeAdd.setBounds(165, 0, 150, 36);
 		pnlActions.add(btnEmployeeAdd);
@@ -201,10 +199,10 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		btnEmployeeEdit.setRadius(4);
 		btnEmployeeEdit.setForeground(Color.WHITE);
 		btnEmployeeEdit.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnEmployeeEdit.setColorOver(new Color(140, 177, 180));
+		btnEmployeeEdit.setColorOver(Utils.primaryColor);
 		btnEmployeeEdit.setColorClick(new Color(161, 184, 186));
-		btnEmployeeEdit.setColor(new Color(140, 177, 180));
-		btnEmployeeEdit.setBorderColor(new Color(203, 239, 255));
+		btnEmployeeEdit.setColor(Utils.primaryColor);
+		btnEmployeeEdit.setBorderColor(Utils.secondaryColor);
 		btnEmployeeEdit.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnEmployeeEdit.setBounds(330, 0, 150, 36);
 		pnlActions.add(btnEmployeeEdit);
@@ -215,10 +213,10 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		btnEmployeeRemove.setRadius(4);
 		btnEmployeeRemove.setForeground(Color.WHITE);
 		btnEmployeeRemove.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnEmployeeRemove.setColorOver(new Color(140, 177, 180));
+		btnEmployeeRemove.setColorOver(Utils.primaryColor);
 		btnEmployeeRemove.setColorClick(new Color(161, 184, 186));
-		btnEmployeeRemove.setColor(new Color(140, 177, 180));
-		btnEmployeeRemove.setBorderColor(new Color(203, 239, 255));
+		btnEmployeeRemove.setColor(Utils.primaryColor);
+		btnEmployeeRemove.setBorderColor(Utils.secondaryColor);
 		btnEmployeeRemove.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnEmployeeRemove.setBounds(495, 0, 150, 36);
 		pnlActions.add(btnEmployeeRemove);
@@ -226,14 +224,14 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		JComboBox<String> cboTrangThai = new JComboBox<String>();
 		cboTrangThai.setModel(new DefaultComboBoxModel<String>(new String[] { "Trạng thái" }));
 		cboTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cboTrangThai.setBackground(new Color(140, 177, 180));
+		cboTrangThai.setBackground(Utils.primaryColor);
 		cboTrangThai.setBounds(904, 0, 150, 36);
 		pnlActions.add(cboTrangThai);
 
 		JComboBox<String> cboMaNhanVien = new JComboBox<String>();
 		cboMaNhanVien.setModel(new DefaultComboBoxModel<String>(new String[] { "Mã NV" }));
 		cboMaNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cboMaNhanVien.setBackground(new Color(140, 177, 180));
+		cboMaNhanVien.setBackground(Utils.primaryColor);
 		cboMaNhanVien.setBounds(739, 0, 150, 36);
 		cboMaNhanVien.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlActions.add(cboMaNhanVien);
@@ -242,7 +240,7 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scr.setBounds(16, 223, 1054, 340);
-		scr.setBackground(new Color(140, 177, 180));
+		scr.setBackground(Utils.primaryColor);
 		ScrollBarCustom scp = new ScrollBarCustom();
 		scp.setScrollbarColor(new Color(203, 203, 203));
 		scr.setVerticalScrollBar(scp);
@@ -295,9 +293,9 @@ public class QuanLyNhanVien_GUI extends JFrame {
 //		Cam
 		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
 //		Xanh
-		tbl.getTableHeader().setBackground(new Color(140, 177, 180));
+		tbl.getTableHeader().setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		tbl.setBackground(new Color(203, 239, 255));
+		tbl.setBackground(Utils.secondaryColor);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tbl.getColumnModel().getColumn(0).setPreferredWidth(61);
 		tbl.getColumnModel().getColumn(1).setPreferredWidth(180);

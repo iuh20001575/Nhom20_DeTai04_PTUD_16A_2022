@@ -103,6 +103,22 @@ public class Button extends JButton {
 		});
 	}
 
+	public Color getBorderBtnColor() {
+		return borderBtnColor;
+	}
+
+	public void setBorderBtnColor(Color borderBtnColor) {
+		this.borderBtnColor = borderBtnColor;
+	}
+
+	public int getBorderWidth() {
+		return borderWidth;
+	}
+
+	public void setBorderWidth(int borderWidth) {
+		this.borderWidth = borderWidth;
+	}
+
 	public Button(String text) {
 		this();
 		setText(text);
@@ -113,7 +129,9 @@ public class Button extends JButton {
 	private Color colorOver;
 	private Color colorClick;
 	private Color borderColor;
+	private Color borderBtnColor = Color.red;
 	private int radius = 0;
+	private int borderWidth = 0;
 
 	@Override
 	protected void paintComponent(Graphics grphcs) {
@@ -122,9 +140,20 @@ public class Button extends JButton {
 		// Paint Border
 		g2.setColor(borderColor);
 		g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
+
+		if (borderWidth > 0) {
+			g2.setColor(borderBtnColor);
+			g2.fillRoundRect(2, 2, getWidth() - 4, getHeight() - 4, radius, radius);
+
+			g2.setColor(borderColor);
+			g2.fillRoundRect(2 + borderWidth, 2 + borderWidth, getWidth() - 4 - borderWidth * 2,
+					getHeight() - 4 - borderWidth * 2, radius, radius);
+		}
+
 		g2.setColor(getBackground());
 		// Border set 2 Pix
-		g2.fillRoundRect(2, 2, getWidth() - 4, getHeight() - 4, radius, radius);
+		g2.fillRoundRect(2 + borderWidth, 2 + borderWidth, getWidth() - 4 - borderWidth * 2,
+				getHeight() - 4 - borderWidth * 2, radius, radius);
 		super.paintComponent(grphcs);
 	}
 }

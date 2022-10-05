@@ -1,6 +1,5 @@
 package components.scrollbarCustom;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -68,7 +67,7 @@ public class ModernScrollBarUI extends BasicScrollBarUI {
 			width = rctngl.width;
 			height = size;
 		}
-		g2.setColor(new Color(240, 240, 240));
+		g2.setColor(scrollbar.getBackground());
 		g2.fillRect(x, y, width, height);
 	}
 
