@@ -24,6 +24,10 @@ public class DefaultLayout {
 	private DrawerController drawer;
 	private JPanel jPanel;
 
+	public DefaultLayout(JFrame frame, JPanel contentPane, String title) {
+		this(frame, contentPane, title, title);
+	}
+
 	public DefaultLayout(JFrame frame, JPanel contentPane, String title, String headingTitle) {
 		frame.setTitle(title);
 		frame.setResizable(false);
@@ -39,7 +43,7 @@ public class DefaultLayout {
 		contentPane.setLayout(null);
 
 		JPanel pnlHeader = new JPanel();
-		pnlHeader.setBackground(new Color(149, 166, 248));
+		pnlHeader.setBackground(new Color(140, 177, 180));
 		pnlHeader.setBounds(0, 0, 1086, 65);
 		contentPane.add(pnlHeader);
 		pnlHeader.setLayout(null);
@@ -50,15 +54,15 @@ public class DefaultLayout {
 
 		Button btnMenu = new Button("|||");
 		btnMenu.setBounds(23, 16, 38, 38);
-		btnMenu.setForeground(new Color(149, 166, 248));
+		btnMenu.setForeground(new Color(140, 177, 180));
 		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
 		btnMenu.setBorder(BorderFactory.createEmptyBorder());
 		btnMenu.setBackground(Color.WHITE);
-		btnMenu.setBorderColor(new Color(149, 166, 248));
+		btnMenu.setBorderColor(new Color(140, 177, 180));
 		btnMenu.setRadius(8);
 		btnMenu.setFocusable(false);
 		pnlHeader.add(btnMenu);
-		
+
 		JLabel lblTitle = new JLabel(headingTitle.toUpperCase());
 		lblTitle.setForeground(Color.WHITE);
 		lblTitle.setBounds(76, 17, 948, 32);
