@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -12,7 +11,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.metal.MetalButtonUI;
 
@@ -21,9 +19,10 @@ import com.raven.datechooser.DateChooser;
 import components.button.Button;
 import components.radio.RadioButtonCustom;
 import components.textField.TextField;
+import layouts.DefaultLayout;
 import utils.Utils;
 
-public class ThongTinCaNhan extends JFrame {
+public class ThongTinCaNhan_GUI extends JFrame {
 
 	/**
 	 * 
@@ -40,7 +39,7 @@ public class ThongTinCaNhan extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ThongTinCaNhan frame = new ThongTinCaNhan();
+					ThongTinCaNhan_GUI frame = new ThongTinCaNhan_GUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,47 +51,9 @@ public class ThongTinCaNhan extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ThongTinCaNhan() {
-//		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Quản lý phiếu đặt phòng");
-//		contentPane = defaultLayout.getJPanel();
-
-		setTitle("Thông tin cá nhân");
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(0, 0, 1100, 610);
-		setLocationRelativeTo(null);
-
-		contentPane = new JPanel();
-		contentPane.setForeground(Color.GRAY);
-		contentPane.setBackground(Utils.secondaryColor);
-		setContentPane(contentPane);
-		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		contentPane.setLayout(null);
-
-		JPanel pnlHeader = new JPanel();
-		pnlHeader.setBackground(Utils.primaryColor);
-		pnlHeader.setBounds(0, 0, 1086, 65);
-		contentPane.add(pnlHeader);
-		pnlHeader.setLayout(null);
-
-		Button btnMenu = new Button("|||");
-		btnMenu.setBounds(23, 16, 38, 38);
-		btnMenu.setForeground(Utils.primaryColor);
-		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-		btnMenu.setBorder(BorderFactory.createEmptyBorder());
-		btnMenu.setBackground(Color.WHITE);
-		btnMenu.setBorderColor(Utils.primaryColor);
-		btnMenu.setRadius(8);
-		btnMenu.setFocusable(false);
-		pnlHeader.add(btnMenu);
-
-		JLabel lblTitle = new JLabel("THÔNG TIN CÁ NHÂN");
-		lblTitle.setForeground(Color.WHITE);
-		lblTitle.setBounds(76, 17, 948, 32);
-		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
-		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
-		pnlHeader.add(lblTitle);
-//		End default layout
+	public ThongTinCaNhan_GUI() {
+		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Thông tin cá nhân");
+		contentPane = defaultLayout.getJPanel();
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
