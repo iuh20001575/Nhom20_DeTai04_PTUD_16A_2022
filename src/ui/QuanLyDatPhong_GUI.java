@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -19,6 +21,9 @@ import javax.swing.border.EmptyBorder;
 import components.button.Button;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
+import entity.LoaiPhong;
+import entity.Phong;
+import entity.TrangThaiPhong;
 import utils.Utils;
 
 public class QuanLyDatPhong_GUI extends JFrame {
@@ -396,19 +401,20 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlDanhSachPhong.setLayout(null);
 
 //		Start Fake Data
-		for (int i = 0; i < 24; i++) {
-			JPanel phong1 = getPhong();
+		List<Phong> dsPhong = fakeDSPhong();
+		for (int i = 0; i < dsPhong.size(); i++) {
+			JPanel phong1 = getPhong(dsPhong.get(i));
 			phong1.setBounds(getBounds(i));
 			pnlDanhSachPhong.add(phong1);
 		}
 
-		pnlDanhSachPhong.setPreferredSize(getSizeContainerDanhSachPhong(24));
+		pnlDanhSachPhong.setPreferredSize(getSizeContainerDanhSachPhong(dsPhong.size()));
 //		End Fake Data
-		
+
 		JScrollPane scrDanhSachPhong = new JScrollPane(pnlDanhSachPhong);
 		scrDanhSachPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
 		scrDanhSachPhong.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrDanhSachPhong.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrDanhSachPhong.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrDanhSachPhong.setBackground(Utils.secondaryColor);
 		scrDanhSachPhong.setBounds(16, 161, 900, 292);
 		contentPane.add(scrDanhSachPhong);
@@ -438,7 +444,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 				heightPhong);
 	}
 
-	private JPanel getPhong() {
+	private JPanel getPhong(Phong phong) {
 		JPanel pnlPhong1 = new JPanel();
 		pnlPhong1.setBackground(Utils.secondaryColor);
 		pnlPhong1.setBounds(0, 0, 131, 130);
@@ -447,39 +453,76 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		JLabel lblIcon1 = new JLabel("");
 		lblIcon1.setIcon(new ImageIcon("Icon\\vip 1.png"));
 		lblIcon1.setBounds(53, 0, 25, 25);
-		pnlPhong1.add(lblIcon1);
+		if (phong.getLoaiPhong().getMaLoai() == "L002")
+			pnlPhong1.add(lblIcon1);
+
+		Color bg = Utils.phongDangSuDung;
+		if (phong.getTrangThai().equals(TrangThaiPhong.DaDat))
+			bg = Utils.phongCho;
+		else if (phong.getTrangThai().equals(TrangThaiPhong.Trong))
+			bg = Utils.phongTrong;
 
 		PanelRound pnlChiTietPhong = new PanelRound(10);
-		pnlChiTietPhong.setBackground(Utils.phongDangSuDung);
+		pnlChiTietPhong.setBackground(bg);
 		pnlChiTietPhong.setBounds(0, 25, 131, 105);
 		pnlPhong1.add(pnlChiTietPhong);
 		pnlChiTietPhong.setLayout(null);
 
-		JLabel lblMaPhong = new JLabel("T01");
+		JLabel lblMaPhong = new JLabel(phong.getMaPhong());
 		lblMaPhong.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMaPhong.setForeground(Color.WHITE);
 		lblMaPhong.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		lblMaPhong.setBounds(0, 0, 131, 33);
 		pnlChiTietPhong.add(lblMaPhong);
 
-		JLabel lblTongGio = new JLabel("Tổng giờ: 22h30p");
+		JLabel lblTongGio = new JLabel("Tổng giờ: " + (phong.getTrangThai() == TrangThaiPhong.DangThue ? "22h30p" : "0"));
 		lblTongGio.setForeground(Color.WHITE);
 		lblTongGio.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		lblTongGio.setBounds(5, 80, 121, 18);
 		pnlChiTietPhong.add(lblTongGio);
 
-		JLabel lblGioVao = new JLabel("Giờ vào: 18h");
+		JLabel lblGioVao = new JLabel("Giờ vào: " + (phong.getTrangThai() == TrangThaiPhong.DangThue ? "18h" : "0"));
 		lblGioVao.setForeground(Color.WHITE);
 		lblGioVao.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		lblGioVao.setBounds(5, 62, 121, 14);
+		lblGioVao.setBounds(5, 62, 121, 18);
 		pnlChiTietPhong.add(lblGioVao);
 
-		JLabel lblSoKhach = new JLabel("Số khách: 2");
+		JLabel lblSoKhach = new JLabel("Số khách: " + (phong.getTrangThai() == TrangThaiPhong.DangThue ? "2" : "0"));
 		lblSoKhach.setForeground(Color.WHITE);
 		lblSoKhach.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		lblSoKhach.setBounds(5, 44, 121, 18);
 		pnlChiTietPhong.add(lblSoKhach);
 
 		return pnlPhong1;
+	}
+
+	private List<Phong> fakeDSPhong() {
+		List<Phong> dsPhong = new ArrayList<>();
+
+		LoaiPhong loaiPhongThuong = new LoaiPhong("L001", "Phòng thường");
+		LoaiPhong loaiPhongVip = new LoaiPhong("L002", "Phòng VIP");
+
+		Phong phongThuongTrong = new Phong("01.01", loaiPhongThuong, 5, TrangThaiPhong.Trong);
+		Phong phongThuongDangSD = new Phong("01.01", loaiPhongThuong, 5, TrangThaiPhong.DangThue);
+		Phong phongThuongCho = new Phong("01.01", loaiPhongThuong, 5, TrangThaiPhong.DaDat);
+		Phong phongVipTrong = new Phong("01.01", loaiPhongVip, 5, TrangThaiPhong.Trong);
+		Phong phongVipDangSD = new Phong("01.01", loaiPhongVip, 5, TrangThaiPhong.DangThue);
+		Phong phongVipCho = new Phong("01.01", loaiPhongVip, 5, TrangThaiPhong.DaDat);
+
+		dsPhong.add(phongThuongTrong);
+		dsPhong.add(phongThuongDangSD);
+		dsPhong.add(phongThuongCho);
+		dsPhong.add(phongVipTrong);
+		dsPhong.add(phongVipDangSD);
+		dsPhong.add(phongVipCho);
+
+		dsPhong.add(phongVipTrong);
+		dsPhong.add(phongVipDangSD);
+		dsPhong.add(phongVipCho);
+		dsPhong.add(phongThuongTrong);
+		dsPhong.add(phongThuongDangSD);
+		dsPhong.add(phongThuongCho);
+
+		return dsPhong;
 	}
 }

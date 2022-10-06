@@ -25,6 +25,7 @@ import javax.swing.table.TableCellRenderer;
 import components.button.Button;
 import components.scrollbarCustom.ScrollBarCustom;
 import layouts.DefaultLayout;
+import utils.Utils;
 
 public class QuanLyPhieuDatPhong_GUI extends JFrame {
 
@@ -58,7 +59,7 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 	public QuanLyPhieuDatPhong_GUI() {
 		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Quản lý phiếu đặt phòng");
 		contentPane = defaultLayout.getJPanel();
-		
+
 //		setTitle("Quản lý phiếu đặt phòng");
 //		setResizable(false);
 //		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -318,14 +319,14 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
-        tbl.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-        tbl.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
-        tbl.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-        tbl.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-        tbl.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-        tbl.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+		tbl.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+		tbl.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+		tbl.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+		tbl.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+		tbl.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+		tbl.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
 		scr.setViewportView(tbl);
 	}
 }

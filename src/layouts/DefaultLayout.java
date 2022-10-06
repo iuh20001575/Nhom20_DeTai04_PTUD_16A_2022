@@ -18,6 +18,7 @@ import javaswingdev.GoogleMaterialIcon;
 import javaswingdev.drawer.Drawer;
 import javaswingdev.drawer.DrawerController;
 import javaswingdev.drawer.DrawerItem;
+import utils.Utils;
 
 public class DefaultLayout {
 	private DrawerController drawer;

@@ -89,9 +89,9 @@ public class DefaultUI extends JFrame {
 		contentPane.add(textField_1);
 
 		dateChoose = new DateChooser();
+		dateChoose.setTextRefernce(textField_1);
 //		dateChoose.setBounds(213, 180, 272, 201);
 //		contentPane.add(dateChoose);
-		dateChoose.setTextRefernce(textField_1);
 
 //		GoogleMaterialIcon googleIcon = new GoogleMaterialIcon();
 //		googleIcon.setIcon(GoogleMaterialDesignIcon.USB);

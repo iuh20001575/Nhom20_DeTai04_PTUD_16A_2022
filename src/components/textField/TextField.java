@@ -9,6 +9,8 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
@@ -22,7 +24,20 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
+import utils.Utils;
+
 public class TextField extends JTextField {
+	private final Animator animator;
+	private boolean animateHinText = true;
+	private float location;
+	private boolean show;
+	private boolean mouseOver = false;
+	private String labelText = "Label";
+	private Color lineColor = new Color(3, 155, 216);
+	private Color error = new Color(235, 87, 87);
+	private Color textColor = Color.BLACK;
+	private Icon icon;
+	private boolean isError = false;
 
 	/**
 	 * 
@@ -54,16 +69,18 @@ public class TextField extends JTextField {
 		initBorder();
 	}
 
-	private final Animator animator;
-	private boolean animateHinText = true;
-	private float location;
-	private boolean show;
-	private boolean mouseOver = false;
-	private String labelText = "Label";
-	private Color lineColor = new Color(3, 155, 216);
-	private Icon icon;
+	public boolean isError() {
+		return isError;
+	}
+
+	public void setError(boolean isError) {
+		this.isError = isError;
+		setForeground(isError ? error : textColor);
+		repaint();
+	}
 
 	public TextField() {
+		textColor = getForeground();
 		setBorder(new EmptyBorder(20, 3, 10, 3));
 		setSelectionColor(new Color(76, 204, 255));
 		addMouseListener(new MouseAdapter() {
@@ -107,6 +124,13 @@ public class TextField extends JTextField {
 		animator.setResolution(0);
 		animator.setAcceleration(0.5f);
 		animator.setDeceleration(0.5f);
+
+		addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				setError(false);
+			}
+		});
 	}
 
 	private void showing(boolean action) {
@@ -142,7 +166,7 @@ public class TextField extends JTextField {
 
 	private void createHintText(Graphics2D g2) {
 		Insets in = getInsets();
-		g2.setColor(new Color(150, 150, 150));
+		g2.setColor(isError ? error : Utils.labelTextField);
 		FontMetrics ft = g2.getFontMetrics();
 		Rectangle2D r2 = ft.getStringBounds(labelText, g2);
 		double height = getHeight() - in.top - in.bottom;

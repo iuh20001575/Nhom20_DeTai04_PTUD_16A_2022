@@ -9,6 +9,8 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 
+import utils.Utils;
+
 public class Button extends JButton {
 	/**
 	 * 
@@ -89,7 +91,8 @@ public class Button extends JButton {
 
 			@Override
 			public void mousePressed(MouseEvent me) {
-				setBackground(colorClick);
+				if (isEnabled())
+					setBackground(colorClick);
 			}
 
 			@Override
@@ -150,7 +153,7 @@ public class Button extends JButton {
 					getHeight() - 4 - borderWidth * 2, radius, radius);
 		}
 
-		g2.setColor(getBackground());
+		g2.setColor(isEnabled() ? getBackground() : Utils.getOpacity(getBackground(), 0.4f));
 		// Border set 2 Pix
 		g2.fillRoundRect(2 + borderWidth, 2 + borderWidth, getWidth() - 4 - borderWidth * 2,
 				getHeight() - 4 - borderWidth * 2, radius, radius);
