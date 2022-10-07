@@ -5,6 +5,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import javax.swing.DefaultComboBoxModel;
@@ -26,6 +29,8 @@ import javax.swing.table.TableCellRenderer;
 import components.button.Button;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
+import connectDB.ConnectDB;
+import dao.DiaChi_DAO;
 import layouts.DefaultLayout;
 import utils.Utils;
 
@@ -311,7 +316,6 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scr.setViewportView(tbl);
-
 	}
 
 	public static void clock() {
