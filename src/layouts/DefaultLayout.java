@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,6 +24,7 @@ import utils.Utils;
 public class DefaultLayout {
 	private DrawerController drawer;
 	private JPanel jPanel;
+	private Button btnBack;
 
 	public DefaultLayout(JFrame frame, JPanel contentPane, String title) {
 		this(frame, contentPane, title, title);
@@ -67,11 +69,25 @@ public class DefaultLayout {
 		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		pnlHeader.add(lblTitle);
 
+		btnBack = new Button();
+		btnBack.setFocusable(false);
+		btnBack.setIcon(new ImageIcon("Icon\\back 1.png"));
+		btnBack.setColor(Utils.primaryColor);
+		btnBack.setColorOver(Utils.primaryColor);
+		btnBack.setColorClick(Utils.primaryColor);
+		btnBack.setBorderColor(Utils.primaryColor);
+		btnBack.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnBack.setBounds(954, 1, 62, 62);
+		pnlHeader.add(btnBack);
+
+//		Code menu
 		GoogleMaterialIcon googleIcon = new GoogleMaterialIcon();
 		googleIcon.setIcon(GoogleMaterialDesignIcon.USB);
-		drawer = Drawer.newDrawer(frame).addChild(new DrawerItem("Item 1").icon(googleIcon.toIcon()).build())
+		drawer = Drawer.newDrawer(frame)
+				.addChild(new DrawerItem("Item 1").icon(new ImageIcon("Icon\\back 1.png")).build())
 				.addChild(new DrawerItem("Item 1").icon(googleIcon.toIcon()).build()).build();
 
+//		Show/Hide menu
 		btnMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (drawer.isShow()) {
@@ -86,4 +102,17 @@ public class DefaultLayout {
 	public JPanel getJPanel() {
 		return jPanel;
 	}
+
+	public void setjPanel(JPanel jPanel) {
+		this.jPanel = jPanel;
+	}
+
+	public Button getBtnBack() {
+		return btnBack;
+	}
+
+	public void setBtnBack(Button btnBack) {
+		this.btnBack = btnBack;
+	}
+
 }

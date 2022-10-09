@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,14 +11,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
-import com.formdev.flatlaf.FlatIntelliJLaf;
-
 import components.panelRound.PanelRound;
-
-import java.awt.Color;
+import utils.Utils;
 
 public class Login_GUI extends JFrame {
 
@@ -31,8 +28,6 @@ public class Login_GUI extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		FlatIntelliJLaf.registerCustomDefaultsSource("style");
-		FlatIntelliJLaf.setup();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -52,31 +47,30 @@ public class Login_GUI extends JFrame {
 		setTitle("Đăng nhập");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(0, 0, 1092, 600);
+		setBounds(0, 0, 810, 483);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.CYAN);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		JPanel container = new JPanel();
-		container.setBounds(0, 0, 1092, 600);
+		container.setBounds(0, 0, 800, 450);
 		contentPane.add(container);
 		container.setLayout(null);
-		
+
 		PanelRound panel = new PanelRound();
 		panel.setRounded(24);
-		panel.setBounds(246, 100, 600, 400);
-//		panel.setBackground(new Color(255, 255, 255, 60));
-		panel.setBackground(UIManager.getColor("glass.background"));
+		panel.setBounds(100, 25, 600, 400);
+		panel.setBackground(Utils.getRGBA(255, 255, 255, 0.3f));	
 		container.add(panel);
-		
+
 		BufferedImage img;
 		try {
 			img = ImageIO.read(new File("Hinh\\loginBackground.jpg"));
 			ImageIcon imageIcon = new ImageIcon(img);
 			JLabel jLabel = new JLabel(imageIcon);
-			jLabel.setBounds(0, 0, 1092, 600);
+			jLabel.setBounds(0, 0, 790, 450);
 			container.add(jLabel);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

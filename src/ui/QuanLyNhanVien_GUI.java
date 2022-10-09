@@ -5,9 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.sql.SQLException;
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 import javax.swing.DefaultComboBoxModel;
@@ -29,8 +26,6 @@ import javax.swing.table.TableCellRenderer;
 import components.button.Button;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
-import connectDB.ConnectDB;
-import dao.DiaChi_DAO;
 import layouts.DefaultLayout;
 import utils.Utils;
 
@@ -88,10 +83,6 @@ public class QuanLyNhanVien_GUI extends JFrame {
 //		contentPane.add(pnlHeader);
 //		pnlHeader.setLayout(null);
 //
-//		JButton btnNewButton = new JButton("New button");
-//		btnNewButton.setBounds(-20, -20, 0, 0);
-//		contentPane.add(btnNewButton);
-//
 //		Button btnMenu = new Button("|||");
 //		btnMenu.setBounds(23, 16, 38, 38);
 //		btnMenu.setForeground(Utils.primaryColor);
@@ -109,6 +100,17 @@ public class QuanLyNhanVien_GUI extends JFrame {
 //		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
 //		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
 //		pnlHeader.add(lblTitle);
+//
+//		Button btnBack = new Button();
+//		btnBack.setFocusable(false);
+//		btnBack.setIcon(new ImageIcon("Icon\\back 1.png"));
+//		btnBack.setColor(Utils.primaryColor);
+//		btnBack.setColorOver(Utils.primaryColor);
+//		btnBack.setColorClick(Utils.primaryColor);
+//		btnBack.setBorderColor(Utils.primaryColor);
+//		btnBack.setBorder(new EmptyBorder(0, 0, 0, 0));
+//		btnBack.setBounds(954, 1, 62, 62);
+//		pnlHeader.add(btnBack);
 //		End default layout
 
 		JPanel pnlSearch = new JPanel();
