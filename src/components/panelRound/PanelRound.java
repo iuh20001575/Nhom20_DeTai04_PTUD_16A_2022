@@ -17,17 +17,14 @@ public class PanelRound extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public void setRounded(int rounded) {
-		setRoundTopLeft(rounded);
-		setRoundTopRight(rounded);
-		setRoundBottomRight(rounded);
-		setRoundBottomLeft(rounded);
-	}
-
 	public int getRoundTopLeft() {
 		return roundTopLeft;
 	}
 
+	/**
+	 * Set border-radius top left
+	 * @param roundTopLeft
+	 */
 	public void setRoundTopLeft(int roundTopLeft) {
 		this.roundTopLeft = roundTopLeft;
 		repaint();
@@ -37,6 +34,10 @@ public class PanelRound extends JPanel {
 		return roundTopRight;
 	}
 
+	/**
+	 * Set border-radius top right
+	 * @param roundTopRight
+	 */
 	public void setRoundTopRight(int roundTopRight) {
 		this.roundTopRight = roundTopRight;
 		repaint();
@@ -46,6 +47,10 @@ public class PanelRound extends JPanel {
 		return roundBottomLeft;
 	}
 
+	/**
+	 * Set border-radius button left
+	 * @param roundBottomLeft
+	 */
 	public void setRoundBottomLeft(int roundBottomLeft) {
 		this.roundBottomLeft = roundBottomLeft;
 		repaint();
@@ -55,16 +60,24 @@ public class PanelRound extends JPanel {
 		return roundBottomRight;
 	}
 
+	/**
+	 * Set border-radius button right
+	 * @param roundBottomRight
+	 */
 	public void setRoundBottomRight(int roundBottomRight) {
 		this.roundBottomRight = roundBottomRight;
 		repaint();
 	}
 
-	public void setRound(int round) {
-		this.setRoundBottomLeft(round);
-		this.setRoundBottomRight(round);
-		this.setRoundTopRight(round);
-		this.setRoundTopLeft(round);
+	/**
+	 * Set border-radius
+	 * @param rounded
+	 */
+	public void setRounded(int rounded) {
+		setRoundTopLeft(rounded);
+		setRoundTopRight(rounded);
+		setRoundBottomRight(rounded);
+		setRoundBottomLeft(rounded);
 	}
 
 	private int roundTopLeft = 0;
@@ -78,7 +91,7 @@ public class PanelRound extends JPanel {
 
 	public PanelRound(int rounded) {
 		setOpaque(false);
-		setRound(rounded);
+		setRounded(rounded);
 	}
 
 	@Override

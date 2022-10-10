@@ -37,7 +37,7 @@ public class DiaChi_DAO {
 
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM Phuong WHERE quan = ?");
+			preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM Quan WHERE tinh = ?");
 			preparedStatement.setString(1, tinh.getId());
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -55,16 +55,72 @@ public class DiaChi_DAO {
 		List<Tinh> list = new ArrayList<>();
 
 		try {
-			Statement statement =  ConnectDB.getConnection().createStatement();
+			Statement statement = ConnectDB.getConnection().createStatement();
 			ResultSet resultSet = statement.executeQuery("SELECT * FROM Tinh");
-			
+
 			while (resultSet.next())
 				list.add(new Tinh(resultSet.getString(1), resultSet.getString(2)));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return list;
+	}
+
+	public Tinh getTinh(Tinh tinh) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM Tinh WHERE id = ?");
+			preparedStatement.setString(1, tinh.getId());
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return new Tinh(tinh.getId(), resultSet.getString(2));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public Quan getQuan(Tinh tinh, Quan quan) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM Quan WHERE id = ? and tinh = ?");
+			preparedStatement.setString(1, quan.getId());
+			preparedStatement.setString(2, tinh.getId());
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return new Quan(quan.getId(), resultSet.getString(2), tinh);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public Phuong getPhuong(Quan quan, Phuong phuong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM Phuong WHERE id = ? and quan = ?");
+			preparedStatement.setString(1, phuong.getId());
+			preparedStatement.setString(2, quan.getId());
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return new Phuong(phuong.getId(), resultSet.getString(2), quan);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

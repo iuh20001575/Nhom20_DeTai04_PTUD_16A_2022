@@ -5,7 +5,15 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -24,12 +32,22 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
+import components.jDialog.JDialogCustom;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
+import connectDB.ConnectDB;
+import dao.DiaChi_DAO;
+import dao.NhanVien_DAO;
+import entity.NhanVien;
+import entity.Phuong;
+import entity.Quan;
+import entity.Tinh;
 import layouts.DefaultLayout;
+import utils.ControlPanel;
+import utils.StackFrame;
 import utils.Utils;
 
-public class QuanLyNhanVien_GUI extends JFrame {
+public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 
 	/**
 	 * 
@@ -39,7 +57,13 @@ public class QuanLyNhanVien_GUI extends JFrame {
 	private static JLabel lblTime;
 	private JTextField txtSearch;
 	private JTable tbl;
-//	private DefaultTableModel model;
+	private DefaultTableModel tableModel;
+	private NhanVien_DAO nhanVien_DAO;
+	private DiaChi_DAO diaChi_DAO;
+	private DefaultComboBoxModel<String> maNhanVienModel;
+	private JComboBox<String> cboMaNhanVien;
+	private JComboBox<String> cboTrangThai;
+	private ControlPanel pnlControl;
 
 	/**
 	 * Launch the application.
@@ -49,6 +73,7 @@ public class QuanLyNhanVien_GUI extends JFrame {
 			public void run() {
 				try {
 					QuanLyNhanVien_GUI frame = new QuanLyNhanVien_GUI();
+					StackFrame.push(frame);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -61,6 +86,18 @@ public class QuanLyNhanVien_GUI extends JFrame {
 	 * Create the frame.
 	 */
 	public QuanLyNhanVien_GUI() {
+		JFrame _this = this;
+
+		try {
+			new ConnectDB().connect();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		nhanVien_DAO = new NhanVien_DAO();
+		diaChi_DAO = new DiaChi_DAO();
+
 		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Quản lý nhân viên");
 		contentPane = defaultLayout.getJPanel();
 
@@ -113,6 +150,7 @@ public class QuanLyNhanVien_GUI extends JFrame {
 //		pnlHeader.add(btnBack);
 //		End default layout
 
+//		Search
 		JPanel pnlSearch = new JPanel();
 		pnlSearch.setBackground(Utils.secondaryColor);
 		pnlSearch.setBounds(16, 83, 1054, 24);
@@ -138,6 +176,12 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		pnlSearchForm.setLayout(null);
 
 		Button btnSearch = new Button("Tìm");
+		btnSearch.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				filterNhanVien();
+			}
+		});
 		btnSearch.setFocusable(false);
 		btnSearch.setIcon(new ImageIcon("Icon\\searching.png"));
 		btnSearch.setRadius(4);
@@ -156,36 +200,53 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		pnlSearchInput.setBackground(Utils.secondaryColor);
 		pnlSearchInput.setBounds(0, 0, 894, 36);
 		pnlSearchInput.setBorder(new LineBorder(Color.BLACK));
-		pnlSearchInput.setRound(4);
+		pnlSearchInput.setRounded(4);
 		pnlSearchForm.add(pnlSearchInput);
 		pnlSearchInput.setLayout(null);
 
 		txtSearch = new JTextField();
+		txtSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		txtSearch.setBackground(Utils.secondaryColor);
 		txtSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
 		txtSearch.setBounds(9, 1, 876, 34);
 		pnlSearchInput.add(txtSearch);
 		txtSearch.setColumns(10);
 
+//		Actions
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
 		pnlActions.setBounds(16, 169, 1054, 36);
 		contentPane.add(pnlActions);
 		pnlActions.setLayout(null);
 
-		Button btnEmployeeSearch = new Button("Xem");
-		btnEmployeeSearch.setFocusable(false);
-		btnEmployeeSearch.setIcon(new ImageIcon("Icon\\user 1.png"));
-		btnEmployeeSearch.setBounds(0, 0, 150, 36);
-		btnEmployeeSearch.setRadius(4);
-		btnEmployeeSearch.setForeground(Color.WHITE);
-		btnEmployeeSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnEmployeeSearch.setColorOver(Utils.primaryColor);
-		btnEmployeeSearch.setColorClick(new Color(161, 184, 186));
-		btnEmployeeSearch.setColor(Utils.primaryColor);
-		btnEmployeeSearch.setBorderColor(Utils.secondaryColor);
-		btnEmployeeSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
-		pnlActions.add(btnEmployeeSearch);
+		Button btnEmployeeView = new Button("Xem");
+		btnEmployeeView.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = tbl.getSelectedRow();
+				if (row == -1) {
+					new JDialogCustom(_this, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+							"Vui lòng chọn nhân viên muốn xem");
+				} else {
+					JFrame jFrame = new ThongTinChiTietNhanVien_GUI(new NhanVien((String) tbl.getValueAt(row, 0)));
+					StackFrame.push(jFrame);
+					jFrame.setVisible(true);
+					_this.setVisible(false);
+				}
+			}
+		});
+		btnEmployeeView.setFocusable(false);
+		btnEmployeeView.setIcon(new ImageIcon("Icon\\user 1.png"));
+		btnEmployeeView.setBounds(0, 0, 150, 36);
+		btnEmployeeView.setRadius(4);
+		btnEmployeeView.setForeground(Color.WHITE);
+		btnEmployeeView.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnEmployeeView.setColorOver(Utils.primaryColor);
+		btnEmployeeView.setColorClick(new Color(161, 184, 186));
+		btnEmployeeView.setColor(Utils.primaryColor);
+		btnEmployeeView.setBorderColor(Utils.secondaryColor);
+		btnEmployeeView.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnlActions.add(btnEmployeeView);
 
 		Button btnEmployeeAdd = new Button("Thêm");
 		btnEmployeeAdd.setFocusable(false);
@@ -229,27 +290,44 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		btnEmployeeRemove.setBounds(495, 0, 150, 36);
 		pnlActions.add(btnEmployeeRemove);
 
-		JComboBox<String> cboTrangThai = new JComboBox<String>();
-		cboTrangThai.setModel(new DefaultComboBoxModel<String>(new String[] { "Trạng thái" }));
+		cboTrangThai = new JComboBox<String>();
+		cboTrangThai.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterNhanVien();
+				}
+			}
+		});
+		cboTrangThai.setModel(new DefaultComboBoxModel<String>(new String[] { "Trạng thái", "Đang làm", "Nghỉ làm" }));
 		cboTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cboTrangThai.setBackground(Utils.primaryColor);
 		cboTrangThai.setBounds(904, 0, 150, 36);
 		pnlActions.add(cboTrangThai);
 
-		JComboBox<String> cboMaNhanVien = new JComboBox<String>();
-		cboMaNhanVien.setModel(new DefaultComboBoxModel<String>(new String[] { "Mã NV" }));
+		cboMaNhanVien = new JComboBox<String>();
+		cboMaNhanVien.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterNhanVien();
+				}
+			}
+		});
+		maNhanVienModel = new DefaultComboBoxModel<String>(new String[] { "Mã NV" });
+		cboMaNhanVien.setModel(maNhanVienModel);
 		cboMaNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cboMaNhanVien.setBackground(Utils.primaryColor);
 		cboMaNhanVien.setBounds(739, 0, 150, 36);
 		cboMaNhanVien.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlActions.add(cboMaNhanVien);
 
+//		Table danh sách nhân viên
 		JScrollPane scr = new JScrollPane();
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(16, 223, 1054, 340);
+		scr.setBounds(16, 223, 1054, 300);
 		scr.setBackground(Utils.primaryColor);
 		ScrollBarCustom scp = new ScrollBarCustom();
+//		Set color scrollbar thumb
 		scp.setScrollbarColor(new Color(203, 203, 203));
 		scr.setVerticalScrollBar(scp);
 		contentPane.add(scr);
@@ -266,44 +344,38 @@ public class QuanLyNhanVien_GUI extends JFrame {
 			}
 
 			@Override
+			/**
+			 * Set màu từng dòng cho Table
+			 */
 			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
 				Component c = super.prepareRenderer(renderer, row, column);
-				if (row % 2 == 0)
+				if (isRowSelected(row))
+					c.setBackground(Utils.getOpacity(Utils.primaryColor, 0.3f));
+				else if (row % 2 == 0)
 					c.setBackground(Color.WHITE);
 				else
 					c.setBackground(new Color(232, 232, 232));
 				return c;
 			}
+
+			@Override
+			public boolean getShowVerticalLines() {
+				// TODO Auto-generated method stub
+				return false;
+			}
 		};
-		tbl.setModel(new DefaultTableModel(new Object[][] {
-				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
-						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
-				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
-						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
-				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
-						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
-				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
-						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
-				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
-						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
-				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
-						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
-				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
-						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
-				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
-						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
-				{ "NV001", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
-						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" },
-				{ "NV002", "Nguy\u1EC5n Th\u1ECB Ng\u1ECDc Tuy\u1EBFt", "052202003245", "0123456789", "22/12/2000",
-						"N\u1EEF", "Th\u00E0hh Ph\u1ED1 H\u1ED3 Ch\u00ED Minh Quan Go Vap", "\u0110ang l\u00E0m" } },
-				new String[] { "M\u00E3 NV", "H\u1ECD T\u00EAn", "CCCD", "S\u0110T", "Ng\u00E0y sinh",
-						"Gi\u1EDBi t\u00EDnh", "\u0110\u1ECBa ch\u1EC9", "Tr\u1EA1ng th\u00E1i" }));
+
+		tableModel = new DefaultTableModel(new String[] { "M\u00E3 NV", "H\u1ECD T\u00EAn", "CCCD", "S\u0110T",
+				"Ng\u00E0y sinh", "Gi\u1EDBi t\u00EDnh", "\u0110\u1ECBa ch\u1EC9", "Tr\u1EA1ng th\u00E1i" }, 0);
+
+		tbl.setModel(tableModel);
+		tbl.setFocusable(false);
 //		Cam
 		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
 //		Xanh
 		tbl.getTableHeader().setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		tbl.setBackground(Utils.secondaryColor);
+		tbl.setBackground(Color.WHITE);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tbl.getColumnModel().getColumn(0).setPreferredWidth(61);
 		tbl.getColumnModel().getColumn(1).setPreferredWidth(180);
@@ -317,7 +389,13 @@ public class QuanLyNhanVien_GUI extends JFrame {
 				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
 		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
+//		tbl.setShowGrid(false);
 		scr.setViewportView(tbl);
+
+		pnlControl = new ControlPanel(400, 529, this);
+		contentPane.add(pnlControl);
+
+		this.addWindowListener(this);
 	}
 
 	public static void clock() {
@@ -346,5 +424,102 @@ public class QuanLyNhanVien_GUI extends JFrame {
 		};
 
 		clock.start();
+	}
+
+	private void filterNhanVien() {
+		String hoTen = txtSearch.getText();
+		String maNhanVien = (String) cboMaNhanVien.getSelectedItem();
+		String trangThai = (String) cboTrangThai.getSelectedItem();
+
+		if (maNhanVien.equals("Mã NV"))
+			maNhanVien = "";
+		if (trangThai.equals("Trạng thái"))
+			trangThai = "";
+
+		List<NhanVien> list = nhanVien_DAO.filterNhanVien(hoTen, maNhanVien, trangThai);
+		setEmptyTable();
+		addRow(list);
+		pnlControl.setTbl(tbl);
+
+		if (list.size() == 0)
+			System.out.println("Rỗng");
+	}
+
+	private void addRow(NhanVien nhanVien) {
+		Tinh tinh = diaChi_DAO.getTinh(nhanVien.getTinh());
+		Quan quan = diaChi_DAO.getQuan(nhanVien.getTinh(), nhanVien.getQuan());
+		Phuong phuong = diaChi_DAO.getPhuong(nhanVien.getQuan(), nhanVien.getPhuong());
+		tableModel.addRow(new String[] { nhanVien.getMaNhanVien(), nhanVien.getHoTen(), nhanVien.getCccd(),
+				nhanVien.getSoDienThoai(), Utils.formatDate(nhanVien.getNgaySinh()),
+				nhanVien.isGioiTinh() ? "Nam" : "Nữ", String.format("%s, %s, %s, %s", tinh.getTinh(), quan.getQuan(),
+						phuong.getPhuong(), nhanVien.getDiaChiCuThe()),
+				NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()) });
+	}
+
+	private List<NhanVien> addRow(List<NhanVien> list) {
+		list.forEach(nhanVien -> addRow(nhanVien));
+		return list;
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		addRow(nhanVien_DAO.getAllNhanVien()).forEach(nhanVien -> maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
+		pnlControl.setTbl(tbl);
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+//	private NhanVien getNhanVienTuTable(int row) {
+//		String maNhanVien = (String) tableModel.getValueAt(row, 0);
+//		String hoTen = (String) tableModel.getValueAt(row, 1);
+//		String cccd = (String) tableModel.getValueAt(row, 2);
+//		String soDienThoai = (String) tableModel.getValueAt(row, 3);
+//		LocalDate ngaySinh = Utils.getLocalDate((String) tableModel.getValueAt(row, 4));
+//		boolean gioiTinh = ((String) tableModel.getValueAt(row, 5)).equals("Nam") ? true : false;
+//		String diaChi = (String) tableModel.getValueAt(row, 6);
+//		TrangThai trangThai = ((String) tableModel.getValueAt(row, 7)).equals("Đang làm") ? TrangThai.DangLam
+//				: TrangThai.NghiLam;
+//		return new NhanVien(maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, null, null, null, diaChi, null,
+//				row, null, trangThai);
+//	}
+
+	private void setEmptyTable() {
+		while (tbl.getRowCount() > 0)
+			tableModel.removeRow(0);
 	}
 }

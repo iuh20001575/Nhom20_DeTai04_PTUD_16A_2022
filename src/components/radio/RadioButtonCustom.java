@@ -55,7 +55,7 @@ public class RadioButtonCustom extends JRadioButton {
 			if (isEnabled()) {
 				g2.setColor(radioColor);
 			} else {
-				g2.setColor(Color.GRAY);
+				g2.setColor(Utils.getOpacity(radioColor, 0.6f));
 			}
 			g2.fillOval(5, ly + 4, 8, 8);
 		} else {

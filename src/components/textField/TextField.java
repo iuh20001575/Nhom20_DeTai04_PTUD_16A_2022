@@ -36,6 +36,7 @@ public class TextField extends JTextField {
 	private Color lineColor = new Color(3, 155, 216);
 	private Color error = new Color(235, 87, 87);
 	private Color textColor = Color.BLACK;
+	private Color textDisabledColor = Utils.getOpacity(Color.BLACK, 0.6f);
 	private Icon icon;
 	private boolean isError = false;
 
@@ -83,6 +84,7 @@ public class TextField extends JTextField {
 		textColor = getForeground();
 		setBorder(new EmptyBorder(20, 3, 10, 3));
 		setSelectionColor(new Color(76, 204, 255));
+		setDisabledTextColor(textDisabledColor);
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent me) {

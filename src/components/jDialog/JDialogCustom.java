@@ -32,9 +32,17 @@ public class JDialogCustom extends JDialog {
 	private javax.swing.JLabel lblIcon;
 	private javax.swing.JLabel lblTitle;
 	private javax.swing.JTextPane txpMessage;
+	private Type type = Type.confirm;
 
 	public JDialogCustom(JFrame fram) {
 		super(fram, true);
+		this.fram = fram;
+		initComponents();
+		init();
+	}
+
+	public JDialogCustom(JFrame fram, Type type) {
+		this.type = type;
 		this.fram = fram;
 		initComponents();
 		init();
@@ -122,6 +130,9 @@ public class JDialogCustom extends JDialog {
 
 		background1.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
 
+		if (type.equals(Type.warning))
+			btnCancel.setVisible(false);
+		btnCancel.setFocusable(false);
 		btnCancel.setBackground(new java.awt.Color(245, 71, 71));
 		btnCancel.setText("Cancel");
 		btnCancel.setColorHover(new java.awt.Color(255, 74, 74));
@@ -134,6 +145,7 @@ public class JDialogCustom extends JDialog {
 		});
 
 		btnOK.setText("OK");
+		btnOK.setFocusable(false);
 		btnOK.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
 		btnOK.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -142,7 +154,9 @@ public class JDialogCustom extends JDialog {
 		});
 
 		lblIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		ImageIcon imageIcon = new javax.swing.ImageIcon("Icon\\questionIcon.png");
+
+		ImageIcon imageIcon = new javax.swing.ImageIcon(
+				String.format("Icon\\%s.png", type.equals(Type.confirm) ? "questionIcon" : "warning_50x50"));
 
 		lblIcon.setIcon(imageIcon); // NOI18N
 
@@ -163,8 +177,11 @@ public class JDialogCustom extends JDialog {
 				.setHorizontalGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 						.addGroup(background1Layout.createSequentialGroup()
 								.addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-								.addGap(3, 3, 3)
-								.addComponent(btnOK, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE))
+								.addGap(type.equals(Type.warning) ? 96 : 3, type.equals(Type.warning) ? 96 : 3,
+										type.equals(Type.warning) ? 96 : 3)
+								.addComponent(btnOK, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
+								.addGap(type.equals(Type.warning) ? 96 : 0, type.equals(Type.warning) ? 96 : 0,
+										type.equals(Type.warning) ? 96 : 0))
 						.addComponent(lblIcon, javax.swing.GroupLayout.DEFAULT_SIZE,
 								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(lblTitle, javax.swing.GroupLayout.DEFAULT_SIZE,
@@ -206,6 +223,18 @@ public class JDialogCustom extends JDialog {
 	private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {
 		messageType = MessageType.OK;
 		closeMessage();
+	}
+
+	public ButtonCustom getBtnCancel() {
+		return btnCancel;
+	}
+
+	public ButtonCustom getBtnOK() {
+		return btnOK;
+	}
+
+	public static enum Type {
+		warning, confirm
 	}
 
 	public static enum MessageType {

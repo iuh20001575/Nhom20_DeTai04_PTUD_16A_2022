@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -14,11 +16,13 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import components.button.Button;
+import components.jDialog.JDialogCustom;
+import components.menu.Menu;
 import javaswingdev.GoogleMaterialDesignIcon;
 import javaswingdev.GoogleMaterialIcon;
 import javaswingdev.drawer.Drawer;
 import javaswingdev.drawer.DrawerController;
-import javaswingdev.drawer.DrawerItem;
+import utils.StackFrame;
 import utils.Utils;
 
 public class DefaultLayout {
@@ -78,14 +82,28 @@ public class DefaultLayout {
 		btnBack.setBorderColor(Utils.primaryColor);
 		btnBack.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnBack.setBounds(954, 1, 62, 62);
+		btnBack.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JFrame jFrame = StackFrame.pop();
+				
+				if (StackFrame.empty()) {
+					JDialogCustom jDialogCustom =  new JDialogCustom(frame);
+					jDialogCustom.showMessage("Đóng ứng dụng", "Bạn có muốn đóng ứng dụng không?");
+				} else {
+					StackFrame.peek().setVisible(true);
+					jFrame.setVisible(false);
+				}
+			}
+		});
 		pnlHeader.add(btnBack);
 
 //		Code menu
 		GoogleMaterialIcon googleIcon = new GoogleMaterialIcon();
 		googleIcon.setIcon(GoogleMaterialDesignIcon.USB);
-		drawer = Drawer.newDrawer(frame)
-				.addChild(new DrawerItem("Item 1").icon(new ImageIcon("Icon\\back 1.png")).build())
-				.addChild(new DrawerItem("Item 1").icon(googleIcon.toIcon()).build()).build();
+		Menu menu = new Menu();
+		drawer = Drawer.newDrawer(frame).addChild(menu).build();
+		menu.setDrawer(drawer);
 
 //		Show/Hide menu
 		btnMenu.addActionListener(new ActionListener() {

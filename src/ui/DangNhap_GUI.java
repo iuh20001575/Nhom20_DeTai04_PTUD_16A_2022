@@ -60,108 +60,108 @@ public class DangNhap_GUI extends JFrame {
 		contentPane.setLayout(null);
 		setLocationRelativeTo(null);
 
-		KGradientPanel panel = new KGradientPanel();
-		panel.setBounds(0, 0, 1100, 610);
+		KGradientPanel pnlContainer = new KGradientPanel();
+		pnlContainer.setBounds(0, 0, 1100, 610);
 //		panel.setkEndColor(new java.awt.Color(0, 204, 204));
-		panel.setkEndColor(Utils.getRGBA(0, 204, 204, 1f));
-		panel.setkGradientFocus(600);
+		pnlContainer.setkEndColor(Utils.getRGBA(0, 204, 204, 1f));
+		pnlContainer.setkGradientFocus(600);
 //		panel.setkStartColor(new java.awt.Color(153, 0, 153));
-		panel.setkStartColor(Utils.getRGBA(153, 0, 153, 0.8f));
-		contentPane.add(panel);
-		panel.setLayout(null);
+		pnlContainer.setkStartColor(Utils.getRGBA(153, 0, 153, 0.8f));
+		contentPane.add(pnlContainer);
+		pnlContainer.setLayout(null);
 
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(Utils.getRGBA(0, 0, 0, 0));
-		panel_1.setBounds(150, 105, 800, 400);
-		panel.add(panel_1);
-		panel_1.setLayout(null);
+		JPanel pnlDangNhap = new JPanel();
+		pnlDangNhap.setBackground(Utils.getRGBA(0, 0, 0, 0));
+		pnlDangNhap.setBounds(150, 105, 800, 400);
+		pnlContainer.add(pnlDangNhap);
+		pnlDangNhap.setLayout(null);
 
-		PanelRound panel_2 = new PanelRound();
-		panel_2.setRound(16);
-		panel_2.setBounds(400, 0, 400, 400);
-		panel_2.setBackground(Color.WHITE);
-		panel_1.add(panel_2);
-		panel_2.setLayout(null);
+		PanelRound pnlFormDangNhap = new PanelRound();
+		pnlFormDangNhap.setRounded(16);
+		pnlFormDangNhap.setBounds(400, 0, 400, 400);
+		pnlFormDangNhap.setBackground(Color.WHITE);
+		pnlDangNhap.add(pnlFormDangNhap);
+		pnlFormDangNhap.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("Đăng nhập");
-		lblNewLabel.setForeground(Utils.primaryColor);
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("Segoe UI", Font.BOLD, 34));
-		lblNewLabel.setBounds(0, 40, 400, 51);
-		panel_2.add(lblNewLabel);
+		JLabel lblDangNhap = new JLabel("Đăng nhập");
+		lblDangNhap.setForeground(Utils.primaryColor);
+		lblDangNhap.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDangNhap.setFont(new Font("Segoe UI", Font.BOLD, 34));
+		lblDangNhap.setBounds(0, 40, 400, 51);
+		pnlFormDangNhap.add(lblDangNhap);
 
-		JPanel panel_3 = new JPanel();
-		panel_3.setBackground(Color.WHITE);
-		panel_3.setBounds(40, 139, 320, 221);
-		panel_2.add(panel_3);
-		panel_3.setLayout(null);
+		JPanel pnlForm = new JPanel();
+		pnlForm.setBackground(Color.WHITE);
+		pnlForm.setBounds(40, 139, 320, 221);
+		pnlFormDangNhap.add(pnlForm);
+		pnlForm.setLayout(null);
 
-		TextField textField = new TextField();
-		textField.setLabelText("Mã nhân viên");
-		textField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		textField.setBounds(0, 0, 320, 55);
-		panel_3.add(textField);
-		textField.setColumns(10);
+		TextField txtMaNhanVien = new TextField();
+		txtMaNhanVien.setLabelText("Mã nhân viên");
+		txtMaNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtMaNhanVien.setBounds(0, 0, 320, 55);
+		pnlForm.add(txtMaNhanVien);
+		txtMaNhanVien.setColumns(10);
 
-		TextField textField_1 = new TextField();
-		textField_1.setLabelText("Mật khẩu");
-		textField_1.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		textField_1.setColumns(10);
-		textField_1.setBounds(0, 75, 320, 55);
-		panel_3.add(textField_1);
+		TextField txtMatKhau = new TextField();
+		txtMatKhau.setLabelText("Mật khẩu");
+		txtMatKhau.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtMatKhau.setColumns(10);
+		txtMatKhau.setBounds(0, 75, 320, 55);
+		pnlForm.add(txtMatKhau);
 
-		Button btnNewButton = new Button("Đăng nhập");
-		btnNewButton.setIcon(new ImageIcon("Icon\\sign-in.png"));
-		btnNewButton.setFocusable(false);
-		btnNewButton.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnNewButton.setColor(Utils.primaryColor);
-		btnNewButton.setForeground(Color.white);
-		btnNewButton.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnNewButton.setBorderColor(Color.WHITE);
-		btnNewButton.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.9f));
-		btnNewButton.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
-		btnNewButton.setRadius(8);
-		btnNewButton.setBounds(170, 148, 150, 40);
-		panel_3.add(btnNewButton);
+		Button btnDangNhap = new Button("Đăng nhập");
+		btnDangNhap.setIcon(new ImageIcon("Icon\\sign-in.png"));
+		btnDangNhap.setFocusable(false);
+		btnDangNhap.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnDangNhap.setColor(Utils.primaryColor);
+		btnDangNhap.setForeground(Color.white);
+		btnDangNhap.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnDangNhap.setBorderColor(Color.WHITE);
+		btnDangNhap.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.9f));
+		btnDangNhap.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
+		btnDangNhap.setRadius(8);
+		btnDangNhap.setBounds(170, 148, 150, 40);
+		pnlForm.add(btnDangNhap);
 
-		Button btnNewButton_1 = new Button("Thoát");
-		btnNewButton_1.addMouseListener(new MouseAdapter() {
+		Button btnThoat = new Button("Thoát");
+		btnThoat.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				System.exit(0);
 			}
 		});
-		btnNewButton_1.setIcon(new ImageIcon("Icon\\exit (1).png"));
-		btnNewButton_1.setFocusable(false);
-		btnNewButton_1.setBorderWidth(1);
-		btnNewButton_1.setBorderBtnColor(Utils.primaryColor);
-		btnNewButton_1.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnNewButton_1.setColor(Color.WHITE);
-		btnNewButton_1.setForeground(Utils.primaryColor);
-		btnNewButton_1.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnNewButton_1.setBorderColor(Color.white);
-		btnNewButton_1.setColorOver(Utils.getOpacity(Color.BLACK, 0.025f));
-		btnNewButton_1.setColorClick(Utils.getOpacity(Color.BLACK, 0.05f));
-		btnNewButton_1.setRadius(8);
-		btnNewButton_1.setBounds(0, 148, 150, 40);
-		panel_3.add(btnNewButton_1);
+		btnThoat.setIcon(new ImageIcon("Icon\\exit (1).png"));
+		btnThoat.setFocusable(false);
+		btnThoat.setBorderWidth(1);
+		btnThoat.setBorderBtnColor(Utils.primaryColor);
+		btnThoat.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnThoat.setColor(Color.WHITE);
+		btnThoat.setForeground(Utils.primaryColor);
+		btnThoat.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnThoat.setBorderColor(Color.white);
+		btnThoat.setColorOver(Utils.getOpacity(Color.BLACK, 0.025f));
+		btnThoat.setColorClick(Utils.getOpacity(Color.BLACK, 0.05f));
+		btnThoat.setRadius(8);
+		btnThoat.setBounds(0, 148, 150, 40);
+		pnlForm.add(btnThoat);
 
-		JLabel lblNewLabel_1 = new JLabel("Quên mật khẩu?");
-		lblNewLabel_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		lblNewLabel_1.setForeground(Utils.primaryColor);
-		lblNewLabel_1.setBounds(210, 200, 110, 21);
-		panel_3.add(lblNewLabel_1);
+		JLabel lblQuenMatKhau = new JLabel("Quên mật khẩu?");
+		lblQuenMatKhau.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		lblQuenMatKhau.setForeground(Utils.primaryColor);
+		lblQuenMatKhau.setBounds(210, 200, 110, 21);
+		pnlForm.add(lblQuenMatKhau);
 
-		JLabel lblNewLabel_2 = new JLabel();
-		lblNewLabel_2.setIcon(new ImageIcon("Icon\\login.png"));
-		lblNewLabel_2.setBounds(72, 144, 256, 256);
-		panel_1.add(lblNewLabel_2);
+		JLabel lblBackground = new JLabel();
+		lblBackground.setIcon(new ImageIcon("Icon\\login.png"));
+		lblBackground.setBounds(72, 144, 256, 256);
+		pnlDangNhap.add(lblBackground);
 
-		JLabel lblNewLabel_3 = new JLabel("KARAOKE ROME");
-		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3.setForeground(Color.WHITE);
-		lblNewLabel_3.setFont(new Font("Segoe UI", Font.BOLD, 36));
-		lblNewLabel_3.setBounds(0, 0, 400, 83);
-		panel_1.add(lblNewLabel_3);
+		JLabel lblTieuDe = new JLabel("KARAOKE ROME");
+		lblTieuDe.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTieuDe.setForeground(Color.WHITE);
+		lblTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 36));
+		lblTieuDe.setBounds(0, 0, 400, 83);
+		pnlDangNhap.add(lblTieuDe);
 	}
 }
