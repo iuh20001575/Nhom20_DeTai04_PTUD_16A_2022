@@ -8,7 +8,7 @@ public class Starting {
 
 			@Override
 			public void run() {
-				new BarChart().setVisible(true);
+				new QuanLyDatPhong_GUI().setVisible(true);
 			}
 		});
 	}

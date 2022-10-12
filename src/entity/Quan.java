@@ -68,5 +68,9 @@ public class Quan {
 		Quan other = (Quan) obj;
 		return Objects.equals(id, other.id);
 	}
+	
+	public static String getQuanLabel() {
+		return "Quận/Huyện";
+	}
 
 }

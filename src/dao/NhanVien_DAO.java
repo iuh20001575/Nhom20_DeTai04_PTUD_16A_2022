@@ -119,7 +119,7 @@ public class NhanVien_DAO {
 	public boolean capNhatNhanVien(NhanVien nhanVien) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"UPDATE NhanVien SET hoTen = ? and cccd = ? and soDienThoai = ? and ngaySinh = ? and gioiTinh = ? and tinh = ? and quan = ? and phuong = ? and diaChiCuThe = ? and chucVu = ? and luong = ? and trangThai = ? WHERE maNhanVien = ?");
+					"UPDATE NhanVien SET hoTen = ?, cccd = ?, soDienThoai = ?, ngaySinh = ?, gioiTinh = ?, tinh = ?, quan = ?, phuong = ?, diaChiCuThe = ?, chucVu = ?, luong = ?, trangThai = ? WHERE maNhanVien = ?");
 			preparedStatement.setString(1, nhanVien.getHoTen());
 			preparedStatement.setString(2, nhanVien.getCccd());
 			preparedStatement.setString(3, nhanVien.getSoDienThoai());

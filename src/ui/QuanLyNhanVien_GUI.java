@@ -395,6 +395,15 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 		pnlControl = new ControlPanel(400, 529, this);
 		contentPane.add(pnlControl);
 
+		tbl.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (tbl.isEnabled()) {
+					pnlControl.setTrangHienTai(tbl.getSelectedRow() + 1);
+				}
+			}
+		});
+
 		this.addWindowListener(this);
 	}
 
@@ -464,8 +473,6 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 	@Override
 	public void windowOpened(WindowEvent e) {
 		// TODO Auto-generated method stub
-		addRow(nhanVien_DAO.getAllNhanVien()).forEach(nhanVien -> maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
-		pnlControl.setTbl(tbl);
 	}
 
 	@Override
@@ -495,7 +502,9 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 	@Override
 	public void windowActivated(WindowEvent e) {
 		// TODO Auto-generated method stub
-
+		setEmptyTable();
+		addRow(nhanVien_DAO.getAllNhanVien()).forEach(nhanVien -> maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
+		pnlControl.setTbl(tbl);
 	}
 
 	@Override

@@ -69,4 +69,8 @@ public class Phuong {
 		return Objects.equals(id, other.id);
 	}
 
+	public static String getPhuongLabel() {
+		return "Phường/Xã";
+	}
+
 }

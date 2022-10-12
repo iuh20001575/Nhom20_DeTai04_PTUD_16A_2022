@@ -42,10 +42,8 @@ public class JDialogCustom extends JDialog {
 	}
 
 	public JDialogCustom(JFrame fram, Type type) {
+		this(fram);
 		this.type = type;
-		this.fram = fram;
-		initComponents();
-		init();
 	}
 
 	private void init() {
@@ -63,7 +61,7 @@ public class JDialogCustom extends JDialog {
 				closeMessage();
 			}
 		});
-		animator = new Animator(350, new TimingTargetAdapter() {
+		animator = new Animator(300, new TimingTargetAdapter() {
 			@Override
 			public void timingEvent(float fraction) {
 				float f = show ? fraction : 1f - fraction;
@@ -117,7 +115,6 @@ public class JDialogCustom extends JDialog {
 	}
 
 	private void initComponents() {
-
 		background1 = new Background();
 		btnCancel = new ButtonCustom();
 		btnOK = new ButtonCustom();

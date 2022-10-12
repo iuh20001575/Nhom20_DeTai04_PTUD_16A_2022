@@ -59,4 +59,7 @@ public class Tinh {
 		return Objects.equals(id, other.id);
 	}
 
+	public static String getTinhLabel() {
+		return "Tỉnh/Thành phố";
+	}
 }

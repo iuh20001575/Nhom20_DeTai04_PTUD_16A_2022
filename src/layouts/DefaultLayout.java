@@ -86,9 +86,22 @@ public class DefaultLayout {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				JFrame jFrame = StackFrame.pop();
-				
+
 				if (StackFrame.empty()) {
-					JDialogCustom jDialogCustom =  new JDialogCustom(frame);
+					JDialogCustom jDialogCustom = new JDialogCustom(frame);
+
+					jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+							StackFrame.push(jFrame);
+						};
+					});
+
+					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+							System.exit(1);
+						};
+					});
+
 					jDialogCustom.showMessage("Đóng ứng dụng", "Bạn có muốn đóng ứng dụng không?");
 				} else {
 					StackFrame.peek().setVisible(true);

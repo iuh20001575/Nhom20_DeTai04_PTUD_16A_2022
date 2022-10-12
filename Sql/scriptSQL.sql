@@ -22902,13 +22902,13 @@ CREATE TABLE Phong (
 	CONSTRAINT CHK_Phong_maPhong_ThoaMau CHECK (maPhong LIKE '[0-9][0-9].[0-9][0-9]'), -- Kiểm tra mã phòng theo mẫu: XX.YY
 	CONSTRAINT CHK_Phong_loaiPhong_ThoaMau CHECK (loaiPhong LIKE 'L[0-9][0-9][0-9]'), -- Kiểm tra loại phòng theo mẫu LXXX
 	CONSTRAINT CHK_Phong_soLuongKhach_oneOf CHECK (soLuongKhach IN (5, 10, 20)), -- Kiểm tra số lượng khách là 5, 10 hoặc 20 người
-	CONSTRAINT CHK_Phong_trangThai_oneOf CHECK (trangThai IN ('TRONG', 'DANGTHUE', 'DADAT')), -- Kiểm tra trạng thái phòng phải là trống, đang thuê, đã đặt
+	CONSTRAINT CHK_Phong_trangThai_oneOf CHECK (trangThai IN (N'Trống', N'Đang thuê', N'Đã đặt')), -- Kiểm tra trạng thái phòng phải là trống, đang thuê, đã đặt
 	CONSTRAINT FK_Phong_LoaiPhong FOREIGN KEY (loaiPhong) REFERENCES LoaiPhong(maLoai)
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
 INSERT Phong
-VALUES ('01.01', 'L001', 10, 'TRONG')
+VALUES ('01.01', 'L001', 10, N'Trống')
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM Phong
@@ -22981,14 +22981,14 @@ CREATE TABLE DatPhong (
 	CONSTRAINT CHK_DatPhong_gioNhanPhong_TrongGioHoatDong CHECK (gioNhanPhong >= '7:0:0' AND gioNhanPhong <= '23:0:0'), -- Kiểm tra giờ nhận phòng phải trong giờ hoạt động và trước giờ đóng cửa (7h-23h)
 	CONSTRAINT CHK_DatPhong_gioNhanPhong_LonHonBangHienTai CHECK (gioNhanPhong >= CONVERT(TIME(0), GETDATE())), -- Kiểm tra giờ nhận phòng >= giờ hiện tại
 	CONSTRAINT CHK_DatPhong_gioNhanPhong_LonHonBangGioDatPhong CHECK (gioNhanPhong >= gioDatPhong), -- Kiểm tra giờ nhận phòng >= giờ đặt phòng
-	CONSTRAINT CHK_DatPhong_trangThai CHECK (trangThai IN ('DaHuyDatPhong', 'DangCho', 'DangThuePhong', 'DaTraPhong')), -- Kiểm tra trạng thái đặt phòng phải là: Đã hủy đặt phòng, đang chờ, đang thuê phòng, đã trả phòng
+	CONSTRAINT CHK_DatPhong_trangThai CHECK (trangThai IN (N'Đã hủy', N'Đang chờ', N'Đang thuê', N'Đã trả')), -- Kiểm tra trạng thái đặt phòng phải là: Đã hủy đặt phòng, đang chờ, đang thuê phòng, đã trả phòng
 	CONSTRAINT FK_DatPhong_KhachHang FOREIGN KEY (khachHang) REFERENCES KhachHang(maKhachHang),
 	CONSTRAINT FK_DatPhong_NhanVien FOREIGN KEY (nhanVien) REFERENCES NhanVien(maNhanVien)
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
 INSERT DatPhong
-VALUES ('MDP1111', 'KH111', 'NV111', GETDATE(), CONVERT(TIME(0), GETDATE()), GETDATE(), CONVERT(TIME(0), GETDATE()), 'DangThuePhong')
+VALUES ('MDP1111', 'KH111', 'NV111', GETDATE(), CONVERT(TIME(0), GETDATE()), GETDATE(), CONVERT(TIME(0), GETDATE()), 'Đang thuê')
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM DatPhong
@@ -23052,7 +23052,13 @@ CREATE TABLE ChiTietDatPhong (
 
 -- THÊM DỮ LIỆU VÀO BẢNG
 INSERT ChiTietDatPhong
-VALUES ('MDP1111', '01.01', CONVERT(TIME(0), '20:15:00'), CONVERT(TIME(0), '23:50:00'))
+VALUES ('MDP1111', '01.01', CONVERT(TIME(0), '21:03:00'), CONVERT(TIME(0), '23:50:00'))
+
+Update Phong
+set trangThai = N'Đang thuê'
+where maPhong = '01.01'
+
+Select * from Phong
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM ChiTietDatPhong

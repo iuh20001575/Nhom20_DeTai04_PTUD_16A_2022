@@ -86,6 +86,24 @@ public class DiaChi_DAO {
 		return null;
 	}
 
+	public Tinh getTinh(String tinh) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM Tinh WHERE tinh = ?");
+			preparedStatement.setString(1, tinh);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return new Tinh(resultSet.getString(1), resultSet.getString(2));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public Quan getQuan(Tinh tinh, Quan quan) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
@@ -105,6 +123,25 @@ public class DiaChi_DAO {
 		return null;
 	}
 
+	public Quan getQuan(Tinh tinh, String quan) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM Quan WHERE quan = ? and tinh = ?");
+			preparedStatement.setString(1, quan);
+			preparedStatement.setString(2, tinh.getId());
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return new Quan(resultSet.getString(1), resultSet.getString(2), tinh);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public Phuong getPhuong(Quan quan, Phuong phuong) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
@@ -116,6 +153,25 @@ public class DiaChi_DAO {
 
 			if (resultSet.next())
 				return new Phuong(phuong.getId(), resultSet.getString(2), quan);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public Phuong getPhuong(Quan quan, String phuong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM Phuong WHERE phuong = ? and quan = ?");
+			preparedStatement.setString(1, phuong);
+			preparedStatement.setString(2, quan.getId());
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return new Phuong(resultSet.getString(1), resultSet.getString(2), quan);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
