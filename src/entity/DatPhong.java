@@ -12,7 +12,7 @@ public class DatPhong {
 	private LocalTime gioDatPhong;
 	private LocalDate ngayNhanPhong;
 	private LocalTime gioNhanPhong;
-	private TrangThaiDatPhong trangThai;
+	private TrangThai trangThai;
 
 	public String getMaDatPhong() {
 		return maDatPhong;
@@ -70,11 +70,11 @@ public class DatPhong {
 		this.gioNhanPhong = gioNhanPhong;
 	}
 
-	public TrangThaiDatPhong getTrangThai() {
+	public TrangThai getTrangThai() {
 		return trangThai;
 	}
 
-	public void setTrangThai(TrangThaiDatPhong trangThai) {
+	public void setTrangThai(TrangThai trangThai) {
 		this.trangThai = trangThai;
 	}
 
@@ -88,7 +88,7 @@ public class DatPhong {
 	}
 
 	public DatPhong(String maDatPhong, KhachHang khachHang, NhanVien nhanVien, LocalDate ngayDatPhong,
-			LocalTime gioDatPhong, LocalDate ngayNhanPhong, LocalTime gioNhanPhong, TrangThaiDatPhong trangThai) {
+			LocalTime gioDatPhong, LocalDate ngayNhanPhong, LocalTime gioNhanPhong, TrangThai trangThai) {
 		super();
 		this.maDatPhong = maDatPhong;
 		this.khachHang = khachHang;
@@ -124,4 +124,27 @@ public class DatPhong {
 		return Objects.equals(maDatPhong, other.maDatPhong);
 	}
 
+	public static String convertTrangThaiToString(TrangThai trangThai) {
+		if (trangThai.equals(TrangThai.DaHuy))
+			return "Đã hủy";
+		if (trangThai.equals(TrangThai.DangCho))
+			return "Đang chờ";
+		if (trangThai.equals(TrangThai.DangThue))
+			return "Đang thuê";
+		return "Đã trả";
+	}
+
+	public static TrangThai convertStringToTrangThai(String trangThai) {
+		if (trangThai.equals("Đã hủy"))
+			return TrangThai.DaHuy;
+		if (trangThai.equals("Đang chờ"))
+			return TrangThai.DangCho;
+		if (trangThai.equals("Đang thuê"))
+			return TrangThai.DangThue;
+		return TrangThai.DaTra;
+	}
+
+	public static enum TrangThai {
+		DaHuy, DangCho, DangThue, DaTra;
+	}
 }

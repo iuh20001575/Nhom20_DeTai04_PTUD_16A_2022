@@ -22775,32 +22775,25 @@ BEGIN
 END
 GO
 
--- BẢNG TÀI KHOẢN
--- TẠO BẢNG VÀ RÀNG BUỘC
-CREATE TABLE TaiKhoan (
-	maTaiKhoan CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
-	matKhau VARCHAR(255) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
-	CONSTRAINT CHK_TaiKhoan_maTaiKhoan_ThoaMau CHECK (maTaiKhoan LIKE 'NV[0-9][0-9][0-9]'), -- Kiểm tra mã tài khoảng phải có dạng NVXXX
-	CONSTRAINT CHK_TaiKhoan_matKhau_ItNhat8KyTu CHECK (matKhau LIKE '________%'), -- Kiểm tra mật khẩu phải có ít nhất 8 ký tự
-	CONSTRAINT CHK_TaiKhoan_matKhau_ChuaKyTuHoa CHECK (matKhau LIKE '%[A-Z]%'), -- Kiểm tra mật khẩu phải chứ ký tự hoa
-	CONSTRAINT CHK_TaiKhoan_matKhau_ChuaKyTuThuong CHECK (matKhau LIKE '%[a-z]%'), -- Kiểm tra mật khẩu phải chứ ký tự thường
-	CONSTRAINT CHK_TaiKhoan_matKhau_ChuaKyTuSo CHECK (matKhau LIKE '%[0-9]%'), -- Kiểm tra mật khẩu phải chứ ký tự số
-	CONSTRAINT CHK_TaiKhoan_matKhau_ChuaKyTuDacBiet CHECK (matKhau LIKE '%[^A-Za-z0-9]%') -- Kiểm tra mật khẩu phải chứ ký tự đặc biệt
-)
+
+
 GO
 
 -- THÊM DỮ LIỆU VÀO BẢNG
-INSERT TaiKhoan
+/*INSERT TaiKhoan
 VALUES ('NV111', '11a1@11A')
+INSERT TaiKhoan
+VALUES ('NV112', '11a1@11A')*/
 
 -- TRUY VẤN DỮ LIỆU
-SELECT * FROM TaiKhoan
+--SELECT * FROM TaiKhoan
 
 -- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
 -- DELETE TaiKhoan
 
 -- BẢNG NHÂN VIÊN
 -- TẠO BẢNG VÀ RÀNG BUỘC
+go
 CREATE TABLE NhanVien (
 	maNhanVien CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
 	hoTen NVARCHAR(55) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
@@ -22814,7 +22807,8 @@ CREATE TABLE NhanVien (
 	diaChiCuThe NVARCHAR(55) NOT NULL,
 	chucVu NVARCHAR(15) NOT NULL,
 	luong FLOAT NOT NULL,
-	taiKhoan CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL UNIQUE,
+	taiKhoan CHAR(5) ,
+	--taiKhoan CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL UNIQUE,
 	trangThai NVARCHAR(20) NOT NULL,
 	CONSTRAINT CHK_NhanVien_maNhanVien_ThoaMau CHECK (maNhanVien LIKE 'NV[0-9][0-9][0-9]'), -- Kiểm tra mã nhân viên có dạng: NVxxx
 	CONSTRAINT CHK_NhanVien_cccd_Chua12ChuSo CHECK (cccd like '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), -- Kiểm tra căn cước công dân phải là 12 ký tự số
@@ -22824,25 +22818,71 @@ CREATE TABLE NhanVien (
 	CONSTRAINT CHK_NhanVien_chucVu CHECK (chucVu = N'Quản lý' or chucVu = N'Nhân viên'), -- Kiểm tra chức vụ nhân viên phải là Quản lý hoặc Nhân viên
 	CONSTRAINT CHK_NhanVien_luong_LonHon0 CHECK (luong > 0), -- Kiểm tra lương nhân viên phải > 0
 	CONSTRAINT CHK_NhanVien_trangThai CHECK (trangThai = N'Đang làm' or trangThai = N'Nghỉ làm'), -- Kiểm tra trạng thái phải là Đang làm hoặc Nghỉ làm
-	CONSTRAINT CHK_NhanVien_maTaiKhoan CHECK (taiKhoan = maNhanVien), -- Kiểm tra mã tài khoản phải là mã nhân viên
-	CONSTRAINT FK_NhanVien_TaiKhoan FOREIGN KEY (taiKhoan) REFERENCES TaiKhoan(maTaiKhoan),
+--	CONSTRAINT CHK_NhanVien_maTaiKhoan CHECK (taiKhoan = maNhanVien), -- Kiểm tra mã tài khoản phải là mã nhân viên
+	--CONSTRAINT FK_NhanVien_TaiKhoan FOREIGN KEY (taiKhoan) REFERENCES TaiKhoan(maTaiKhoan),
 	CONSTRAINT FK_NhanVien_Tinh FOREIGN KEY (tinh) REFERENCES Tinh(id),
 	CONSTRAINT FK_NhanVien_Quan FOREIGN KEY (quan) REFERENCES Quan(id),
 	CONSTRAINT FK_NhanVien_Phuong FOREIGN KEY (phuong) REFERENCES Phuong(id)
 )
+-- BẢNG TÀI KHOẢN
+-- TẠO BẢNG VÀ RÀNG BUỘC
+go
+CREATE TABLE TaiKhoan (
+	maTaiKhoan CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
+	matKhau VARCHAR(255) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
+	CONSTRAINT CHK_TaiKhoan_maTaiKhoan_ThoaMau CHECK (maTaiKhoan LIKE 'NV[0-9][0-9][0-9]'), -- Kiểm tra mã tài khoảng phải có dạng NVXXX
+	CONSTRAINT CHK_TaiKhoan_matKhau_ItNhat8KyTu CHECK (matKhau LIKE '________%'), -- Kiểm tra mật khẩu phải có ít nhất 8 ký tự
+	CONSTRAINT CHK_TaiKhoan_matKhau_ChuaKyTuHoa CHECK (matKhau LIKE '%[A-Z]%'), -- Kiểm tra mật khẩu phải chứ ký tự hoa
+	CONSTRAINT CHK_TaiKhoan_matKhau_ChuaKyTuThuong CHECK (matKhau LIKE '%[a-z]%'), -- Kiểm tra mật khẩu phải chứ ký tự thường
+	CONSTRAINT CHK_TaiKhoan_matKhau_ChuaKyTuSo CHECK (matKhau LIKE '%[0-9]%'), -- Kiểm tra mật khẩu phải chứ ký tự số
+	CONSTRAINT CHK_TaiKhoan_matKhau_ChuaKyTuDacBiet CHECK (matKhau LIKE '%[^A-Za-z0-9]%') -- Kiểm tra mật khẩu phải chứ ký tự đặc biệt
+)
+go
+ALTER TABLE dbo.TaiKhoan ADD CONSTRAINT FK_TaiKhoan  FOREIGN KEY (maTaiKhoan) REFERENCES dbo.NhanVien(maNhanVien) on delete cascade
+-- Tạo trigger ràng buộc khi nhân viên được thêm thì Tài khoản cũng sẽ được thêm
+go
+create trigger trg_NhanVien_TaiKhoan
+on dbo.NhanVien
+for insert,delete
+as 
+begin
+	declare @manv Varchar(20)
+	if exists (select * from inserted)
+		 begin
+			select @manv = maNhanVien from inserted
+			
+			select * from TaiKhoan
+			INSERT dbo.TaiKhoan (maTaiKhoan, matKhau)
+			 values (@manv, '1234Abc@')
+		 end
+	if exists (select * from deleted)
+		 begin
+			select @manv = maNhanVien from deleted
 
+			delete from TaiKhoan where maTaiKhoan = @manv
+		 end
+end
+go
 -- THÊM DỮ LIỆU VÀO BẢNG
 INSERT NhanVien
 VALUES ('NV111', 'Nguyen Thanh Trung', '111111111111', '0111111111', '2004-9-24', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, 'NV111', N'Đang làm')
 
+INSERT NhanVien
+VALUES ('NV112', N'Trần Huỳnh Như', '111111111112', '0111111112', '2004-9-20', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, 'NV112', N'Đang làm')
+
+INSERT NhanVien
+VALUES ('NV113', N'Đặng Ngọc Hoài Thương','111111111113', '0111111113', '2002-4-25', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, 'NV112', N'Đang làm')
+
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM NhanVien
+SELECT * FROM TaiKhoan
 
 -- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
 -- DELETE NhanVien
 
 -- BẢNG KHÁCH HÀNG
 -- TẠO BẢNG VÀ RÀNG BUỘC
+go
 CREATE TABLE KhachHang (
 	maKhachHang CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
 	hoTen NVARCHAR(55) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
@@ -22864,17 +22904,24 @@ CREATE TABLE KhachHang (
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
+go
 INSERT KhachHang
 VALUES ('KH111', 'Pham Thanh An', '111111111111', '2004-9-24', 1, '0111111111', '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An')
+INSERT KhachHang
+VALUES ('KH112', N'Phạm Tường Vy', '111111111112', '2004-9-24', 0, '0111111112', '106008781098622', '106281379506480', '106756471969301', N'Nguyễn Thái Sơn')
+
+INSERT KhachHang
+VALUES ('KH113', N'Đặng Ngọc Hoài Thương', '111111111113', '2004-9-24', 0, '0111111113', '106008781098622', '106281379506480', '106756471969301', N'Nguyễn Kiệm')
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM KhachHang
-
+SELECT * FROM NhanVien
 -- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
 -- DELETE KhachHang
 
 -- BẢNG LOẠI PHÒNG
 -- TẠO BẢNG VÀ RÀNG BUỘC
+go
 CREATE TABLE LoaiPhong (
 	maLoai CHAR(4) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
 	tenLoai NVARCHAR(55) NOT NULL,
@@ -22883,8 +22930,11 @@ CREATE TABLE LoaiPhong (
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
+go
 INSERT LoaiPhong
 VALUES ('L001', N'Phòng thường')
+INSERT LoaiPhong
+VALUES ('L002', N'Phòng VIP')
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM LoaiPhong
@@ -22894,6 +22944,7 @@ SELECT * FROM LoaiPhong
 
 -- BẢNG PHÒNG
 -- TẠO BẢNG VÀ RÀNG BUỘC
+go
 CREATE TABLE Phong (
 	maPhong CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
 	loaiPhong CHAR(4) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
@@ -22907,8 +22958,15 @@ CREATE TABLE Phong (
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
+go
 INSERT Phong
 VALUES ('01.01', 'L001', 10, N'Trống')
+INSERT Phong
+VALUES ('01.02', 'L001', 10, N'Trống')
+INSERT Phong
+VALUES ('02.01', 'L002', 10, N'Trống')
+INSERT Phong
+VALUES ('02.02', 'L002', 10, N'Trống')
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM Phong
@@ -22918,6 +22976,7 @@ SELECT * FROM Phong
 
 -- BẢNG LOẠI DỊCH VỤ
 -- TẠO BẢNG VÀ RÀNG BUỘC
+go
 CREATE TABLE LoaiDichVu (
 	maLoaiDichVu char(6) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
 	tenLoaiDichVu nvarchar(55) NOT NULL,
@@ -22926,9 +22985,13 @@ CREATE TABLE LoaiDichVu (
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
+go
 INSERT LoaiDichVu
 VALUES ('LDV001', N'Thức uống')
-
+INSERT LoaiDichVu
+VALUES ('LDV002', N'Trái cây')
+INSERT LoaiDichVu
+VALUES ('LDV003', N'Snack')
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM LoaiDichVu
 
@@ -22937,6 +23000,7 @@ SELECT * FROM LoaiDichVu
 
 -- BẢNG DỊCH VỤ
 -- TẠO BẢNG VÀ RÀNG BUỘC
+go
 CREATE TABLE DichVu (
 	maDichVu CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
 	tenDichVu NVARCHAR(55) NOT NULL,
@@ -22954,9 +23018,15 @@ CREATE TABLE DichVu (
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
+go
 INSERT DichVu
 VALUES ('DV001', '7 Up', 10, N'Lon', 'LDV001', 20)
-
+INSERT DichVu
+VALUES ('DV002', 'Trái cây size L', 140, N'Phần', 'LDV002', 170000)
+INSERT DichVu
+VALUES ('DV003', 'Snack tôm', 70, N'Bịch', 'LDV003', 10000)
+INSERT DichVu
+VALUES ('DV004', 'Pepsi', 240, N'Lon', 'LDV001', 15000)
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM DichVu
 
@@ -22965,6 +23035,7 @@ SELECT * FROM DichVu
 
 -- BẢNG ĐẶT PHÒNG
 -- TẠO BẢNG VÀ RÀNG BUỘC
+go
 CREATE TABLE DatPhong (
 	maDatPhong CHAR(7) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
 	khachHang CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
@@ -22987,8 +23058,11 @@ CREATE TABLE DatPhong (
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
+--delete DatPhong where maDatPhong = 'MDP1111'
+go
 INSERT DatPhong
-VALUES ('MDP1111', 'KH111', 'NV111', GETDATE(), CONVERT(TIME(0), GETDATE()), GETDATE(), CONVERT(TIME(0), GETDATE()), 'Đang thuê')
+VALUES ('MDP1111', 'KH111', 'NV111', GETDATE(), CONVERT(TIME(0), '15:50:00'), GETDATE(), CONVERT(TIME(0), GETDATE()), N'Đang chờ')
+
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM DatPhong
@@ -22998,6 +23072,7 @@ SELECT * FROM DatPhong
 
 -- BẢNG CHI TIẾT DỊCH VỤ
 -- TẠO BẢNG VÀ RÀNG BUỘC
+go
 CREATE TABLE ChiTietDichVu (
 	dichVu CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
 	datPhong CHAR(7) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
@@ -23011,6 +23086,8 @@ CREATE TABLE ChiTietDichVu (
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
+--delete ChiTietDichVu where datPhong = 'MDP1111'
+go
 INSERT ChiTietDichVu
 VALUES ('DV001', 'MDP1111', 12)
 
@@ -23051,17 +23128,16 @@ CREATE TABLE ChiTietDatPhong (
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
+
+go
 INSERT ChiTietDatPhong
-VALUES ('MDP1111', '01.01', CONVERT(TIME(0), '21:03:00'), CONVERT(TIME(0), '23:50:00'))
-
-Update Phong
-set trangThai = N'Đang thuê'
-where maPhong = '01.01'
-
-Select * from Phong
+VALUES ('MDP1111', '01.01', CONVERT(TIME(0), GETDATE()), CONVERT(TIME(0), '23:50:00'))
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM ChiTietDatPhong
 
 -- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
 -- DELETE ChiTietDatPhong
+select * from NhanVien
+select * from TaiKhoan
+select * from KhachHang

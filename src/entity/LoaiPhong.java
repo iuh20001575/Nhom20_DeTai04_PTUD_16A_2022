@@ -39,5 +39,4 @@ public class LoaiPhong {
 	public String toString() {
 		return "LoaiPhong [maLoai=" + maLoai + ", tenLoai=" + tenLoai + "]";
 	}
-
 }

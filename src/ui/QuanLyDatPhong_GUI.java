@@ -209,10 +209,10 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblDate.setBounds(0, 38, 105, 19);
 		pnlDateTime.add(lblDate);
 
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon("Icon\\clock (1) 1.png"));
-		lblNewLabel.setBounds(885, -3, 64, 64);
-		pnlLoaiPhong.add(lblNewLabel);
+		JLabel lblIconDongHo = new JLabel("");
+		lblIconDongHo.setIcon(new ImageIcon("Icon\\clock (1) 1.png"));
+		lblIconDongHo.setBounds(885, -3, 64, 64);
+		pnlLoaiPhong.add(lblIconDongHo);
 
 //		Seperator
 		JPanel pnlSeperator = new JPanel();
@@ -511,14 +511,14 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		if (phong.getTrangThai().equals(TrangThai.DangThue)) {
 			ChiTietDatPhong chiTietDatPhong = chiTietDatPhong_DAO.getChiTietDatPhong(phong);
 			System.out.println(chiTietDatPhong);
-			Thread clock = new Thread() {
-				@Override
-				public void run() {
-					LocalDateTime currTime = LocalDateTime.now();
-					int hour = currTime.getHour();
-					int minute = currTime.getMinute();
-				}
-			};
+//			Thread clock = new Thread() {
+//				@Override
+//				public void run() {
+//					LocalDateTime currTime = LocalDateTime.now();
+//					int hour = currTime.getHour();
+//					int minute = currTime.getMinute();
+//				}
+//			};
 		}
 
 		JLabel lblTongGio = new JLabel("Tổng giờ: " + (phong.getTrangThai() == TrangThai.DangThue ? "22h30p" : "0"));

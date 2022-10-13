@@ -96,4 +96,14 @@ public class Utils {
 	public static double convertStringToTienTe(String tien) {
 		return Double.parseDouble(tien.substring(0, tien.length() - 2));
 	}
+
+	public static boolean isInteger(String numString) {
+		try {
+			Integer.parseInt(numString);
+			return true;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return false;
+	}
 }
