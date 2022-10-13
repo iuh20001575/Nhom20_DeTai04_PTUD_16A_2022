@@ -17,10 +17,10 @@ public class KhachHang_DAO {
 		LocalDate ngaySinh = Utils.convertDateToLocalDate(resultSet.getDate(4));
 		boolean gioiTinh = resultSet.getBoolean(5);
 		String soDienThoai = resultSet.getString(6);
-		String tinh = resultSet.getString(8);
-		String quan = resultSet.getString(9);
-		String phuong = resultSet.getString(10);
-		String diaChiCuThe = resultSet.getString(11);
+		String tinh = resultSet.getString(7);
+		String quan = resultSet.getString(8);
+		String phuong = resultSet.getString(9);
+		String diaChiCuThe = resultSet.getString(10);
 
 		return new KhachHang(maKhachHang, hoTen, cccd, ngaySinh, gioiTinh, soDienThoai, tinh, quan, phuong,
 				diaChiCuThe);

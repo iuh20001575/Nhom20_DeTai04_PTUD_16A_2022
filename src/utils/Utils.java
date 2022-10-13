@@ -49,14 +49,16 @@ public class Utils {
 	 * @return
 	 */
 	public static LocalDate getLocalDate(String date) {
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		String dates[] = date.split("/");
+
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(date.contains("/") ? "dd/MM/yyyy" : "dd-MM-yyyy");
+		String dates[] = date.split(date.contains("/") ? "/" : "-");
 		for (int i = 0; i < 2; i++)
 			if (dates[i].length() == 1)
 				dates[i] = '0' + dates[i];
 		if (dates[2].length() == 2)
 			dates[2] = "19" + dates[2];
-		return LocalDate.parse(String.format("%s/%s/%s", dates[0], dates[1], dates[2]), dtf);
+		return LocalDate
+				.parse(String.format(date.contains("/") ? "%s/%s/%s" : "%s-%s-%s", dates[0], dates[1], dates[2]), dtf);
 	}
 
 	/**
