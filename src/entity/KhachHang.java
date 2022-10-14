@@ -10,9 +10,9 @@ public class KhachHang {
 	private LocalDate ngaySinh;
 	private boolean gioiTinh;
 	private String soDienThoai;
-	private String tinh;
-	private String quan;
-	private String phuong;
+	private Tinh tinh;
+	private Quan quan;
+	private Phuong phuong;
 	private String diaChiCuThe;
 
 	public String getMaKhachHang() {
@@ -43,12 +43,12 @@ public class KhachHang {
 		return ngaySinh;
 	}
 
-	public void setNgaySinh(LocalDate ngaySinh) {
-		this.ngaySinh = ngaySinh;
+	public boolean isGioiTinh() {
+		return gioiTinh;
 	}
 
-	public boolean getGioiTinh() {
-		return gioiTinh;
+	public void setNgaySinh(LocalDate ngaySinh) {
+		this.ngaySinh = ngaySinh;
 	}
 
 	public void setGioiTinh(boolean gioiTinh) {
@@ -63,27 +63,27 @@ public class KhachHang {
 		this.soDienThoai = soDienThoai;
 	}
 
-	public String getTinh() {
+	public Tinh getTinh() {
 		return tinh;
 	}
 
-	public void setTinh(String tinh) {
+	public void setTinh(Tinh tinh) {
 		this.tinh = tinh;
 	}
 
-	public String getQuan() {
+	public Quan getQuan() {
 		return quan;
 	}
 
-	public void setQuan(String quan) {
+	public void setQuan(Quan quan) {
 		this.quan = quan;
 	}
 
-	public String getPhuong() {
+	public Phuong getPhuong() {
 		return phuong;
 	}
 
-	public void setPhuong(String phuong) {
+	public void setPhuong(Phuong phuong) {
 		this.phuong = phuong;
 	}
 
@@ -105,7 +105,7 @@ public class KhachHang {
 	}
 
 	public KhachHang(String maKhachHang, String hoTen, String cccd, LocalDate ngaySinh, boolean gioiTinh,
-			String soDienThoai, String tinh, String quan, String phuong, String diaChiCuThe) {
+			String soDienThoai, Tinh tinh, Quan quan, Phuong phuong, String diaChiCuThe) {
 		super();
 		this.maKhachHang = maKhachHang;
 		this.hoTen = hoTen;

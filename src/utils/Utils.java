@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
 	public static final Color primaryColor = new Color(140, 177, 180);
@@ -18,10 +20,26 @@ public class Utils {
 	public static final int width = 1086;
 	public static final int height = 573;
 
+	/**
+	 * Get màu RGBA
+	 * 
+	 * @param r
+	 * @param g
+	 * @param b
+	 * @param a
+	 * @return
+	 */
 	public static Color getRGBA(int r, int g, int b, float a) {
 		return new Color(r, g, b, Math.round(a * 255));
 	}
 
+	/**
+	 * Get màu RGBA
+	 * 
+	 * @param color
+	 * @param alpha
+	 * @return
+	 */
 	public static Color getOpacity(Color color, float alpha) {
 		int r = color.getRed();
 		int g = color.getGreen();
@@ -87,16 +105,34 @@ public class Utils {
 						.getTime());
 	}
 
+	/**
+	 * Format kiểu tiền tệ
+	 * 
+	 * @param soTien
+	 * @return
+	 */
 	public static String formatTienTe(double soTien) {
 		Locale locale = new Locale("vi", "vn");
 		NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
 		return currencyFormatter.format(soTien);
 	}
 
+	/**
+	 * Chuyển tiền tệ kiểu chuỗi sang double
+	 * 
+	 * @param tien
+	 * @return
+	 */
 	public static double convertStringToTienTe(String tien) {
 		return Double.parseDouble(tien.substring(0, tien.length() - 2));
 	}
 
+	/**
+	 * Kiểm tra một chuỗi có thể là số hay không?
+	 * 
+	 * @param numString chuỗi cần kiểm tra
+	 * @return true nếu là số
+	 */
 	public static boolean isInteger(String numString) {
 		try {
 			Integer.parseInt(numString);
@@ -105,5 +141,18 @@ public class Utils {
 			// TODO: handle exception
 		}
 		return false;
+	}
+
+	/**
+	 * Kiểm tra số điện thoại có hợp lệ không? Số điện thoại bắt đầu bằng số 0 và 9
+	 * chữ số
+	 * 
+	 * @param soDienThoai số điện thoại cần kiểm tra
+	 * @return true nếu số điện thoại hợp lệ
+	 */
+	public static boolean isSoDienThoai(String soDienThoai) {
+		Pattern pattern = Pattern.compile("0[0-9]{9}");
+		Matcher matcher = pattern.matcher(soDienThoai);
+		return matcher.matches();
 	}
 }

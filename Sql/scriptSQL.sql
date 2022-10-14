@@ -22775,8 +22775,6 @@ BEGIN
 END
 GO
 
-
-
 GO
 
 -- THÊM DỮ LIỆU VÀO BẢNG
@@ -23050,7 +23048,7 @@ CREATE TABLE DatPhong (
 	CONSTRAINT CHK_DatPhong_nhanVien_TheoMau CHECK (nhanVien Like 'NV[0-9][0-9][0-9]'), -- Kiểm tra nhân viên theo mẫu: NVXXX
 	CONSTRAINT CHK_DatPhong_ngayNhanPhong_KhongTruocHienTai CHECK (ngayNhanPhong >= CONVERT(DATE, GETDATE())), -- Kiểm tra ngày nhận phòng phải >= ngày hiện tại
 	CONSTRAINT CHK_DatPhong_gioNhanPhong_TrongGioHoatDong CHECK (gioNhanPhong >= '7:0:0' AND gioNhanPhong <= '23:0:0'), -- Kiểm tra giờ nhận phòng phải trong giờ hoạt động và trước giờ đóng cửa (7h-23h)
-	CONSTRAINT CHK_DatPhong_gioNhanPhong_LonHonBangHienTai CHECK (gioNhanPhong >= CONVERT(TIME(0), GETDATE())), -- Kiểm tra giờ nhận phòng >= giờ hiện tại
+	--CONSTRAINT CHK_DatPhong_gioNhanPhong_LonHonBangHienTai CHECK (gioNhanPhong >= CONVERT(TIME(0), GETDATE())), -- Kiểm tra giờ nhận phòng >= giờ hiện tại
 	CONSTRAINT CHK_DatPhong_gioNhanPhong_LonHonBangGioDatPhong CHECK (gioNhanPhong >= gioDatPhong), -- Kiểm tra giờ nhận phòng >= giờ đặt phòng
 	CONSTRAINT CHK_DatPhong_trangThai CHECK (trangThai IN (N'Đã hủy', N'Đang chờ', N'Đang thuê', N'Đã trả')), -- Kiểm tra trạng thái đặt phòng phải là: Đã hủy đặt phòng, đang chờ, đang thuê phòng, đã trả phòng
 	CONSTRAINT FK_DatPhong_KhachHang FOREIGN KEY (khachHang) REFERENCES KhachHang(maKhachHang),
@@ -23060,8 +23058,8 @@ CREATE TABLE DatPhong (
 -- THÊM DỮ LIỆU VÀO BẢNG
 --delete DatPhong where maDatPhong = 'MDP1111'
 go
-INSERT DatPhong
-VALUES ('MDP1111', 'KH111', 'NV111', GETDATE(), CONVERT(TIME(0), '15:50:00'), GETDATE(), CONVERT(TIME(0), GETDATE()), N'Đang chờ')
+--INSERT DatPhong
+--VALUES ('MDP1111', 'KH111', 'NV111', GETDATE(), CONVERT(TIME(0), '15:50:00'), GETDATE(), CONVERT(TIME(0), GETDATE()), N'Đang chờ')
 
 
 -- TRUY VẤN DỮ LIỆU
@@ -23088,8 +23086,8 @@ CREATE TABLE ChiTietDichVu (
 -- THÊM DỮ LIỆU VÀO BẢNG
 --delete ChiTietDichVu where datPhong = 'MDP1111'
 go
-INSERT ChiTietDichVu
-VALUES ('DV001', 'MDP1111', 12)
+--INSERT ChiTietDichVu
+--VALUES ('DV001', 'MDP1111', 12)
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM ChiTietDichVu
@@ -23118,7 +23116,7 @@ CREATE TABLE ChiTietDatPhong (
 	CONSTRAINT CHK_ChiTietDatPhong_datPhong_TheoMau CHECK (datPhong LIKE 'MDP[0-9][0-9][0-9][0-9]'), -- Kiểm tra đặt phòng theo mẫu: DVXXX
 	CONSTRAINT CHK_ChiTietDatPhong_phong_ThoaMau CHECK (phong LIKE '[0-9][0-9].[0-9][0-9]'), -- Kiểm tra phòng theo mẫu: XX.YY
 	CONSTRAINT CHK_ChiTietDatPhong_gioVao_LonHonBangGioNhanPhong CHECK (gioVao >= [dbo].[fnGetGioNhanPhongTheoMaDatPhong](datPhong)), -- Kiểm tra giờ vào >= giờ nhận phòng
-	CONSTRAINT CHK_ChiTietDatPhong_gioVao_BeHonBangHienTai CHECK (gioVao <= convert(time(0), getdate())), -- Kiểm tra giờ vào <= giờ hiện tại
+	--CONSTRAINT CHK_ChiTietDatPhong_gioVao_BeHonBangHienTai CHECK (gioVao <= convert(time(0), getdate())), -- Kiểm tra giờ vào <= giờ hiện tại
 	CONSTRAINT CHK_ChiTietDatPhong_gioVao_LonHonBangGioMoCua CHECK (gioVao >= '7:0:0'), -- Kiểm tra giờ vào >= giờ mở cửa
 	CONSTRAINT CHK_ChiTietDatPhong_gioVao_BeHonBang23h CHECK (gioVao <= '23:0:0'), -- Kiểm tra giờ vào <= 23h
 	CONSTRAINT CHK_ChiTietDatPhong_gioRa_LonHonGioVao CHECK (gioRa > gioVao), -- Kiểm tra giờ ra > giờ vào
@@ -23130,8 +23128,8 @@ CREATE TABLE ChiTietDatPhong (
 -- THÊM DỮ LIỆU VÀO BẢNG
 
 go
-INSERT ChiTietDatPhong
-VALUES ('MDP1111', '01.01', CONVERT(TIME(0), GETDATE()), CONVERT(TIME(0), '23:50:00'))
+--INSERT ChiTietDatPhong
+--VALUES ('MDP1111', '01.01', CONVERT(TIME(0), GETDATE()), CONVERT(TIME(0), '23:50:00'))
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM ChiTietDatPhong
@@ -23141,3 +23139,28 @@ SELECT * FROM ChiTietDatPhong
 select * from NhanVien
 select * from TaiKhoan
 select * from KhachHang
+
+GO
+CREATE FUNCTION fnSubTime(@first time(0), @second time(0))
+returnS time(0)
+BEGIN
+	DECLARE @dateFirst DATETIME
+	DECLARE @dateSecond DATETIME
+	SET @dateFirst = CONVERT(DATETIME, (
+		CASE
+			WHEN @first > @second THEN @first
+			ELSE @second
+		END)
+	)
+	SET @dateSecond = CONVERT(DATETIME, (
+		CASE
+			WHEN @first > @second THEN @second
+			ELSE @first
+		END))
+
+	return CONVERT(TIME(0), convert(DATETIME,(cast(@dateFirst as float) - floor(cast(@dateFirst as float))) -
+       (cast(@dateSecond as float) - floor(cast(@dateSecond as float)))))
+END
+GO
+
+SELECT [dbo].[fnSubTime](CONVERT(TIME(0), GETDATE()), CONVERT(TIME(0), '9:00'))

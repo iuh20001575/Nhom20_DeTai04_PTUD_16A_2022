@@ -150,6 +150,77 @@ public class DatPhong_DAO {
 		return false;
 	}
 
+	public boolean themPhieuDatPhongTruoc(KhachHang khachHang, NhanVien nhanVien, List<Phong> phongs,
+			LocalDate ngayNhanPhong, LocalTime gioNhanPhong) {
+		try {
+			ConnectDB.getConnection().setAutoCommit(false);
+			String maDatPhong = taoMaDatPhong();
+			Time time = Time.valueOf(LocalTime.now());
+			Date date = Utils.convertLocalDateToDate(LocalDate.now());
+
+//			Tạo phiếu đặt phòng
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("INSERT DatPhong VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+			preparedStatement.setString(1, maDatPhong);
+			preparedStatement.setString(2, khachHang.getMaKhachHang());
+			preparedStatement.setString(3, nhanVien.getMaNhanVien());
+			preparedStatement.setDate(4, date);
+			preparedStatement.setTime(5, time);
+			preparedStatement.setDate(6, Utils.convertLocalDateToDate(ngayNhanPhong));
+			preparedStatement.setTime(7, Time.valueOf(gioNhanPhong));
+			preparedStatement.setString(8, DatPhong.convertTrangThaiToString(TrangThai.DangCho));
+			int res = preparedStatement.executeUpdate();
+
+			if (res <= 0) {
+				ConnectDB.getConnection().rollback();
+				return false;
+			}
+
+			for (Phong phong : phongs) {
+//				Tạo chi tiết phiếu đặt phòng
+				preparedStatement = ConnectDB.getConnection()
+						.prepareStatement("INSERT ChiTietDatPhong(datPhong, phong, gioVao) VALUES(?, ?, ?)");
+				preparedStatement.setString(1, maDatPhong);
+				preparedStatement.setString(2, phong.getMaPhong());
+				preparedStatement.setTime(3, Time.valueOf(gioNhanPhong));
+
+				res = preparedStatement.executeUpdate();
+
+				if (res <= 0) {
+					ConnectDB.getConnection().rollback();
+					return false;
+				}
+
+//				Cập nhật trạng thái phòng
+				preparedStatement = ConnectDB.getConnection()
+						.prepareStatement("Update Phong SET trangThai = ? WHERE maPhong = ?");
+				preparedStatement.setString(1, Phong.convertTrangThaiToString(Phong.TrangThai.DaDat));
+				preparedStatement.setString(2, phong.getMaPhong());
+
+				res = preparedStatement.executeUpdate();
+
+				if (res <= 0) {
+					ConnectDB.getConnection().rollback();
+					return false;
+				}
+			}
+
+			ConnectDB.getConnection().setAutoCommit(true);
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			try {
+				ConnectDB.getConnection().rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+
+		return false;
+	}
+
 	private String taoMaDatPhong() {
 		Statement statement;
 		try {
@@ -173,5 +244,31 @@ public class DatPhong_DAO {
 		}
 
 		return "MDP0001";
+	}
+
+	public List<Phong> getPhongDatTruoc(LocalDate ngayNhanPhong, LocalTime gioNhanPhong) {
+		List<Phong> list = new ArrayList<>();
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM PHONG " + "WHERE maPhong NOT IN (" + "	SELECT maPhong FROM Phong P"
+							+ "	JOIN ChiTietDatPhong CTDP ON P.maPhong = CTDP.phong"
+							+ "	JOIN DatPhong DP ON DP.maDatPhong = CTDP.datPhong"
+							+ "	WHERE P.trangThai = N'Đã đặt' AND ngayNhanPhong = ? " // ngày nhận phòng
+							+ "AND [dbo].[fnSubTime](gioNhanPhong, ?) < CONVERT(TIME(0), '3:00:00')" // giờ nhận phòng
+							+ ") AND trangThai <> N'Đang thuê'");
+			preparedStatement.setDate(1, Utils.convertLocalDateToDate(ngayNhanPhong));
+			preparedStatement.setTime(2, Time.valueOf(gioNhanPhong));
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getPhong(resultSet));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 }
