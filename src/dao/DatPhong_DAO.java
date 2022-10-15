@@ -21,12 +21,58 @@ import entity.Phong;
 import utils.Utils;
 
 public class DatPhong_DAO {
+	/**
+	 * Get phòng từ resultSet
+	 * 
+	 * @param resultSet
+	 * @return phòng
+	 * @throws SQLException if the columnIndex is not valid;if a database access
+	 *                      error occurs or this method iscalled on a closed result
+	 *                      set
+	 */
 	private Phong getPhong(ResultSet resultSet) throws SQLException {
 		String maPhong = resultSet.getString(1);
 		String loaiPhong = resultSet.getString(2);
 		int soLuongKhach = resultSet.getInt(3);
 		String trangThai = resultSet.getString(4);
 		return new Phong(maPhong, new LoaiPhong(loaiPhong), soLuongKhach, Phong.convertStringToTrangThai(trangThai));
+	}
+
+	/**
+	 * Get đặt phòng từ resultSet
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws SQLException
+	 */
+	private DatPhong getDatPhong(ResultSet resultSet) throws SQLException {
+		String maDatPhong = resultSet.getString("maDatPhong");
+		KhachHang khachHang = new KhachHang(resultSet.getString("khachHang"));
+		NhanVien nhanVien = new NhanVien(resultSet.getString("nhanVien"));
+		LocalDate ngayDatPhong = Utils.convertDateToLocalDate(resultSet.getDate("ngayDatPhong"));
+		LocalTime gioDatPhong = resultSet.getTime("gioDatPhong").toLocalTime();
+		LocalDate ngayNhanPhong = Utils.convertDateToLocalDate(resultSet.getDate("ngayNhanPhong"));
+		LocalTime gioNhanPhong = resultSet.getTime("gioNhanPhong").toLocalTime();
+		TrangThai trangThai = DatPhong.convertStringToTrangThai(resultSet.getString("trangThai"));
+		return new DatPhong(maDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong, gioNhanPhong,
+				trangThai);
+	}
+
+	public DatPhong getDatPhong(String maDatPhong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM DatPhong WHERE maDatPhong = ?");
+			preparedStatement.setString(1, maDatPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getDatPhong(resultSet);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	/**
@@ -38,35 +84,18 @@ public class DatPhong_DAO {
 		List<Phong> list = new ArrayList<>();
 
 		try {
-			Statement statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM Phong WHERE trangThai = N'Trống'");
-
-			while (resultSet.next())
-				list.add(getPhong(resultSet));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	public List<Phong> getPhongDatNgay(String maPhong, String loaiPhong, String soLuong) {
-		List<Phong> list = new ArrayList<>();
-		boolean isInteger = Utils.isInteger(soLuong);
-
-		try {
-			String sql = "SELECT maPhong, loaiPhong, soLuongKhach, trangThai FROM Phong P JOIN LoaiPhong LP ON P.loaiPhong = LP.maLoai WHERE trangThai = N'Trống' AND maPhong LIKE ? AND tenLoai LIKE ?";
-
-			if (isInteger)
-				sql += " AND soLuongKhach = ?";
-
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setString(1, "%" + maPhong + "%");
-			preparedStatement.setString(2, "%" + loaiPhong + "%");
-
-			if (isInteger)
-				preparedStatement.setInt(3, Integer.parseInt(soLuong));
+			Date dateNow = Utils.convertLocalDateToDate(LocalDate.now());
+			Time timeNow = Time.valueOf(LocalTime.now());
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM [dbo].[Phong] "
+							+ "WHERE [trangThai] = N'Trống' OR ([trangThai] = N'Đã đặt' AND maPhong NOT IN ("
+							+ "	SELECT maPhong FROM [dbo].[DatPhong] DP "
+							+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
+							+ "	JOIN [dbo].[Phong] P ON P.[maPhong] = CTDP.[phong] "
+							+ "	WHERE P.[trangThai] = N'Đã đặt' AND [ngayNhanPhong] = ?"
+							+ "	AND [dbo].[fnSubTime]([gioNhanPhong], ?) <= CONVERT(TIME(0), '3:00:00')" + "))");
+			preparedStatement.setDate(1, dateNow);
+			preparedStatement.setTime(2, timeNow);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -80,6 +109,63 @@ public class DatPhong_DAO {
 		return list;
 	}
 
+	/**
+	 * Get danh sách các phòng có thể đặt ngay
+	 * 
+	 * @param maPhong   mã phòng
+	 * @param loaiPhong loại phòng
+	 * @param soLuong   số lượng
+	 * @return danh sách các phòng
+	 */
+	public List<Phong> getPhongDatNgay(String maPhong, String loaiPhong, String soLuong) {
+		List<Phong> list = new ArrayList<>();
+		boolean isInteger = Utils.isInteger(soLuong);
+
+		try {
+			String sql = "SELECT maPhong, loaiPhong, soLuongKhach, trangThai FROM [dbo].[Phong] P "
+					+ "JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai "
+					+ "WHERE ([trangThai] = N'Trống' OR ([trangThai] = N'Đã đặt' AND maPhong NOT IN ("
+					+ "	SELECT maPhong FROM [dbo].[DatPhong] DP "
+					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
+					+ "	JOIN [dbo].[Phong] P ON P.[maPhong] = CTDP.[phong] "
+					+ "	WHERE P.[trangThai] = N'Đã đặt' AND [ngayNhanPhong] = ? "
+					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], ?) <= CONVERT(TIME(0), '3:00:00'))"
+					+ ")) AND maPhong LIKE ? AND tenLoai LIKE ?";
+
+			if (isInteger)
+				sql += " AND soLuongKhach = ?";
+
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			Date dateNow = Utils.convertLocalDateToDate(LocalDate.now());
+			Time timeNow = Time.valueOf(LocalTime.now());
+			preparedStatement.setDate(1, dateNow);
+			preparedStatement.setTime(2, timeNow);
+			preparedStatement.setString(3, "%" + maPhong + "%");
+			preparedStatement.setString(4, "%" + loaiPhong + "%");
+
+			if (isInteger)
+				preparedStatement.setInt(5, Integer.parseInt(soLuong));
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getPhong(resultSet));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
+	 * Thêm phiếu đặt phòng ngay mới
+	 * 
+	 * @param khachHang khách hàng đặt phòng
+	 * @param nhanVien  nhân viên tạo hóa đơn
+	 * @param phongs    danh sách các phòng mà khách thuê
+	 * @return true nếu thêm thành công
+	 */
 	public boolean themPhieuDatPhongNgay(KhachHang khachHang, NhanVien nhanVien, List<Phong> phongs) {
 		try {
 			ConnectDB.getConnection().setAutoCommit(false);
@@ -150,6 +236,16 @@ public class DatPhong_DAO {
 		return false;
 	}
 
+	/**
+	 * Thêm phiếu đặt phòng trước mới
+	 * 
+	 * @param khachHang     khách hàng đặt phòng
+	 * @param nhanVien      nhân viên tạo hóa đơn
+	 * @param phongs        danh sách các phòng mà khách đặt
+	 * @param ngayNhanPhong ngày nhận phòng
+	 * @param gioNhanPhong  giờ nhận phòng
+	 * @return true nếu thêm thành công
+	 */
 	public boolean themPhieuDatPhongTruoc(KhachHang khachHang, NhanVien nhanVien, List<Phong> phongs,
 			LocalDate ngayNhanPhong, LocalTime gioNhanPhong) {
 		try {
@@ -221,6 +317,11 @@ public class DatPhong_DAO {
 		return false;
 	}
 
+	/**
+	 * Tạo mã đặt phòng
+	 * 
+	 * @return mã đặt phòng
+	 */
 	private String taoMaDatPhong() {
 		Statement statement;
 		try {
@@ -246,6 +347,13 @@ public class DatPhong_DAO {
 		return "MDP0001";
 	}
 
+	/**
+	 * Get tất cả các phòng có thể đặt trước theo ngày và giờ được chọn
+	 * 
+	 * @param ngayNhanPhong ngày nhận phòng
+	 * @param gioNhanPhong  giờ nhận phòng
+	 * @return tất cả các phòng có thể đặt trước
+	 */
 	public List<Phong> getPhongDatTruoc(LocalDate ngayNhanPhong, LocalTime gioNhanPhong) {
 		List<Phong> list = new ArrayList<>();
 
@@ -264,6 +372,100 @@ public class DatPhong_DAO {
 
 			while (resultSet.next())
 				list.add(getPhong(resultSet));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
+	 * Get giờ vào phòng của phòng đang thuê hoặc phòng đặt trước gần nhất
+	 * 
+	 * @param phong phòng cần lấy giờ vào
+	 * @return giờ vào phòng
+	 */
+	public LocalTime getGioVao(Phong phong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT TOP 1 [gioNhanPhong] FROM [dbo].[DatPhong] DP "
+							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
+							+ "WHERE phong = ? " + "ORDER BY [trangThai] DESC, [ngayNhanPhong], [gioNhanPhong]");
+			preparedStatement.setString(1, phong.getMaPhong());
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next()) {
+				return resultSet.getTime(1).toLocalTime();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get đặt phòng ngay theo số điện thoại
+	 * 
+	 * @param soDienThoai
+	 * @return
+	 */
+	public DatPhong getDatPhongNgayTheoSoDienThoai(String soDienThoai) {
+		String sql = "SELECT [maDatPhong], [khachHang], [nhanVien], [ngayDatPhong],"
+				+ "	[gioDatPhong], [ngayNhanPhong], [gioNhanPhong], [trangThai] " + "FROM [dbo].[DatPhong] DP\r\n"
+				+ "	JOIN [dbo].[KhachHang] KH ON DP.[khachHang] = KH.[maKhachHang]"
+				+ "WHERE [trangThai] = N'Đang thuê' AND soDienThoai = ?";
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, soDienThoai);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getDatPhong(resultSet);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<DatPhong> getAllDatPhongDangThue() {
+		List<DatPhong> list = new ArrayList<>();
+
+		String sql = "SELECT * FROM [dbo].[DatPhong] WHERE [trangThai] = N'Đang thuê'";
+		try {
+			Statement statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+
+			while (resultSet.next())
+				list.add(getDatPhong(resultSet));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
+	 * Get tất cả các mã đặt phòng của phiếu đặt phòng có trạng thái đang thuê
+	 * 
+	 * @return danh sách các mã đặt phòng
+	 */
+	public List<String> getAllMaDatPhongDangThue() {
+		List<String> list = new ArrayList<>();
+
+		String sql = "SELECT maDatPhong FROM [dbo].[DatPhong] WHERE [trangThai] = N'Đang thuê'";
+		try {
+			Statement statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+
+			while (resultSet.next())
+				list.add(resultSet.getString(1));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

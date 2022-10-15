@@ -5,8 +5,14 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -34,6 +40,8 @@ import javax.swing.table.TableCellRenderer;
 import com.raven.datechooser.DateChooser;
 
 import components.button.Button;
+import components.comboBox.ComboBox;
+import components.jDialog.JDialogCustom;
 import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
@@ -47,7 +55,7 @@ import entity.NhanVien;
 import entity.Phong;
 import utils.Utils;
 
-public class DatPhongTruoc_GUI extends JFrame {
+public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * 
@@ -69,6 +77,9 @@ public class DatPhongTruoc_GUI extends JFrame {
 	private KhachHang_DAO khachHang_DAO;
 	private KhachHang khachHang;
 	private DatPhongTruoc_GUI _this;
+	private JComboBox<String> cmbGio;
+	private JComboBox<String> cmbPhut;
+	private TextField txtNgayNhanPhong;
 
 	/**
 	 * Launch the application.
@@ -357,9 +368,8 @@ public class DatPhongTruoc_GUI extends JFrame {
 		btnLamMoi.setBounds(660, 0, 110, 36);
 		pnlFilter.add(btnLamMoi);
 
-		TextField txtNgayNhanPhong = new TextField();
-		txtNgayNhanPhong.setIcon(new ImageIcon(
-				"D:\\Code\\stt51_haAnhThao_20001575\\Nhom20_DeTai04_PTUD_16A_2022\\Icon\\add-event 2.png"));
+		txtNgayNhanPhong = new TextField();
+		txtNgayNhanPhong.setIcon(new ImageIcon("Icon\\add-event 2.png"));
 		txtNgayNhanPhong.setLabelText("Ngày nhận phòng");
 		txtNgayNhanPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtNgayNhanPhong.setColumns(10);
@@ -368,14 +378,16 @@ public class DatPhongTruoc_GUI extends JFrame {
 		pnlBody.add(txtNgayNhanPhong);
 		dateChoose = new DateChooser();
 		dateChoose.setTextRefernce(txtNgayNhanPhong);
+		dateChoose.addPropertyChangeListener(new PropertyChangeListener() {
 
-		TextField txtGioNhanPhong = new TextField();
-		txtGioNhanPhong.setLabelText("Giờ nhận phòng");
-		txtGioNhanPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		txtGioNhanPhong.setColumns(10);
-		txtGioNhanPhong.setBackground(new Color(203, 239, 255));
-		txtGioNhanPhong.setBounds(360, 70, 340, 55);
-		pnlBody.add(txtGioNhanPhong);
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				// TODO Auto-generated method stub
+				if (evt.getPropertyName().equals("graphicsConfiguration")) {
+					setTimeComboBox(-1);
+				}
+			}
+		});
 
 		Button btnSearchSoDienThoai_1 = new Button();
 		btnSearchSoDienThoai_1.setRadius(4);
@@ -385,15 +397,54 @@ public class DatPhongTruoc_GUI extends JFrame {
 		btnSearchSoDienThoai_1.setColor(new Color(140, 177, 180));
 		btnSearchSoDienThoai_1.setBorderColor(new Color(203, 239, 255));
 		btnSearchSoDienThoai_1.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnSearchSoDienThoai_1.setBounds(720, 72, 50, 50);
+		btnSearchSoDienThoai_1.setBounds(635, 72, 50, 50);
 		pnlBody.add(btnSearchSoDienThoai_1);
+
+		cmbGio = new ComboBox<String>();
+		cmbGio.setModel(new DefaultComboBoxModel<String>());
+		cmbGio.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		cmbGio.setBackground(new Color(140, 177, 180));
+		cmbGio.setBounds(360, 89, 70, 36);
+		pnlBody.add(cmbGio);
+
+		cmbPhut = new ComboBox<String>();
+		cmbPhut.setModel(new DefaultComboBoxModel<String>());
+		cmbPhut.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		cmbPhut.setBackground(new Color(140, 177, 180));
+		cmbPhut.setBounds(497, 89, 70, 36);
+		pnlBody.add(cmbPhut);
+
+		JLabel lblTime = new JLabel("Giờ nhận phòng");
+		lblTime.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblTime.setBounds(360, 66, 200, 19);
+		pnlBody.add(lblTime);
+
+		JLabel lblGio = new JLabel("giờ");
+		lblGio.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		lblGio.setBounds(438, 95, 34, 30);
+		pnlBody.add(lblGio);
+
+		JLabel lblPhut = new JLabel("phút");
+		lblPhut.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		lblPhut.setBounds(570, 95, 45, 30);
+		pnlBody.add(lblPhut);
 
 		btnSearchSoDienThoai_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
-				String[] time = txtGioNhanPhong.getText().split(":");
-				int gio = Integer.parseInt(time[0]), phut = Integer.parseInt(time[1]);
+				LocalDate dateNow = LocalDate.now();
+
+				if (ngayNhanPhong.isBefore(dateNow)) {
+					JDialogCustom jDialogCustom = new JDialogCustom(_this,
+							components.jDialog.JDialogCustom.Type.warning);
+					jDialogCustom.showMessage("Lỗi", "Ngày nhận phòng không được trước ngày hiện tại.");
+					dateChoose.showPopup();
+					return;
+				}
+
+				int gio = Integer.parseInt((String) cmbGio.getSelectedItem()),
+						phut = Integer.parseInt((String) cmbPhut.getSelectedItem());
 				LocalTime gioNhanPhong = LocalTime.of(gio, phut);
 
 				List<Phong> list = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong);
@@ -419,8 +470,8 @@ public class DatPhongTruoc_GUI extends JFrame {
 				}
 
 				LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
-				String[] time = txtGioNhanPhong.getText().split(":");
-				int gio = Integer.parseInt(time[0]), phut = Integer.parseInt(time[1]);
+				int gio = Integer.parseInt((String) cmbGio.getSelectedItem()),
+						phut = Integer.parseInt((String) cmbPhut.getSelectedItem());
 				LocalTime gioNhanPhong = LocalTime.of(gio, phut);
 				boolean res = datPhong_DAO.themPhieuDatPhongTruoc(khachHang, new NhanVien("NV112"), dsPhongDaChon,
 						ngayNhanPhong, gioNhanPhong);
@@ -428,7 +479,61 @@ public class DatPhongTruoc_GUI extends JFrame {
 			}
 		});
 
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowOpened(WindowEvent e) {
+				setTimeComboBox(LocalTime.now().getHour());
+			}
+		});
+
 		showDanhSachPhongDaChon();
+	}
+
+	private void setTimeComboBox(int gioSelect) {
+		cmbGio.removeItemListener(_this);
+
+		cmbGio.removeAllItems();
+		cmbPhut.removeAllItems();
+
+		final int gioMoCua = 7;
+		final int gioDongCua = 24;
+
+		LocalTime timeNow = LocalTime.now();
+		LocalDate dateSelect = Utils.getLocalDate(txtNgayNhanPhong.getText());
+		int gio = timeNow.getHour(), phut = timeNow.getMinute();
+
+		if (dateSelect.isBefore(LocalDate.now())) {
+			cmbGio.setEnabled(false);
+			cmbPhut.setEnabled(false);
+			return;
+		}
+		cmbGio.setEnabled(true);
+		cmbPhut.setEnabled(true);
+
+		if (dateSelect.isEqual(LocalDate.now())) {
+			for (int i = gio; i < gioDongCua; i++)
+				cmbGio.addItem(i + "");
+			if (gio == gioSelect || gioSelect == -1) {
+				if (phut > 30) {
+					cmbGio.removeItemAt(0);
+					for (int j = 0; j < 60; j += 5)
+						cmbPhut.addItem(j + "");
+				} else {
+					phut += (5 - phut % 5);
+					for (int i = phut; i < 60; i += 5)
+						cmbPhut.addItem(i + "");
+				}
+			} else
+				for (int j = 0; j < 60; j += 5)
+					cmbPhut.addItem(j + "");
+		} else {
+			for (int i = gioMoCua; i < gioDongCua; i++)
+				cmbGio.addItem(i + "");
+			for (int j = 0; j < 60; j += 5)
+				cmbPhut.addItem(j + "");
+		}
+		cmbGio.setSelectedItem(gioSelect + "");
+		cmbGio.addItemListener(_this);
 	}
 
 	private void showDanhSachPhongDaChon() {
@@ -514,5 +619,12 @@ public class DatPhongTruoc_GUI extends JFrame {
 	private void emptyTable() {
 		while (tbl.getRowCount() > 0)
 			tableModel.removeRow(0);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.SELECTED) {
+			setTimeComboBox(Integer.parseInt((String) cmbGio.getSelectedItem()));
+		}
 	}
 }

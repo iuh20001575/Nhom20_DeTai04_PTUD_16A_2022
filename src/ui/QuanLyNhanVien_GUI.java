@@ -322,10 +322,11 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 
 //		Table danh sách nhân viên
 		JScrollPane scr = new JScrollPane();
-		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scr.setBounds(16, 223, 1054, 300);
 		scr.setBackground(Utils.primaryColor);
+		scr.getViewport().setBackground(Color.WHITE);
 		ScrollBarCustom scp = new ScrollBarCustom();
 //		Set color scrollbar thumb
 		scp.setScrollbarColor(new Color(203, 203, 203));

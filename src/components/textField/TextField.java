@@ -9,8 +9,6 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
@@ -127,12 +125,12 @@ public class TextField extends JTextField {
 		animator.setAcceleration(0.5f);
 		animator.setDeceleration(0.5f);
 
-		addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				setError(false);
-			}
-		});
+//		addKeyListener(new KeyAdapter() {
+//			@Override
+//			public void keyTyped(KeyEvent e) {
+//				setError(false);
+//			}
+//		});
 	}
 
 	private void showing(boolean action) {

@@ -3,6 +3,7 @@ package utils;
 import java.awt.Color;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
@@ -56,8 +57,8 @@ public class Utils {
 	 * @return
 	 */
 	public static String formatDate(LocalDate date) {
-		return String.format("%s/%s/%d", date.getDayOfMonth() < 10 ? "0" + date.getDayOfMonth() : date.getDayOfMonth(),
-				date.getMonthValue() < 10 ? "0" + date.getMonthValue() : date.getMonthValue(), date.getYear());
+		return String.format("%s/%s/%d", convertIntToString(date.getDayOfMonth()),
+				convertIntToString(date.getMonthValue()), date.getYear());
 	}
 
 	/**
@@ -154,5 +155,15 @@ public class Utils {
 		Pattern pattern = Pattern.compile("0[0-9]{9}");
 		Matcher matcher = pattern.matcher(soDienThoai);
 		return matcher.matches();
+	}
+
+	public static String convertLocalTimeToString(LocalTime time) {
+		return String.format("%s:%s", convertIntToString(time.getHour()), convertIntToString(time.getMinute()));
+	}
+
+	private static String convertIntToString(int number) {
+		if (number < 10)
+			return "0" + number;
+		return number + "";
 	}
 }

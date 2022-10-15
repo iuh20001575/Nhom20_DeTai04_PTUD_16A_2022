@@ -24,6 +24,13 @@ public class NhanVien_DAO {
 		taiKhoan_DAO = new TaiKhoan_DAO();
 	}
 
+	/**
+	 * Get nhân viên từ resultSet
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws SQLException
+	 */
 	private NhanVien getNhanVien(ResultSet resultSet) throws SQLException {
 		String maNhanVien = resultSet.getString("maNhanVien");
 		String hoTen = resultSet.getString("hoTen");
@@ -45,6 +52,11 @@ public class NhanVien_DAO {
 				NhanVien.convertStringToTrangThai(trangThai));
 	}
 
+	/**
+	 * Get tất cả nhân viên
+	 * 
+	 * @return danh sách nhân viên
+	 */
 	public List<NhanVien> getAllNhanVien() {
 		List<NhanVien> list = new ArrayList<NhanVien>();
 
@@ -62,6 +74,14 @@ public class NhanVien_DAO {
 		return list;
 	}
 
+	/**
+	 * Get nhân viên theo họ tên, mã nhân viên và trạng thái làm việc
+	 * 
+	 * @param hoTen
+	 * @param maNhanVien
+	 * @param trangThai
+	 * @return
+	 */
 	public List<NhanVien> filterNhanVien(String hoTen, String maNhanVien, String trangThai) {
 		List<NhanVien> list = new ArrayList<>();
 
@@ -85,6 +105,12 @@ public class NhanVien_DAO {
 		return list;
 	}
 
+	/**
+	 * Get nhân viên theo mã nhân viên
+	 * 
+	 * @param maNhanVien
+	 * @return
+	 */
 	public NhanVien getNhanVienTheoMa(String maNhanVien) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
@@ -102,6 +128,12 @@ public class NhanVien_DAO {
 		return null;
 	}
 
+	/**
+	 * Chuyển trạng thái của nhân viên có mã maNhanVien sang nghỉ làm
+	 * 
+	 * @param maNhanVien
+	 * @return
+	 */
 	public boolean setNghiLam(String maNhanVien) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
@@ -116,6 +148,12 @@ public class NhanVien_DAO {
 		return false;
 	}
 
+	/**
+	 * Cập nhật thông tin nhân viên
+	 * 
+	 * @param nhanVien
+	 * @return
+	 */
 	public boolean capNhatNhanVien(NhanVien nhanVien) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
@@ -143,6 +181,12 @@ public class NhanVien_DAO {
 		return false;
 	}
 
+	/**
+	 * Get tất cả nhân viên theo trạng thái làm việc
+	 * 
+	 * @param trangThai
+	 * @return
+	 */
 	public List<NhanVien> getNhanVienTheoTrangThai(String trangThai) {
 		List<NhanVien> list = new ArrayList<>();
 

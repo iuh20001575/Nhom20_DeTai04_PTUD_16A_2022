@@ -23049,7 +23049,7 @@ CREATE TABLE DatPhong (
 	CONSTRAINT CHK_DatPhong_ngayNhanPhong_KhongTruocHienTai CHECK (ngayNhanPhong >= CONVERT(DATE, GETDATE())), -- Kiểm tra ngày nhận phòng phải >= ngày hiện tại
 	CONSTRAINT CHK_DatPhong_gioNhanPhong_TrongGioHoatDong CHECK (gioNhanPhong >= '7:0:0' AND gioNhanPhong <= '23:0:0'), -- Kiểm tra giờ nhận phòng phải trong giờ hoạt động và trước giờ đóng cửa (7h-23h)
 	--CONSTRAINT CHK_DatPhong_gioNhanPhong_LonHonBangHienTai CHECK (gioNhanPhong >= CONVERT(TIME(0), GETDATE())), -- Kiểm tra giờ nhận phòng >= giờ hiện tại
-	CONSTRAINT CHK_DatPhong_gioNhanPhong_LonHonBangGioDatPhong CHECK (gioNhanPhong >= gioDatPhong), -- Kiểm tra giờ nhận phòng >= giờ đặt phòng
+	--CONSTRAINT CHK_DatPhong_gioNhanPhong_LonHonBangGioDatPhong CHECK (gioNhanPhong >= gioDatPhong), -- Kiểm tra giờ nhận phòng >= giờ đặt phòng
 	CONSTRAINT CHK_DatPhong_trangThai CHECK (trangThai IN (N'Đã hủy', N'Đang chờ', N'Đang thuê', N'Đã trả')), -- Kiểm tra trạng thái đặt phòng phải là: Đã hủy đặt phòng, đang chờ, đang thuê phòng, đã trả phòng
 	CONSTRAINT FK_DatPhong_KhachHang FOREIGN KEY (khachHang) REFERENCES KhachHang(maKhachHang),
 	CONSTRAINT FK_DatPhong_NhanVien FOREIGN KEY (nhanVien) REFERENCES NhanVien(maNhanVien)

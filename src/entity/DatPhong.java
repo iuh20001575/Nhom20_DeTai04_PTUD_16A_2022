@@ -124,6 +124,12 @@ public class DatPhong {
 		return Objects.equals(maDatPhong, other.maDatPhong);
 	}
 
+	/**
+	 * Chuyển trạng thái sang String
+	 * 
+	 * @param trangThai
+	 * @return
+	 */
 	public static String convertTrangThaiToString(TrangThai trangThai) {
 		if (trangThai.equals(TrangThai.DaHuy))
 			return "Đã hủy";
@@ -134,6 +140,12 @@ public class DatPhong {
 		return "Đã trả";
 	}
 
+	/**
+	 * Chuyển String sang trạng thái đặt phòng
+	 * 
+	 * @param trangThai
+	 * @return
+	 */
 	public static TrangThai convertStringToTrangThai(String trangThai) {
 		if (trangThai.equals("Đã hủy"))
 			return TrangThai.DaHuy;
@@ -144,6 +156,12 @@ public class DatPhong {
 		return TrangThai.DaTra;
 	}
 
+	/**
+	 * Các trạng thái đặt phòng
+	 * 
+	 * @author ThaoHa
+	 *
+	 */
 	public static enum TrangThai {
 		DaHuy, DangCho, DangThue, DaTra;
 	}

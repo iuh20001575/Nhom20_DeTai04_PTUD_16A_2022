@@ -16,6 +16,13 @@ import entity.Tinh;
 import utils.Utils;
 
 public class KhachHang_DAO {
+	/**
+	 * Get khách hàng từ resultSet
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws SQLException
+	 */
 	private KhachHang getKhachHang(ResultSet resultSet) throws SQLException {
 		String maKhachHang = resultSet.getString(1);
 		String hoTen = resultSet.getString(2);
@@ -32,6 +39,11 @@ public class KhachHang_DAO {
 				diaChiCuThe);
 	}
 
+	/**
+	 * Get danh sách tất cả các khách hàng
+	 * 
+	 * @return
+	 */
 	public List<KhachHang> getAllKhachHang() {
 		List<KhachHang> list = new ArrayList<KhachHang>();
 
@@ -49,6 +61,12 @@ public class KhachHang_DAO {
 		return list;
 	}
 
+	/**
+	 * Get khách hàng theo mã khách hàng
+	 * 
+	 * @param maKhachHang
+	 * @return
+	 */
 	public KhachHang getKhachHangTheoMa(String maKhachHang) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
@@ -66,6 +84,12 @@ public class KhachHang_DAO {
 		return null;
 	}
 
+	/**
+	 * Get khách hàng theo số điện thoại
+	 * 
+	 * @param soDienThoai
+	 * @return
+	 */
 	public KhachHang getKhachHang(String soDienThoai) {
 
 		try {
@@ -84,6 +108,12 @@ public class KhachHang_DAO {
 		return null;
 	}
 
+	/**
+	 * Thêm khách hàng
+	 * 
+	 * @param khachHang
+	 * @return
+	 */
 	public boolean themKhachHang(KhachHang khachHang) {
 		int res = 0;
 		PreparedStatement preparedStatement;
@@ -109,6 +139,12 @@ public class KhachHang_DAO {
 		return res > 0;
 	}
 
+	/**
+	 * Cập nhật thông tin khách hàng
+	 * 
+	 * @param khachHang
+	 * @return
+	 */
 	public boolean suaKhachHang(KhachHang khachHang) {
 		int res = 0;
 		PreparedStatement preparedStatement;
@@ -134,6 +170,12 @@ public class KhachHang_DAO {
 		return res > 0;
 	}
 
+	/**
+	 * Xóa khách hàng
+	 * 
+	 * @param maKhachHang
+	 * @return
+	 */
 	public boolean xoaKhachHang(String maKhachHang) {
 		int res = 0;
 		try {
@@ -149,6 +191,12 @@ public class KhachHang_DAO {
 		return res > 0;
 	}
 
+	/**
+	 * Lọc khách hàng theo họ tên
+	 * 
+	 * @param hoTen
+	 * @return
+	 */
 	public List<KhachHang> filterKhachHang(String hoTen) {
 		List<KhachHang> list = new ArrayList<>();
 

@@ -18,8 +18,6 @@ import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -49,6 +47,7 @@ import dao.DatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiPhong_DAO;
 import entity.KhachHang;
+import entity.LoaiPhong;
 import entity.NhanVien;
 import entity.Phong;
 import utils.Utils;
@@ -226,8 +225,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 				}
 			}
 		});
-		btnNewButton_2.setIcon(new ImageIcon(
-				"D:\\Code\\stt51_haAnhThao_20001575\\Nhom20_DeTai04_PTUD_16A_2022\\Icon\\rightArrow_32x32.png"));
+		btnNewButton_2.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
 		btnNewButton_2.setBounds(0, 94, 36, 36);
 		pnlActions.add(btnNewButton_2);
 
@@ -422,16 +420,19 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			@Override
 			public void windowActivated(WindowEvent e) {
 				List<Phong> list = datPhong_DAO.getPhongDatNgay();
+				List<LoaiPhong> loaiPhongs = loaiPhong_DAO.getAllLoaiPhong();
 
 				cmbMaPhong.removeItemListener(_this);
 
 				emptyTable();
 				emptyComboBox(cmbMaPhong, "Mã phòng");
+				emptyComboBox(cmbLoaiPhong, "Loại phòng");
 
 				addRow(list);
 				list.forEach(phong -> {
 					cmbMaPhong.addItem(phong.getMaPhong());
 				});
+				loaiPhongs.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));
 
 				cmbMaPhong.addItemListener(_this);
 				cmbLoaiPhong.addItemListener(_this);
@@ -440,6 +441,9 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		});
 	}
 
+	/**
+	 * Hiển thị các phòng đã chọn vào mục phòng đã chọn
+	 */
 	private void showDanhSachPhongDaChon() {
 		JScrollPane scrPhongDaChon = new JScrollPane();
 		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -473,14 +477,21 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		int top = 11;
 		int countItem = dsPhongDaChon.size();
 		for (int i = 0; i < countItem; i++) {
-			pnlPhongDaChon.add(getPanelphongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
+			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
 		}
 
 		pnlPhongDaChon.setPreferredSize(
 				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
 	}
 
-	private PanelRound getPanelphongDaChonItem(int top, Phong phong) {
+	/**
+	 * Get panel phòng đã chọn
+	 * 
+	 * @param top   khoảng cách top từ container đến item
+	 * @param phong phòng được chọn
+	 * @return panel
+	 */
+	private PanelRound getPanelPhongDaChonItem(int top, Phong phong) {
 		PanelRound pnlContainerItem = new PanelRound(8);
 		pnlContainerItem.setBackground(Utils.primaryColor);
 		pnlContainerItem.setBounds(11, top, 118, 36);
@@ -506,12 +517,22 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		return pnlContainerItem;
 	}
 
+	/**
+	 * Thêm một phòng vào table
+	 * 
+	 * @param phong phòng muốn thêm
+	 */
 	private void addRow(Phong phong) {
 		phong.setLoaiPhong(loaiPhong_DAO.getLoaiPhong(phong.getLoaiPhong().getMaLoai()));
 		tableModel.addRow(new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(),
 				phong.getSoLuongKhach() + "", Phong.convertTrangThaiToString(phong.getTrangThai()) });
 	}
 
+	/**
+	 * Thêm danh sách các phòng vào table
+	 * 
+	 * @param list danh sách các phòng cần thêm
+	 */
 	private void addRow(List<Phong> list) {
 		emptyTable();
 
@@ -520,15 +541,29 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		});
 	}
 
+	/**
+	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
+	 * 
+	 * @param jComboBox ComboBox
+	 * @param label
+	 */
 	private void emptyComboBox(JComboBox<String> jComboBox, String label) {
 		emptyComboBox(jComboBox);
 		jComboBox.addItem(label);
 	}
 
+	/**
+	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
+	 * 
+	 * @param jComboBox
+	 */
 	private void emptyComboBox(JComboBox<String> jComboBox) {
 		jComboBox.removeAllItems();
 	}
 
+	/**
+	 * Xóa tất các các row trong table
+	 */
 	private void emptyTable() {
 		while (tbl.getRowCount() > 0)
 			tableModel.removeRow(0);
@@ -542,6 +577,9 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		filterPhong();
 	}
 
+	/**
+	 * Lọc danh sách các phòng theo mã phòng, loại phòng và số lượng
+	 */
 	private void filterPhong() {
 		String maPhong = (String) cmbMaPhong.getSelectedItem();
 		String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
