@@ -41,6 +41,12 @@ public class JDialogCustom extends JDialog {
 		init();
 	}
 
+	public void setType(Type type) {
+		this.type = type;
+		initComponents();
+		init();
+	}
+
 	public JDialogCustom(JFrame fram, Type type) {
 		super(fram, true);
 		this.type = type;

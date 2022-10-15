@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
@@ -26,6 +28,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import components.button.Button;
+import components.jDialog.JDialogCustom;
 import components.panelEvent.PanelEvent;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
@@ -65,6 +68,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	private DatPhong_DAO datPhong_DAO;
 	private String tongGio;
 	private JTextField txtPhongSo;
+	private JDialogCustom jDialog;
 
 	/**
 	 * Create the frame.
@@ -72,7 +76,6 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	public QuanLyDatPhong_GUI() {
 		try {
 			new ConnectDB().connect();
-			System.out.println("ConnectDB thành công");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -81,6 +84,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		phong_DAO = new Phong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 		datPhong_DAO = new DatPhong_DAO();
+		jDialog = new JDialogCustom(this, components.jDialog.JDialogCustom.Type.warning);
 
 //		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Trang chủ đặt phòng");
 //		contentPane = defaultLayout.getJPanel();
@@ -301,7 +305,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlPhongTrong.add(lblText1);
 		lblText1.setFont(new Font("Segoe UI", Font.BOLD, 12));
 
-		lblSoPhongTrong = new JLabel("(2)");
+		lblSoPhongTrong = new JLabel("(0)");
 		lblSoPhongTrong.setForeground(Color.WHITE);
 		lblSoPhongTrong.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSoPhongTrong.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -331,7 +335,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblText3.setBounds(59, 21, 75, 19);
 		pnlPhongDangSuDung.add(lblText3);
 
-		lblSoPhongDSD = new JLabel("(5)");
+		lblSoPhongDSD = new JLabel("(0)");
 		lblSoPhongDSD.setForeground(Color.WHITE);
 		lblSoPhongDSD.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSoPhongDSD.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -355,35 +359,36 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblText4.setBounds(59, 11, 75, 19);
 		pnlPhongCho.add(lblText4);
 
-		lblSoLuongPhongCho = new JLabel("(2)");
+		lblSoLuongPhongCho = new JLabel("(0)");
 		lblSoLuongPhongCho.setForeground(Color.WHITE);
 		lblSoLuongPhongCho.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSoLuongPhongCho.setFont(new Font("Segoe UI", Font.BOLD, 12));
 		lblSoLuongPhongCho.setBounds(59, 30, 75, 19);
 		pnlPhongCho.add(lblSoLuongPhongCho);
 
-		PanelRound pnlPhongCho_1 = new PanelRound(10);
-		pnlPhongCho_1.setLayout(null);
-		pnlPhongCho_1.setBackground(new Color(4, 191, 173, 217));
-		pnlPhongCho_1.setBounds(0, 225, 146, 60);
-		pnlThongKeLoaiPhong.add(pnlPhongCho_1);
+		PanelRound pnlPhongTam = new PanelRound(10);
+		pnlPhongTam.setLayout(null);
+		pnlPhongTam.setBackground(new Color(115, 120, 234));
+		pnlPhongTam.setBounds(0, 225, 146, 60);
+		pnlThongKeLoaiPhong.add(pnlPhongTam);
 
-		JLabel lblIconPhongCho_1 = new JLabel("");
-		lblIconPhongCho_1.setBounds(12, 12, 35, 35);
-		pnlPhongCho_1.add(lblIconPhongCho_1);
+		JLabel lblIconPhongTam = new JLabel("");
+		lblIconPhongTam.setIcon(new ImageIcon("Icon\\karaoke (3) 1.png"));
+		lblIconPhongTam.setBounds(12, 12, 35, 35);
+		pnlPhongTam.add(lblIconPhongTam);
 
-		JLabel lblPhngTm = new JLabel("Phòng tạm");
-		lblPhngTm.setForeground(Color.WHITE);
-		lblPhngTm.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		lblPhngTm.setBounds(59, 11, 75, 19);
-		pnlPhongCho_1.add(lblPhngTm);
+		JLabel lblPhongTam = new JLabel("Phòng tạm");
+		lblPhongTam.setForeground(Color.WHITE);
+		lblPhongTam.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		lblPhongTam.setBounds(59, 11, 75, 19);
+		pnlPhongTam.add(lblPhongTam);
 
-		JLabel lblSoLuongPhongCho_1 = new JLabel("(2)");
-		lblSoLuongPhongCho_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSoLuongPhongCho_1.setForeground(Color.WHITE);
-		lblSoLuongPhongCho_1.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		lblSoLuongPhongCho_1.setBounds(59, 30, 75, 19);
-		pnlPhongCho_1.add(lblSoLuongPhongCho_1);
+		JLabel lblSoLuongPhongTam = new JLabel("(0)");
+		lblSoLuongPhongTam.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSoLuongPhongTam.setForeground(Color.WHITE);
+		lblSoLuongPhongTam.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		lblSoLuongPhongTam.setBounds(59, 30, 75, 19);
+		pnlPhongTam.add(lblSoLuongPhongTam);
 
 //		Các nút chức năng
 		JPanel pnlActions = new JPanel();
@@ -413,10 +418,10 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlDatPhong.add(lblDatPhongF);
 //		lblDatPhongF.setBounds(52, 35, 112, 22);
 
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
-		lblNewLabel.setBounds(10, 18, 32, 32);
-		pnlDatPhong.add(lblNewLabel);
+		JLabel lblIconDatPhong = new JLabel("");
+		lblIconDatPhong.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
+		lblIconDatPhong.setBounds(10, 18, 32, 32);
+		pnlDatPhong.add(lblIconDatPhong);
 
 		PanelEvent pnlDatPhongTruoc = new PanelEvent(13);
 		pnlDatPhongTruoc.setLayout(null);
@@ -435,10 +440,10 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblDatPhongTruocF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhongTruoc.add(lblDatPhongTruocF);
 
-		JLabel lblNewLabel1 = new JLabel("");
-		lblNewLabel1.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
-		lblNewLabel1.setBounds(10, 18, 32, 32);
-		pnlDatPhongTruoc.add(lblNewLabel1);
+		JLabel lblIconDatPhongTruoc = new JLabel("");
+		lblIconDatPhongTruoc.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
+		lblIconDatPhongTruoc.setBounds(10, 18, 32, 32);
+		pnlDatPhongTruoc.add(lblIconDatPhongTruoc);
 
 		PanelEvent pnlChuyenPhong = new PanelEvent(13);
 		pnlChuyenPhong.setLayout(null);
@@ -457,10 +462,10 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblChuyenPhongF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlChuyenPhong.add(lblChuyenPhongF);
 
-		JLabel lblNewLabel2 = new JLabel("");
-		lblNewLabel2.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
-		lblNewLabel2.setBounds(10, 18, 32, 32);
-		pnlChuyenPhong.add(lblNewLabel2);
+		JLabel lblIconChuyenPhong = new JLabel("");
+		lblIconChuyenPhong.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
+		lblIconChuyenPhong.setBounds(10, 18, 32, 32);
+		pnlChuyenPhong.add(lblIconChuyenPhong);
 
 		PanelEvent pnlGopPhong = new PanelEvent(13);
 		pnlGopPhong.setLayout(null);
@@ -479,10 +484,10 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblGopPhongF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlGopPhong.add(lblGopPhongF);
 
-		JLabel lblNewLabel3 = new JLabel("");
-		lblNewLabel3.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
-		lblNewLabel3.setBounds(10, 18, 32, 32);
-		pnlGopPhong.add(lblNewLabel3);
+		JLabel lblIconGopPhong = new JLabel("");
+		lblIconGopPhong.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
+		lblIconGopPhong.setBounds(10, 18, 32, 32);
+		pnlGopPhong.add(lblIconGopPhong);
 
 		PanelEvent pnlThanhToan = new PanelEvent(13);
 		pnlThanhToan.setLayout(null);
@@ -501,10 +506,10 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblThanhToanF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlThanhToan.add(lblThanhToanF);
 
-		JLabel lblNewLabel4 = new JLabel("");
-		lblNewLabel4.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
-		lblNewLabel4.setBounds(10, 18, 32, 32);
-		pnlThanhToan.add(lblNewLabel4);
+		JLabel lblIconThanhToan = new JLabel("");
+		lblIconThanhToan.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
+		lblIconThanhToan.setBounds(10, 18, 32, 32);
+		pnlThanhToan.add(lblIconThanhToan);
 
 		JPanel[] btnActions = { pnlDatPhong, pnlDatPhongTruoc, pnlChuyenPhong, pnlGopPhong, pnlThanhToan };
 		int[] btnActionsWidth = { 150, 200, 190, 155, 160 };
@@ -530,7 +535,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
-				addPhong();
+				addPhong(phong_DAO.getAllPhong());
 			}
 		});
 
@@ -541,6 +546,12 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlFilter.setLayout(null);
 
 		PanelEvent pnlFilterPhongDangCho = new PanelEvent(8);
+		pnlFilterPhongDangCho.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				addPhong(phong_DAO.getAllPhongTheoTrangThai(TrangThai.DaDat));
+			}
+		});
 		pnlFilterPhongDangCho.setBackgroundColor(Utils.phongCho);
 		pnlFilterPhongDangCho.setBounds(0, 0, 153, 39);
 		pnlFilter.add(pnlFilterPhongDangCho);
@@ -554,6 +565,12 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlFilterPhongDangCho.add(lblFilterPhongDangCho);
 
 		PanelEvent pnlFilterPhongDangSuDung = new PanelEvent(8);
+		pnlFilterPhongDangSuDung.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				addPhong(phong_DAO.getAllPhongTheoTrangThai(TrangThai.DangThue));
+			}
+		});
 		pnlFilterPhongDangSuDung.setLayout(null);
 		pnlFilterPhongDangSuDung.setBackgroundColor(Utils.phongDangSuDung);
 		pnlFilterPhongDangSuDung.setBounds(174, 0, 192, 39);
@@ -566,18 +583,24 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblFilterPhongDangSuDung.setBounds(0, 0, 192, 39);
 		pnlFilterPhongDangSuDung.add(lblFilterPhongDangSuDung);
 
-		PanelEvent pnlFilterPhongDangCho_2 = new PanelEvent(8);
-		pnlFilterPhongDangCho_2.setLayout(null);
-		pnlFilterPhongDangCho_2.setBackgroundColor(Utils.phongTrong);
-		pnlFilterPhongDangCho_2.setBounds(387, 0, 153, 39);
-		pnlFilter.add(pnlFilterPhongDangCho_2);
+		PanelEvent pnlFilterPhongDangTrong = new PanelEvent(8);
+		pnlFilterPhongDangTrong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				addPhong(phong_DAO.getAllPhongTheoTrangThai(TrangThai.Trong));
+			}
+		});
+		pnlFilterPhongDangTrong.setLayout(null);
+		pnlFilterPhongDangTrong.setBackgroundColor(Utils.phongTrong);
+		pnlFilterPhongDangTrong.setBounds(387, 0, 153, 39);
+		pnlFilter.add(pnlFilterPhongDangTrong);
 
 		JLabel lblFilterPhongTrong = new JLabel("Phòng trống");
 		lblFilterPhongTrong.setForeground(Color.WHITE);
 		lblFilterPhongTrong.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFilterPhongTrong.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblFilterPhongTrong.setBounds(0, 0, 153, 39);
-		pnlFilterPhongDangCho_2.add(lblFilterPhongTrong);
+		pnlFilterPhongDangTrong.add(lblFilterPhongTrong);
 
 		JLabel lblPhongSo = new JLabel("Phòng số:");
 		lblPhongSo.setForeground(new Color(0, 0, 0));
@@ -617,12 +640,20 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	/**
 	 * Thêm danh sách các phòng vào JPanel Container
 	 */
-	private void addPhong() {
+	private void addPhong(List<Phong> dsPhong) {
+		if (dsPhong.size() <= 0) {
+			jDialog.showMessage("Thông báo", "Mục này không có phòng nào");
+			return;
+		}
+
+		soPhongCho = 0;
+		soPhongDangSuDung = 0;
+		soPhongTrong = 0;
+
 		pnlDanhSachPhong = new JPanel();
 		pnlDanhSachPhong.setBackground(Utils.secondaryColor);
 		pnlDanhSachPhong.setLayout(null);
 
-		List<Phong> dsPhong = phong_DAO.getAllPhong();
 		for (int i = 0; i < dsPhong.size(); i++) {
 			JPanel phong1 = getPhong(dsPhong.get(i));
 			phong1.setBounds(getBounds(i));
@@ -725,7 +756,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 						if (gioVao != null && phong.getTrangThai().equals(TrangThai.DangThue)) {
 							LocalTime timeNow = LocalTime.now();
 							int hieuPhut = timeNow.getHour() * 60 + timeNow.getMinute() - gioVao.getHour() * 60
-									+ gioVao.getMinute();
+									- gioVao.getMinute();
 
 							tongGio = Utils.convertLocalTimeToString(LocalTime.of(hieuPhut / 60, hieuPhut % 60));
 
@@ -786,8 +817,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 						int year = currTime.getYear();
 						int hour = currTime.getHour();
 						int minute = currTime.getMinute();
-						lblTime.setText(String.format("%s:%s", hour < 10 ? "0" + hour : hour,
-								minute < 10 ? "0" + minute : minute));
+						lblTime.setText(Utils.convertLocalTimeToString(LocalTime.of(hour, minute)));
 						LocalDate date = LocalDate.now();
 						DayOfWeek dayNow = date.getDayOfWeek();
 						String thu = "T2";

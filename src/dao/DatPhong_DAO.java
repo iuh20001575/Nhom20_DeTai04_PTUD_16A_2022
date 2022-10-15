@@ -21,6 +21,12 @@ import entity.Phong;
 import utils.Utils;
 
 public class DatPhong_DAO {
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+
+	public DatPhong_DAO() {
+		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+	}
+
 	/**
 	 * Get phòng từ resultSet
 	 * 
@@ -188,6 +194,7 @@ public class DatPhong_DAO {
 
 			if (res <= 0) {
 				ConnectDB.getConnection().rollback();
+				ConnectDB.getConnection().setAutoCommit(true);
 				return false;
 			}
 
@@ -203,6 +210,7 @@ public class DatPhong_DAO {
 
 				if (res <= 0) {
 					ConnectDB.getConnection().rollback();
+					ConnectDB.getConnection().setAutoCommit(true);
 					return false;
 				}
 
@@ -216,10 +224,12 @@ public class DatPhong_DAO {
 
 				if (res <= 0) {
 					ConnectDB.getConnection().rollback();
+					ConnectDB.getConnection().setAutoCommit(true);
 					return false;
 				}
 			}
 
+			ConnectDB.getConnection().commit();
 			ConnectDB.getConnection().setAutoCommit(true);
 			return true;
 		} catch (SQLException e) {
@@ -227,12 +237,12 @@ public class DatPhong_DAO {
 			e.printStackTrace();
 			try {
 				ConnectDB.getConnection().rollback();
+				ConnectDB.getConnection().setAutoCommit(true);
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
-
 		return false;
 	}
 
@@ -269,6 +279,7 @@ public class DatPhong_DAO {
 
 			if (res <= 0) {
 				ConnectDB.getConnection().rollback();
+				ConnectDB.getConnection().setAutoCommit(true);
 				return false;
 			}
 
@@ -284,6 +295,7 @@ public class DatPhong_DAO {
 
 				if (res <= 0) {
 					ConnectDB.getConnection().rollback();
+					ConnectDB.getConnection().setAutoCommit(true);
 					return false;
 				}
 
@@ -297,10 +309,12 @@ public class DatPhong_DAO {
 
 				if (res <= 0) {
 					ConnectDB.getConnection().rollback();
+					ConnectDB.getConnection().setAutoCommit(true);
 					return false;
 				}
 			}
 
+			ConnectDB.getConnection().commit();
 			ConnectDB.getConnection().setAutoCommit(true);
 			return true;
 		} catch (SQLException e) {
@@ -308,6 +322,7 @@ public class DatPhong_DAO {
 			e.printStackTrace();
 			try {
 				ConnectDB.getConnection().rollback();
+				ConnectDB.getConnection().setAutoCommit(true);
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -363,7 +378,7 @@ public class DatPhong_DAO {
 							+ "	JOIN ChiTietDatPhong CTDP ON P.maPhong = CTDP.phong"
 							+ "	JOIN DatPhong DP ON DP.maDatPhong = CTDP.datPhong"
 							+ "	WHERE P.trangThai = N'Đã đặt' AND ngayNhanPhong = ? " // ngày nhận phòng
-							+ "AND [dbo].[fnSubTime](gioNhanPhong, ?) < CONVERT(TIME(0), '3:00:00')" // giờ nhận phòng
+							+ "AND [dbo].[fnSubTime](gioNhanPhong, ?) < CONVERT(TIME(0), '6:00:00')" // giờ nhận phòng
 							+ ") AND trangThai <> N'Đang thuê'");
 			preparedStatement.setDate(1, Utils.convertLocalDateToDate(ngayNhanPhong));
 			preparedStatement.setTime(2, Time.valueOf(gioNhanPhong));
@@ -472,5 +487,69 @@ public class DatPhong_DAO {
 		}
 
 		return list;
+	}
+
+	public boolean thanhToanDatPhong(String maDatPhong, LocalTime gioRa) {
+		try {
+			boolean res;
+			ConnectDB.getConnection().setAutoCommit(false);
+			PreparedStatement preparedStatement;
+
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE Phong SET trangThai = N'Trống' WHERE maPhong IN "
+							+ "(SELECT [phong] FROM [dbo].[ChiTietDatPhong]" + "	WHERE [datPhong] = ?)");
+			preparedStatement.setString(1, maDatPhong);
+			res = preparedStatement.executeUpdate() > 0;
+
+			if (!res) {
+				ConnectDB.getConnection().rollback();
+				ConnectDB.getConnection().setAutoCommit(true);
+				return false;
+			}
+
+			preparedStatement = ConnectDB.getConnection().prepareStatement("UPDATE Phong SET trangThai = N'Đã đặt' "
+					+ "WHERE maPhong IN (SELECT [maPhong] FROM [dbo].[Phong] " + "WHERE [maPhong] IN ("
+					+ "	SELECT [phong] FROM [dbo].[ChiTietDatPhong]" + "	WHERE [datPhong] = ?" + ") AND maPhong In ("
+					+ "	SELECT [maPhong] FROM [dbo].[Phong] P"
+					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON P.maPhong = CTDP.phong"
+					+ "	JOIN [dbo].[DatPhong] DP ON DP.maDatPhong = CTDP.datPhong"
+					+ "	WHERE ([ngayNhanPhong] > CONVERT(DATE, GETDATE()) OR ("
+					+ "		[ngayNhanPhong] = CONVERT(DATE, GETDATE()) AND [gioNhanPhong] >= CONVERT(TIME(0), GETDATE())"
+					+ "	)) AND DP.[trangThai] = N'Đang chờ'" + "))");
+			preparedStatement.setString(1, maDatPhong);
+			res = preparedStatement.executeUpdate() > 0;
+
+			if (!res) {
+				ConnectDB.getConnection().rollback();
+				ConnectDB.getConnection().setAutoCommit(true);
+				return false;
+			}
+
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE DatPhong SET trangThai = N'Đã trả' WHERE maDatPhong = ?");
+			preparedStatement.setString(1, maDatPhong);
+			res = preparedStatement.executeUpdate() > 0;
+
+			if (!res || !chiTietDatPhong_DAO.thanhToanDatPhong(maDatPhong, gioRa)) {
+				ConnectDB.getConnection().rollback();
+				ConnectDB.getConnection().setAutoCommit(true);
+				return false;
+			}
+
+			ConnectDB.getConnection().commit();
+			ConnectDB.getConnection().setAutoCommit(true);
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			try {
+				ConnectDB.getConnection().rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+
+		return false;
 	}
 }

@@ -57,6 +57,21 @@ public class Phong {
 		this.trangThai = trangThai;
 	}
 
+	public double getGiaTien() {
+		if (loaiPhong.getTenLoai().equals("Phòng thường")) {
+			if (soLuongKhach == 5)
+				return 50000;
+			if (soLuongKhach == 10)
+				return 100000;
+			return 200000;
+		}
+		if (soLuongKhach == 5)
+			return 100000;
+		if (soLuongKhach == 10)
+			return 200000;
+		return 400000;
+	}
+
 	@Override
 	public String toString() {
 		return "Phong [maPhong=" + maPhong + ", loaiPhong=" + loaiPhong + ", soLuongKhach=" + soLuongKhach

@@ -83,4 +83,20 @@ public class ChiTietDatPhong_DAO {
 		}
 		return null;
 	}
+
+	public boolean thanhToanDatPhong(String maDatPhong, LocalTime gioRa) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE ChiTietDatPhong SET gioRa = ? WHERE datPhong = ? AND gioRa is null");
+			preparedStatement.setTime(1, Time.valueOf(gioRa));
+			preparedStatement.setString(2, maDatPhong);
+
+			return preparedStatement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
 }

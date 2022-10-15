@@ -12,8 +12,11 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalTime;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -27,6 +30,7 @@ import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -37,11 +41,15 @@ import connectDB.ConnectDB;
 import dao.ChiTietDatPhong_DAO;
 import dao.DatPhong_DAO;
 import dao.KhachHang_DAO;
+import dao.LoaiPhong_DAO;
 import dao.NhanVien_DAO;
+import dao.Phong_DAO;
 import entity.ChiTietDatPhong;
 import entity.DatPhong;
 import entity.KhachHang;
+import entity.LoaiPhong;
 import entity.NhanVien;
+import entity.Phong;
 import utils.Utils;
 
 public class ThanhToan_GUI extends JFrame implements ItemListener {
@@ -55,7 +63,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	private TextField txtTienThua;
 	private JTable tbl;
 	private DefaultTableModel tableModel;
-	private double tienThanhToan = 152000;
+	private double tienThanhToan;
 	private DatPhong_DAO datPhong_DAO;
 	private JComboBox<String> cmbMaDatPhong;
 	private ThanhToan_GUI _this;
@@ -69,6 +77,14 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	private List<ChiTietDatPhong> dsChiTietDatPhong;
 	private JLabel lblTongThoiLuong;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private LoaiPhong_DAO loaiPhong_DAO;
+	private Phong_DAO phong_DAO;
+	private LocalTime timeNow;
+	private int tongThoiGian;
+	private double tongTien;
+	private JLabel lblTienPhong;
+	private JLabel lblTienThanhTien;
+	private Button btnThanhToan;
 
 	/**
 	 * Launch the application.
@@ -101,13 +117,15 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		khachHang_DAO = new KhachHang_DAO();
 		nhanVien_DAO = new NhanVien_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		loaiPhong_DAO = new LoaiPhong_DAO();
+		phong_DAO = new Phong_DAO();
 
 		setType(Type.UTILITY);
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage("Icon\\room.png"));
 		setTitle("Thanh toán");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(0, 0, 600, 550);
+		setBounds(0, 0, 640, 550);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -116,13 +134,13 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Color.WHITE);
-		pnlContainer.setBounds(0, 0, 586, 513);
+		pnlContainer.setBounds(0, 0, 626, 513);
 		contentPane.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
 		JPanel pnlHeader = new JPanel();
 		pnlHeader.setBackground(Utils.primaryColor);
-		pnlHeader.setBounds(0, 0, 586, 50);
+		pnlHeader.setBounds(0, 0, 626, 50);
 		pnlContainer.add(pnlHeader);
 		pnlHeader.setLayout(null);
 
@@ -130,30 +148,30 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setForeground(Color.WHITE);
 		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
-		lblTitle.setBounds(0, 0, 536, 50);
+		lblTitle.setBounds(45, 0, 536, 50);
 		pnlHeader.add(lblTitle);
 
 		JPanel pnlBody = new JPanel();
 		pnlBody.setBackground(Color.WHITE);
-		pnlBody.setBounds(10, 65, 566, 433);
+		pnlBody.setBounds(10, 65, 606, 433);
 		pnlContainer.add(pnlBody);
 		pnlBody.setLayout(null);
 
 		JPanel pnlRow1 = new JPanel();
 		pnlRow1.setBackground(Color.WHITE);
-		pnlRow1.setBounds(0, 0, 566, 24);
+		pnlRow1.setBounds(0, 0, 606, 24);
 		pnlBody.add(pnlRow1);
 		pnlRow1.setLayout(null);
 
 		JPanel pnlMaDatPhong = new JPanel();
 		pnlMaDatPhong.setBackground(Color.WHITE);
-		pnlMaDatPhong.setBounds(0, 0, 275, 24);
+		pnlMaDatPhong.setBounds(0, 0, 293, 24);
 		pnlRow1.add(pnlMaDatPhong);
 		pnlMaDatPhong.setLayout(null);
 
 		JLabel lblLabelMaDatPhong = new JLabel("Mã đặt phòng");
 		lblLabelMaDatPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblLabelMaDatPhong.setBounds(0, 0, 115, 24);
+		lblLabelMaDatPhong.setBounds(0, 0, 105, 24);
 		pnlMaDatPhong.add(lblLabelMaDatPhong);
 
 		cmbMaDatPhong = new JComboBox<String>();
@@ -161,13 +179,13 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		cmbMaDatPhong.setForeground(Color.BLACK);
 		cmbMaDatPhong.setModel(new DefaultComboBoxModel<String>(new String[] { "Mã đặt phòng" }));
 		cmbMaDatPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		cmbMaDatPhong.setBounds(125, 0, 150, 24);
+		cmbMaDatPhong.setBounds(105, 0, 188, 24);
 		pnlMaDatPhong.add(cmbMaDatPhong);
 
 		JPanel pnlTenNhanVien = new JPanel();
 		pnlTenNhanVien.setBackground(Color.WHITE);
 		pnlTenNhanVien.setLayout(null);
-		pnlTenNhanVien.setBounds(291, 0, 275, 24);
+		pnlTenNhanVien.setBounds(313, 0, 293, 24);
 		pnlRow1.add(pnlTenNhanVien);
 
 		JLabel lblLabelTenNhanVien = new JLabel("Tên nhân viên");
@@ -177,35 +195,35 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 		lblTenNhanVien = new JLabel("");
 		lblTenNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblTenNhanVien.setBounds(125, 0, 150, 24);
+		lblTenNhanVien.setBounds(125, 0, 170, 24);
 		pnlTenNhanVien.add(lblTenNhanVien);
 
 		JPanel pnlRow2 = new JPanel();
 		pnlRow2.setBackground(Color.WHITE);
 		pnlRow2.setLayout(null);
-		pnlRow2.setBounds(0, 32, 566, 24);
+		pnlRow2.setBounds(0, 32, 606, 24);
 		pnlBody.add(pnlRow2);
 
 		JPanel pnlTenKhach = new JPanel();
 		pnlTenKhach.setBackground(Color.WHITE);
 		pnlTenKhach.setLayout(null);
-		pnlTenKhach.setBounds(0, 0, 275, 24);
+		pnlTenKhach.setBounds(0, 0, 293, 24);
 		pnlRow2.add(pnlTenKhach);
 
 		JLabel lblLabelTenKhach = new JLabel("Tên khách");
 		lblLabelTenKhach.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblLabelTenKhach.setBounds(0, 0, 115, 24);
+		lblLabelTenKhach.setBounds(0, 0, 105, 24);
 		pnlTenKhach.add(lblLabelTenKhach);
 
 		lblTenKhach = new JLabel("");
 		lblTenKhach.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblTenKhach.setBounds(125, 0, 150, 24);
+		lblTenKhach.setBounds(105, 0, 188, 24);
 		pnlTenKhach.add(lblTenKhach);
 
 		JPanel pnlGioNhanPhong = new JPanel();
 		pnlGioNhanPhong.setBackground(Color.WHITE);
 		pnlGioNhanPhong.setLayout(null);
-		pnlGioNhanPhong.setBounds(291, 0, 275, 24);
+		pnlGioNhanPhong.setBounds(313, 0, 293, 24);
 		pnlRow2.add(pnlGioNhanPhong);
 
 		JLabel lbllabelGioNhanPhong = new JLabel("Giờ nhận phòng");
@@ -215,24 +233,24 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 		lblGioNhanPhong = new JLabel("");
 		lblGioNhanPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblGioNhanPhong.setBounds(125, 0, 150, 24);
+		lblGioNhanPhong.setBounds(125, 0, 170, 24);
 		pnlGioNhanPhong.add(lblGioNhanPhong);
 
 		JPanel pnlRow3 = new JPanel();
 		pnlRow3.setBackground(Color.WHITE);
 		pnlRow3.setLayout(null);
-		pnlRow3.setBounds(0, 64, 566, 24);
+		pnlRow3.setBounds(0, 64, 606, 24);
 		pnlBody.add(pnlRow3);
 
 		JPanel pnlSoDienThoai = new JPanel();
 		pnlSoDienThoai.setBackground(Color.WHITE);
 		pnlSoDienThoai.setLayout(null);
-		pnlSoDienThoai.setBounds(0, 0, 275, 24);
+		pnlSoDienThoai.setBounds(0, 0, 293, 24);
 		pnlRow3.add(pnlSoDienThoai);
 
 		JLabel lblLabelSoDienThoai = new JLabel("SĐT khách");
 		lblLabelSoDienThoai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblLabelSoDienThoai.setBounds(0, 0, 115, 24);
+		lblLabelSoDienThoai.setBounds(0, 0, 105, 24);
 		pnlSoDienThoai.add(lblLabelSoDienThoai);
 
 		cmbSoDienThoai = new JComboBox<String>();
@@ -240,13 +258,13 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		cmbSoDienThoai.setForeground(Color.BLACK);
 		cmbSoDienThoai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		cmbSoDienThoai.setBackground(new Color(140, 177, 180));
-		cmbSoDienThoai.setBounds(125, 0, 150, 24);
+		cmbSoDienThoai.setBounds(105, 0, 188, 24);
 		pnlSoDienThoai.add(cmbSoDienThoai);
 
 		JPanel pnlTongThoiLuong = new JPanel();
 		pnlTongThoiLuong.setBackground(Color.WHITE);
 		pnlTongThoiLuong.setLayout(null);
-		pnlTongThoiLuong.setBounds(291, 0, 275, 24);
+		pnlTongThoiLuong.setBounds(313, 0, 293, 24);
 		pnlRow3.add(pnlTongThoiLuong);
 
 		JLabel lblLabelTongThoiLuong = new JLabel("Tổng thời lượng");
@@ -256,12 +274,12 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 		lblTongThoiLuong = new JLabel("");
 		lblTongThoiLuong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblTongThoiLuong.setBounds(125, 0, 150, 24);
+		lblTongThoiLuong.setBounds(125, 0, 170, 24);
 		pnlTongThoiLuong.add(lblTongThoiLuong);
 
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Color.WHITE);
-		pnlActions.setBounds(0, 395, 566, 38);
+		pnlActions.setBounds(0, 395, 606, 38);
 		pnlBody.add(pnlActions);
 		pnlActions.setLayout(null);
 
@@ -276,7 +294,16 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		btnQuayLai.setBounds(0, 0, 100, 38);
 		pnlActions.add(btnQuayLai);
 
-		Button btnThanhToan = new Button("Thanh toán");
+		btnThanhToan = new Button("Thanh toán");
+		btnThanhToan.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!btnThanhToan.isEnabled())
+					return;
+				System.out.println(datPhong_DAO.thanhToanDatPhong(datPhong.getMaDatPhong(), timeNow));
+			}
+		});
+		btnThanhToan.setEnabled(false);
 		btnThanhToan.setFocusable(false);
 		btnThanhToan.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnThanhToan.setRadius(4);
@@ -286,103 +313,103 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		btnThanhToan.setForeground(Color.WHITE);
 		btnThanhToan.setColor(Utils.primaryColor);
 		btnThanhToan.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		btnThanhToan.setBounds(466, 0, 100, 38);
+		btnThanhToan.setBounds(506, 0, 100, 38);
 		pnlActions.add(btnThanhToan);
 
 		JCheckBox chkXuatHoaDon = new JCheckBox("Xuất hóa đơn");
 		chkXuatHoaDon.setFocusable(false);
 		chkXuatHoaDon.setBackground(Color.WHITE);
 		chkXuatHoaDon.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		chkXuatHoaDon.setBounds(336, 7, 120, 24);
+		chkXuatHoaDon.setBounds(376, 7, 120, 24);
 		pnlActions.add(chkXuatHoaDon);
 
 		JPanel pnlFooter = new JPanel();
 		pnlFooter.setBackground(Color.WHITE);
-		pnlFooter.setBounds(0, 268, 566, 119);
+		pnlFooter.setBounds(0, 268, 606, 119);
 		pnlBody.add(pnlFooter);
 		pnlFooter.setLayout(null);
 
 		JPanel pnlFooterRow1 = new JPanel();
 		pnlFooterRow1.setLayout(null);
 		pnlFooterRow1.setBackground(Color.WHITE);
-		pnlFooterRow1.setBounds(0, 0, 566, 24);
+		pnlFooterRow1.setBounds(0, 0, 606, 24);
 		pnlFooter.add(pnlFooterRow1);
 
 		JPanel pnlMaDatPhong_1 = new JPanel();
 		pnlMaDatPhong_1.setLayout(null);
 		pnlMaDatPhong_1.setBackground(Color.WHITE);
-		pnlMaDatPhong_1.setBounds(0, 0, 275, 24);
+		pnlMaDatPhong_1.setBounds(0, 0, 293, 24);
 		pnlFooterRow1.add(pnlMaDatPhong_1);
 
-		JLabel lblTinDchV = new JLabel("Tiền dịch vụ");
-		lblTinDchV.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblTinDchV.setBounds(0, 0, 115, 24);
-		pnlMaDatPhong_1.add(lblTinDchV);
+		JLabel lblLabelTienDichVu = new JLabel("Tiền dịch vụ");
+		lblLabelTienDichVu.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblLabelTienDichVu.setBounds(0, 0, 105, 24);
+		pnlMaDatPhong_1.add(lblLabelTienDichVu);
 
-		JLabel lblVnd = new JLabel("");
-		lblVnd.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblVnd.setBounds(125, 0, 150, 24);
-		pnlMaDatPhong_1.add(lblVnd);
+		JLabel lblTienDichVu = new JLabel("");
+		lblTienDichVu.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblTienDichVu.setBounds(105, 0, 190, 24);
+		pnlMaDatPhong_1.add(lblTienDichVu);
 
 		JPanel pnlGioNhanPhong_2 = new JPanel();
 		pnlGioNhanPhong_2.setLayout(null);
 		pnlGioNhanPhong_2.setBackground(Color.WHITE);
-		pnlGioNhanPhong_2.setBounds(291, 0, 275, 24);
+		pnlGioNhanPhong_2.setBounds(313, 0, 293, 24);
 		pnlFooterRow1.add(pnlGioNhanPhong_2);
 
-		JLabel lblTinPhng = new JLabel("Tiền phòng");
-		lblTinPhng.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblTinPhng.setBounds(0, 0, 115, 24);
-		pnlGioNhanPhong_2.add(lblTinPhng);
+		JLabel lblLabelTienPhong = new JLabel("Tiền phòng");
+		lblLabelTienPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblLabelTienPhong.setBounds(0, 0, 115, 24);
+		pnlGioNhanPhong_2.add(lblLabelTienPhong);
 
-		JLabel lblVnd_1 = new JLabel("");
-		lblVnd_1.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblVnd_1.setBounds(125, 0, 150, 24);
-		pnlGioNhanPhong_2.add(lblVnd_1);
+		lblTienPhong = new JLabel("");
+		lblTienPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblTienPhong.setBounds(125, 0, 170, 24);
+		pnlGioNhanPhong_2.add(lblTienPhong);
 
 		JPanel pnlFooterRow2 = new JPanel();
 		pnlFooterRow2.setLayout(null);
 		pnlFooterRow2.setBackground(Color.WHITE);
-		pnlFooterRow2.setBounds(0, 32, 566, 24);
+		pnlFooterRow2.setBounds(0, 32, 606, 24);
 		pnlFooter.add(pnlFooterRow2);
 
 		JPanel pnlMaDatPhong_1_1 = new JPanel();
 		pnlMaDatPhong_1_1.setLayout(null);
 		pnlMaDatPhong_1_1.setBackground(Color.WHITE);
-		pnlMaDatPhong_1_1.setBounds(0, 0, 275, 24);
+		pnlMaDatPhong_1_1.setBounds(0, 0, 293, 24);
 		pnlFooterRow2.add(pnlMaDatPhong_1_1);
 
-		JLabel lblThuVat = new JLabel("Thuế VAT");
-		lblThuVat.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblThuVat.setBounds(0, 0, 115, 24);
-		pnlMaDatPhong_1_1.add(lblThuVat);
+		JLabel lblLabelThueVAT = new JLabel("Thuế VAT");
+		lblLabelThueVAT.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblLabelThueVAT.setBounds(0, 0, 105, 24);
+		pnlMaDatPhong_1_1.add(lblLabelThueVAT);
 
-		JLabel lblVnd_2 = new JLabel("");
-		lblVnd_2.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblVnd_2.setBounds(125, 0, 150, 24);
-		pnlMaDatPhong_1_1.add(lblVnd_2);
+		JLabel lblThueVAT = new JLabel("10%");
+		lblThueVAT.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblThueVAT.setBounds(105, 0, 190, 24);
+		pnlMaDatPhong_1_1.add(lblThueVAT);
 
 		JPanel pnlGioNhanPhong_2_1 = new JPanel();
 		pnlGioNhanPhong_2_1.setLayout(null);
 		pnlGioNhanPhong_2_1.setBackground(Color.WHITE);
-		pnlGioNhanPhong_2_1.setBounds(291, 0, 275, 24);
+		pnlGioNhanPhong_2_1.setBounds(313, 0, 293, 24);
 		pnlFooterRow2.add(pnlGioNhanPhong_2_1);
 
-		JLabel lblTinThanhTon = new JLabel("Tiền thanh toán");
-		lblTinThanhTon.setForeground(Color.RED);
-		lblTinThanhTon.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblTinThanhTon.setBounds(0, 0, 115, 24);
-		pnlGioNhanPhong_2_1.add(lblTinThanhTon);
+		JLabel lblLabelTienThanhTien = new JLabel("Tiền thanh toán");
+		lblLabelTienThanhTien.setForeground(Color.RED);
+		lblLabelTienThanhTien.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblLabelTienThanhTien.setBounds(0, 0, 115, 24);
+		pnlGioNhanPhong_2_1.add(lblLabelTienThanhTien);
 
-		JLabel lblVnd_1_1 = new JLabel("");
-		lblVnd_1_1.setForeground(Color.RED);
-		lblVnd_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblVnd_1_1.setBounds(125, 0, 150, 24);
-		pnlGioNhanPhong_2_1.add(lblVnd_1_1);
+		lblTienThanhTien = new JLabel("");
+		lblTienThanhTien.setForeground(Color.RED);
+		lblTienThanhTien.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblTienThanhTien.setBounds(125, 0, 170, 24);
+		pnlGioNhanPhong_2_1.add(lblTienThanhTien);
 
 		JPanel pnlRow6 = new JPanel();
 		pnlRow6.setBackground(Color.WHITE);
-		pnlRow6.setBounds(0, 64, 566, 55);
+		pnlRow6.setBounds(0, 64, 606, 55);
 		pnlFooter.add(pnlRow6);
 		pnlRow6.setLayout(null);
 
@@ -413,7 +440,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		txtTienNhan.setEditable(false);
 		txtTienNhan.setLabelText("Tiền nhận");
 		txtTienNhan.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		txtTienNhan.setBounds(0, 0, 275, 55);
+		txtTienNhan.setBounds(0, 0, 293, 55);
 		pnlRow6.add(txtTienNhan);
 		txtTienNhan.setColumns(10);
 		txtTienNhan.addKeyListener(new KeyAdapter() {
@@ -449,13 +476,13 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		txtTienThua.setLabelText("Tiền thừa");
 		txtTienThua.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTienThua.setColumns(10);
-		txtTienThua.setBounds(291, 0, 275, 55);
+		txtTienThua.setBounds(313, 0, 293, 55);
 		pnlRow6.add(txtTienThua);
 
 //		Table danh sách nhân viên
 		JScrollPane scr = new JScrollPane();
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(0, 98, 566, 156);
+		scr.setBounds(0, 98, 606, 156);
 		scr.setBackground(Utils.primaryColor);
 		scr.getViewport().setBackground(Color.WHITE);
 		ScrollBarCustom scp = new ScrollBarCustom();
@@ -509,14 +536,20 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tbl.getColumnModel().getColumn(0).setPreferredWidth(40);
-		tbl.getColumnModel().getColumn(1).setPreferredWidth(150);
+		tbl.getColumnModel().getColumn(1).setPreferredWidth(170);
 		tbl.getColumnModel().getColumn(2).setPreferredWidth(150);
-		tbl.getColumnModel().getColumn(3).setPreferredWidth(113);
-		tbl.getColumnModel().getColumn(4).setPreferredWidth(113);
+		tbl.getColumnModel().getColumn(3).setPreferredWidth(123);
+		tbl.getColumnModel().getColumn(4).setPreferredWidth(123);
 		tbl.getTableHeader()
 				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 24));
 		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(24);
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
+		tbl.getColumnModel().getColumn(0).setCellRenderer(dtcr);
+		tbl.getColumnModel().getColumn(2).setCellRenderer(dtcr);
+		tbl.getColumnModel().getColumn(3).setCellRenderer(dtcr);
+		tbl.getColumnModel().getColumn(4).setCellRenderer(dtcr);
 		scr.setViewportView(tbl);
 
 		this.addWindowListener(new WindowAdapter() {
@@ -544,15 +577,18 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 		if (tienNhanS.length() <= 0) {
 			txtTienNhan.setError(true);
+			btnThanhToan.setEnabled(true);
 			return;
 		}
 
 		double tienNhan = Double.parseDouble(tienNhanS);
 
-		if (tienNhan < tienThanhToan)
+		if (tienNhan < tienThanhToan) {
 			txtTienNhan.setError(true);
-		else {
+			btnThanhToan.setEnabled(false);
+		} else {
 			txtTienNhan.setError(false);
+			btnThanhToan.setEnabled(true);
 			txtTienThua.setText(Utils.formatTienTe(tienNhan - tienThanhToan));
 		}
 	}
@@ -560,6 +596,33 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	private void emptyTable() {
 		while (tbl.getRowCount() > 0)
 			tableModel.removeRow(0);
+	}
+
+	private void addRow(ChiTietDatPhong chiTietDatPhong) {
+		int stt = tbl.getRowCount() + 1;
+		String maPhong = chiTietDatPhong.getPhong().getMaPhong();
+		Phong phong = phong_DAO.getPhong(maPhong);
+		LoaiPhong loaiPhong = loaiPhong_DAO.getLoaiPhong(phong.getLoaiPhong().getMaLoai());
+		phong.setLoaiPhong(loaiPhong);
+		double donGia = phong.getGiaTien();
+		LocalTime gioRa = chiTietDatPhong.getGioRa() == null ? timeNow : chiTietDatPhong.getGioRa();
+		int hours = gioRa.getHour() - chiTietDatPhong.getGioVao().getHour();
+		int minutes = gioRa.getMinute() - chiTietDatPhong.getGioVao().getMinute();
+		int hieu = hours * 60 + minutes;
+		LocalTime hieuGio = LocalTime.of(hieu / 60, hieu % 60);
+
+		double thanhTien;
+
+		if (hieu < 30)
+			thanhTien = donGia / 2;
+		else
+			thanhTien = hieu * 1.0 * donGia / 60;
+
+		tongThoiGian += hieu;
+		tongTien += thanhTien;
+
+		tableModel.addRow(new String[] { stt + "", maPhong, Utils.convertLocalTimeToString(hieuGio),
+				Utils.formatTienTe(donGia), Utils.formatTienTe(thanhTien) });
 	}
 
 	@Override
@@ -601,13 +664,32 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			lblGioNhanPhong.setText(Utils.convertLocalTimeToString(datPhong.getGioNhanPhong()) + " - "
 					+ Utils.formatDate(datPhong.getNgayNhanPhong()));
 			dsChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(datPhong);
-			System.out.println(dsChiTietDatPhong);
+
+			timeNow = LocalTime.now();
+			tongThoiGian = 0;
+			tongTien = 0;
+			tienThanhToan = 0;
+
+			int length = dsChiTietDatPhong.size();
+			for (int i = 0; i < length; i++) {
+				addRow(dsChiTietDatPhong.get(i));
+			}
+
+			int gio = tongThoiGian / 60;
+			int phut = tongThoiGian % 60;
+			tienThanhToan = tongTien;
+			lblTongThoiLuong.setText(((gio > 0 ? gio + " giờ" : "") + " " + (phut > 0 ? phut + " phút" : "")).trim());
+			lblTienPhong.setText(Utils.formatTienTe(tongTien));
+			lblTienThanhTien.setText(Utils.formatTienTe(tienThanhToan * 1.1));
 		} else {
 			lblTenKhach.setText("");
 			lblTenNhanVien.setText("");
 			lblGioNhanPhong.setText("");
 			lblTongThoiLuong.setText("");
+			lblTienPhong.setText("");
+			lblTienThanhTien.setText("");
 			dsChiTietDatPhong = null;
+			btnThanhToan.setEnabled(false);
 			emptyTable();
 		}
 		cmbMaDatPhong.addItemListener(_this);
