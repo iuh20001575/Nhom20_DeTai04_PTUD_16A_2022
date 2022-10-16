@@ -143,8 +143,10 @@ public class Button extends JButton {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent me) {
-				setBackground(colorOver);
-				over = true;
+				if (isEnabled()) {
+					setBackground(colorOver);
+					over = true;
+				}
 			}
 
 			@Override

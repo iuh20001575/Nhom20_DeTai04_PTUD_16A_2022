@@ -78,6 +78,10 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	private JLabel lblSoLuongPhongTam;
 	private JPanel pnlContainerDanhSachPhong;
 	private JFrame jFrameSub;
+	private PanelEvent pnlDatPhong;
+	private PanelEvent pnlDatPhongTruoc;
+	private PanelEvent pnlChuyenPhong;
+	private PanelEvent pnlGopPhong;
 
 	/**
 	 * Create the frame.
@@ -416,7 +420,19 @@ public class QuanLyDatPhong_GUI extends JFrame {
 
 		int width = 190, height = 69, gapX = 20;
 
-		PanelEvent pnlDatPhong = new PanelEvent(13);
+		pnlDatPhong = new PanelEvent(13) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Color getBackground() {
+				if (!isEnabled())
+					return Utils.getOpacity(super.getBackground(), 0.5f);
+				return super.getBackground();
+			}
+		};
 		pnlDatPhong.setBackgroundColor(new Color(255, 154, 97));
 //		pnlDatPhong.setBounds(0, 0, width, height);
 		pnlActions.add(pnlDatPhong);
@@ -441,7 +457,19 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblIconDatPhong.setBounds(10, 18, 32, 32);
 		pnlDatPhong.add(lblIconDatPhong);
 
-		PanelEvent pnlDatPhongTruoc = new PanelEvent(13);
+		pnlDatPhongTruoc = new PanelEvent(13) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Color getBackground() {
+				if (!isEnabled())
+					return Utils.getOpacity(super.getBackground(), 0.5f);
+				return super.getBackground();
+			}
+		};
 		pnlDatPhongTruoc.setLayout(null);
 		pnlDatPhongTruoc.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlDatPhongTruoc);
@@ -463,7 +491,19 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblIconDatPhongTruoc.setBounds(10, 18, 32, 32);
 		pnlDatPhongTruoc.add(lblIconDatPhongTruoc);
 
-		PanelEvent pnlChuyenPhong = new PanelEvent(13);
+		pnlChuyenPhong = new PanelEvent(13) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Color getBackground() {
+				if (!isEnabled())
+					return Utils.getOpacity(super.getBackground(), 0.5f);
+				return super.getBackground();
+			}
+		};
 		pnlChuyenPhong.setLayout(null);
 		pnlChuyenPhong.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlChuyenPhong);
@@ -485,7 +525,19 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblIconChuyenPhong.setBounds(10, 18, 32, 32);
 		pnlChuyenPhong.add(lblIconChuyenPhong);
 
-		PanelEvent pnlGopPhong = new PanelEvent(13);
+		pnlGopPhong = new PanelEvent(13) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Color getBackground() {
+				if (!isEnabled())
+					return Utils.getOpacity(super.getBackground(), 0.5f);
+				return super.getBackground();
+			}
+		};
 		pnlGopPhong.setLayout(null);
 		pnlGopPhong.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlGopPhong);
@@ -733,6 +785,8 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlDatPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if (!pnlDatPhong.isEnabled())
+					return;
 				openJFrameSub(new DatPhong_GUI(glass, _this));
 			}
 		});
@@ -740,7 +794,18 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlDatPhongTruoc.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if (!pnlDatPhongTruoc.isEnabled())
+					return;
 				openJFrameSub(new DatPhongTruoc_GUI(glass, _this));
+			}
+		});
+
+		pnlChuyenPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!pnlChuyenPhong.isEnabled())
+					return;
+				openJFrameSub(new ChuyenPhong_GUI(glass, _this));
 			}
 		});
 
@@ -797,7 +862,12 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		scb.setScrollbarColor(Utils.primaryColor);
 		scrDanhSachPhong.setVerticalScrollBar(scb);
 
+		List<Phong> dsPhongDatNgay = datPhong_DAO.getPhongDatNgay();
+
 		pnlThanhToan.setEnabled(soPhongDangSuDung > 0);
+		pnlDatPhong.setEnabled(dsPhongDatNgay.size() > 0);
+		pnlChuyenPhong.setEnabled(dsPhongDatNgay.size() > 0 && soPhongDangSuDung > 0);
+		pnlGopPhong.setEnabled(soPhongDangSuDung > 0);
 		capNhatThongKeLoaiPhong();
 	}
 

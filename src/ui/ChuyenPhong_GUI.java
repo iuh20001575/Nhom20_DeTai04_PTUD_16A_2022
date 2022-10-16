@@ -3,8 +3,9 @@ package ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -27,8 +28,8 @@ import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
 import components.comboBox.ComboBox;
+import components.jDialog.Glass;
 import components.scrollbarCustom.ScrollBarCustom;
-import connectDB.ConnectDB;
 import dao.DatPhong_DAO;
 import dao.LoaiPhong_DAO;
 import dao.Phong_DAO;
@@ -36,7 +37,7 @@ import entity.LoaiPhong;
 import entity.Phong;
 import utils.Utils;
 
-public class ChuyenPhong_GUI extends JFrame {
+public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * 
@@ -49,33 +50,22 @@ public class ChuyenPhong_GUI extends JFrame {
 	private Phong_DAO phong_DAO;
 	private List<LoaiPhong> dsLoaiPhong;
 	private DatPhong_DAO datPhong_DAO;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ChuyenPhong_GUI frame = new ChuyenPhong_GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private ComboBox<String> cmbMaPhong;
+	private final String labelCmbMaPhong = "Mã phòng";
+	private final String labelCmbLoaiPhong = "Loại phòng";
+	private final String labelCmbSoKhach = "Số khách";
+	private ComboBox<String> cmbLoaiPhong;
+	private ComboBox<String> cmbSoKhach;
+	private ChuyenPhong_GUI _this;
 
 	/**
 	 * Create the frame.
+	 * 
+	 * @param quanLyDatPhongGUI
+	 * @param glass
 	 */
-	public ChuyenPhong_GUI() {
-		try {
-			new ConnectDB().connect();
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-
+	public ChuyenPhong_GUI(Glass glass, QuanLyDatPhong_GUI quanLyDatPhongGUI) {
+		_this = this;
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		phong_DAO = new Phong_DAO();
 		datPhong_DAO = new DatPhong_DAO();
@@ -119,20 +109,20 @@ public class ChuyenPhong_GUI extends JFrame {
 		lnlPhongHienTai.setBounds(16, 10, 130, 30);
 		pnlPhongHienTai.add(lnlPhongHienTai);
 
-		JLabel lblMaPhongHienTai = new JLabel("02.02");
-		lblMaPhongHienTai.setFont(new Font("Segoe UI", Font.BOLD, 24));
-		lblMaPhongHienTai.setBounds(150, 7, 70, 36);
-		pnlPhongHienTai.add(lblMaPhongHienTai);
+		ComboBox<String> cmbPhongHienTai = new ComboBox<>();
+		cmbPhongHienTai.setBackground(Utils.primaryColor);
+		cmbPhongHienTai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		cmbPhongHienTai.setBounds(150, 7, 90, 36);
+		pnlPhongHienTai.add(cmbPhongHienTai);
 
 		JLabel lblIconNext = new JLabel("");
-		lblIconNext.setIcon(new ImageIcon(
-				"D:\\Code\\stt51_haAnhThao_20001575\\Nhom20_DeTai04_PTUD_16A_2022\\Icon\\next_32x32.png"));
-		lblIconNext.setBounds(225, 9, 32, 32);
+		lblIconNext.setIcon(new ImageIcon("Icon\\next_32x32.png"));
+		lblIconNext.setBounds(245, 9, 32, 32);
 		pnlPhongHienTai.add(lblIconNext);
 
 		JLabel lblmaPhongMoi = new JLabel("");
 		lblmaPhongMoi.setFont(new Font("Segoe UI", Font.BOLD, 24));
-		lblmaPhongMoi.setBounds(269, 7, 70, 36);
+		lblmaPhongMoi.setBounds(289, 7, 70, 36);
 		pnlPhongHienTai.add(lblmaPhongMoi);
 
 		JPanel pnlFilter = new JPanel();
@@ -141,25 +131,25 @@ public class ChuyenPhong_GUI extends JFrame {
 		pnlContainer.add(pnlFilter);
 		pnlFilter.setLayout(null);
 
-		ComboBox<String> cmbMaPhong = new ComboBox<String>();
+		cmbMaPhong = new ComboBox<String>();
 		cmbMaPhong.setBackground(Utils.primaryColor);
-		cmbMaPhong.setModel(new DefaultComboBoxModel<String>(new String[] { "Mã phòng" }));
+		cmbMaPhong.setModel(new DefaultComboBoxModel<String>(new String[] { labelCmbMaPhong }));
 		cmbMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		cmbMaPhong.setBounds(16, 0, 127, 30);
 		pnlFilter.add(cmbMaPhong);
 
-		ComboBox<String> cmbLoaiPhong = new ComboBox<String>();
+		cmbLoaiPhong = new ComboBox<String>();
 		cmbLoaiPhong.setBackground(Utils.primaryColor);
-		cmbLoaiPhong.setModel(new DefaultComboBoxModel<String>(new String[] { "Loại phòng" }));
+		cmbLoaiPhong.setModel(new DefaultComboBoxModel<String>(new String[] { labelCmbLoaiPhong }));
 		cmbLoaiPhong.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		cmbLoaiPhong.setBounds(163, 0, 127, 30);
+		cmbLoaiPhong.setBounds(163, 0, 147, 30);
 		pnlFilter.add(cmbLoaiPhong);
 
-		ComboBox<String> cmbSoKhach = new ComboBox<String>();
+		cmbSoKhach = new ComboBox<String>();
 		cmbSoKhach.setBackground(Utils.primaryColor);
-		cmbSoKhach.setModel(new DefaultComboBoxModel<String>(new String[] { "Số khách" }));
+		cmbSoKhach.setModel(new DefaultComboBoxModel<String>(new String[] { labelCmbSoKhach, "5", "10", "20" }));
 		cmbSoKhach.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		cmbSoKhach.setBounds(310, 0, 127, 30);
+		cmbSoKhach.setBounds(330, 0, 127, 30);
 		pnlFilter.add(cmbSoKhach);
 
 		Button btnLamMoi = new Button("Làm mới");
@@ -170,9 +160,9 @@ public class ChuyenPhong_GUI extends JFrame {
 		btnLamMoi.setForeground(Color.BLACK);
 		btnLamMoi.setColor(Color.WHITE);
 		btnLamMoi.setColorOver(Utils.getOpacity(Color.BLACK, 0.2f));
-		btnLamMoi.setColorClick(Utils.getOpacity(Color.BLACK, 0.4f));
+		btnLamMoi.setColorClick(Utils.getOpacity(Color.BLACK, 0.3f));
 		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		btnLamMoi.setBounds(457, -2, 127, 34);
+		btnLamMoi.setBounds(477, -2, 107, 34);
 		pnlFilter.add(btnLamMoi);
 
 		JPanel pnlFooter = new JPanel();
@@ -189,12 +179,13 @@ public class ChuyenPhong_GUI extends JFrame {
 		btnQuayLai.setForeground(Color.BLACK);
 		btnQuayLai.setColor(Color.WHITE);
 		btnQuayLai.setColorOver(Utils.getOpacity(Color.BLACK, 0.2f));
-		btnQuayLai.setColorClick(Utils.getOpacity(Color.BLACK, 0.4f));
+		btnQuayLai.setColorClick(Utils.getOpacity(Color.BLACK, 0.3f));
 		btnQuayLai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		btnQuayLai.setBounds(16, -2, 127, 34);
 		pnlFooter.add(btnQuayLai);
 
 		Button btnChuyen = new Button("Chuyển");
+		btnChuyen.setEnabled(false);
 		btnChuyen.setBorderColor(Utils.secondaryColor);
 		btnChuyen.setRadius(4);
 		btnChuyen.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -278,13 +269,77 @@ public class ChuyenPhong_GUI extends JFrame {
 		tbl.getColumnModel().getColumn(3).setCellRenderer(dtcr);
 		scr.setViewportView(tbl);
 
+//		Sự kiện nút làm mới
+		btnLamMoi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				cmbMaPhong.removeItemListener(_this);
+				cmbLoaiPhong.removeItemListener(_this);
+				cmbSoKhach.removeItemListener(_this);
+
+				cmbMaPhong.setSelectedIndex(0);
+				cmbLoaiPhong.setSelectedIndex(0);
+				cmbSoKhach.setSelectedIndex(0);
+				lblmaPhongMoi.setText("");
+				btnChuyen.setEnabled(false);
+
+				filterDanhSachPhong();
+
+				cmbMaPhong.addItemListener(_this);
+				cmbLoaiPhong.addItemListener(_this);
+				cmbSoKhach.addItemListener(_this);
+			}
+		});
+
+//		Sự kiện nút quay lại
+		btnQuayLai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				quanLyDatPhongGUI.closeJFrameSub();
+			}
+		});
+
+//		Sự kiện nút chuyển phòng
+		btnChuyen.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String maPhongCu = (String) cmbPhongHienTai.getSelectedItem();
+				String maPhongMoi = lblmaPhongMoi.getText().trim();
+				boolean res = datPhong_DAO.chuyenPhong(maPhongCu, maPhongMoi);
+
+				if (res) {
+					quanLyDatPhongGUI.capNhatTrangThaiPhong();
+					quanLyDatPhongGUI.closeJFrameSub();
+				}
+			}
+		});
+
 //		Sự kiện window
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
 				dsLoaiPhong = loaiPhong_DAO.getAllLoaiPhong();
+				List<Phong> dsPhong = datPhong_DAO.getPhongDatNgay();
+				List<Phong> dsPhongDangThue = phong_DAO.getAllPhongDangThue();
+
 				emptyTable();
-				addRow(datPhong_DAO.getPhongDatNgay());
+				cmbPhongHienTai.removeAllItems();
+				cmbMaPhong.removeAllItems();
+				cmbLoaiPhong.removeAllItems();
+
+				cmbMaPhong.addItem(labelCmbMaPhong);
+				cmbLoaiPhong.addItem(labelCmbLoaiPhong);
+
+				dsLoaiPhong.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));
+				dsPhong.forEach(phong -> {
+					addRow(phong);
+					cmbMaPhong.addItem(phong.getMaPhong());
+				});
+				dsPhongDangThue.forEach(phong -> cmbPhongHienTai.addItem(phong.getMaPhong()));
+
+				cmbMaPhong.addItemListener(_this);
+				cmbLoaiPhong.addItemListener(_this);
+				cmbSoKhach.addItemListener(_this);
 			}
 		});
 
@@ -298,6 +353,7 @@ public class ChuyenPhong_GUI extends JFrame {
 					String maPhong = (String) tableModel.getValueAt(row, 0);
 
 					lblmaPhongMoi.setText(maPhong);
+					btnChuyen.setEnabled(true);
 				}
 			}
 		});
@@ -326,5 +382,27 @@ public class ChuyenPhong_GUI extends JFrame {
 	private void emptyTable() {
 		while (tbl.getRowCount() > 0)
 			tableModel.removeRow(0);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.DESELECTED)
+			return;
+		filterDanhSachPhong();
+	}
+
+	private void filterDanhSachPhong() {
+		String maPhong = (String) cmbMaPhong.getSelectedItem();
+		String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
+		String soKhach = (String) cmbSoKhach.getSelectedItem();
+
+		if (maPhong.equals(labelCmbMaPhong))
+			maPhong = "";
+		if (loaiPhong.equals(labelCmbLoaiPhong))
+			loaiPhong = "";
+
+		List<Phong> dsPhong = datPhong_DAO.getPhongDatNgay(maPhong, loaiPhong, soKhach);
+		emptyTable();
+		addRow(dsPhong);
 	}
 }

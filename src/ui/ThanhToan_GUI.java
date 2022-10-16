@@ -574,7 +574,8 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 		if (tienNhanS.length() <= 0) {
 			txtTienNhan.setError(true);
-			btnThanhToan.setEnabled(true);
+			btnThanhToan.setEnabled(false);
+			txtTienThua.setText("");
 			return;
 		}
 
@@ -583,6 +584,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		if (tienNhan < tienThanhToan) {
 			txtTienNhan.setError(true);
 			btnThanhToan.setEnabled(false);
+			txtTienThua.setText("");
 		} else {
 			txtTienNhan.setError(false);
 			btnThanhToan.setEnabled(true);

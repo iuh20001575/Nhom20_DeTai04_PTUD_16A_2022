@@ -147,4 +147,22 @@ public class Phong_DAO {
 
 		return list;
 	}
+
+	public List<Phong> getAllPhongDangThue() {
+		List<Phong> list = new ArrayList<>();
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM Phong WHERE trangThai IN (N'Đang thuê', N'Phòng tạm')");
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getPhong(resultSet));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 }
