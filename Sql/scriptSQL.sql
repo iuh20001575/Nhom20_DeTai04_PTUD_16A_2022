@@ -22951,7 +22951,7 @@ CREATE TABLE Phong (
 	CONSTRAINT CHK_Phong_maPhong_ThoaMau CHECK (maPhong LIKE '[0-9][0-9].[0-9][0-9]'), -- Kiểm tra mã phòng theo mẫu: XX.YY
 	CONSTRAINT CHK_Phong_loaiPhong_ThoaMau CHECK (loaiPhong LIKE 'L[0-9][0-9][0-9]'), -- Kiểm tra loại phòng theo mẫu LXXX
 	CONSTRAINT CHK_Phong_soLuongKhach_oneOf CHECK (soLuongKhach IN (5, 10, 20)), -- Kiểm tra số lượng khách là 5, 10 hoặc 20 người
-	CONSTRAINT CHK_Phong_trangThai_oneOf CHECK (trangThai IN (N'Trống', N'Đang thuê', N'Đã đặt')), -- Kiểm tra trạng thái phòng phải là trống, đang thuê, đã đặt
+	CONSTRAINT CHK_Phong_trangThai_oneOf CHECK (trangThai IN (N'Trống', N'Đang thuê', N'Đã đặt', N'Phòng tạm')), -- Kiểm tra trạng thái phòng phải là trống, đang thuê, đã đặt
 	CONSTRAINT FK_Phong_LoaiPhong FOREIGN KEY (loaiPhong) REFERENCES LoaiPhong(maLoai)
 )
 

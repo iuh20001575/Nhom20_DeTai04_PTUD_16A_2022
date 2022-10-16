@@ -39,6 +39,33 @@ public class KhachHang_DAO {
 				diaChiCuThe);
 	}
 
+	public String getMaKhachHang() {
+		Statement statement;
+		try {
+			statement = ConnectDB.getConnection().createStatement();
+
+			ResultSet resultSet = statement
+					.executeQuery("SELECT TOP 1 [maKhachHang] FROM [dbo].[KhachHang]" + " ORDER BY [maKhachHang] DESC");
+
+			if (resultSet.next()) {
+				String maKhachHang = resultSet.getString(1);
+				int soKhach = Integer.parseInt(maKhachHang.substring(2));
+				soKhach++;
+				String maKhachNew = soKhach + "";
+
+				while (maKhachNew.length() < 3)
+					maKhachNew = "0" + maKhachNew;
+
+				return "KH" + maKhachNew;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return "KH001";
+	}
+
 	/**
 	 * Get danh sách tất cả các khách hàng
 	 * 

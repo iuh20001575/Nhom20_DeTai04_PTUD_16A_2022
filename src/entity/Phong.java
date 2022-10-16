@@ -100,6 +100,8 @@ public class Phong {
 			return "Đã đặt";
 		if (trangThai.equals(TrangThai.DangThue))
 			return "Đang thuê";
+		if (trangThai.equals(TrangThai.PhongTam))
+			return "Phòng tạm";
 		return "Trống";
 	}
 
@@ -108,10 +110,12 @@ public class Phong {
 			return TrangThai.DaDat;
 		if (trangThai.equals("Đang thuê"))
 			return TrangThai.DangThue;
+		if (trangThai.equals("Phòng tạm"))
+			return TrangThai.PhongTam;
 		return TrangThai.Trong;
 	}
 
 	public static enum TrangThai {
-		Trong, DaDat, DangThue
+		Trong, DaDat, DangThue, PhongTam
 	}
 }

@@ -16,6 +16,7 @@ public class Utils {
 	public static final Color phongCho = getRGBA(4, 191, 173, 0.85f);
 	public static final Color phongTrong = new Color(125, 214, 112, 191);
 	public static final Color phongDangSuDung = getRGBA(242, 68, 68, 0.85f);
+	public static final Color phongTam = new Color(115, 120, 234);
 	public static final Color lineTextField = new Color(149, 166, 248);
 	public static final Color labelTextField = new Color(150, 150, 150);
 	public static final int width = 1086;

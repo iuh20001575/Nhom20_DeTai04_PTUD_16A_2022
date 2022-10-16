@@ -15,6 +15,16 @@ public class PanelEvent extends PanelRound {
 	private static final long serialVersionUID = 1L;
 	private Color backgroundColor;
 	private boolean isOver;
+	private boolean isActive = true;
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+		setBackground(isActive ? backgroundColor : Utils.getOpacity(backgroundColor, 0.6f));
+	}
 
 	public PanelEvent(int rounded) {
 		super(rounded);
@@ -23,7 +33,7 @@ public class PanelEvent extends PanelRound {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if (isOver)
+				if (isOver || !isEnabled())
 					return;
 				setBackground(Utils.getOpacity(backgroundColor, 0.9f));
 				isOver = true;
@@ -32,19 +42,20 @@ public class PanelEvent extends PanelRound {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				if (isOver) {
-					setBackground(backgroundColor);
+					setActive(isActive);
 					isOver = false;
 				}
 			}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				setBackground(Utils.getOpacity(backgroundColor, 0.8f));
+				if (isEnabled())
+					setBackground(Utils.getOpacity(backgroundColor, 0.8f));
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				setBackground(backgroundColor);
+				setActive(isActive);
 			}
 		});
 	}

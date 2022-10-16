@@ -3,7 +3,6 @@ package ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.FocusAdapter;
@@ -35,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
+import components.jDialog.Glass;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
 import connectDB.ConnectDB;
@@ -87,25 +87,9 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	private Button btnThanhToan;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ThanhToan_GUI frame = new ThanhToan_GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
-	public ThanhToan_GUI() {
+	public ThanhToan_GUI(Glass glass) {
 		try {
 			new ConnectDB().connect();
 		} catch (Exception e) {
@@ -284,6 +268,14 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		pnlActions.setLayout(null);
 
 		Button btnQuayLai = new Button("Quay lại");
+		btnQuayLai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setVisible(false);
+				glass.setVisible(false);
+				glass.setAlpha(0f);
+			}
+		});
 		btnQuayLai.setFocusable(false);
 		btnQuayLai.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnQuayLai.setRadius(4);
@@ -680,7 +672,8 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			tienThanhToan = tongTien;
 			lblTongThoiLuong.setText(((gio > 0 ? gio + " giờ" : "") + " " + (phut > 0 ? phut + " phút" : "")).trim());
 			lblTienPhong.setText(Utils.formatTienTe(tongTien));
-			lblTienThanhTien.setText(Utils.formatTienTe(tienThanhToan * 1.1));
+			tienThanhToan *= 1.1;
+			lblTienThanhTien.setText(Utils.formatTienTe(tienThanhToan));
 		} else {
 			lblTenKhach.setText("");
 			lblTenNhanVien.setText("");

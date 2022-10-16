@@ -22,9 +22,11 @@ import utils.Utils;
 
 public class DatPhong_DAO {
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private Phong_DAO phong_DAO;
 
 	public DatPhong_DAO() {
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		phong_DAO = new Phong_DAO();
 	}
 
 	/**
@@ -82,7 +84,7 @@ public class DatPhong_DAO {
 	}
 
 	/**
-	 * Get những phòng trống hoặc phòng chờ giờ hiện tại + 3h <= giờ nhận phòng
+	 * Get những phòng trống hoặc phòng chờ giờ hiện tại + 6h <= giờ nhận phòng
 	 * 
 	 * @return danh sách các phòng có thể đặt ngay
 	 */
@@ -98,8 +100,8 @@ public class DatPhong_DAO {
 							+ "	SELECT maPhong FROM [dbo].[DatPhong] DP "
 							+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
 							+ "	JOIN [dbo].[Phong] P ON P.[maPhong] = CTDP.[phong] "
-							+ "	WHERE P.[trangThai] = N'Đã đặt' AND [ngayNhanPhong] = ?"
-							+ "	AND [dbo].[fnSubTime]([gioNhanPhong], ?) <= CONVERT(TIME(0), '3:00:00')" + "))");
+							+ "	WHERE P.[trangThai] = N'Đã đặt' AND DP.trangThai = N'Đang chờ' AND [ngayNhanPhong] = ?"
+							+ "	AND [dbo].[fnSubTime]([gioNhanPhong], ?) <= CONVERT(TIME(0), '6:00:00')" + "))");
 			preparedStatement.setDate(1, dateNow);
 			preparedStatement.setTime(2, timeNow);
 
@@ -135,7 +137,7 @@ public class DatPhong_DAO {
 					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
 					+ "	JOIN [dbo].[Phong] P ON P.[maPhong] = CTDP.[phong] "
 					+ "	WHERE P.[trangThai] = N'Đã đặt' AND [ngayNhanPhong] = ? "
-					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], ?) <= CONVERT(TIME(0), '3:00:00'))"
+					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], ?) <= CONVERT(TIME(0), '6:00:00'))"
 					+ ")) AND maPhong LIKE ? AND tenLoai LIKE ?";
 
 			if (isInteger)
@@ -215,9 +217,15 @@ public class DatPhong_DAO {
 				}
 
 //				Cập nhật trạng thái phòng
+				Phong phongFull = phong_DAO.getPhong(phong.getMaPhong());
 				preparedStatement = ConnectDB.getConnection()
 						.prepareStatement("Update Phong SET trangThai = ? WHERE maPhong = ?");
-				preparedStatement.setString(1, Phong.convertTrangThaiToString(Phong.TrangThai.DangThue));
+				String trangThaiNew = Phong.convertTrangThaiToString(Phong.TrangThai.DangThue);
+
+				if (phongFull.getTrangThai().equals(entity.Phong.TrangThai.DaDat))
+					trangThaiNew = Phong.convertTrangThaiToString(entity.Phong.TrangThai.PhongTam);
+
+				preparedStatement.setString(1, trangThaiNew);
 				preparedStatement.setString(2, phong.getMaPhong());
 
 				res = preparedStatement.executeUpdate();
@@ -377,11 +385,12 @@ public class DatPhong_DAO {
 					.prepareStatement("SELECT * FROM PHONG " + "WHERE maPhong NOT IN (" + "	SELECT maPhong FROM Phong P"
 							+ "	JOIN ChiTietDatPhong CTDP ON P.maPhong = CTDP.phong"
 							+ "	JOIN DatPhong DP ON DP.maDatPhong = CTDP.datPhong"
-							+ "	WHERE P.trangThai = N'Đã đặt' AND ngayNhanPhong = ? " // ngày nhận phòng
-							+ "AND [dbo].[fnSubTime](gioNhanPhong, ?) < CONVERT(TIME(0), '6:00:00')" // giờ nhận phòng
-							+ ") AND trangThai <> N'Đang thuê'");
+							+ "	WHERE (P.trangThai = N'Đã đặt' AND ngayNhanPhong = ? " // ngày nhận phòng
+							+ "AND [dbo].[fnSubTime](gioNhanPhong, ?) < CONVERT(TIME(0), '6:00:00'))"
+							+ "OR (p.trangThai = N'Đang thuê' AND ? = CONVERT(DATE, GETDATE())))");
 			preparedStatement.setDate(1, Utils.convertLocalDateToDate(ngayNhanPhong));
 			preparedStatement.setTime(2, Time.valueOf(gioNhanPhong));
+			preparedStatement.setDate(3, Utils.convertLocalDateToDate(ngayNhanPhong));
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -406,7 +415,11 @@ public class DatPhong_DAO {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT TOP 1 [gioNhanPhong] FROM [dbo].[DatPhong] DP "
 							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
-							+ "WHERE phong = ? " + "ORDER BY [trangThai] DESC, [ngayNhanPhong], [gioNhanPhong]");
+							+ "WHERE (([ngayNhanPhong] > CONVERT(DATE, GETDATE()) "
+							+ "OR ([ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
+							+ "AND [gioNhanPhong] >= CONVERT(TIME(0), GETDATE()))) OR phong IN ("
+							+ "SELECT maPhong FROM Phong WHERE [trangThai] = N'Đang thuê')) " + "AND phong = ? "
+							+ "ORDER BY [trangThai] DESC, [ngayNhanPhong], [gioNhanPhong]");
 			preparedStatement.setString(1, phong.getMaPhong());
 
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -502,6 +515,7 @@ public class DatPhong_DAO {
 			res = preparedStatement.executeUpdate() > 0;
 
 			if (!res) {
+				System.out.println("Update all phòng trống");
 				ConnectDB.getConnection().rollback();
 				ConnectDB.getConnection().setAutoCommit(true);
 				return false;
@@ -517,9 +531,10 @@ public class DatPhong_DAO {
 					+ "		[ngayNhanPhong] = CONVERT(DATE, GETDATE()) AND [gioNhanPhong] >= CONVERT(TIME(0), GETDATE())"
 					+ "	)) AND DP.[trangThai] = N'Đang chờ'" + "))");
 			preparedStatement.setString(1, maDatPhong);
-			res = preparedStatement.executeUpdate() > 0;
+			res = preparedStatement.executeUpdate() >= 0;
 
 			if (!res) {
+				System.out.println("Update phòng chờ");
 				ConnectDB.getConnection().rollback();
 				ConnectDB.getConnection().setAutoCommit(true);
 				return false;
@@ -531,6 +546,7 @@ public class DatPhong_DAO {
 			res = preparedStatement.executeUpdate() > 0;
 
 			if (!res || !chiTietDatPhong_DAO.thanhToanDatPhong(maDatPhong, gioRa)) {
+				System.out.println("Update trạng thái && update phòng");
 				ConnectDB.getConnection().rollback();
 				ConnectDB.getConnection().setAutoCommit(true);
 				return false;

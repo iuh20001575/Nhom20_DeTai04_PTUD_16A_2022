@@ -3,7 +3,6 @@ package ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,6 +36,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
+import components.jDialog.Glass;
+import components.jDialog.JDialogCustom;
 import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
@@ -75,25 +75,11 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	private DatPhong_GUI _this;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DatPhong_GUI frame = new DatPhong_GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
+	 * 
+	 * @param quanLyDatPhongGUI
 	 */
-	public DatPhong_GUI() {
+	public DatPhong_GUI(Glass glass, QuanLyDatPhong_GUI quanLyDatPhongGUI) {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e1) {
@@ -160,7 +146,25 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 					if (khachHang != null) {
 						txtTenKhachHang.setText(khachHang.getHoTen());
 					} else {
-						System.out.println("Khách hàng khôn tồn tại");
+						JDialogCustom jDialogCustom = new JDialogCustom(_this);
+
+						jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+							public void mouseClicked(MouseEvent e) {
+								new ThemKhachHang_GUI(_this, soDienThoai).setVisible(true);
+								setVisible(false);
+							};
+						});
+
+						jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
+							public void mouseClicked(MouseEvent e) {
+								setVisible(false);
+								glass.setVisible(false);
+								glass.setAlpha(0f);
+							};
+						});
+
+						jDialogCustom.showMessage("Warning",
+								"Khách hàng không có trong hệ thống, bạn có muốn thêm khách hàng mới không?");
 					}
 				} else {
 					new Notification(_this, components.notification.Notification.Type.ERROR,
@@ -293,16 +297,6 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		pnlBody.add(pnlBtnGroup);
 		pnlBtnGroup.setLayout(null);
 
-		JButton btnExit = new JButton("New button");
-		btnExit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.exit(0);
-			}
-		});
-		btnExit.setBounds(0, 0, 85, 36);
-		pnlBtnGroup.add(btnExit);
-
 		Button btnDatPhong = new Button("Đặt phòng");
 		btnDatPhong.addMouseListener(new MouseAdapter() {
 			@Override
@@ -322,7 +316,12 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 				}
 
 				boolean res = datPhong_DAO.themPhieuDatPhongNgay(khachHang, new NhanVien("NV112"), dsPhongDaChon);
-				System.out.println(res);
+				if (res) {
+					quanLyDatPhongGUI.capNhatTrangThaiPhong();
+					setVisible(false);
+					glass.setVisible(false);
+					glass.setAlpha(0f);
+				}
 			}
 		});
 		btnDatPhong.setFocusable(false);
@@ -338,6 +337,14 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		pnlBtnGroup.add(btnDatPhong);
 
 		Button btnQuayLai = new Button("Quay lại");
+		btnQuayLai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setVisible(false);
+				glass.setVisible(false);
+				glass.setAlpha(0f);
+			}
+		});
 		btnQuayLai.setFocusable(false);
 		btnQuayLai.setRadius(8);
 		btnQuayLai.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -433,6 +440,18 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 					cmbMaPhong.addItem(phong.getMaPhong());
 				});
 				loaiPhongs.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));
+
+//				
+				String soDienThoai = txtSoDienThoai.getText().trim();
+
+				if (Utils.isSoDienThoai(soDienThoai)) {
+					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
+
+					if (khachHang != null) {
+						txtTenKhachHang.setText(khachHang.getHoTen());
+						txtTenKhachHang.requestFocus();
+					}
+				}
 
 				cmbMaPhong.addItemListener(_this);
 				cmbLoaiPhong.addItemListener(_this);
@@ -594,4 +613,5 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		emptyTable();
 		addRow(list);
 	}
+
 }

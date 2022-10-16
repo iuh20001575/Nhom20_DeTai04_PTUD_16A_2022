@@ -17,17 +17,17 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 import components.button.Button;
+import components.jDialog.Glass;
 import components.jDialog.JDialogCustom;
 import components.panelEvent.PanelEvent;
 import components.panelRound.PanelRound;
@@ -66,14 +66,22 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	private JLabel lblSoLuongPhongCho;
 	private JLabel lblSoPhongTrong;
 	private DatPhong_DAO datPhong_DAO;
-	private String tongGio;
-	private JTextField txtPhongSo;
 	private JDialogCustom jDialog;
+	private PanelEvent pnlFilterPhongTrong;
+	private PanelEvent pnlFilterPhongDangSuDung;
+	private PanelEvent pnlFilterPhongCho;
+	private Glass glass;
+	private PanelEvent pnlThanhToan;
+	private List<Phong> dsPhong;
+	private QuanLyDatPhong_GUI _this;
+	private int soPhongTam;
+	private JLabel lblSoLuongPhongTam;
 
 	/**
 	 * Create the frame.
 	 */
 	public QuanLyDatPhong_GUI() {
+		_this = this;
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e) {
@@ -85,6 +93,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 		datPhong_DAO = new DatPhong_DAO();
 		jDialog = new JDialogCustom(this, components.jDialog.JDialogCustom.Type.warning);
+		glass = new Glass();
 
 //		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Trang chủ đặt phòng");
 //		contentPane = defaultLayout.getJPanel();
@@ -368,7 +377,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 
 		PanelRound pnlPhongTam = new PanelRound(10);
 		pnlPhongTam.setLayout(null);
-		pnlPhongTam.setBackground(new Color(115, 120, 234));
+		pnlPhongTam.setBackground(Utils.phongTam);
 		pnlPhongTam.setBounds(0, 225, 146, 60);
 		pnlThongKeLoaiPhong.add(pnlPhongTam);
 
@@ -383,7 +392,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblPhongTam.setBounds(59, 11, 75, 19);
 		pnlPhongTam.add(lblPhongTam);
 
-		JLabel lblSoLuongPhongTam = new JLabel("(0)");
+		lblSoLuongPhongTam = new JLabel("(0)");
 		lblSoLuongPhongTam.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSoLuongPhongTam.setForeground(Color.WHITE);
 		lblSoLuongPhongTam.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -489,7 +498,19 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblIconGopPhong.setBounds(10, 18, 32, 32);
 		pnlGopPhong.add(lblIconGopPhong);
 
-		PanelEvent pnlThanhToan = new PanelEvent(13);
+		pnlThanhToan = new PanelEvent(13) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Color getBackground() {
+				if (!isEnabled())
+					return Utils.getOpacity(super.getBackground(), 0.5f);
+				return super.getBackground();
+			}
+		};
 		pnlThanhToan.setLayout(null);
 		pnlThanhToan.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlThanhToan);
@@ -525,19 +546,11 @@ public class QuanLyDatPhong_GUI extends JFrame {
 
 		btnPhongThuong.setVisible(false);
 		btnPhongVip.setVisible(false);
-		btnTatCaUnactive.setVisible(false);
 		btnTatCa.setVisible(true);
 		btnPhongThuongUnactive.setVisible(true);
 		btnPhongVipUnactive.setVisible(true);
 
 		clock();
-
-		this.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowActivated(WindowEvent e) {
-				addPhong(phong_DAO.getAllPhong());
-			}
-		});
 
 		JPanel pnlFilter = new JPanel();
 		pnlFilter.setBackground(Utils.secondaryColor);
@@ -545,32 +558,21 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		contentPane.add(pnlFilter);
 		pnlFilter.setLayout(null);
 
-		PanelEvent pnlFilterPhongDangCho = new PanelEvent(8);
-		pnlFilterPhongDangCho.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				addPhong(phong_DAO.getAllPhongTheoTrangThai(TrangThai.DaDat));
-			}
-		});
-		pnlFilterPhongDangCho.setBackgroundColor(Utils.phongCho);
-		pnlFilterPhongDangCho.setBounds(0, 0, 153, 39);
-		pnlFilter.add(pnlFilterPhongDangCho);
-		pnlFilterPhongDangCho.setLayout(null);
+		pnlFilterPhongCho = new PanelEvent(8);
+		pnlFilterPhongCho.setBackgroundColor(Utils.phongCho);
+		pnlFilterPhongCho.setBounds(0, 0, 153, 39);
+		pnlFilter.add(pnlFilterPhongCho);
+		pnlFilterPhongCho.setLayout(null);
 
-		JLabel lblFilterPhongDangCho = new JLabel("Phòng chờ");
-		lblFilterPhongDangCho.setForeground(Color.WHITE);
-		lblFilterPhongDangCho.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFilterPhongDangCho.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblFilterPhongDangCho.setBounds(0, 0, 153, 39);
-		pnlFilterPhongDangCho.add(lblFilterPhongDangCho);
+		JLabel lblFilterPhongCho = new JLabel("Phòng chờ");
+		lblFilterPhongCho.setForeground(Color.WHITE);
+		lblFilterPhongCho.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFilterPhongCho.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		lblFilterPhongCho.setBounds(0, 0, 153, 39);
+		pnlFilterPhongCho.setActive(false);
+		pnlFilterPhongCho.add(lblFilterPhongCho);
 
-		PanelEvent pnlFilterPhongDangSuDung = new PanelEvent(8);
-		pnlFilterPhongDangSuDung.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				addPhong(phong_DAO.getAllPhongTheoTrangThai(TrangThai.DangThue));
-			}
-		});
+		pnlFilterPhongDangSuDung = new PanelEvent(8);
 		pnlFilterPhongDangSuDung.setLayout(null);
 		pnlFilterPhongDangSuDung.setBackgroundColor(Utils.phongDangSuDung);
 		pnlFilterPhongDangSuDung.setBounds(174, 0, 192, 39);
@@ -581,26 +583,22 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblFilterPhongDangSuDung.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFilterPhongDangSuDung.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblFilterPhongDangSuDung.setBounds(0, 0, 192, 39);
+		pnlFilterPhongDangSuDung.setActive(false);
 		pnlFilterPhongDangSuDung.add(lblFilterPhongDangSuDung);
 
-		PanelEvent pnlFilterPhongDangTrong = new PanelEvent(8);
-		pnlFilterPhongDangTrong.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				addPhong(phong_DAO.getAllPhongTheoTrangThai(TrangThai.Trong));
-			}
-		});
-		pnlFilterPhongDangTrong.setLayout(null);
-		pnlFilterPhongDangTrong.setBackgroundColor(Utils.phongTrong);
-		pnlFilterPhongDangTrong.setBounds(387, 0, 153, 39);
-		pnlFilter.add(pnlFilterPhongDangTrong);
+		pnlFilterPhongTrong = new PanelEvent(8);
+		pnlFilterPhongTrong.setLayout(null);
+		pnlFilterPhongTrong.setBackgroundColor(Utils.phongTrong);
+		pnlFilterPhongTrong.setBounds(387, 0, 153, 39);
+		pnlFilterPhongTrong.setActive(false);
+		pnlFilter.add(pnlFilterPhongTrong);
 
 		JLabel lblFilterPhongTrong = new JLabel("Phòng trống");
 		lblFilterPhongTrong.setForeground(Color.WHITE);
 		lblFilterPhongTrong.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFilterPhongTrong.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblFilterPhongTrong.setBounds(0, 0, 153, 39);
-		pnlFilterPhongDangTrong.add(lblFilterPhongTrong);
+		pnlFilterPhongTrong.add(lblFilterPhongTrong);
 
 		JLabel lblPhongSo = new JLabel("Phòng số:");
 		lblPhongSo.setForeground(new Color(0, 0, 0));
@@ -609,6 +607,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlFilter.add(lblPhongSo);
 
 		Button btnSearch = new Button("Tìm");
+		btnSearch.setForeground(Color.WHITE);
 		btnSearch.setRadius(9);
 		btnSearch.setFocusable(false);
 		btnSearch.setBorderColor(Utils.secondaryColor);
@@ -621,20 +620,119 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		btnSearch.setBounds(759, 0, 101, 39);
 		pnlFilter.add(btnSearch);
 
-		PanelRound pnlPhongSo = new PanelRound(8);
-		pnlPhongSo.setBackground(Color.WHITE);
-		pnlPhongSo.setBorder(new LineBorder(new Color(119, 96, 204)));
-		pnlPhongSo.setBounds(651, 2, 97, 34);
-		pnlFilter.add(pnlPhongSo);
-		pnlPhongSo.setLayout(null);
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBackground(Color.CYAN);
+		comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		comboBox.setBounds(653, 5, 91, 28);
+		pnlFilter.add(comboBox);
 
-		txtPhongSo = new JTextField();
-		txtPhongSo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		txtPhongSo.setBackground(Color.WHITE);
-		txtPhongSo.setBorder(new EmptyBorder(0, 0, 0, 0));
-		txtPhongSo.setBounds(3, 3, 91, 28);
-		pnlPhongSo.add(txtPhongSo);
-		txtPhongSo.setColumns(10);
+//		Event window
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				addPhong(phong_DAO.getAllPhong());
+			}
+		});
+
+//		Event loại phòng
+		btnTatCaUnactive.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				btnTatCa.setVisible(true);
+				btnPhongThuong.setVisible(false);
+				btnPhongVip.setVisible(false);
+
+				addPhong(phong_DAO.getAllPhong(""));
+			}
+		});
+
+		btnPhongThuongUnactive.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				btnTatCa.setVisible(false);
+				btnPhongThuong.setVisible(true);
+				btnPhongVip.setVisible(false);
+
+				addPhong(phong_DAO.getAllPhong("Phòng thường"));
+			}
+		});
+
+		btnPhongVipUnactive.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				btnTatCa.setVisible(false);
+				btnPhongThuong.setVisible(false);
+				btnPhongVip.setVisible(true);
+
+				addPhong(phong_DAO.getAllPhong("Phòng VIP"));
+			}
+		});
+
+//		Event trạng thái phòng
+		pnlFilterPhongTrong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				boolean isActive = pnlFilterPhongTrong.isActive();
+				if (!isActive) {
+					pnlFilterPhongDangSuDung.setActive(false);
+					pnlFilterPhongCho.setActive(false);
+				}
+				pnlFilterPhongTrong.setActive(!isActive);
+				addPhong(phong_DAO
+						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.Trong)));
+			}
+		});
+
+		pnlFilterPhongDangSuDung.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				boolean isActive = pnlFilterPhongDangSuDung.isActive();
+				if (!isActive) {
+					pnlFilterPhongTrong.setActive(false);
+					pnlFilterPhongCho.setActive(false);
+				}
+				pnlFilterPhongDangSuDung.setActive(!isActive);
+				addPhong(phong_DAO
+						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DangThue)));
+			}
+		});
+
+		pnlFilterPhongCho.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				boolean isActive = pnlFilterPhongCho.isActive();
+				if (!isActive) {
+					pnlFilterPhongTrong.setActive(false);
+					pnlFilterPhongDangSuDung.setActive(false);
+				}
+				pnlFilterPhongCho.setActive(!isActive);
+				addPhong(phong_DAO
+						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DaDat)));
+			}
+		});
+
+//		Event các chức năng
+		pnlDatPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setGlassPane(glass);
+				glass.setVisible(true);
+				glass.setAlpha(0.3f);
+				new DatPhong_GUI(glass, _this).setVisible(true);
+			}
+		});
+
+		pnlThanhToan.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!pnlThanhToan.isEnabled())
+					return;
+				setGlassPane(glass);
+				glass.setVisible(true);
+				glass.setAlpha(0.3f);
+				new ThanhToan_GUI(glass).setVisible(true);
+			}
+		});
 	}
 
 	/**
@@ -643,12 +741,17 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	private void addPhong(List<Phong> dsPhong) {
 		if (dsPhong.size() <= 0) {
 			jDialog.showMessage("Thông báo", "Mục này không có phòng nào");
+			pnlFilterPhongCho.setActive(false);
+			pnlFilterPhongDangSuDung.setActive(false);
+			pnlFilterPhongTrong.setActive(false);
 			return;
 		}
+		this.dsPhong = dsPhong;
 
 		soPhongCho = 0;
 		soPhongDangSuDung = 0;
 		soPhongTrong = 0;
+		soPhongTam = 0;
 
 		pnlDanhSachPhong = new JPanel();
 		pnlDanhSachPhong.setBackground(Utils.secondaryColor);
@@ -674,6 +777,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		scb.setScrollbarColor(Utils.primaryColor);
 		scrDanhSachPhong.setVerticalScrollBar(scb);
 
+		pnlThanhToan.setEnabled(soPhongDangSuDung > 0);
 		capNhatThongKeLoaiPhong();
 	}
 
@@ -727,6 +831,9 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		} else if (phong.getTrangThai().equals(TrangThai.Trong)) {
 			soPhongTrong++;
 			bg = Utils.phongTrong;
+		} else if (phong.getTrangThai().equals(TrangThai.PhongTam)) {
+			soPhongTam++;
+			bg = Utils.phongTam;
 		} else {
 			soPhongDangSuDung++;
 		}
@@ -753,15 +860,13 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			public void run() {
 				for (;;) {
 					try {
-						if (gioVao != null && phong.getTrangThai().equals(TrangThai.DangThue)) {
-							LocalTime timeNow = LocalTime.now();
-							int hieuPhut = timeNow.getHour() * 60 + timeNow.getMinute() - gioVao.getHour() * 60
-									- gioVao.getMinute();
+						LocalTime timeNow = LocalTime.now();
+						int hieuPhut = timeNow.getHour() * 60 + timeNow.getMinute() - gioVao.getHour() * 60
+								- gioVao.getMinute();
 
-							tongGio = Utils.convertLocalTimeToString(LocalTime.of(hieuPhut / 60, hieuPhut % 60));
+						String tongGio = Utils.convertLocalTimeToString(LocalTime.of(hieuPhut / 60, hieuPhut % 60));
 
-							lblTongGio.setText("Tổng giờ: " + tongGio);
-						}
+						lblTongGio.setText("Tổng giờ: " + tongGio);
 						sleep(1000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -771,7 +876,8 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			}
 		};
 
-		clock.start();
+		if (gioVao != null && phong.getTrangThai().equals(TrangThai.DangThue))
+			clock.start();
 
 		lblTongGio.setForeground(Color.WHITE);
 		lblTongGio.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -800,6 +906,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		lblSoPhongTrong.setText(String.format("(%d)", soPhongTrong));
 		lblSoLuongPhongCho.setText(String.format("(%d)", soPhongCho));
 		lblSoPhongDSD.setText(String.format("(%d)", soPhongDangSuDung));
+		lblSoLuongPhongTam.setText(String.format("(%d)", soPhongTam));
 	}
 
 	/**
@@ -846,5 +953,9 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		};
 
 		clock.start();
+	}
+
+	public void capNhatTrangThaiPhong() {
+		addPhong(phong_DAO.getAllPhongTheoMa(dsPhong));
 	}
 }
