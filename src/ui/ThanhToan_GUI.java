@@ -476,7 +476,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		txtTienThua.setBounds(313, 0, 293, 55);
 		pnlRow6.add(txtTienThua);
 
-//		Table danh sách nhân viên
+//		Table danh sách
 		JScrollPane scr = new JScrollPane();
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scr.setBounds(0, 98, 606, 156);
