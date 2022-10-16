@@ -76,6 +76,8 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	private QuanLyDatPhong_GUI _this;
 	private int soPhongTam;
 	private JLabel lblSoLuongPhongTam;
+	private JPanel pnlContainerDanhSachPhong;
+	private JFrame jFrameSub;
 
 	/**
 	 * Create the frame.
@@ -94,6 +96,13 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		datPhong_DAO = new DatPhong_DAO();
 		jDialog = new JDialogCustom(this, components.jDialog.JDialogCustom.Type.warning);
 		glass = new Glass();
+
+		glass.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				closeJFrameSub();
+			}
+		});
 
 //		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Trang chủ đặt phòng");
 //		contentPane = defaultLayout.getJPanel();
@@ -626,11 +635,20 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		comboBox.setBounds(653, 5, 91, 28);
 		pnlFilter.add(comboBox);
 
+		pnlContainerDanhSachPhong = new JPanel();
+		pnlContainerDanhSachPhong.setBounds(16, 182, 900, 292);
+		pnlContainerDanhSachPhong.setBackground(Utils.secondaryColor);
+		pnlContainerDanhSachPhong.setLayout(null);
+		contentPane.add(pnlContainerDanhSachPhong);
+
 //		Event window
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
-				addPhong(phong_DAO.getAllPhong());
+				if (dsPhong == null)
+					addPhong(phong_DAO.getAllPhong());
+				else
+					addPhong(phong_DAO.getAllPhongTheoMa(dsPhong));
 			}
 		});
 
@@ -715,10 +733,14 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlDatPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setGlassPane(glass);
-				glass.setVisible(true);
-				glass.setAlpha(0.3f);
-				new DatPhong_GUI(glass, _this).setVisible(true);
+				openJFrameSub(new DatPhong_GUI(glass, _this));
+			}
+		});
+
+		pnlDatPhongTruoc.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				openJFrameSub(new DatPhongTruoc_GUI(glass, _this));
 			}
 		});
 
@@ -727,10 +749,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (!pnlThanhToan.isEnabled())
 					return;
-				setGlassPane(glass);
-				glass.setVisible(true);
-				glass.setAlpha(0.3f);
-				new ThanhToan_GUI(glass).setVisible(true);
+				openJFrameSub(new ThanhToan_GUI(glass, _this));
 			}
 		});
 	}
@@ -770,8 +789,9 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		scrDanhSachPhong.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrDanhSachPhong.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrDanhSachPhong.setBackground(Utils.secondaryColor);
-		scrDanhSachPhong.setBounds(16, 182, 900, 292);
-		contentPane.add(scrDanhSachPhong);
+		scrDanhSachPhong.setBounds(0, 0, 900, 292);
+		pnlContainerDanhSachPhong.removeAll();
+		pnlContainerDanhSachPhong.add(scrDanhSachPhong);
 		ScrollBarCustom scb = new ScrollBarCustom();
 		scb.setBackgroundColor(Utils.secondaryColor);
 		scb.setScrollbarColor(Utils.primaryColor);
@@ -824,14 +844,17 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		if (phong.getLoaiPhong().getMaLoai().equals("L002"))
 			pnlPhong1.add(lblIcon1);
 
+//		Trạng thái
+		TrangThai trangThai = phong.getTrangThai();
+
 		Color bg = Utils.phongDangSuDung;
-		if (phong.getTrangThai().equals(TrangThai.DaDat)) {
+		if (trangThai.equals(TrangThai.DaDat)) {
 			soPhongCho++;
 			bg = Utils.phongCho;
-		} else if (phong.getTrangThai().equals(TrangThai.Trong)) {
+		} else if (trangThai.equals(TrangThai.Trong)) {
 			soPhongTrong++;
 			bg = Utils.phongTrong;
-		} else if (phong.getTrangThai().equals(TrangThai.PhongTam)) {
+		} else if (trangThai.equals(TrangThai.PhongTam)) {
 			soPhongTam++;
 			bg = Utils.phongTam;
 		} else {
@@ -876,7 +899,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			}
 		};
 
-		if (gioVao != null && phong.getTrangThai().equals(TrangThai.DangThue))
+		if (gioVao != null && (trangThai.equals(TrangThai.DangThue) || trangThai.equals(TrangThai.PhongTam)))
 			clock.start();
 
 		lblTongGio.setForeground(Color.WHITE);
@@ -953,6 +976,22 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		};
 
 		clock.start();
+	}
+
+	public void openJFrameSub(JFrame jFrame) {
+		setGlassPane(glass);
+		glass.setVisible(true);
+		glass.setAlpha(0.3f);
+		jFrameSub = jFrame;
+		jFrameSub.setVisible(true);
+	}
+
+	public void closeJFrameSub() {
+		if (jFrameSub != null)
+			jFrameSub.setVisible(false);
+		glass.setVisible(false);
+		glass.setAlpha(0f);
+		jFrameSub = null;
 	}
 
 	public void capNhatTrangThaiPhong() {

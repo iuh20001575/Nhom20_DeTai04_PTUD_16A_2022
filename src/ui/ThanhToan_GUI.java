@@ -88,8 +88,10 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Create the frame.
+	 * 
+	 * @param quanLyDatPhongGUI
 	 */
-	public ThanhToan_GUI(Glass glass) {
+	public ThanhToan_GUI(Glass glass, QuanLyDatPhong_GUI quanLyDatPhongGUI) {
 		try {
 			new ConnectDB().connect();
 		} catch (Exception e) {
@@ -271,9 +273,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		btnQuayLai.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setVisible(false);
-				glass.setVisible(false);
-				glass.setAlpha(0f);
+				quanLyDatPhongGUI.closeJFrameSub();
 			}
 		});
 		btnQuayLai.setFocusable(false);
@@ -292,7 +292,12 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				if (!btnThanhToan.isEnabled())
 					return;
-				System.out.println(datPhong_DAO.thanhToanDatPhong(datPhong.getMaDatPhong(), timeNow));
+				boolean res = datPhong_DAO.thanhToanDatPhong(datPhong.getMaDatPhong(), timeNow);
+
+				if (res) {
+					quanLyDatPhongGUI.capNhatTrangThaiPhong();
+					quanLyDatPhongGUI.closeJFrameSub();
+				}
 			}
 		});
 		btnThanhToan.setEnabled(false);

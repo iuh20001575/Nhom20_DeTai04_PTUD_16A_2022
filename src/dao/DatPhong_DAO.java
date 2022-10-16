@@ -101,7 +101,7 @@ public class DatPhong_DAO {
 							+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
 							+ "	JOIN [dbo].[Phong] P ON P.[maPhong] = CTDP.[phong] "
 							+ "	WHERE P.[trangThai] = N'Đã đặt' AND DP.trangThai = N'Đang chờ' AND [ngayNhanPhong] = ?"
-							+ "	AND [dbo].[fnSubTime]([gioNhanPhong], ?) <= CONVERT(TIME(0), '6:00:00')" + "))");
+							+ "	AND [dbo].[fnSubTime]([gioNhanPhong], ?) <= CONVERT(TIME(0), '6:00:00')))");
 			preparedStatement.setDate(1, dateNow);
 			preparedStatement.setTime(2, timeNow);
 
@@ -136,9 +136,9 @@ public class DatPhong_DAO {
 					+ "	SELECT maPhong FROM [dbo].[DatPhong] DP "
 					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
 					+ "	JOIN [dbo].[Phong] P ON P.[maPhong] = CTDP.[phong] "
-					+ "	WHERE P.[trangThai] = N'Đã đặt' AND [ngayNhanPhong] = ? "
-					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], ?) <= CONVERT(TIME(0), '6:00:00'))"
-					+ ")) AND maPhong LIKE ? AND tenLoai LIKE ?";
+					+ "	WHERE P.[trangThai] = N'Đã đặt' AND DP.trangThai = N'Đang chờ' AND [ngayNhanPhong] = ?"
+					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], ?) <= CONVERT(TIME(0), '6:00:00')))"
+					+ ") AND maPhong LIKE ? AND tenLoai LIKE ?";
 
 			if (isInteger)
 				sql += " AND soLuongKhach = ?";
@@ -418,8 +418,8 @@ public class DatPhong_DAO {
 							+ "WHERE (([ngayNhanPhong] > CONVERT(DATE, GETDATE()) "
 							+ "OR ([ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
 							+ "AND [gioNhanPhong] >= CONVERT(TIME(0), GETDATE()))) OR phong IN ("
-							+ "SELECT maPhong FROM Phong WHERE [trangThai] = N'Đang thuê')) " + "AND phong = ? "
-							+ "ORDER BY [trangThai] DESC, [ngayNhanPhong], [gioNhanPhong]");
+							+ "SELECT maPhong FROM Phong WHERE [trangThai] IN (N'Đang thuê', N'Phòng tạm'))) "
+							+ "AND phong = ? ORDER BY [trangThai] DESC, [ngayNhanPhong], [gioNhanPhong]");
 			preparedStatement.setString(1, phong.getMaPhong());
 
 			ResultSet resultSet = preparedStatement.executeQuery();

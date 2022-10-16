@@ -3,7 +3,6 @@ package ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -41,6 +39,7 @@ import com.raven.datechooser.DateChooser;
 
 import components.button.Button;
 import components.comboBox.ComboBox;
+import components.jDialog.Glass;
 import components.jDialog.JDialogCustom;
 import components.notification.Notification;
 import components.panelRound.PanelRound;
@@ -82,25 +81,12 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private TextField txtNgayNhanPhong;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DatPhongTruoc_GUI frame = new DatPhongTruoc_GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
+	 * 
+	 * @param quanLyDatPhongGUI
+	 * @param glass
 	 */
-	public DatPhongTruoc_GUI() {
+	public DatPhongTruoc_GUI(Glass glass, QuanLyDatPhong_GUI quanLyDatPhongGUI) {
 		_this = this;
 
 		try {
@@ -121,7 +107,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		setUndecorated(true);
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(quanLyDatPhongGUI);
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
@@ -233,8 +219,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnNewButton_2.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnNewButton_2.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
 		btnNewButton_2.setBorderColor(Utils.secondaryColor);
-		btnNewButton_2.setIcon(new ImageIcon(
-				"D:\\Code\\stt51_haAnhThao_20001575\\Nhom20_DeTai04_PTUD_16A_2022\\Icon\\rightArrow_32x32.png"));
+		btnNewButton_2.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
 		btnNewButton_2.setBounds(0, 94, 36, 36);
 		pnlActions.add(btnNewButton_2);
 
@@ -301,16 +286,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlBtnGroup.setBounds(0, 432, 770, 36);
 		pnlBody.add(pnlBtnGroup);
 		pnlBtnGroup.setLayout(null);
-
-		JButton btnExit = new JButton("New button");
-		btnExit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.exit(0);
-			}
-		});
-		btnExit.setBounds(0, 0, 85, 36);
-		pnlBtnGroup.add(btnExit);
 
 		Button btnDatPhong = new Button("Đặt phòng");
 		btnDatPhong.setFocusable(false);
@@ -452,6 +427,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			}
 		});
 
+//		Sự kiện các nút chức năng
 		btnDatPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -475,10 +451,21 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				LocalTime gioNhanPhong = LocalTime.of(gio, phut);
 				boolean res = datPhong_DAO.themPhieuDatPhongTruoc(khachHang, new NhanVien("NV112"), dsPhongDaChon,
 						ngayNhanPhong, gioNhanPhong);
-				System.out.println(res);
+				if (res) {
+					quanLyDatPhongGUI.capNhatTrangThaiPhong();
+					quanLyDatPhongGUI.closeJFrameSub();
+				}
 			}
 		});
 
+		btnQuayLai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				quanLyDatPhongGUI.closeJFrameSub();
+			}
+		});
+
+//		Sự kiện window
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {

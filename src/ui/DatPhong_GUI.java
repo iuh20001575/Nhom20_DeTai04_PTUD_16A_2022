@@ -318,9 +318,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 				boolean res = datPhong_DAO.themPhieuDatPhongNgay(khachHang, new NhanVien("NV112"), dsPhongDaChon);
 				if (res) {
 					quanLyDatPhongGUI.capNhatTrangThaiPhong();
-					setVisible(false);
-					glass.setVisible(false);
-					glass.setAlpha(0f);
+					quanLyDatPhongGUI.closeJFrameSub();
 				}
 			}
 		});
@@ -340,9 +338,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		btnQuayLai.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setVisible(false);
-				glass.setVisible(false);
-				glass.setAlpha(0f);
+				quanLyDatPhongGUI.closeJFrameSub();
 			}
 		});
 		btnQuayLai.setFocusable(false);
