@@ -870,10 +870,10 @@ public class QuanLyDatPhong_GUI extends JFrame {
 
 		List<Phong> dsPhongDatNgay = datPhong_DAO.getPhongDatNgay();
 
-		pnlThanhToan.setEnabled(soPhongDangSuDung > 0);
+		pnlThanhToan.setEnabled(soPhongDangSuDung + soPhongTam > 0);
 		pnlDatPhong.setEnabled(dsPhongDatNgay.size() > 0);
 		pnlChuyenPhong.setEnabled(dsPhongDatNgay.size() > 0 && soPhongDangSuDung > 0);
-		pnlGopPhong.setEnabled(soPhongDangSuDung > 0);
+		pnlGopPhong.setEnabled(datPhong_DAO.isGopPhong());
 		capNhatThongKeLoaiPhong();
 	}
 

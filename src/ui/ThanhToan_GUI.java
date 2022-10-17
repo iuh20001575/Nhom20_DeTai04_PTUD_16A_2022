@@ -631,6 +631,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED)
 			return;
+		emptyTable();
 		Object o = e.getSource();
 		boolean isMaDatPhong = true;
 		cmbMaDatPhong.removeItemListener(_this);
