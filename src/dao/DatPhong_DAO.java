@@ -316,7 +316,13 @@ public class DatPhong_DAO {
 //				Cập nhật trạng thái phòng
 				preparedStatement = ConnectDB.getConnection()
 						.prepareStatement("Update Phong SET trangThai = ? WHERE maPhong = ?");
-				preparedStatement.setString(1, Phong.convertTrangThaiToString(Phong.TrangThai.DaDat));
+				entity.Phong.TrangThai trangThai = phong_DAO.getTrangThai(phong.getMaPhong());
+				entity.Phong.TrangThai trangThaiNew = entity.Phong.TrangThai.DaDat;
+
+				if (trangThai.equals(entity.Phong.TrangThai.DangThue)
+						|| trangThai.equals(entity.Phong.TrangThai.PhongTam))
+					trangThaiNew = entity.Phong.TrangThai.PhongTam;
+				preparedStatement.setString(1, Phong.convertTrangThaiToString(trangThaiNew));
 				preparedStatement.setString(2, phong.getMaPhong());
 
 				res = preparedStatement.executeUpdate();
@@ -513,6 +519,13 @@ public class DatPhong_DAO {
 		return list;
 	}
 
+	/**
+	 * Chuyển phòng từ mã phòng cũ sang mã phòng mới
+	 * 
+	 * @param maPhongCu  mã phòng cũ
+	 * @param maPhongMoi mã phòng mới
+	 * @return true nếu chuyển thành công
+	 */
 	public boolean chuyenPhong(String maPhongCu, String maPhongMoi) {
 		Phong phongCu = phong_DAO.getPhong(maPhongCu);
 		Phong phongMoi = phong_DAO.getPhong(maPhongMoi);
@@ -530,7 +543,7 @@ public class DatPhong_DAO {
 							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
 							+ "WHERE DP.[trangThai] = N'Đang thuê' AND [phong] = ?");
 			preparedStatement.setString(1, maPhongCu);
-			
+
 			ResultSet resultSet = preparedStatement.executeQuery();
 			String datPhong = "";
 			if (resultSet.next())
@@ -614,6 +627,179 @@ public class DatPhong_DAO {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			try {
+				ConnectDB.getConnection().rollback();
+				ConnectDB.getConnection().setAutoCommit(true);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get tất cả các phiếu đặt phòng trước trễ >= 1h
+	 * 
+	 * @return
+	 */
+	public List<DatPhong> getPhongDatTruocTre() {
+		List<DatPhong> list = new ArrayList<>();
+
+		return list;
+	}
+
+	/**
+	 * Get ngày nhận phòng của phòng đang thuê
+	 * 
+	 * @param maPhong
+	 * @return
+	 */
+	public LocalDate getNgayNhanPhongCuaPhongDangThue(String maPhong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT [ngayNhanPhong] FROM [dbo].[DatPhong] DP "
+							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
+							+ "WHERE DP.[trangThai] = N'Đang thuê' AND [phong] = ?");
+			preparedStatement.setString(1, maPhong);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			if (resultSet.next())
+				return Utils.convertDateToLocalDate(resultSet.getDate(1));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get tất cả phòng đang thuê theo mã đặt phòng
+	 * 
+	 * @param maDatPhong mã đặt phòng
+	 * @return danh sách các phòng
+	 */
+	public List<Phong> getPhongDangThue(String maDatPhong) {
+		List<Phong> list = new ArrayList<>();
+
+		String sql = "SELECT * FROM [dbo].[Phong] WHERE [maPhong] IN (SELECT [phong] FROM [dbo].[DatPhong] DP"
+				+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong]"
+				+ "	WHERE DP.[trangThai] = N'Đang thuê' AND [gioRa] IS NULL AND [maDatPhong] = ?)";
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, maDatPhong);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getPhong(resultSet));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	public List<Phong> getPhongCoTheGop(String maDatPhong, List<Phong> dsPhongDaChon) {
+		List<Phong> list = getPhongDangThue(maDatPhong);
+		list.addAll(getPhongDatNgay());
+
+		if (dsPhongDaChon != null) {
+			for (Phong phong : dsPhongDaChon) {
+				list.remove(phong);
+			}
+		}
+		return list;
+	}
+
+	public boolean gopPhong(String maDatPhong, List<Phong> dsPhongCanGop, Phong phongGop) {
+		Time time = Time.valueOf(LocalTime.now());
+
+		String q = "?";
+		boolean res;
+		int length = dsPhongCanGop.size();
+		PreparedStatement preparedStatement;
+		for (int i = 1; i < length; i++)
+			q += ", ?";
+
+		try {
+			ConnectDB.getConnection().setAutoCommit(false);
+
+//			Set giờ ra cho phòng cần gộp
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement(String.format("UPDATE [dbo].[ChiTietDatPhong] SET [gioRa] = ? "
+							+ "WHERE [datPhong] = ? AND [phong] IN (%s) AND [gioRa] IS NULL", q));
+			preparedStatement.setTime(1, time);
+			preparedStatement.setString(2, maDatPhong);
+			for (int i = 0; i < length; i++)
+				preparedStatement.setString(i + 3, dsPhongCanGop.get(i).getMaPhong());
+			System.out.println(2);
+			res = preparedStatement.executeUpdate() > 0;
+			System.out.println(3);
+
+			if (!res) {
+				System.out.println("Set giờ ra cho phòng cần gộp");
+				ConnectDB.getConnection().rollback();
+				ConnectDB.getConnection().setAutoCommit(true);
+				return false;
+			}
+
+//			Cập nhật trạng thái phòng của phòng cần gộp
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement(String.format("UPDATE [dbo].[Phong] SET [trangThai] = (CASE"
+							+ "	WHEN [trangThai] = N'Đang thuê' THEN N'Trống' ELSE N'Đã đặt' END) "
+							+ "WHERE [maPhong] IN (%s)", q));
+			for (int i = 0; i < length; i++)
+				preparedStatement.setString(i + 1, dsPhongCanGop.get(i).getMaPhong());
+			res = preparedStatement.executeUpdate() > 0;
+
+			if (!res) {
+				System.out.println("Cập nhật trạng thái phòng của phòng cần gộp");
+				ConnectDB.getConnection().rollback();
+				ConnectDB.getConnection().setAutoCommit(true);
+				return false;
+			}
+
+//			Cập nhật phòng gộp
+			if (phongGop.getTrangThai().equals(entity.Phong.TrangThai.Trong)) {
+				preparedStatement = ConnectDB.getConnection()
+						.prepareStatement("INSERT ChiTietDatPhong(datPhong, phong, gioVao) VALUES (?, ?, ?)");
+				preparedStatement.setString(1, maDatPhong);
+				preparedStatement.setString(2, phongGop.getMaPhong());
+				preparedStatement.setTime(3, time);
+				res = preparedStatement.executeUpdate() > 0;
+
+				if (!res) {
+					System.out.println("Cập nhật phòng gộp");
+					ConnectDB.getConnection().rollback();
+					ConnectDB.getConnection().setAutoCommit(true);
+					return false;
+				}
+
+//				Cập nhật trạng thái phòng gộp
+				preparedStatement = ConnectDB.getConnection().prepareStatement(
+						"UPDATE [dbo].[Phong] SET trangThai = (CASE WHEN [trangThai] = N'Trống' THEN N'Đang thuê' "
+								+ "ELSE N'Phòng tạm' END) WHERE [maPhong] = ?");
+				preparedStatement.setString(1, phongGop.getMaPhong());
+
+				res = preparedStatement.executeUpdate() > 0;
+
+				if (!res) {
+					System.out.println("Cập nhật trạng thái phòng gộp");
+					ConnectDB.getConnection().rollback();
+					ConnectDB.getConnection().setAutoCommit(true);
+					return false;
+				}
+			}
+
+			ConnectDB.getConnection().commit();
+			ConnectDB.getConnection().setAutoCommit(true);
+			return true;
+		} catch (Exception e) {
+			// TODO: handle exception
 			try {
 				ConnectDB.getConnection().rollback();
 				ConnectDB.getConnection().setAutoCommit(true);

@@ -47,6 +47,24 @@ public class LoaiPhong_DAO {
 		return null;
 	}
 
+	public LoaiPhong getLoaiPhongTheoTenLoai(String tenLoai) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM LoaiPhong WHERE tenLoai = ?");
+			preparedStatement.setString(1, tenLoai);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getLoaiPhong(resultSet);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	/**
 	 * Get tất cả các loại phòng
 	 * 

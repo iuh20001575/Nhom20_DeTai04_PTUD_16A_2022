@@ -162,7 +162,7 @@ public class Utils {
 		return String.format("%s:%s", convertIntToString(time.getHour()), convertIntToString(time.getMinute()));
 	}
 
-	private static String convertIntToString(int number) {
+	public static String convertIntToString(int number) {
 		if (number < 10)
 			return "0" + number;
 		return number + "";

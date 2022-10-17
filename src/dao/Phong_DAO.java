@@ -10,6 +10,7 @@ import java.util.List;
 import connectDB.ConnectDB;
 import entity.LoaiPhong;
 import entity.Phong;
+import entity.Phong.TrangThai;
 
 public class Phong_DAO {
 	private Phong getPhong(ResultSet resultSet) throws SQLException {
@@ -146,6 +147,25 @@ public class Phong_DAO {
 		}
 
 		return list;
+	}
+
+	public TrangThai getTrangThai(String maPhong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT trangThai FROM Phong WHERE maPhong = ?");
+
+			preparedStatement.setString(1, maPhong);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return Phong.convertStringToTrangThai(resultSet.getString(1));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	public List<Phong> getAllPhongDangThue() {

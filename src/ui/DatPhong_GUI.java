@@ -36,7 +36,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
-import components.jDialog.Glass;
 import components.jDialog.JDialogCustom;
 import components.notification.Notification;
 import components.panelRound.PanelRound;
@@ -79,7 +78,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * 
 	 * @param quanLyDatPhongGUI
 	 */
-	public DatPhong_GUI(Glass glass, QuanLyDatPhong_GUI quanLyDatPhongGUI) {
+	public DatPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI) {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e1) {
@@ -157,9 +156,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 						jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
 							public void mouseClicked(MouseEvent e) {
-								setVisible(false);
-								glass.setVisible(false);
-								glass.setAlpha(0f);
+								quanLyDatPhongGUI.closeJFrameSub();
 							};
 						});
 
@@ -286,7 +283,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scrDanhSachPhong.setViewportView(tbl);
-//		Căn phải cell 3 table
+//		Căn phải column 3 table
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
 		tbl.getColumnModel().getColumn(2).setCellRenderer(dtcr);

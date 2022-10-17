@@ -33,7 +33,6 @@ import components.panelEvent.PanelEvent;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import connectDB.ConnectDB;
-import dao.ChiTietDatPhong_DAO;
 import dao.DatPhong_DAO;
 import dao.Phong_DAO;
 import entity.Phong;
@@ -61,7 +60,6 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	private Phong_DAO phong_DAO;
 	private JPanel pnlDanhSachPhong;
 	private JScrollPane scrDanhSachPhong;
-	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
 	private JLabel lblSoPhongDSD;
 	private JLabel lblSoLuongPhongCho;
 	private JLabel lblSoPhongTrong;
@@ -96,7 +94,6 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		}
 
 		phong_DAO = new Phong_DAO();
-		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 		datPhong_DAO = new DatPhong_DAO();
 		jDialog = new JDialogCustom(this, components.jDialog.JDialogCustom.Type.warning);
 		glass = new Glass();
@@ -681,7 +678,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		btnSearch.setBounds(759, 0, 101, 39);
 		pnlFilter.add(btnSearch);
 
-		JComboBox comboBox = new JComboBox();
+		JComboBox<String> comboBox = new JComboBox<String>();
 		comboBox.setBackground(Color.CYAN);
 		comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		comboBox.setBounds(653, 5, 91, 28);
@@ -787,7 +784,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (!pnlDatPhong.isEnabled())
 					return;
-				openJFrameSub(new DatPhong_GUI(glass, _this));
+				openJFrameSub(new DatPhong_GUI(_this));
 			}
 		});
 
@@ -796,7 +793,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (!pnlDatPhongTruoc.isEnabled())
 					return;
-				openJFrameSub(new DatPhongTruoc_GUI(glass, _this));
+				openJFrameSub(new DatPhongTruoc_GUI(_this));
 			}
 		});
 
@@ -805,7 +802,16 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (!pnlChuyenPhong.isEnabled())
 					return;
-				openJFrameSub(new ChuyenPhong_GUI(glass, _this));
+				openJFrameSub(new ChuyenPhong_GUI(_this));
+			}
+		});
+
+		pnlGopPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!pnlChuyenPhong.isEnabled())
+					return;
+				openJFrameSub(new GopPhong_GUI(_this));
 			}
 		});
 
@@ -814,7 +820,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (!pnlThanhToan.isEnabled())
 					return;
-				openJFrameSub(new ThanhToan_GUI(glass, _this));
+				openJFrameSub(new ThanhToan_GUI(_this));
 			}
 		});
 	}
@@ -951,13 +957,19 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		Thread clock = new Thread() {
 			@Override
 			public void run() {
+				LocalDate ngayNhanPhong = datPhong_DAO.getNgayNhanPhongCuaPhongDangThue(phong.getMaPhong());
 				for (;;) {
 					try {
+						long daysElapsed = java.time.temporal.ChronoUnit.DAYS.between(ngayNhanPhong, LocalDate.now());
 						LocalTime timeNow = LocalTime.now();
 						int hieuPhut = timeNow.getHour() * 60 + timeNow.getMinute() - gioVao.getHour() * 60
 								- gioVao.getMinute();
 
-						String tongGio = Utils.convertLocalTimeToString(LocalTime.of(hieuPhut / 60, hieuPhut % 60));
+						if (daysElapsed > 0)
+							hieuPhut += 24 * daysElapsed * 60;
+
+						String tongGio = String.format("%s:%s", Utils.convertIntToString(hieuPhut / 60),
+								Utils.convertIntToString(hieuPhut % 60));
 
 						lblTongGio.setText("Tổng giờ: " + tongGio);
 						sleep(1000);

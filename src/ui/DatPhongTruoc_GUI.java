@@ -39,7 +39,6 @@ import com.raven.datechooser.DateChooser;
 
 import components.button.Button;
 import components.comboBox.ComboBox;
-import components.jDialog.Glass;
 import components.jDialog.JDialogCustom;
 import components.notification.Notification;
 import components.panelRound.PanelRound;
@@ -86,7 +85,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	 * @param quanLyDatPhongGUI
 	 * @param glass
 	 */
-	public DatPhongTruoc_GUI(Glass glass, QuanLyDatPhong_GUI quanLyDatPhongGUI) {
+	public DatPhongTruoc_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI) {
 		_this = this;
 
 		try {

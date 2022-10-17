@@ -23112,7 +23112,7 @@ CREATE TABLE ChiTietDatPhong (
 	phong CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
 	gioVao TIME(0) NOT NULL,
 	gioRa TIME(0),
-	PRIMARY KEY(datPhong, phong),
+	PRIMARY KEY(datPhong, phong, gioVao),
 	CONSTRAINT CHK_ChiTietDatPhong_datPhong_TheoMau CHECK (datPhong LIKE 'MDP[0-9][0-9][0-9][0-9]'), -- Kiểm tra đặt phòng theo mẫu: DVXXX
 	CONSTRAINT CHK_ChiTietDatPhong_phong_ThoaMau CHECK (phong LIKE '[0-9][0-9].[0-9][0-9]'), -- Kiểm tra phòng theo mẫu: XX.YY
 	CONSTRAINT CHK_ChiTietDatPhong_gioVao_LonHonBangGioNhanPhong CHECK (gioVao >= [dbo].[fnGetGioNhanPhongTheoMaDatPhong](datPhong)), -- Kiểm tra giờ vào >= giờ nhận phòng

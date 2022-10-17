@@ -28,7 +28,6 @@ import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
 import components.comboBox.ComboBox;
-import components.jDialog.Glass;
 import components.scrollbarCustom.ScrollBarCustom;
 import dao.DatPhong_DAO;
 import dao.LoaiPhong_DAO;
@@ -64,7 +63,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 	 * @param quanLyDatPhongGUI
 	 * @param glass
 	 */
-	public ChuyenPhong_GUI(Glass glass, QuanLyDatPhong_GUI quanLyDatPhongGUI) {
+	public ChuyenPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI) {
 		_this = this;
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		phong_DAO = new Phong_DAO();

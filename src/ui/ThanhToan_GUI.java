@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -34,7 +35,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
-import components.jDialog.Glass;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
 import connectDB.ConnectDB;
@@ -91,7 +91,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	 * 
 	 * @param quanLyDatPhongGUI
 	 */
-	public ThanhToan_GUI(Glass glass, QuanLyDatPhong_GUI quanLyDatPhongGUI) {
+	public ThanhToan_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI) {
 		try {
 			new ConnectDB().connect();
 		} catch (Exception e) {
@@ -597,30 +597,33 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			tableModel.removeRow(0);
 	}
 
-	private void addRow(ChiTietDatPhong chiTietDatPhong) {
+	private void addRow(ChiTietDatPhong chiTietDatPhong, LocalDate ngayThanhToan) {
 		int stt = tbl.getRowCount() + 1;
 		String maPhong = chiTietDatPhong.getPhong().getMaPhong();
 		Phong phong = phong_DAO.getPhong(maPhong);
 		LoaiPhong loaiPhong = loaiPhong_DAO.getLoaiPhong(phong.getLoaiPhong().getMaLoai());
 		phong.setLoaiPhong(loaiPhong);
 		double donGia = phong.getGiaTien();
+		LocalDate ngayNhanPhong = datPhong_DAO.getNgayNhanPhongCuaPhongDangThue(phong.getMaPhong());
+		long daysElapsed = java.time.temporal.ChronoUnit.DAYS.between(ngayNhanPhong, ngayThanhToan);
 		LocalTime gioRa = chiTietDatPhong.getGioRa() == null ? timeNow : chiTietDatPhong.getGioRa();
-		int hours = gioRa.getHour() - chiTietDatPhong.getGioVao().getHour();
-		int minutes = gioRa.getMinute() - chiTietDatPhong.getGioVao().getMinute();
-		int hieu = hours * 60 + minutes;
-		LocalTime hieuGio = LocalTime.of(hieu / 60, hieu % 60);
+		LocalTime gioVao = chiTietDatPhong.getGioVao();
+		int hours, minutes, hieu = 0;
 
-		double thanhTien;
+		hours = (int) (gioRa.getHour() + 24 * daysElapsed - gioVao.getHour());
+		minutes = gioRa.getMinute() - gioVao.getMinute();
+		hieu = hours * 60 + minutes;
 
-		if (hieu < 30)
-			thanhTien = donGia / 2;
-		else
-			thanhTien = hieu * 1.0 * donGia / 60;
+		double thanhTien = hieu * 1.0 * donGia / 60;
 
 		tongThoiGian += hieu;
 		tongTien += thanhTien;
 
-		tableModel.addRow(new String[] { stt + "", maPhong, Utils.convertLocalTimeToString(hieuGio),
+		hours = hieu / 60;
+		minutes = hieu % 60;
+
+		tableModel.addRow(new String[] { stt + "", maPhong,
+				String.format("%s:%s", Utils.convertIntToString(hours), Utils.convertIntToString(minutes)),
 				Utils.formatTienTe(donGia), Utils.formatTienTe(thanhTien) });
 	}
 
@@ -665,13 +668,14 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			dsChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(datPhong);
 
 			timeNow = LocalTime.now();
+			LocalDate ngayThanhToan = LocalDate.now();
 			tongThoiGian = 0;
 			tongTien = 0;
 			tienThanhToan = 0;
 
 			int length = dsChiTietDatPhong.size();
 			for (int i = 0; i < length; i++) {
-				addRow(dsChiTietDatPhong.get(i));
+				addRow(dsChiTietDatPhong.get(i), ngayThanhToan);
 			}
 
 			int gio = tongThoiGian / 60;
