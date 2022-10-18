@@ -13,11 +13,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,6 +27,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import components.button.Button;
+import components.comboBox.ComboBox;
 import components.jDialog.Glass;
 import components.jDialog.JDialogCustom;
 import components.panelEvent.PanelEvent;
@@ -450,7 +451,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 //		lblDatPhongF.setBounds(52, 35, 112, 22);
 
 		JLabel lblIconDatPhong = new JLabel("");
-		lblIconDatPhong.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
+		lblIconDatPhong.setIcon(new ImageIcon("Icon\\add.png"));
 		lblIconDatPhong.setBounds(10, 18, 32, 32);
 		pnlDatPhong.add(lblIconDatPhong);
 
@@ -552,7 +553,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlGopPhong.add(lblGopPhongF);
 
 		JLabel lblIconGopPhong = new JLabel("");
-		lblIconGopPhong.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
+		lblIconGopPhong.setIcon(new ImageIcon("Icon\\merge.png"));
 		lblIconGopPhong.setBounds(10, 18, 32, 32);
 		pnlGopPhong.add(lblIconGopPhong);
 
@@ -586,7 +587,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlThanhToan.add(lblThanhToanF);
 
 		JLabel lblIconThanhToan = new JLabel("");
-		lblIconThanhToan.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
+		lblIconThanhToan.setIcon(new ImageIcon("Icon\\pay-per-click.png"));
 		lblIconThanhToan.setBounds(10, 18, 32, 32);
 		pnlThanhToan.add(lblIconThanhToan);
 
@@ -678,8 +679,8 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		btnSearch.setBounds(759, 0, 101, 39);
 		pnlFilter.add(btnSearch);
 
-		JComboBox<String> comboBox = new JComboBox<String>();
-		comboBox.setBackground(Color.CYAN);
+		ComboBox<String> comboBox = new ComboBox<>();
+		comboBox.setBackground(Utils.primaryColor);
 		comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		comboBox.setBounds(653, 5, 91, 28);
 		pnlFilter.add(comboBox);
@@ -694,9 +695,13 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
-				if (dsPhong == null)
-					addPhong(phong_DAO.getAllPhong());
-				else
+				if (dsPhong == null) {
+					List<Phong> list = phong_DAO.getAllPhong();
+					addPhong(list);
+
+					comboBox.removeAllItems();
+					list.forEach(phong -> comboBox.addItem(phong.getMaPhong()));
+				} else
 					addPhong(phong_DAO.getAllPhongTheoMa(dsPhong));
 			}
 		});
@@ -809,7 +814,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlGopPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!pnlChuyenPhong.isEnabled())
+				if (!pnlGopPhong.isEnabled())
 					return;
 				openJFrameSub(new GopPhong_GUI(_this));
 			}
@@ -821,6 +826,20 @@ public class QuanLyDatPhong_GUI extends JFrame {
 				if (!pnlThanhToan.isEnabled())
 					return;
 				openJFrameSub(new ThanhToan_GUI(_this));
+			}
+		});
+
+//		Sự kiện tìm phòng
+		btnSearch.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String maPhong = (String) comboBox.getSelectedItem();
+				Phong phong = phong_DAO.getPhong(maPhong);
+
+				List<Phong> list = new ArrayList<>();
+				list.add(phong);
+
+				addPhong(list);
 			}
 		});
 	}
@@ -1023,6 +1042,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			public void run() {
 				for (;;) {
 					try {
+						datPhong_DAO.huyPhongDatTre();
 						LocalDateTime currTime = LocalDateTime.now();
 						int day = currTime.getDayOfMonth();
 						int month = currTime.getMonthValue();

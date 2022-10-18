@@ -104,14 +104,23 @@ public class DatPhong_DAO {
 		boolean isInteger = Utils.isInteger(soLuong);
 
 		try {
-			String sql = "SELECT [maPhong], [loaiPhong], [soLuongKhach], [trangThai] FROM [dbo].[Phong] P "
-					+ "JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai WHERE [maPhong] NOT IN ("
-					+ "SELECT [maPhong] FROM [dbo].[Phong] P "
-					+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON P.maPhong = CTDP.phong "
-					+ "JOIN [dbo].[DatPhong] DP ON DP.maDatPhong = CTDP.datPhong "
-					+ "WHERE ([ngayNhanPhong] = CONVERT(DATE, GETDATE()) AND DP.[trangThai] = N'Đang chờ'"
-					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) <= '6:00:00') "
-					+ "OR DP.[trangThai] = N'Đang thuê') AND [maPhong] LIKE ? AND tenLoai LIKE ?";
+//			String sql = "SELECT [maPhong], [loaiPhong], [soLuongKhach], [trangThai] FROM [dbo].[Phong] P "
+//					+ "JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai WHERE [maPhong] NOT IN ("
+//					+ "SELECT [maPhong] FROM [dbo].[Phong] P "
+//					+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON P.maPhong = CTDP.phong "
+//					+ "JOIN [dbo].[DatPhong] DP ON DP.maDatPhong = CTDP.datPhong "
+//					+ "WHERE ([ngayNhanPhong] = CONVERT(DATE, GETDATE()) AND DP.[trangThai] = N'Đang chờ'"
+//					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) <= '6:00:00') "
+//					+ "OR DP.[trangThai] = N'Đang thuê') AND [maPhong] LIKE ? AND tenLoai LIKE ?";
+
+			String sql = "SELECT [maPhong], [loaiPhong], [soLuongKhach], [trangThai] FROM [dbo].[Phong] P"
+					+ "	JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai WHERE maPhong NOT IN ("
+					+ "	SELECT [phong] FROM [dbo].[DatPhong] DP"
+					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong]"
+					+ "	WHERE ([trangThai] = N'Đang thuê' AND [gioRa] IS NULL)"
+					+ "	OR ([trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE())"
+					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) < '6:00:00')"
+					+ "	) AND [maPhong] LIKE ? AND tenLoai LIKE ?";
 
 			if (isInteger)
 				sql += " AND soLuongKhach = ?";
@@ -659,7 +668,8 @@ public class DatPhong_DAO {
 					+ "	ELSE N'Đang thuê' END) WHERE [maPhong] IN (SELECT [phong] FROM [dbo].[DatPhong] DP"
 					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong]"
 					+ "	WHERE [trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE())"
-					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) >= CONVERT(TIME(0), '1:00:00'))") > 0;
+					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) >= CONVERT(TIME(0), '1:00:00') "
+					+ "AND [gioNhanPhong] < CONVERT(TIME(0), GETDATE()))") > 0;
 
 			if (!res)
 				return rollback();
@@ -667,7 +677,7 @@ public class DatPhong_DAO {
 //			[DatPhong] - Cập nhật trạng thái đặt phòng thành đã hủy
 			res = statement.executeUpdate("UPDATE [dbo].[DatPhong] SET [trangThai] = N'Đã hủy' "
 					+ "WHERE [trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
-					+ "AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) >= CONVERT(TIME(0), '1:00:00')") >= 0;
+					+ "AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) >= CONVERT(TIME(0), '1:00:00')") > 0;
 
 			if (!res)
 				return rollback();
@@ -754,13 +764,14 @@ public class DatPhong_DAO {
 	public boolean isGopPhong() {
 		try {
 			Statement statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) AS SOLUONGPHONG FROM [dbo].[ChiTietDatPhong] "
-					+ "WHERE [gioRa] IS NULL GROUP BY [datPhong]");
+			ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) AS SOLUONGPHONG FROM [dbo].[DatPhong] DP "
+					+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
+					+ "WHERE [gioRa] IS NULL AND [trangThai] = N'Đang thuê' GROUP BY [datPhong]");
 
 			while (resultSet.next()) {
 				int soLuong = Integer.parseInt(resultSet.getString(1));
 
-				if (soLuong > 2)
+				if (soLuong >= 2)
 					return true;
 			}
 		} catch (SQLException e) {
@@ -792,12 +803,9 @@ public class DatPhong_DAO {
 			preparedStatement.setString(2, maDatPhong);
 			for (int i = 0; i < length; i++)
 				preparedStatement.setString(i + 3, dsPhongCanGop.get(i).getMaPhong());
-			System.out.println(2);
 			res = preparedStatement.executeUpdate() > 0;
-			System.out.println(3);
 
 			if (!res) {
-				System.out.println("Set giờ ra cho phòng cần gộp");
 				ConnectDB.getConnection().rollback();
 				ConnectDB.getConnection().setAutoCommit(true);
 				return false;
@@ -813,7 +821,6 @@ public class DatPhong_DAO {
 			res = preparedStatement.executeUpdate() > 0;
 
 			if (!res) {
-				System.out.println("Cập nhật trạng thái phòng của phòng cần gộp");
 				ConnectDB.getConnection().rollback();
 				ConnectDB.getConnection().setAutoCommit(true);
 				return false;
@@ -829,7 +836,6 @@ public class DatPhong_DAO {
 				res = preparedStatement.executeUpdate() > 0;
 
 				if (!res) {
-					System.out.println("Cập nhật phòng gộp");
 					ConnectDB.getConnection().rollback();
 					ConnectDB.getConnection().setAutoCommit(true);
 					return false;
@@ -844,7 +850,6 @@ public class DatPhong_DAO {
 				res = preparedStatement.executeUpdate() > 0;
 
 				if (!res) {
-					System.out.println("Cập nhật trạng thái phòng gộp");
 					ConnectDB.getConnection().rollback();
 					ConnectDB.getConnection().setAutoCommit(true);
 					return false;

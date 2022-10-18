@@ -100,7 +100,6 @@ public class ControlPanel extends JPanel implements ActionListener {
 		txtTrangHienThai.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String trangHienTai = txtTrangHienThai.getText();
-				System.out.println(trangHienTai);
 				int trangHienTaiInt = Integer.parseInt(trangHienTai);
 				if (trangHienTaiInt > 0 && trangHienTaiInt <= soTrang)
 					setTrangHienTai(trangHienTaiInt);

@@ -59,6 +59,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private final String labelCmbMaPhong = "Mã phòng";
 	private JPanel contentPane;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
@@ -194,8 +195,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlPhong.add(pnlActions);
 		pnlActions.setLayout(null);
 
-		Button btnNewButton_2 = new Button("");
-		btnNewButton_2.addMouseListener(new MouseAdapter() {
+		Button btnChonPhong = new Button("");
+		btnChonPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
@@ -211,16 +212,16 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				}
 			}
 		});
-		btnNewButton_2.setFocusable(false);
-		btnNewButton_2.setRadius(8);
-		btnNewButton_2.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnNewButton_2.setColor(Utils.primaryColor);
-		btnNewButton_2.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
-		btnNewButton_2.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
-		btnNewButton_2.setBorderColor(Utils.secondaryColor);
-		btnNewButton_2.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
-		btnNewButton_2.setBounds(0, 94, 36, 36);
-		pnlActions.add(btnNewButton_2);
+		btnChonPhong.setFocusable(false);
+		btnChonPhong.setRadius(8);
+		btnChonPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnChonPhong.setColor(Utils.primaryColor);
+		btnChonPhong.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
+		btnChonPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
+		btnChonPhong.setBorderColor(Utils.secondaryColor);
+		btnChonPhong.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
+		btnChonPhong.setBounds(0, 94, 36, 36);
+		pnlActions.add(btnChonPhong);
 
 		JScrollPane scrDanhSachPhong = new JScrollPane();
 		scrDanhSachPhong.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -317,7 +318,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		cmbMaPhong = new JComboBox<String>();
 		cmbMaPhong.setBackground(Utils.primaryColor);
 		cmbMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cmbMaPhong.setModel(new DefaultComboBoxModel<String>(new String[] { "Mã phòng" }));
+		cmbMaPhong.setModel(new DefaultComboBoxModel<String>(new String[] { labelCmbMaPhong }));
 		cmbMaPhong.setBounds(0, 0, 200, 36);
 		pnlFilter.add(cmbMaPhong);
 
@@ -337,6 +338,12 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlFilter.add(cmbSoLuong);
 
 		Button btnLamMoi = new Button("Làm mới");
+		btnLamMoi.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnLamMoi.setRadius(4);
+		btnLamMoi.setBorderColor(Utils.secondaryColor);
+		btnLamMoi.setColor(Color.WHITE);
+		btnLamMoi.setColorOver(Utils.getOpacity(Color.BLACK, 0.05f));
+		btnLamMoi.setColorClick(Utils.getOpacity(Color.BLACK, 0.1f));
 		btnLamMoi.setFocusable(false);
 		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		btnLamMoi.setBounds(660, 0, 110, 36);
@@ -363,16 +370,17 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			}
 		});
 
-		Button btnSearchSoDienThoai_1 = new Button();
-		btnSearchSoDienThoai_1.setRadius(4);
-		btnSearchSoDienThoai_1.setFocusable(false);
-		btnSearchSoDienThoai_1.setColorOver(new Color(140, 177, 180, 230));
-		btnSearchSoDienThoai_1.setColorClick(new Color(140, 177, 180, 204));
-		btnSearchSoDienThoai_1.setColor(new Color(140, 177, 180));
-		btnSearchSoDienThoai_1.setBorderColor(new Color(203, 239, 255));
-		btnSearchSoDienThoai_1.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnSearchSoDienThoai_1.setBounds(635, 72, 50, 50);
-		pnlBody.add(btnSearchSoDienThoai_1);
+		Button btnSearchPhongDatTruoc = new Button();
+		btnSearchPhongDatTruoc.setIcon(new ImageIcon("Icon\\statistics.png"));
+		btnSearchPhongDatTruoc.setRadius(4);
+		btnSearchPhongDatTruoc.setFocusable(false);
+		btnSearchPhongDatTruoc.setColorOver(new Color(140, 177, 180, 230));
+		btnSearchPhongDatTruoc.setColorClick(new Color(140, 177, 180, 204));
+		btnSearchPhongDatTruoc.setColor(new Color(140, 177, 180));
+		btnSearchPhongDatTruoc.setBorderColor(new Color(203, 239, 255));
+		btnSearchPhongDatTruoc.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnSearchPhongDatTruoc.setBounds(635, 72, 50, 50);
+		pnlBody.add(btnSearchPhongDatTruoc);
 
 		cmbGio = new ComboBox<String>();
 		cmbGio.setModel(new DefaultComboBoxModel<String>());
@@ -403,11 +411,14 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		lblPhut.setBounds(570, 95, 45, 30);
 		pnlBody.add(lblPhut);
 
-		btnSearchSoDienThoai_1.addMouseListener(new MouseAdapter() {
+		btnSearchPhongDatTruoc.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
 				LocalDate dateNow = LocalDate.now();
+				cmbMaPhong.removeItemListener(_this);
+				cmbMaPhong.removeAllItems();
+				cmbMaPhong.addItem(labelCmbMaPhong);
 
 				if (ngayNhanPhong.isBefore(dateNow)) {
 					JDialogCustom jDialogCustom = new JDialogCustom(_this,
@@ -422,7 +433,9 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				LocalTime gioNhanPhong = LocalTime.of(gio, phut);
 
 				List<Phong> list = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong);
+				list.forEach(phong -> cmbMaPhong.addItem(phong.getMaPhong()));
 				addRow(list);
+				cmbMaPhong.addItemListener(_this);
 			}
 		});
 
@@ -472,7 +485,34 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			}
 		});
 
+//		Sự kiện nút làm mới
+		btnLamMoi.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				int gio = Integer.parseInt((String) cmbGio.getSelectedItem()),
+						phut = Integer.parseInt((String) cmbPhut.getSelectedItem());
+				LocalTime gioNhanPhong = LocalTime.of(gio, phut);
+				LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
+
+				cmbLoaiPhong.removeItemListener(_this);
+				cmbMaPhong.removeItemListener(_this);
+				cmbSoLuong.removeItemListener(_this);
+
+				emptyTable();
+				addRow(datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong));
+				cmbLoaiPhong.setSelectedIndex(0);
+				cmbMaPhong.setSelectedIndex(0);
+				cmbSoLuong.setSelectedIndex(0);
+
+				cmbLoaiPhong.addItemListener(_this);
+				cmbMaPhong.addItemListener(_this);
+				cmbSoLuong.addItemListener(_this);
+			};
+		});
+
 		showDanhSachPhongDaChon();
+		cmbMaPhong.addItemListener(_this);
+		cmbLoaiPhong.addItemListener(_this);
+		cmbSoLuong.addItemListener(_this);
 	}
 
 	private void setTimeComboBox(int gioSelect) {
@@ -609,8 +649,33 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		if (e.getStateChange() == ItemEvent.SELECTED) {
+		Object o = e.getSource();
+
+		if (e.getStateChange() == ItemEvent.DESELECTED)
+			return;
+		if (o.equals(cmbGio)) {
 			setTimeComboBox(Integer.parseInt((String) cmbGio.getSelectedItem()));
+		} else {
+			filterPhongDatTruoc();
 		}
+	}
+
+	private void filterPhongDatTruoc() {
+		String maPhong = (String) cmbMaPhong.getSelectedItem();
+		String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
+		String soLuong = (String) cmbSoLuong.getSelectedItem();
+
+		if (maPhong.equals("Mã phòng"))
+			maPhong = "";
+		if (loaiPhong.equals("Loại phòng"))
+			loaiPhong = "";
+
+		int gio = Integer.parseInt((String) cmbGio.getSelectedItem()),
+				phut = Integer.parseInt((String) cmbPhut.getSelectedItem());
+		LocalTime gioNhanPhong = LocalTime.of(gio, phut);
+		LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
+		List<Phong> list = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
+		emptyTable();
+		addRow(list);
 	}
 }

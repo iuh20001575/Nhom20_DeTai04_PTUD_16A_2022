@@ -202,15 +202,15 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		pnlPhong.add(pnlActions);
 		pnlActions.setLayout(null);
 
-		Button btnNewButton_2 = new Button("");
-		btnNewButton_2.setFocusable(false);
-		btnNewButton_2.setRadius(8);
-		btnNewButton_2.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnNewButton_2.setColor(Utils.primaryColor);
-		btnNewButton_2.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
-		btnNewButton_2.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
-		btnNewButton_2.setBorderColor(Utils.secondaryColor);
-		btnNewButton_2.addMouseListener(new MouseAdapter() {
+		Button btnChonPhong = new Button("");
+		btnChonPhong.setFocusable(false);
+		btnChonPhong.setRadius(8);
+		btnChonPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnChonPhong.setColor(Utils.primaryColor);
+		btnChonPhong.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
+		btnChonPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
+		btnChonPhong.setBorderColor(Utils.secondaryColor);
+		btnChonPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
@@ -226,9 +226,9 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 				}
 			}
 		});
-		btnNewButton_2.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
-		btnNewButton_2.setBounds(0, 94, 36, 36);
-		pnlActions.add(btnNewButton_2);
+		btnChonPhong.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
+		btnChonPhong.setBounds(0, 94, 36, 36);
+		pnlActions.add(btnChonPhong);
 
 		JScrollPane scrDanhSachPhong = new JScrollPane();
 		scrDanhSachPhong.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -375,6 +375,16 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		pnlFilter.add(cmbSoLuong);
 
 		Button btnLamMoi = new Button("Làm mới");
+		btnLamMoi.setFocusable(false);
+		btnLamMoi.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnLamMoi.setRadius(4);
+		btnLamMoi.setBorderColor(Utils.secondaryColor);
+		btnLamMoi.setColor(Color.WHITE);
+		btnLamMoi.setColorOver(Utils.getOpacity(Color.BLACK, 0.05f));
+		btnLamMoi.setColorClick(Utils.getOpacity(Color.BLACK, 0.1f));
+		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		btnLamMoi.setBounds(660, 0, 110, 36);
+		pnlFilter.add(btnLamMoi);
 		btnLamMoi.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -393,10 +403,6 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 				cmbSoLuong.addItemListener(_this);
 			}
 		});
-		btnLamMoi.setFocusable(false);
-		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		btnLamMoi.setBounds(660, 0, 110, 36);
-		pnlFilter.add(btnLamMoi);
 
 		txtSoDienThoai.addKeyListener(new KeyAdapter() {
 			@Override
