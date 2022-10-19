@@ -3,13 +3,11 @@ package ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,88 +22,29 @@ import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
 import components.scrollbarCustom.ScrollBarCustom;
-import layouts.DefaultLayout;
 import utils.Utils;
 
-public class QuanLyPhieuDatPhong_GUI extends JFrame {
+public class QuanLyPhieuDatPhong_GUI extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private JTextField txtSoDienThoai;
 	private JTable tbl;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					QuanLyPhieuDatPhong_GUI frame = new QuanLyPhieuDatPhong_GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
 	public QuanLyPhieuDatPhong_GUI() {
-		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Quản lý phiếu đặt phòng");
-		contentPane = defaultLayout.getJPanel();
-
-//		setTitle("Quản lý phiếu đặt phòng");
-//		setResizable(false);
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		setBounds(0, 0, 1100, 610);
-//		setLocationRelativeTo(null);
-//
-//		contentPane = new JPanel();
-//		contentPane.setForeground(Color.GRAY);
-//		contentPane.setBackground(Utils.secondaryColor);
-//		setContentPane(contentPane);
-//		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-//		contentPane.setLayout(null);
-//
-//		JPanel pnlHeader = new JPanel();
-//		pnlHeader.setBackground(Utils.primaryColor);
-//		pnlHeader.setBounds(0, 0, 1086, 65);
-//		contentPane.add(pnlHeader);
-//		pnlHeader.setLayout(null);
-//
-//		JButton btnNewButton = new JButton("New button");
-//		btnNewButton.setBounds(-20, -20, 0, 0);
-//		contentPane.add(btnNewButton);
-//
-//		Button btnMenu = new Button("|||");
-//		btnMenu.setBounds(23, 16, 38, 38);
-//		btnMenu.setForeground(Utils.primaryColor);
-//		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-//		btnMenu.setBorder(BorderFactory.createEmptyBorder());
-//		btnMenu.setBackground(Color.WHITE);
-//		btnMenu.setBorderColor(Utils.primaryColor);
-//		btnMenu.setRadius(8);
-//		btnMenu.setFocusable(false);
-//		pnlHeader.add(btnMenu);
-//
-//		JLabel lblTitle = new JLabel("QUẢN LÝ PHIẾU ĐẶT PHÒNG");
-//		lblTitle.setForeground(Color.WHITE);
-//		lblTitle.setBounds(76, 17, 948, 32);
-//		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
-//		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
-//		pnlHeader.add(lblTitle);
-//		End default layout
+		setBackground(Utils.secondaryColor);
+		setBounds(0, 0, 1086, 508);
+		setLayout(null);
 
 		JPanel pnlSearch = new JPanel();
 		pnlSearch.setBackground(Utils.secondaryColor);
-		pnlSearch.setBounds(16, 85, 1054, 36);
-		contentPane.add(pnlSearch);
+		pnlSearch.setBounds(16, 20, 1054, 36);
+		this.add(pnlSearch);
 		pnlSearch.setLayout(null);
 
 		JPanel pnlMaPhieuDat = new JPanel();
@@ -185,8 +124,8 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
-		pnlActions.setBounds(16, 141, 1054, 36);
-		contentPane.add(pnlActions);
+		pnlActions.setBounds(16, 76, 1054, 36);
+		this.add(pnlActions);
 		pnlActions.setLayout(null);
 
 		Button btnXemPhong = new Button("Xem phòng");
@@ -246,14 +185,14 @@ public class QuanLyPhieuDatPhong_GUI extends JFrame {
 		pnlActions.add(btnXuatPDF);
 
 		JScrollPane scr = new JScrollPane();
-		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(16, 197, 1054, 366);
+		scr.setBounds(16, 132, 1054, 366);
 		scr.setBackground(Utils.primaryColor);
 		ScrollBarCustom scp = new ScrollBarCustom();
 		scp.setScrollbarColor(new Color(203, 203, 203));
 		scr.setVerticalScrollBar(scp);
-		contentPane.add(scr);
+		this.add(scr);
 		tbl = new JTable() {
 			/**
 			 * 

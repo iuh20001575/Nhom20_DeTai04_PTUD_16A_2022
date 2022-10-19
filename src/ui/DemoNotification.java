@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 
 import components.button.ButtonCustom;
 import components.notification.Notification;
-import layouts.DefaultLayout;
 
 public class DemoNotification extends JFrame {
 
@@ -41,9 +40,6 @@ public class DemoNotification extends JFrame {
 	 */
 	public DemoNotification() {
 		JFrame frame = this;
-
-		DefaultLayout df = new DefaultLayout(frame, contentPane, "Demo Notification", "");
-		contentPane = df.getJPanel();
 
 		JButton btnNewButton = new JButton("Success Btn");
 		btnNewButton.addActionListener(new ActionListener() {

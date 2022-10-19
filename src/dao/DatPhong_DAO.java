@@ -939,12 +939,16 @@ public class DatPhong_DAO {
 	}
 
 	private boolean commit() throws SQLException {
+		if (ConnectDB.getConnection().getAutoCommit())
+			ConnectDB.getConnection().setAutoCommit(false);
 		ConnectDB.getConnection().commit();
 		ConnectDB.getConnection().setAutoCommit(true);
 		return true;
 	}
 
 	private boolean rollback() throws SQLException {
+		if (ConnectDB.getConnection().getAutoCommit())
+			ConnectDB.getConnection().setAutoCommit(false);
 		ConnectDB.getConnection().rollback();
 		ConnectDB.getConnection().setAutoCommit(true);
 		return false;

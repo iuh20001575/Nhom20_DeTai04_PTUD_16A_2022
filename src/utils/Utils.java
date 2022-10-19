@@ -1,6 +1,7 @@
 package utils;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -9,6 +10,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.swing.JFrame;
 
 public class Utils {
 	public static final Color primaryColor = new Color(140, 177, 180);
@@ -19,8 +22,18 @@ public class Utils {
 	public static final Color phongTam = new Color(115, 120, 234);
 	public static final Color lineTextField = new Color(149, 166, 248);
 	public static final Color labelTextField = new Color(150, 150, 150);
+	public static final Rectangle boundsPnlBody = new Rectangle(0, 65, 1086, 508);
 	public static final int width = 1086;
 	public static final int height = 573;
+	private static JFrame main;
+
+	public static JFrame getMain() {
+		return main;
+	}
+
+	public static void setMain(JFrame main) {
+		Utils.main = main;
+	}
 
 	/**
 	 * Get màu RGBA

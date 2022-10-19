@@ -56,7 +56,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 		btnNext.setBounds(198, 0, 34, 34);
 		add(btnNext);
 
-		btnLast = new JButton("");
+		btnLast = new JButton("0");
 		btnLast.setIcon(new ImageIcon("Icon\\last.png"));
 		btnLast.setBounds(252, 0, 34, 34);
 		add(btnLast);
@@ -73,7 +73,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 		lbl.setBounds(30, 0, 10, 34);
 		pnlLabel.add(lbl);
 
-		lblSoTrang = new JLabel("55");
+		lblSoTrang = new JLabel("0");
 		lblSoTrang.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		lblSoTrang.setBounds(40, 0, 30, 34);
 		pnlLabel.add(lblSoTrang);

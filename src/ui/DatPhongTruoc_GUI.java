@@ -107,7 +107,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		setUndecorated(true);
-		setLocationRelativeTo(quanLyDatPhongGUI);
+		setLocationRelativeTo(null);
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
@@ -130,7 +130,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 		JPanel pnlBody = new JPanel();
 		pnlBody.setBackground(Utils.secondaryColor);
-		pnlBody.setBounds(40, 50, 770, 468);
+		pnlBody.setBounds(0, 50, 850, 486);
 		pnlContainer.add(pnlBody);
 		pnlBody.setLayout(null);
 
@@ -138,7 +138,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		txtSoDienThoai.setBackground(Utils.secondaryColor);
 		txtSoDienThoai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtSoDienThoai.setLabelText("Số điện thoại khách");
-		txtSoDienThoai.setBounds(0, 0, 340, 55);
+		txtSoDienThoai.setBounds(40, 0, 340, 55);
 		pnlBody.add(txtSoDienThoai);
 		txtSoDienThoai.setColumns(10);
 
@@ -171,7 +171,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnSearchSoDienThoai.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.9f));
 		btnSearchSoDienThoai.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnSearchSoDienThoai.setIcon(new ImageIcon("Icon\\user_searching.png"));
-		btnSearchSoDienThoai.setBounds(360, 2, 50, 50);
+		btnSearchSoDienThoai.setBounds(400, 2, 50, 50);
 		pnlBody.add(btnSearchSoDienThoai);
 
 		txtTenKhachHang = new TextField();
@@ -179,13 +179,13 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		txtTenKhachHang.setEditable(false);
 		txtTenKhachHang.setBackground(Utils.secondaryColor);
 		txtTenKhachHang.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		txtTenKhachHang.setBounds(430, 0, 340, 55);
+		txtTenKhachHang.setBounds(470, 0, 340, 55);
 		pnlBody.add(txtTenKhachHang);
 		txtTenKhachHang.setColumns(10);
 
 		pnlPhong = new JPanel();
 		pnlPhong.setBackground(Utils.secondaryColor);
-		pnlPhong.setBounds(0, 187, 770, 225);
+		pnlPhong.setBounds(40, 187, 770, 225);
 		pnlBody.add(pnlPhong);
 		pnlPhong.setLayout(null);
 
@@ -283,7 +283,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 		JPanel pnlBtnGroup = new JPanel();
 		pnlBtnGroup.setBackground(Utils.secondaryColor);
-		pnlBtnGroup.setBounds(0, 432, 770, 36);
+		pnlBtnGroup.setBounds(40, 432, 770, 36);
 		pnlBody.add(pnlBtnGroup);
 		pnlBtnGroup.setLayout(null);
 
@@ -311,7 +311,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 		JPanel pnlFilter = new JPanel();
 		pnlFilter.setBackground(Utils.secondaryColor);
-		pnlFilter.setBounds(0, 140, 770, 36);
+		pnlFilter.setBounds(40, 140, 770, 36);
 		pnlBody.add(pnlFilter);
 		pnlFilter.setLayout(null);
 
@@ -355,7 +355,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		txtNgayNhanPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtNgayNhanPhong.setColumns(10);
 		txtNgayNhanPhong.setBackground(new Color(203, 239, 255));
-		txtNgayNhanPhong.setBounds(0, 70, 340, 55);
+		txtNgayNhanPhong.setBounds(40, 70, 340, 55);
 		pnlBody.add(txtNgayNhanPhong);
 		dateChoose = new DateChooser();
 		dateChoose.setTextRefernce(txtNgayNhanPhong);
@@ -379,36 +379,36 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnSearchPhongDatTruoc.setColor(new Color(140, 177, 180));
 		btnSearchPhongDatTruoc.setBorderColor(new Color(203, 239, 255));
 		btnSearchPhongDatTruoc.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnSearchPhongDatTruoc.setBounds(635, 72, 50, 50);
+		btnSearchPhongDatTruoc.setBounds(675, 72, 50, 50);
 		pnlBody.add(btnSearchPhongDatTruoc);
 
 		cmbGio = new ComboBox<String>();
 		cmbGio.setModel(new DefaultComboBoxModel<String>());
 		cmbGio.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbGio.setBackground(new Color(140, 177, 180));
-		cmbGio.setBounds(360, 89, 70, 36);
+		cmbGio.setBounds(400, 89, 70, 36);
 		pnlBody.add(cmbGio);
 
 		cmbPhut = new ComboBox<String>();
 		cmbPhut.setModel(new DefaultComboBoxModel<String>());
 		cmbPhut.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbPhut.setBackground(new Color(140, 177, 180));
-		cmbPhut.setBounds(497, 89, 70, 36);
+		cmbPhut.setBounds(537, 89, 70, 36);
 		pnlBody.add(cmbPhut);
 
 		JLabel lblTime = new JLabel("Giờ nhận phòng");
 		lblTime.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblTime.setBounds(360, 66, 200, 19);
+		lblTime.setBounds(400, 66, 200, 19);
 		pnlBody.add(lblTime);
 
 		JLabel lblGio = new JLabel("giờ");
 		lblGio.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		lblGio.setBounds(438, 95, 34, 30);
+		lblGio.setBounds(480, 95, 34, 30);
 		pnlBody.add(lblGio);
 
 		JLabel lblPhut = new JLabel("phút");
 		lblPhut.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		lblPhut.setBounds(570, 95, 45, 30);
+		lblPhut.setBounds(612, 95, 45, 30);
 		pnlBody.add(lblPhut);
 
 		btnSearchPhongDatTruoc.addMouseListener(new MouseAdapter() {

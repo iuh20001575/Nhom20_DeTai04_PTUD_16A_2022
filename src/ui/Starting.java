@@ -8,7 +8,7 @@ public class Starting {
 
 			@Override
 			public void run() {
-				new QuanLyDatPhong_GUI().setVisible(true);
+				new DangNhap_GUI().setVisible(true);
 			}
 		});
 	}

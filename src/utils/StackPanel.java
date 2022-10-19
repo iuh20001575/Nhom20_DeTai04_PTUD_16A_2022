@@ -2,24 +2,22 @@ package utils;
 
 import java.util.Stack;
 
-import javax.swing.JFrame;
+import entity.PanelUI;
 
 /**
- * Dúng để chứa các giao diện LIFO
- * 
- * @author ThaoHa
+ * Dùng để chứa các giao diện LIFO
  *
  */
-public class StackFrame {
-	private static Stack<JFrame> stack = new Stack<>();
+public class StackPanel {
+	private static Stack<PanelUI> stack = new Stack<>();
 
 	/**
 	 * Thêm một màn hình vào stack
 	 * 
 	 * @param jFrame
 	 */
-	public static void push(JFrame jFrame) {
-		stack.push(jFrame);
+	public static void push(PanelUI jPanel) {
+		stack.push(jPanel);
 	}
 
 	/**
@@ -27,7 +25,7 @@ public class StackFrame {
 	 * 
 	 * @return màn hình đã xóa
 	 */
-	public static JFrame pop() {
+	public static PanelUI pop() {
 		return stack.pop();
 	}
 
@@ -45,7 +43,11 @@ public class StackFrame {
 	 * 
 	 * @return
 	 */
-	public static JFrame peek() {
+	public static PanelUI peek() {
 		return stack.peek();
+	}
+
+	public static Stack<PanelUI> name() {
+		return stack;
 	}
 }

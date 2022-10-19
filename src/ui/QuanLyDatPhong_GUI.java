@@ -7,7 +7,6 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -16,7 +15,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -40,13 +38,12 @@ import entity.Phong;
 import entity.Phong.TrangThai;
 import utils.Utils;
 
-public class QuanLyDatPhong_GUI extends JFrame {
+public class QuanLyDatPhong_GUI extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private final int gapX = 21;
 	private final int gapY = 30;
 	private final int widthPhong = 131;
@@ -81,11 +78,13 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	private PanelEvent pnlDatPhongTruoc;
 	private PanelEvent pnlChuyenPhong;
 	private PanelEvent pnlGopPhong;
+	private JFrame jFrame;
+	private Thread clock;
 
 	/**
 	 * Create the frame.
 	 */
-	public QuanLyDatPhong_GUI() {
+	public QuanLyDatPhong_GUI(JFrame jFrame) {
 		_this = this;
 		try {
 			new ConnectDB().connect();
@@ -94,9 +93,10 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			e.printStackTrace();
 		}
 
+		this.jFrame = jFrame;
 		phong_DAO = new Phong_DAO();
 		datPhong_DAO = new DatPhong_DAO();
-		jDialog = new JDialogCustom(this, components.jDialog.JDialogCustom.Type.warning);
+		jDialog = new JDialogCustom(jFrame, components.jDialog.JDialogCustom.Type.warning);
 		glass = new Glass();
 
 		glass.addMouseListener(new MouseAdapter() {
@@ -106,63 +106,20 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			}
 		});
 
-//		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Trang chủ đặt phòng");
-//		contentPane = defaultLayout.getJPanel();
+		setBounds(0, 0, 1086, 508);
+		setLayout(null);
 
-		setTitle("Trang chủ đặt phòng");
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(0, 0, 1100, 610);
-		setLocationRelativeTo(null);
-
-		contentPane = new JPanel();
-		contentPane.setForeground(Color.GRAY);
-		contentPane.setBackground(Utils.secondaryColor);
-		setContentPane(contentPane);
-		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		contentPane.setLayout(null);
-
-		JPanel pnlHeader = new JPanel();
-		pnlHeader.setBackground(Utils.primaryColor);
-		pnlHeader.setBounds(0, 0, 1086, 65);
-		contentPane.add(pnlHeader);
-		pnlHeader.setLayout(null);
-
-		Button btnMenu = new Button("|||");
-		btnMenu.setFocusable(false);
-		btnMenu.setBounds(23, 16, 38, 38);
-		btnMenu.setForeground(Utils.primaryColor);
-		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-		btnMenu.setBorder(BorderFactory.createEmptyBorder());
-		btnMenu.setBackground(Color.WHITE);
-		btnMenu.setBorderColor(Utils.primaryColor);
-		btnMenu.setRadius(8);
-		btnMenu.setFocusable(false);
-		pnlHeader.add(btnMenu);
-
-		JLabel lblTitle = new JLabel("Trang chủ đặt phòng");
-		lblTitle.setForeground(Color.WHITE);
-		lblTitle.setBounds(76, 17, 948, 32);
-		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
-		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
-		pnlHeader.add(lblTitle);
-
-		Button btnBack = new Button();
-		btnBack.setFocusable(false);
-		btnBack.setIcon(new ImageIcon("Icon\\back 1.png"));
-		btnBack.setColor(Utils.primaryColor);
-		btnBack.setColorOver(Utils.primaryColor);
-		btnBack.setColorClick(Utils.primaryColor);
-		btnBack.setBorderColor(Utils.primaryColor);
-		btnBack.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnBack.setBounds(954, 1, 62, 62);
-		pnlHeader.add(btnBack);
+		JPanel panel = new JPanel();
+		panel.setBounds(0, 0, 1086, 508);
+		panel.setLayout(null);
+		panel.setBackground(Utils.secondaryColor);
+		add(panel);
 
 //		Chọn loại phòng
 		JPanel pnlLoaiPhong = new JPanel();
 		pnlLoaiPhong.setBackground(Utils.secondaryColor);
-		pnlLoaiPhong.setBounds(16, 65, 1054, 58);
-		contentPane.add(pnlLoaiPhong);
+		pnlLoaiPhong.setBounds(16, 0, 1054, 58);
+		panel.add(pnlLoaiPhong);
 		pnlLoaiPhong.setLayout(null);
 
 		JLabel lblLoaiPhong = new JLabel("Chọn loại phòng:");
@@ -296,15 +253,15 @@ public class QuanLyDatPhong_GUI extends JFrame {
 
 //		Seperator
 		JPanel pnlSeperator = new JPanel();
-		pnlSeperator.setBounds(0, 124, Utils.width, 4);
+		pnlSeperator.setBounds(0, 59, Utils.width, 4);
 		pnlSeperator.setBackground(new Color(0, 0, 0, 64));
-		contentPane.add(pnlSeperator);
+		panel.add(pnlSeperator);
 
 //		Thống kê loại phòng
 		JPanel pnlThongKeLoaiPhong = new JPanel();
 		pnlThongKeLoaiPhong.setBackground(Utils.secondaryColor);
-		pnlThongKeLoaiPhong.setBounds(924, 153, 146, 285);
-		contentPane.add(pnlThongKeLoaiPhong);
+		pnlThongKeLoaiPhong.setBounds(924, 88, 146, 285);
+		panel.add(pnlThongKeLoaiPhong);
 		pnlThongKeLoaiPhong.setLayout(null);
 
 		PanelRound pnlPhongTrong = new PanelRound(10);
@@ -413,7 +370,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 //		Các nút chức năng
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
-		contentPane.add(pnlActions);
+		panel.add(pnlActions);
 		pnlActions.setLayout(null);
 
 		int width = 190, height = 69, gapX = 20;
@@ -593,7 +550,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 
 		JPanel[] btnActions = { pnlDatPhong, pnlDatPhongTruoc, pnlChuyenPhong, pnlGopPhong, pnlThanhToan };
 		int[] btnActionsWidth = { 150, 200, 190, 155, 160 };
-		pnlActions.setBounds(16, 487, width * btnActions.length + gapX * btnActions.length - 1, 69);
+		pnlActions.setBounds(16, 422, width * btnActions.length + gapX * btnActions.length - 1, 69);
 		for (int i = 0; i < btnActions.length; i++) {
 			int x = 0;
 			for (int j = 0; j < i; j++)
@@ -613,8 +570,8 @@ public class QuanLyDatPhong_GUI extends JFrame {
 
 		JPanel pnlFilter = new JPanel();
 		pnlFilter.setBackground(Utils.secondaryColor);
-		pnlFilter.setBounds(16, 133, 860, 39);
-		contentPane.add(pnlFilter);
+		pnlFilter.setBounds(16, 68, 860, 39);
+		panel.add(pnlFilter);
 		pnlFilter.setLayout(null);
 
 		pnlFilterPhongCho = new PanelEvent(8);
@@ -686,25 +643,20 @@ public class QuanLyDatPhong_GUI extends JFrame {
 		pnlFilter.add(comboBox);
 
 		pnlContainerDanhSachPhong = new JPanel();
-		pnlContainerDanhSachPhong.setBounds(16, 182, 900, 292);
+		pnlContainerDanhSachPhong.setBounds(16, 117, 900, 292);
 		pnlContainerDanhSachPhong.setBackground(Utils.secondaryColor);
 		pnlContainerDanhSachPhong.setLayout(null);
-		contentPane.add(pnlContainerDanhSachPhong);
+		panel.add(pnlContainerDanhSachPhong);
 
 //		Event window
-		this.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowActivated(WindowEvent e) {
-				if (dsPhong == null) {
-					List<Phong> list = phong_DAO.getAllPhong();
-					addPhong(list);
+		if (dsPhong == null) {
+			List<Phong> list = phong_DAO.getAllPhong();
+			addPhong(list);
 
-					comboBox.removeAllItems();
-					list.forEach(phong -> comboBox.addItem(phong.getMaPhong()));
-				} else
-					addPhong(phong_DAO.getAllPhongTheoMa(dsPhong));
-			}
-		});
+			comboBox.removeAllItems();
+			list.forEach(phong -> comboBox.addItem(phong.getMaPhong()));
+		} else
+			addPhong(phong_DAO.getAllPhongTheoMa(dsPhong));
 
 //		Event loại phòng
 		btnTatCaUnactive.addMouseListener(new MouseAdapter() {
@@ -745,13 +697,16 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongTrong.isActive();
-				if (!isActive) {
-					pnlFilterPhongDangSuDung.setActive(false);
-					pnlFilterPhongCho.setActive(false);
+				List<Phong> list = phong_DAO
+						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.Trong));
+				if (list.size() > 0) {
+					if (!isActive) {
+						pnlFilterPhongDangSuDung.setActive(false);
+						pnlFilterPhongCho.setActive(false);
+					}
+					pnlFilterPhongTrong.setActive(!isActive);
 				}
-				pnlFilterPhongTrong.setActive(!isActive);
-				addPhong(phong_DAO
-						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.Trong)));
+				addPhong(list);
 			}
 		});
 
@@ -759,13 +714,17 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongDangSuDung.isActive();
-				if (!isActive) {
-					pnlFilterPhongTrong.setActive(false);
-					pnlFilterPhongCho.setActive(false);
+				List<Phong> list = phong_DAO
+						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DangThue));
+
+				if (list.size() > 0) {
+					if (!isActive) {
+						pnlFilterPhongTrong.setActive(false);
+						pnlFilterPhongCho.setActive(false);
+					}
+					pnlFilterPhongDangSuDung.setActive(!isActive);
 				}
-				pnlFilterPhongDangSuDung.setActive(!isActive);
-				addPhong(phong_DAO
-						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DangThue)));
+				addPhong(list);
 			}
 		});
 
@@ -773,13 +732,16 @@ public class QuanLyDatPhong_GUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongCho.isActive();
-				if (!isActive) {
-					pnlFilterPhongTrong.setActive(false);
-					pnlFilterPhongDangSuDung.setActive(false);
+				List<Phong> list = phong_DAO
+						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DaDat));
+				if (list.size() > 0) {
+					if (!isActive) {
+						pnlFilterPhongTrong.setActive(false);
+						pnlFilterPhongDangSuDung.setActive(false);
+					}
+					pnlFilterPhongCho.setActive(!isActive);
 				}
-				pnlFilterPhongCho.setActive(!isActive);
-				addPhong(phong_DAO
-						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DaDat)));
+				addPhong(list);
 			}
 		});
 
@@ -842,6 +804,13 @@ public class QuanLyDatPhong_GUI extends JFrame {
 				addPhong(list);
 			}
 		});
+
+		jFrame.addWindowListener(new WindowAdapter() {
+			@SuppressWarnings("deprecation")
+			public void windowClosing(java.awt.event.WindowEvent e) {
+				clock.stop();
+			};
+		});
 	}
 
 	/**
@@ -850,9 +819,6 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	private void addPhong(List<Phong> dsPhong) {
 		if (dsPhong.size() <= 0) {
 			jDialog.showMessage("Thông báo", "Mục này không có phòng nào");
-			pnlFilterPhongCho.setActive(false);
-			pnlFilterPhongDangSuDung.setActive(false);
-			pnlFilterPhongTrong.setActive(false);
 			return;
 		}
 		this.dsPhong = dsPhong;
@@ -1037,7 +1003,7 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	 * Cập nhật thời gian thực
 	 */
 	public void clock() {
-		Thread clock = new Thread() {
+		clock = new Thread() {
 			@Override
 			public void run() {
 				for (;;) {
@@ -1081,9 +1047,9 @@ public class QuanLyDatPhong_GUI extends JFrame {
 	}
 
 	public void openJFrameSub(JFrame jFrame) {
-		setGlassPane(glass);
+		this.jFrame.setGlassPane(glass);
 		glass.setVisible(true);
-		glass.setAlpha(0.3f);
+		glass.setAlpha(0.5f);
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
 	}

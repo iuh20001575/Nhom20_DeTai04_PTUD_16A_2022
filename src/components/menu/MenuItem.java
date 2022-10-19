@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
-import javaswingdev.drawer.DrawerController;
+import drawer.DrawerController;
 import net.miginfocom.swing.MigLayout;
 
 public class MenuItem extends JPanel {
@@ -101,7 +101,6 @@ public class MenuItem extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					runEvent(index, sMenu.getIndex());
-					System.out.println(sMenu.getText());
 					drawer.hide();
 				}
 			});

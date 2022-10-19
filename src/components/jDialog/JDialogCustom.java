@@ -15,6 +15,7 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 import components.button.ButtonCustom;
+import utils.Utils;
 
 public class JDialogCustom extends JDialog {
 	/**
@@ -106,7 +107,8 @@ public class JDialogCustom extends JDialog {
 	}
 
 	public void showMessage(String title, String message) {
-		fram.setGlassPane(glass);
+//		if (fram.getGlassPane() == null)
+			fram.setGlassPane(glass);
 		glass.setVisible(true);
 		lblTitle.setText(title);
 		txpMessage.setText(message);

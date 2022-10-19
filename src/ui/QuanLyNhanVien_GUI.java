@@ -3,14 +3,11 @@ package ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +15,6 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -43,17 +39,14 @@ import entity.NhanVien;
 import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
-import layouts.DefaultLayout;
-import utils.StackFrame;
 import utils.Utils;
 
-public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
+public class QuanLyNhanVien_GUI extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private static JLabel lblTime;
 	private JTextField txtSearch;
 	private JTable tbl;
@@ -66,28 +59,9 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 	private ControlPanel pnlControl;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					QuanLyNhanVien_GUI frame = new QuanLyNhanVien_GUI();
-					StackFrame.push(frame);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
-	public QuanLyNhanVien_GUI() {
-		JFrame _this = this;
-
+	public QuanLyNhanVien_GUI(Main main) {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e) {
@@ -98,63 +72,15 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 		nhanVien_DAO = new NhanVien_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 
-		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Quản lý nhân viên");
-		contentPane = defaultLayout.getJPanel();
-
-//		setTitle("Quản lý nhân viên");
-//		setResizable(false);
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		setBounds(0, 0, 1100, 610);
-//		setLocationRelativeTo(null);
-//
-//		contentPane = new JPanel();
-//		contentPane.setForeground(Color.GRAY);
-//		contentPane.setBackground(Utils.secondaryColor);
-//		setContentPane(contentPane);
-//		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-//		contentPane.setLayout(null);
-//
-//		JPanel pnlHeader = new JPanel();
-//		pnlHeader.setBackground(Utils.primaryColor);
-//		pnlHeader.setBounds(0, 0, 1086, 65);
-//		contentPane.add(pnlHeader);
-//		pnlHeader.setLayout(null);
-//
-//		Button btnMenu = new Button("|||");
-//		btnMenu.setBounds(23, 16, 38, 38);
-//		btnMenu.setForeground(Utils.primaryColor);
-//		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-//		btnMenu.setBorder(BorderFactory.createEmptyBorder());
-//		btnMenu.setBackground(Color.WHITE);
-//		btnMenu.setBorderColor(Utils.primaryColor);
-//		btnMenu.setRadius(8);
-//		btnMenu.setFocusable(false);
-//		pnlHeader.add(btnMenu);
-//
-//		JLabel lblTitle = new JLabel("THÔNG TIN NHÂN VIÊN");
-//		lblTitle.setForeground(Color.WHITE);
-//		lblTitle.setBounds(76, 17, 948, 32);
-//		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
-//		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
-//		pnlHeader.add(lblTitle);
-//
-//		Button btnBack = new Button();
-//		btnBack.setFocusable(false);
-//		btnBack.setIcon(new ImageIcon("Icon\\back 1.png"));
-//		btnBack.setColor(Utils.primaryColor);
-//		btnBack.setColorOver(Utils.primaryColor);
-//		btnBack.setColorClick(Utils.primaryColor);
-//		btnBack.setBorderColor(Utils.primaryColor);
-//		btnBack.setBorder(new EmptyBorder(0, 0, 0, 0));
-//		btnBack.setBounds(954, 1, 62, 62);
-//		pnlHeader.add(btnBack);
-//		End default layout
+		setBackground(Utils.secondaryColor);
+		setBounds(0, 0, 1086, 508);
+		setLayout(null);
 
 //		Search
 		JPanel pnlSearch = new JPanel();
 		pnlSearch.setBackground(Utils.secondaryColor);
-		pnlSearch.setBounds(16, 83, 1054, 24);
-		contentPane.add(pnlSearch);
+		pnlSearch.setBounds(16, 18, 1054, 24);
+		this.add(pnlSearch);
 		pnlSearch.setLayout(null);
 
 		JLabel lblSearch = new JLabel("TÌM KIẾM NHÂN VIÊN THEO TÊN:");
@@ -171,8 +97,8 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 
 		JPanel pnlSearchForm = new JPanel();
 		pnlSearchForm.setBackground(Utils.secondaryColor);
-		pnlSearchForm.setBounds(16, 117, 1054, 36);
-		contentPane.add(pnlSearchForm);
+		pnlSearchForm.setBounds(16, 52, 1054, 36);
+		this.add(pnlSearchForm);
 		pnlSearchForm.setLayout(null);
 
 		Button btnSearch = new Button("Tìm");
@@ -215,8 +141,8 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 //		Actions
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
-		pnlActions.setBounds(16, 169, 1054, 36);
-		contentPane.add(pnlActions);
+		pnlActions.setBounds(16, 104, 1054, 36);
+		this.add(pnlActions);
 		pnlActions.setLayout(null);
 
 		Button btnEmployeeView = new Button("Xem");
@@ -225,13 +151,12 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
-					new JDialogCustom(_this, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
 							"Vui lòng chọn nhân viên muốn xem");
 				} else {
-					JFrame jFrame = new ThongTinChiTietNhanVien_GUI(new NhanVien((String) tbl.getValueAt(row, 0)));
-					StackFrame.push(jFrame);
-					jFrame.setVisible(true);
-					_this.setVisible(false);
+					String maNhanVien = (String) tableModel.getValueAt(row, 0);
+					main.addPnlBody(new ThongTinChiTietNhanVien_GUI(main, new NhanVien(maNhanVien)),
+							"Thông tin chi tiết nhân viên", 1, 0);
 				}
 			}
 		});
@@ -324,14 +249,14 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 		JScrollPane scr = new JScrollPane();
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(16, 223, 1054, 300);
+		scr.setBounds(16, 158, 1054, 300);
 		scr.setBackground(Utils.primaryColor);
 		scr.getViewport().setBackground(Color.WHITE);
 		ScrollBarCustom scp = new ScrollBarCustom();
 //		Set color scrollbar thumb
 		scp.setScrollbarColor(new Color(203, 203, 203));
 		scr.setVerticalScrollBar(scp);
-		contentPane.add(scr);
+		this.add(scr);
 		tbl = new JTable() {
 			/**
 			 * 
@@ -393,8 +318,9 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 //		tbl.setShowGrid(false);
 		scr.setViewportView(tbl);
 
-		pnlControl = new ControlPanel(400, 529, this);
-		contentPane.add(pnlControl);
+		pnlControl = new ControlPanel(400, 529, main);
+		pnlControl.setLocation(400, 464);
+		this.add(pnlControl);
 
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
@@ -405,7 +331,9 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 			}
 		});
 
-		this.addWindowListener(this);
+		setEmptyTable();
+		addRow(nhanVien_DAO.getAllNhanVien()).forEach(nhanVien -> maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
+		pnlControl.setTbl(tbl);
 	}
 
 	public static void clock() {
@@ -469,49 +397,6 @@ public class QuanLyNhanVien_GUI extends JFrame implements WindowListener {
 	private List<NhanVien> addRow(List<NhanVien> list) {
 		list.forEach(nhanVien -> addRow(nhanVien));
 		return list;
-	}
-
-	@Override
-	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowActivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		setEmptyTable();
-		addRow(nhanVien_DAO.getAllNhanVien()).forEach(nhanVien -> maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
-		pnlControl.setTbl(tbl);
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 //	private NhanVien getNhanVienTuTable(int row) {

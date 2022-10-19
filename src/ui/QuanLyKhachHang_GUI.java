@@ -3,22 +3,14 @@ package ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import javax.swing.DefaultComboBoxModel;
+
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -40,23 +32,18 @@ import components.scrollbarCustom.ScrollBarCustom;
 import connectDB.ConnectDB;
 import dao.DiaChi_DAO;
 import dao.KhachHang_DAO;
-import entity.DichVu;
+import entity.KhachHang;
 import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
-import entity.KhachHang;
-import entity.NhanVien;
-import layouts.DefaultLayout;
-import utils.StackFrame;
 import utils.Utils;
 
-public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
+public class QuanLyKhachHang_GUI extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private static JLabel lblTime;
 	private JTextField txtSearch;
 	private JTable tbl;
@@ -67,27 +54,9 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 	private ControlPanel pnlControl;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					QuanLyKhachHang_GUI frame = new QuanLyKhachHang_GUI();
-					StackFrame.push(frame);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
-	public QuanLyKhachHang_GUI() {
-		JFrame _this = this;
+	public QuanLyKhachHang_GUI(Main main) {
 
 		try {
 			new ConnectDB().connect();
@@ -99,14 +68,15 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 		khachHang_DAO = new KhachHang_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 
-		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Quản lý khách hàng");
-		contentPane = defaultLayout.getJPanel();
+		setBackground(Utils.secondaryColor);
+		setBounds(0, 0, 1086, 508);
+		setLayout(null);
 
 //		Search
 		JPanel pnlSearch = new JPanel();
 		pnlSearch.setBackground(Utils.secondaryColor);
-		pnlSearch.setBounds(16, 83, 1054, 24);
-		contentPane.add(pnlSearch);
+		pnlSearch.setBounds(16, 18, 1054, 24);
+		this.add(pnlSearch);
 		pnlSearch.setLayout(null);
 
 		JLabel lblSearch = new JLabel("TÌM KIẾM KHÁCH HÀNG THEO TÊN:");
@@ -123,8 +93,8 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 
 		JPanel pnlSearchForm = new JPanel();
 		pnlSearchForm.setBackground(Utils.secondaryColor);
-		pnlSearchForm.setBounds(16, 117, 1054, 36);
-		contentPane.add(pnlSearchForm);
+		pnlSearchForm.setBounds(16, 52, 1054, 36);
+		this.add(pnlSearchForm);
 		pnlSearchForm.setLayout(null);
 
 		Button btnSearch = new Button("Tìm");
@@ -167,8 +137,8 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 //		Actions
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
-		pnlActions.setBounds(16, 169, 1054, 36);
-		contentPane.add(pnlActions);
+		pnlActions.setBounds(16, 104, 1054, 36);
+		this.add(pnlActions);
 		pnlActions.setLayout(null);
 
 		Button btnKhachHangView = new Button("Xem");
@@ -177,13 +147,12 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
-					new JDialogCustom(_this, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
 							"Vui lòng chọn khách hàng muốn xem");
 				} else {
-					JFrame jFrame = new XemKhachHang_GUI(new KhachHang((String) tbl.getValueAt(row, 0)));
-					StackFrame.push(jFrame);
-					jFrame.setVisible(true);
-					_this.setVisible(false);
+					String maKhachHang = (String) tbl.getValueAt(row, 0);
+					main.addPnlBody(new XemKhachHang_GUI(main, new KhachHang(maKhachHang)), "Cập nhật khách hàng", 2,
+							0);
 				}
 			}
 		});
@@ -217,12 +186,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 		btnKhachHangAdd.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
-				JFrame jFrame = new ThemKhachHang_GUI();
-				StackFrame.push(jFrame);
-				jFrame.setVisible(true);
-				_this.setVisible(false);
-
+				main.addPnlBody(new ThemKhachHang_GUI(main), "Thêm khách hàng", 2, 0);
 			}
 		});
 
@@ -245,13 +209,11 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
-					new JDialogCustom(_this, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
 							"Vui lòng chọn khách hàng muốn cập nhật");
 				} else {
-					JFrame jFrame = new CapNhatKhachHang_GUI(new KhachHang((String) tbl.getValueAt(row, 0)));
-					StackFrame.push(jFrame);
-					jFrame.setVisible(true);
-					_this.setVisible(false);
+					KhachHang khachHang = new KhachHang((String) tbl.getValueAt(row, 0));
+					main.addPnlBody(new CapNhatKhachHang_GUI(main, khachHang), "Cập nhật khách hàng", 2, 0);
 				}
 			}
 		});
@@ -275,7 +237,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
-					new JDialogCustom(_this, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
 							"Vui lòng chọn khách hàng muốn xóa");
 				} else {
 					int res = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn xóa khách hàng này",
@@ -292,13 +254,13 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 		JScrollPane scr = new JScrollPane();
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(16, 223, 1054, 300);
+		scr.setBounds(16, 158, 1054, 300);
 		scr.setBackground(Utils.primaryColor);
 		ScrollBarCustom scp = new ScrollBarCustom();
 //		Set color scrollbar thumb
 		scp.setScrollbarColor(new Color(203, 203, 203));
 		scr.setVerticalScrollBar(scp);
-		contentPane.add(scr);
+		this.add(scr);
 		tbl = new JTable() {
 			/**
 			 * 
@@ -359,8 +321,9 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 //		tbl.setShowGrid(false);
 		scr.setViewportView(tbl);
 
-		pnlControl = new ControlPanel(400, 529, this);
-		contentPane.add(pnlControl);
+		pnlControl = new ControlPanel(400, 529, main);
+		pnlControl.setLocation(400, 464);
+		this.add(pnlControl);
 
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
@@ -371,7 +334,10 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 			}
 		});
 
-		this.addWindowListener(this);
+		setEmptyTable();
+		List<KhachHang> listKH = (List<KhachHang>) khachHang_DAO.getAllKhachHang();
+		addRow(listKH);
+		pnlControl.setTbl(tbl);
 	}
 
 	public static void clock() {
@@ -410,10 +376,10 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 		pnlControl.setTbl(tbl);
 
 		if (list.size() == 0)
-//			System.out.println("Rỗng");
 			JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng cần tìm");
-			
+
 	}
+
 	private void addRow(KhachHang khachHang) {
 		Tinh tinh = diaChi_DAO.getTinh(khachHang.getTinh());
 		Quan quan = diaChi_DAO.getQuan(tinh, khachHang.getQuan());
@@ -427,50 +393,6 @@ public class QuanLyKhachHang_GUI extends JFrame implements WindowListener {
 	private List<KhachHang> addRow(List<KhachHang> list) {
 		list.forEach(khachHang -> addRow(khachHang));
 		return list;
-	}
-
-	@Override
-	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowActivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-		setEmptyTable();
-		List<KhachHang> listKH = (List<KhachHang>) khachHang_DAO.getAllKhachHang();
-		addRow(listKH);
-		pnlControl.setTbl(tbl);
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	private void setEmptyTable() {

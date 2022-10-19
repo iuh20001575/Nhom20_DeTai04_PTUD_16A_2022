@@ -32,6 +32,8 @@ public class ComboBox<E> extends JComboBox<E> {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				// TODO Auto-generated method stub
+				if (evt.getNewValue() == null)
+					return;
 				if (evt.getNewValue().getClass().equals(Boolean.class)) {
 					boolean value = (boolean) evt.getNewValue();
 					if (evt.getPropertyName().equals("enabled")) {

@@ -3,21 +3,14 @@ package ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.sql.SQLException;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -27,103 +20,33 @@ import javax.swing.table.TableCellRenderer;
 import components.barChart.Chart;
 import components.barChart.ModelChart;
 import components.button.Button;
-import components.controlPanel.ControlPanel;
 import connectDB.ConnectDB;
-import utils.StackFrame;
 import utils.Utils;
 
-public class ThongKeDoanhThu_GUI extends JFrame implements WindowListener {
+public class ThongKeDoanhThu_GUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private JTable tbl1, tbl2;
 	private DefaultTableModel tableModel;
 	private JComboBox<String> cboDay, cboMonth, cboYear;
-	private ControlPanel pnlControl;
 	private Chart chart;
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ThongKeDoanhThu_GUI frame = new ThongKeDoanhThu_GUI();
-					StackFrame.push(frame);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
 	public ThongKeDoanhThu_GUI() {
-		JFrame _this = this;
-
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-//		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Quản lý nhân viên");
-//		contentPane = defaultLayout.getJPanel();
-
-		setTitle("Quản lý nhân viên");
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(0, 0, 1100, 610);
-		setLocationRelativeTo(null);
-
-		contentPane = new JPanel();
-		contentPane.setForeground(Color.GRAY);
-		contentPane.setBackground(Utils.secondaryColor);
-		setContentPane(contentPane);
-		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		contentPane.setLayout(null);
-
-		// ================== Bắt đầu phần Header
-		JPanel pnlHeader = new JPanel();
-		pnlHeader.setBackground(Utils.primaryColor);
-		pnlHeader.setBounds(0, 0, 1086, 65);
-		contentPane.add(pnlHeader);
-		pnlHeader.setLayout(null);
-
-		Button btnMenu = new Button("|||");
-		btnMenu.setBounds(24, 20, 40, 40);
-		btnMenu.setForeground(Utils.primaryColor);
-		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-		btnMenu.setBorder(BorderFactory.createEmptyBorder());
-		btnMenu.setBackground(Color.WHITE);
-		btnMenu.setBorderColor(Utils.primaryColor);
-		btnMenu.setRadius(8);
-		btnMenu.setFocusable(false);
-		pnlHeader.add(btnMenu);
-
-		JLabel lblTitle = new JLabel("THỐNG KÊ DOANH THU");
-		lblTitle.setForeground(Color.WHITE);
-		lblTitle.setBounds(80, 22, 948, 32);
-		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
-		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
-		pnlHeader.add(lblTitle);
-
-		Button btnBack = new Button();
-		btnBack.setFocusable(false);
-		btnBack.setIcon(new ImageIcon("Icon\\back 1.png"));
-		btnBack.setColor(Utils.primaryColor);
-		btnBack.setColorOver(Utils.primaryColor);
-		btnBack.setColorClick(Utils.primaryColor);
-		btnBack.setBorderColor(Utils.primaryColor);
-		btnBack.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnBack.setBounds(954, 1, 62, 62);
-		pnlHeader.add(btnBack);
-
-		// ================== Kết thúc phần Header
+		setBackground(Utils.secondaryColor);
+		setBounds(0, 0, 1086, 508);
+		setLayout(null);
 		// ================== Bắt đầu phần Button Tính doanh thu
 
 		JPanel pnlRevenueCalculation = new JPanel();
 		pnlRevenueCalculation.setBackground(Utils.secondaryColor);
-		pnlRevenueCalculation.setBounds(70, 90, 946, 44);
-		contentPane.add(pnlRevenueCalculation);
+		pnlRevenueCalculation.setBounds(70, 25, 946, 44);
+		this.add(pnlRevenueCalculation);
 		pnlRevenueCalculation.setLayout(null);
 
 		JLabel lblRevenueCalculation = new JLabel("Tính doanh thu theo:");
@@ -176,8 +99,8 @@ public class ThongKeDoanhThu_GUI extends JFrame implements WindowListener {
 		// ================== Bắt đầu phần hiển thị ngày, tháng, năm
 		JPanel pnlDate = new JPanel();
 		pnlDate.setBackground(Utils.secondaryColor);
-		pnlDate.setBounds(70, 176, 946, 44);
-		contentPane.add(pnlDate);
+		pnlDate.setBounds(70, 111, 946, 44);
+		this.add(pnlDate);
 		pnlDate.setLayout(null);
 
 		JLabel lblDay = new JLabel("Ngày: ");
@@ -187,7 +110,7 @@ public class ThongKeDoanhThu_GUI extends JFrame implements WindowListener {
 		pnlDate.add(lblDay);
 
 		String city[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
-		cboDay = new JComboBox(city);
+		cboDay = new JComboBox<String>(city);
 		cboDay.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		cboDay.setBackground(Color.WHITE);
 		cboDay.setBounds(406, 0, 100, 36);
@@ -201,7 +124,7 @@ public class ThongKeDoanhThu_GUI extends JFrame implements WindowListener {
 		pnlDate.add(lblMonth);
 
 		String month[] = { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" };
-		cboMonth = new JComboBox(month);
+		cboMonth = new JComboBox<String>(month);
 		cboMonth.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		cboMonth.setBackground(Color.WHITE);
 		cboMonth.setAlignmentX(CENTER_ALIGNMENT);
@@ -216,7 +139,7 @@ public class ThongKeDoanhThu_GUI extends JFrame implements WindowListener {
 		pnlDate.add(lblYear);
 
 		String year[] = { "2020", "2021", "2022", "2023", "2024" };
-		cboYear = new JComboBox(year);
+		cboYear = new JComboBox<String>(year);
 		cboYear.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		cboYear.setBackground(Color.WHITE);
 		cboYear.setAlignmentX(CENTER_ALIGNMENT);
@@ -232,17 +155,18 @@ public class ThongKeDoanhThu_GUI extends JFrame implements WindowListener {
 		btnStatisticize.setForeground(Color.WHITE);
 		btnStatisticize.setColor(Utils.primaryColor);
 		btnStatisticize.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		btnStatisticize.setBounds(813, 255, 205, 44);
+		btnStatisticize.setBounds(813, 190, 205, 44);
+		btnStatisticize.setBorderColor(Utils.secondaryColor);
 		btnStatisticize.setColorOver(Utils.primaryColor);
 		btnStatisticize.setColorClick(Utils.primaryColor);
 		btnStatisticize.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnStatisticize.setBorder(new LineBorder(Color.WHITE, 1));
-		contentPane.add(btnStatisticize);
+		this.add(btnStatisticize);
 
 		JPanel pnlResult = new JPanel();
 		pnlResult.setBackground(Utils.secondaryColor);
-		pnlResult.setBounds(70, 300, 946, 44);
-		contentPane.add(pnlResult);
+		pnlResult.setBounds(70, 235, 946, 44);
+		this.add(pnlResult);
 		pnlResult.setLayout(null);
 
 		JLabel lblResult = new JLabel("Doanh thu trong: 01/2022");
@@ -252,9 +176,9 @@ public class ThongKeDoanhThu_GUI extends JFrame implements WindowListener {
 		pnlResult.add(lblResult);
 
 		JScrollPane scr1 = new JScrollPane();
-		scr1.setBounds(70, 350, 445, 75);
+		scr1.setBounds(70, 285, 445, 75);
 		scr1.setBackground(Utils.primaryColor);
-		contentPane.add(scr1);
+		this.add(scr1);
 
 		tbl1 = new JTable() {
 			private static final long serialVersionUID = 1L;
@@ -293,9 +217,9 @@ public class ThongKeDoanhThu_GUI extends JFrame implements WindowListener {
 		scr1.setViewportView(tbl1);
 
 		JScrollPane scr2 = new JScrollPane();
-		scr2.setBounds(70, 430, 445, 75);
+		scr2.setBounds(70, 365, 445, 75);
 		scr2.setBackground(Utils.primaryColor);
-		contentPane.add(scr2);
+		this.add(scr2);
 
 		tbl2 = new JTable() {
 			private static final long serialVersionUID = 1L;
@@ -340,49 +264,13 @@ public class ThongKeDoanhThu_GUI extends JFrame implements WindowListener {
 		chart.addData(new ModelChart("Hát", new double[] { 10, 0, 0 }));
 		chart.addData(new ModelChart("Dịch vụ", new double[] { 50, 40, 90 }));
 		chart.addData(new ModelChart("Khác", new double[] { 10, 20, 30 }));
-		chart.setBounds(550, 350, 465, 250);
-		contentPane.add(chart);
-		
-		this.addWindowListener(this);
-	}
+		chart.setBounds(550, 285, 465, 250);
+		this.add(chart);
 
-	@Override
-	public void windowOpened(WindowEvent e) {
-//		pnlControl.setTbl(tbl1);
-//		pnlControl.setTbl(tbl2);
 		chart.start();
 	}
 
-	@Override
-	public void windowClosing(WindowEvent e) {
-
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-
-	}
-
-	@Override
-	public void windowActivated(WindowEvent e) {
-
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-
-	}
-
+	@SuppressWarnings("unused")
 	private void setEmptyTable() {
 		while (tbl1.getRowCount() > 0)
 			tableModel.removeRow(0);

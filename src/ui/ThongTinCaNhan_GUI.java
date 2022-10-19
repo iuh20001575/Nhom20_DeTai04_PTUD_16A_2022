@@ -1,14 +1,12 @@
 package ui;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -19,52 +17,29 @@ import com.raven.datechooser.DateChooser;
 import components.button.Button;
 import components.radio.RadioButtonCustom;
 import components.textField.TextField;
-import layouts.DefaultLayout;
 import utils.Utils;
 
-public class ThongTinCaNhan_GUI extends JFrame {
+public class ThongTinCaNhan_GUI extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private TextField txtMaNhanVien;
 	private DateChooser dateChoose;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ThongTinCaNhan_GUI frame = new ThongTinCaNhan_GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
 	public ThongTinCaNhan_GUI() {
-		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Thông tin cá nhân");
-		contentPane = defaultLayout.getJPanel();
-
-		JPanel pnlContainer = new JPanel();
-		pnlContainer.setBackground(Utils.secondaryColor);
-		pnlContainer.setBounds(69, 72, 948, 365);
-		contentPane.add(pnlContainer);
-		pnlContainer.setLayout(null);
+		setBackground(Utils.secondaryColor);
+		setBounds(0, 0, 1086, 508);
+		setLayout(null);
 
 		JPanel pnlRow1 = new JPanel();
 		pnlRow1.setBackground(Utils.secondaryColor);
-		pnlRow1.setBounds(0, 0, 948, 55);
-		pnlContainer.add(pnlRow1);
+		pnlRow1.setBounds(69, 20, 948, 55);
+		this.add(pnlRow1);
 		pnlRow1.setLayout(null);
 
 		txtMaNhanVien = new TextField();
@@ -88,8 +63,8 @@ public class ThongTinCaNhan_GUI extends JFrame {
 		JPanel pnlRow2 = new JPanel();
 		pnlRow2.setLayout(null);
 		pnlRow2.setBackground(new Color(203, 239, 255));
-		pnlRow2.setBounds(0, 75, 948, 55);
-		pnlContainer.add(pnlRow2);
+		pnlRow2.setBounds(69, 95, 948, 55);
+		this.add(pnlRow2);
 
 		TextField txtCCCD = new TextField();
 		txtCCCD.setLineColor(new Color(149, 166, 248));
@@ -112,8 +87,8 @@ public class ThongTinCaNhan_GUI extends JFrame {
 		JPanel pnlRow3 = new JPanel();
 		pnlRow3.setLayout(null);
 		pnlRow3.setBackground(new Color(203, 239, 255));
-		pnlRow3.setBounds(0, 150, 948, 55);
-		pnlContainer.add(pnlRow3);
+		pnlRow3.setBounds(69, 170, 948, 55);
+		this.add(pnlRow3);
 
 		TextField txtNgaySinh = new TextField();
 		txtNgaySinh.setIcon(new ImageIcon("Icon\\add-event 2.png"));
@@ -165,8 +140,8 @@ public class ThongTinCaNhan_GUI extends JFrame {
 
 		JPanel pnlRow4 = new JPanel();
 		pnlRow4.setBackground(Utils.secondaryColor);
-		pnlRow4.setBounds(0, 225, 948, 65);
-		pnlContainer.add(pnlRow4);
+		pnlRow4.setBounds(69, 245, 948, 65);
+		this.add(pnlRow4);
 		pnlRow4.setLayout(null);
 
 		JLabel lblDiaChi = new JLabel("Địa chỉ");
@@ -199,8 +174,8 @@ public class ThongTinCaNhan_GUI extends JFrame {
 		JPanel pnlRow5 = new JPanel();
 		pnlRow5.setLayout(null);
 		pnlRow5.setBackground(new Color(203, 239, 255));
-		pnlRow5.setBounds(0, 310, 948, 55);
-		pnlContainer.add(pnlRow5);
+		pnlRow5.setBounds(69, 330, 948, 55);
+		this.add(pnlRow5);
 
 		TextField txtDiaChiCT = new TextField();
 		txtDiaChiCT.setLineColor(new Color(149, 166, 248));
@@ -222,8 +197,8 @@ public class ThongTinCaNhan_GUI extends JFrame {
 
 		JPanel panel = new JPanel();
 		panel.setBackground(Utils.secondaryColor);
-		panel.setBounds(69, 472, 948, 48);
-		contentPane.add(panel);
+		panel.setBounds(69, 427, 948, 48);
+		this.add(panel);
 		panel.setLayout(null);
 
 		Button btnCapNhat = new Button("Cập nhật");
@@ -242,8 +217,7 @@ public class ThongTinCaNhan_GUI extends JFrame {
 
 		Button btnHuy = new Button("Hủy");
 		btnHuy.setVisible(false);
-		btnHuy.setIcon(new ImageIcon(
-				"D:\\Code\\stt51_haAnhThao_20001575\\Nhom20_DeTai04_PTUD_16A_2022\\Icon\\cancelled 1.png"));
+		btnHuy.setIcon(new ImageIcon("Icon\\cancelled 1.png"));
 		btnHuy.setFocusable(false);
 		btnHuy.setRadius(8);
 		btnHuy.setBorderColor(Utils.secondaryColor);

@@ -38,16 +38,14 @@ import entity.Phuong;
 import entity.Quan;
 import entity.TaiKhoan;
 import entity.Tinh;
-import layouts.DefaultLayout;
 import utils.Utils;
 
-public class ThongTinChiTietNhanVien_GUI extends JFrame implements ItemListener {
+public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private TextField txtMaNhanVien;
 	private DateChooser dateChoose;
 	private NhanVien nhanVien;
@@ -78,20 +76,20 @@ public class ThongTinChiTietNhanVien_GUI extends JFrame implements ItemListener 
 	/**
 	 * Create the frame.
 	 */
-	public ThongTinChiTietNhanVien_GUI(NhanVien nhanVien) {
-		JFrame _this = this;
+	public ThongTinChiTietNhanVien_GUI(JFrame jFrame, NhanVien nhanVien) {
 		nhanVien_DAO = new NhanVien_DAO();
 		taiKhoan_DAO = new TaiKhoan_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 		this.nhanVien = nhanVien_DAO.getNhanVienTheoMa(nhanVien.getMaNhanVien());
 
-		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Thông tin chi tiết nhân viên");
-		contentPane = defaultLayout.getJPanel();
+		setBackground(Utils.secondaryColor);
+		setBounds(0, 0, 1086, 508);
+		setLayout(null);
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
-		pnlContainer.setBounds(69, 72, 948, 425);
-		contentPane.add(pnlContainer);
+		pnlContainer.setBounds(69, 7, 948, 425);
+		this.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
 		JPanel pnlRow1 = new JPanel();
@@ -311,8 +309,8 @@ public class ThongTinChiTietNhanVien_GUI extends JFrame implements ItemListener 
 
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
-		pnlActions.setBounds(69, 512, 948, 48);
-		contentPane.add(pnlActions);
+		pnlActions.setBounds(69, 447, 948, 48);
+		this.add(pnlActions);
 		pnlActions.setLayout(null);
 
 		Button btnLuu = new Button("Lưu");
@@ -402,13 +400,13 @@ public class ThongTinChiTietNhanVien_GUI extends JFrame implements ItemListener 
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (btnNghiViec.isEnabled()) {
-					JDialogCustom jDialogCustom = new JDialogCustom(_this);
+					JDialogCustom jDialogCustom = new JDialogCustom(jFrame);
 
 					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
 							nhanVien_DAO.setNghiLam(nhanVien.getMaNhanVien());
-							new Notification(_this, components.notification.Notification.Type.SUCCESS,
+							new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
 									"Cập nhật trạng thái làm việc của nhân viên thành công").showNotification();
 							setNhanVienVaoForm(nhanVien_DAO.getNhanVienTheoMa(nhanVien.getMaNhanVien()));
 							btnNghiViec.setEnabled(false);
@@ -434,7 +432,7 @@ public class ThongTinChiTietNhanVien_GUI extends JFrame implements ItemListener 
 					if (validator()) {
 						NhanVien nhanVien = getNhanVienTuForm();
 						if (nhanVien_DAO.capNhatNhanVien(nhanVien)) {
-							new Notification(_this, components.notification.Notification.Type.SUCCESS,
+							new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
 									"Cập nhật thông tin nhân viên thành công").showNotification();
 							btnCapNhat.setVisible(true);
 							ThongTinChiTietNhanVien_GUI.this.nhanVien = nhanVien;

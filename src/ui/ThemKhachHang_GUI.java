@@ -1,16 +1,12 @@
 package ui;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -39,13 +35,10 @@ import entity.KhachHang;
 import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
-import layouts.DefaultLayout;
-import utils.StackFrame;
 import utils.Utils;
 
-public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowListener, MouseListener {
+public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseListener {
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 
 	private DateChooser dateChoose;
 	private DiaChi_DAO DiaChi_DAO;
@@ -59,33 +52,17 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 	private Quan quan;
 	private Phuong phuong;
 	private TextField txtSDT;
-	private ThemKhachHang_GUI _this;
 	private TextField txtMa;
 	private TextField txtTen;
 	private TextField txtCCCD;
 	private TextField txtNgaySinh;
 	private RadioButtonCustom radNam;
 	private TextField txtDiaChiCT;
+	private JFrame main;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ThemKhachHang_GUI frame = new ThemKhachHang_GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	public ThemKhachHang_GUI(JFrame jFrame, String soDienThoai) {
-		this();
-		setjFrameParent(jFrame);
+	public ThemKhachHang_GUI(JFrame main, String soDienThoai) {
+		this(main);
+		setjFrameParent(main);
 		txtSDT.setText(soDienThoai);
 	}
 
@@ -93,8 +70,11 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		this.jFrameParent = jFrameParent;
 	}
 
-	public ThemKhachHang_GUI() {
-		_this = this;
+	/**
+	 * @wbp.parser.constructor
+	 */
+	public ThemKhachHang_GUI(JFrame main) {
+		this.main = main;
 
 		try {
 			new ConnectDB().connect();
@@ -105,15 +85,9 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		khachHang_DAO = new KhachHang_DAO();
 		DiaChi_DAO = new DiaChi_DAO();
 
-		// TODO Auto-generated constructor stub
-		DefaultLayout defaultLayout = new DefaultLayout(this, contentPane, "Thêm khách hàng", "Thêm khách hàng");
-		contentPane = defaultLayout.getJPanel();
-
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(new Color(203, 239, 255));
-		panel_1.setBounds(0, 65, 1100, 500);
-		contentPane.add(panel_1);
-		panel_1.setLayout(null);
+		setBackground(new Color(203, 239, 255));
+		setBounds(0, 0, 1100, 500);
+		setLayout(null);
 
 		txtMa = new TextField();
 		txtMa.setEditable(false);
@@ -121,21 +95,21 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		txtMa.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtMa.setBackground(new Color(203, 239, 255));
 		txtMa.setBounds(44, 5, 371, 55);
-		panel_1.add(txtMa);
+		this.add(txtMa);
 
 		txtTen = new TextField();
 		txtTen.setLabelText("Họ tên khách hàng:");
 		txtTen.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTen.setBackground(new Color(203, 239, 255));
 		txtTen.setBounds(516, 5, 371, 55);
-		panel_1.add(txtTen);
+		this.add(txtTen);
 
 		txtCCCD = new TextField();
 		txtCCCD.setLabelText("Căn cước công dân:");
 		txtCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtCCCD.setBackground(new Color(203, 239, 255));
 		txtCCCD.setBounds(44, 85, 371, 55);
-		panel_1.add(txtCCCD);
+		this.add(txtCCCD);
 
 		txtNgaySinh = new TextField();
 		txtNgaySinh.setIcon(new ImageIcon("Icon\\add-event 2.png"));
@@ -145,14 +119,14 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		txtNgaySinh.setColumns(10);
 		txtNgaySinh.setBackground(new Color(203, 239, 255));
 		txtNgaySinh.setBounds(516, 85, 371, 55);
-		panel_1.add(txtNgaySinh);
+		this.add(txtNgaySinh);
 		dateChoose = new DateChooser();
 		dateChoose.setTextRefernce(txtNgaySinh);
 
 		JPanel pnlGioiTinh = new JPanel();
 		pnlGioiTinh.setBackground(Utils.secondaryColor);
 		pnlGioiTinh.setBounds(44, 165, 371, 55);
-		panel_1.add(pnlGioiTinh);
+		this.add(pnlGioiTinh);
 		pnlGioiTinh.setLayout(null);
 
 		JLabel lblGioiTinh = new JLabel("Giới tính:");
@@ -192,13 +166,13 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		txtSDT.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtSDT.setBackground(new Color(203, 239, 255));
 		txtSDT.setBounds(516, 165, 371, 50);
-		panel_1.add(txtSDT);
+		this.add(txtSDT);
 
 		JLabel lblDiaChi = new JLabel("Địa chỉ:");
 		lblDiaChi.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblDiaChi.setBounds(44, 245, 200, 19);
 		lblDiaChi.setForeground(Utils.labelTextField);
-		panel_1.add(lblDiaChi);
+		this.add(lblDiaChi);
 
 		cmbTinh = new JComboBox<String>();
 		ArrayList<Tinh> listTinh = (ArrayList<Tinh>) DiaChi_DAO.getTinh();
@@ -208,7 +182,7 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		cmbTinh.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbTinh.setBackground(Utils.primaryColor);
 		cmbTinh.setBounds(44, 280, 220, 36);
-		panel_1.add(cmbTinh);
+		this.add(cmbTinh);
 
 		cmbQuan = new JComboBox<String>();
 		String tinhSelected = (String) cmbTinh.getSelectedItem();
@@ -222,7 +196,7 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		cmbQuan.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbQuan.setBackground(new Color(140, 177, 180));
 		cmbQuan.setBounds(324, 280, 220, 36);
-		panel_1.add(cmbQuan);
+		this.add(cmbQuan);
 
 		cmbPhuong = new JComboBox<String>();
 		cmbQuan.setModel(new DefaultComboBoxModel<String>());
@@ -231,7 +205,7 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		cmbPhuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbPhuong.setBackground(new Color(140, 177, 180));
 		cmbPhuong.setBounds(604, 280, 220, 36);
-		panel_1.add(cmbPhuong);
+		this.add(cmbPhuong);
 
 		txtDiaChiCT = new TextField();
 		txtDiaChiCT.setLineColor(new Color(149, 200, 248));
@@ -240,7 +214,7 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		txtDiaChiCT.setColumns(10);
 		txtDiaChiCT.setBackground(new Color(203, 239, 255));
 		txtDiaChiCT.setBounds(44, 341, 371, 55);
-		panel_1.add(txtDiaChiCT);
+		this.add(txtDiaChiCT);
 
 		Button btnLuu = new Button("Lưu");
 		btnLuu.setUI(new MetalButtonUI() {
@@ -258,7 +232,7 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		btnLuu.setBorderColor(new Color(203, 239, 255));
 		btnLuu.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnLuu.setBounds(500, 420, 250, 50);
-		panel_1.add(btnLuu);
+		this.add(btnLuu);
 
 		btnLuu.addMouseListener(this);
 
@@ -278,14 +252,14 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		btnHuy.setBorderColor(new Color(203, 239, 255));
 		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnHuy.setBounds(800, 420, 250, 50);
-		panel_1.add(btnHuy);
+		this.add(btnHuy);
 
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				JFrame jFrame = StackFrame.pop();
-				StackFrame.peek().setVisible(true);
-				jFrame.setVisible(false);
+//				JFrame jFrame = StackPanel.pop();
+//				StackPanel.peek().setVisible(true);
+//				jFrame.setVisible(false);
 
 			}
 		});
@@ -294,12 +268,7 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		cmbQuan.addItemListener(this);
 		cmbPhuong.addItemListener(this);
 
-		this.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowActivated(WindowEvent e) {
-				txtMa.setText(khachHang_DAO.getMaKhachHang());
-			}
-		});
+		txtMa.setText(khachHang_DAO.getMaKhachHang());
 	}
 
 	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list) {
@@ -363,48 +332,6 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 	}
 
 	@Override
-	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowActivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void mouseClicked(MouseEvent e) {
 		String sma = txtMa.getText();
 		String sten = txtTen.getText();
@@ -424,7 +351,7 @@ public class ThemKhachHang_GUI extends JFrame implements ItemListener, WindowLis
 		KhachHang khachHang = new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinhSelect, quan, phuong,
 				sDCCT);
 		if (khachHang_DAO.themKhachHang(khachHang)) {
-			new Notification(_this, components.notification.Notification.Type.SUCCESS,
+			new Notification(main, components.notification.Notification.Type.SUCCESS,
 					"Đã thêm khách hàng mới thành công").showNotification();
 
 			if (jFrameParent != null) {

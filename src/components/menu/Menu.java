@@ -3,6 +3,7 @@ package components.menu;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,8 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import components.scrollbarCustom.ScrollBarCustom;
+import drawer.DrawerController;
 import javaswingdev.GoogleMaterialDesignIcon;
-import javaswingdev.drawer.DrawerController;
 import net.miginfocom.swing.MigLayout;
 
 public class Menu extends JPanel {
@@ -40,15 +41,15 @@ public class Menu extends JPanel {
 		scroll.getViewport().setOpaque(false);
 		scroll.setViewportBorder(null);
 		add(scroll);
-		
-//		
 	}
 
 	private JScrollPane createScroll() {
 		JScrollPane scroll = new JScrollPane();
 		scroll.setBorder(null);
+//		Set background menu
+		scroll.setBackground(Color.white);
 		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scroll.setVerticalScrollBar(new ScrollBarCustom());
 		return scroll;
 	}
@@ -92,6 +93,7 @@ public class Menu extends JPanel {
 		JLabel label = new JLabel(title);
 		label.setBorder(new EmptyBorder(15, 20, 5, 5));
 		label.setFont(label.getFont().deriveFont(Font.BOLD));
+//		Color text title
 		label.setForeground(new Color(170, 170, 170));
 		panelMenu.add(label);
 	}
@@ -107,6 +109,19 @@ public class Menu extends JPanel {
 				if (item.getIndex() == index) {
 					item.setSelectedIndex(indexSubMenu);
 					runEvent(index, indexSubMenu);
+					break;
+				}
+			}
+		}
+	}
+
+	public void setSelectedMenu(int index, int indexSubMenu) {
+		clearSelected();
+		for (Component com : panelMenu.getComponents()) {
+			if (com instanceof MenuItem) {
+				MenuItem item = (MenuItem) com;
+				if (item.getIndex() == index) {
+					item.setSelectedIndex(indexSubMenu);
 					break;
 				}
 			}
@@ -132,30 +147,16 @@ public class Menu extends JPanel {
 
 	public void setDrawer(DrawerController drawer) {
 		this.drawer = drawer;
-		
+
 		addTitle("MAIN");
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Dashboard"));
-		addTitle("WEB APPS");
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.MAIL_OUTLINE, "Email", "Inbox", "Read", "Compose"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.MESSAGE, "Chat"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.PERM_CONTACT_CALENDAR, "Calendar"));
-		addTitle("COMPONENT");
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.WHATSHOT, "UI Kit", "Accordion", "Alerts", "Badges",
-				"Breadcrumbs", "Buttons", "Button group"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DIRECTIONS_BIKE, "Advanced UI", "Cropper",
-				"Owl Carousel", "Sweet Alert"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DVR, "Forms", "Basic Elements", "Advanced Elements",
-				"SEditors", "Wizard"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.PIE_CHART_OUTLINED, "Charts", "Apex", "Flot", "Peity",
-				"Sparkline"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.VIEW_LIST, "Table", "Basic Tables", "Data Table"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.INSERT_EMOTICON, "Icons", "Feather Icons", "Flag Icons",
-				"Mdi Icons"));
-		addTitle("PAGES");
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.INBOX, "Special Pages", "Blank page", "Faq", "Invoice",
-				"Profile", "Pricing", "Timeline"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.LOCK_OUTLINE, "Authentication", "Login", "Register"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.ERROR_OUTLINE, "Error", "404", "500"));
+		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.HOME, "Trang chủ"));
+		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý nhân viên"));
+		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý khách hàng"));
+		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý đặt phòng"));
+		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý đặt phòng trước"));
+		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Thống kê", "Doanh thu", "Hóa đơn", "Khách hàng"));
+		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Thông tin cá nhân"));
+		setPreferredSize(new Dimension(getPreferredSize().width, 610));
 	}
 
 	private MigLayout menuLayout;
