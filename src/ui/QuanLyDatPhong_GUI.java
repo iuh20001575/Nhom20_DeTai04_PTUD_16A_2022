@@ -857,7 +857,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 
 		pnlThanhToan.setEnabled(soPhongDangSuDung + soPhongTam > 0);
 		pnlDatPhong.setEnabled(dsPhongDatNgay.size() > 0);
-		pnlChuyenPhong.setEnabled(dsPhongDatNgay.size() > 0 && soPhongDangSuDung > 0);
+		pnlChuyenPhong.setEnabled(dsPhongDatNgay.size() > 0 && soPhongDangSuDung + soPhongTam > 0);
 		pnlGopPhong.setEnabled(datPhong_DAO.isGopPhong());
 		capNhatThongKeLoaiPhong();
 	}

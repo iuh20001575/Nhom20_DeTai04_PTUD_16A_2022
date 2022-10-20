@@ -6,6 +6,11 @@ import javax.swing.JScrollBar;
 
 public class ScrollBar extends JScrollBar {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ScrollBar(int al) {
 		super(al);
 		setUI(new ModernScrollBarUI());

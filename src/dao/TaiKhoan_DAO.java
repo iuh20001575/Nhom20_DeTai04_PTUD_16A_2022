@@ -47,4 +47,22 @@ public class TaiKhoan_DAO {
 		}
 		return null;
 	}
+
+	public boolean isTaiKhoan(TaiKhoan taiKhoan) {
+		PreparedStatement statement;
+		try {
+			statement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM TaiKhoan WHERE maTaiKhoan = ? AND matKhau = ?");
+			statement.setString(1, taiKhoan.getMaTaiKhoan());
+			statement.setString(2, taiKhoan.getMatKhau());
+			ResultSet resultSet = statement.executeQuery();
+
+			return resultSet.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
 }

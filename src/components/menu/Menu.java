@@ -154,7 +154,8 @@ public class Menu extends JPanel {
 		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý khách hàng"));
 		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý đặt phòng"));
 		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý đặt phòng trước"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Thống kê", "Doanh thu", "Hóa đơn", "Khách hàng"));
+		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Thống kê", "Doanh thu", "Hóa đơn",
+				"Khách hàng"));
 		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Thông tin cá nhân"));
 		setPreferredSize(new Dimension(getPreferredSize().width, 610));
 	}

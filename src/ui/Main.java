@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -20,11 +23,12 @@ import components.button.Button;
 import components.jDialog.JDialogCustom;
 import components.menu.EventMenuSelected;
 import components.menu.Menu;
+import connectDB.ConnectDB;
+import dao.NhanVien_DAO;
 import drawer.Drawer;
 import drawer.DrawerController;
+import entity.NhanVien;
 import entity.PanelUI;
-import javaswingdev.GoogleMaterialDesignIcon;
-import javaswingdev.GoogleMaterialIcon;
 import utils.StackPanel;
 import utils.Utils;
 
@@ -41,6 +45,7 @@ public class Main extends JFrame {
 	private DrawerController drawer;
 	private JLabel lblTitle;
 	private JPanel pnlBody;
+	private NhanVien_DAO nhanVien_DAO;
 
 	/**
 	 * Launch the application.
@@ -62,7 +67,15 @@ public class Main extends JFrame {
 	 * Create the frame.
 	 */
 	public Main() {
+		try {
+			new ConnectDB().connect();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		_this = this;
+		nhanVien_DAO = new NhanVien_DAO();
 		JDialogCustom jDialogCustom = new JDialogCustom(_this);
 
 		jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
@@ -126,8 +139,6 @@ public class Main extends JFrame {
 		contentPane.add(pnlBody);
 
 //		Code menu
-		GoogleMaterialIcon googleIcon = new GoogleMaterialIcon();
-		googleIcon.setIcon(GoogleMaterialDesignIcon.USB);
 		menu = new Menu();
 		drawer = Drawer.newDrawer(this).addChild(menu).build();
 		menu.setDrawer(drawer);
@@ -165,8 +176,20 @@ public class Main extends JFrame {
 
 		xuLySuKienMenu();
 		addPnlBody(new TrangChu_GUI(), "Trang chủ", 0, 0);
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowOpened(WindowEvent e) {
+//				String maNhanVien = utils.NhanVien.getNhanVien().getMaNhanVien();
+				String maNhanVien = "NV111";
+				NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(maNhanVien);
+				utils.NhanVien.setNhanVien(nhanVien);
+			}
+		});
 	}
 
+	/**
+	 * Xử lý sự kiện khi nhấn vào menu item
+	 */
 	private void xuLySuKienMenu() {
 		menu.addEvent(new EventMenuSelected() {
 
@@ -209,6 +232,11 @@ public class Main extends JFrame {
 		});
 	}
 
+	/**
+	 * Thay đổi phần container UI
+	 * 
+	 * @param panelUI panel UI
+	 */
 	public void addPnlBody(PanelUI panelUI) {
 		pnlBody.removeAll();
 		pnlBody.add(panelUI.getjPanel());
@@ -217,6 +245,14 @@ public class Main extends JFrame {
 		setTitle(panelUI.getTitle());
 	}
 
+	/**
+	 * Thay đổi phần container UI
+	 * 
+	 * @param pnl          panel cần thay đổi
+	 * @param title        title của trang
+	 * @param index        index menu
+	 * @param indexSubmenu index submenu
+	 */
 	public void addPnlBody(JPanel pnl, String title, int index, int indexSubmenu) {
 		PanelUI panelUI = new PanelUI(pnl, title, index, indexSubmenu);
 		menu.setSelectedMenu(index, indexSubmenu);

@@ -3,8 +3,12 @@ package ui;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
+import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -14,9 +18,16 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import components.button.Button;
+import components.jDialog.JDialogCustom;
+import components.notification.Notification;
 import components.panelRound.PanelRound;
+import components.passwordField.PasswordField;
 import components.textField.TextField;
+import connectDB.ConnectDB;
+import dao.TaiKhoan_DAO;
+import entity.TaiKhoan;
 import keeptoo.KGradientPanel;
+import utils.NhanVien;
 import utils.Utils;
 
 public class DangNhap_GUI extends JFrame {
@@ -26,6 +37,10 @@ public class DangNhap_GUI extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private TaiKhoan_DAO taiKhoan_DAO;
+	private TextField txtMaNhanVien;
+	private DangNhap_GUI _this;
+	private PasswordField txtMatKhau;
 
 	/**
 	 * Launch the application.
@@ -47,6 +62,16 @@ public class DangNhap_GUI extends JFrame {
 	 * Create the frame.
 	 */
 	public DangNhap_GUI() {
+		try {
+			new ConnectDB().connect();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		_this = this;
+		taiKhoan_DAO = new TaiKhoan_DAO();
+
 		setAutoRequestFocus(false);
 		setTitle("Đăng nhập");
 		setResizable(false);
@@ -60,12 +85,18 @@ public class DangNhap_GUI extends JFrame {
 		contentPane.setLayout(null);
 		setLocationRelativeTo(null);
 
+		JDialogCustom jDialogCustom = new JDialogCustom(this);
+		jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.exit(0);
+			}
+		});
+
 		KGradientPanel pnlContainer = new KGradientPanel();
 		pnlContainer.setBounds(0, 0, 1100, 610);
-//		panel.setkEndColor(new java.awt.Color(0, 204, 204));
 		pnlContainer.setkEndColor(Utils.getRGBA(0, 204, 204, 1f));
 		pnlContainer.setkGradientFocus(600);
-//		panel.setkStartColor(new java.awt.Color(153, 0, 153));
 		pnlContainer.setkStartColor(Utils.getRGBA(153, 0, 153, 0.8f));
 		contentPane.add(pnlContainer);
 		pnlContainer.setLayout(null);
@@ -96,18 +127,30 @@ public class DangNhap_GUI extends JFrame {
 		pnlFormDangNhap.add(pnlForm);
 		pnlForm.setLayout(null);
 
-		TextField txtMaNhanVien = new TextField();
+		txtMaNhanVien = new TextField();
+		txtMaNhanVien.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtMaNhanVien.setError(false);
+			}
+		});
 		txtMaNhanVien.setLabelText("Mã nhân viên");
 		txtMaNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtMaNhanVien.setBounds(0, 0, 320, 55);
 		pnlForm.add(txtMaNhanVien);
 		txtMaNhanVien.setColumns(10);
 
-		TextField txtMatKhau = new TextField();
+		txtMatKhau = new PasswordField();
 		txtMatKhau.setLabelText("Mật khẩu");
 		txtMatKhau.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtMatKhau.setColumns(10);
 		txtMatKhau.setBounds(0, 75, 320, 55);
+		txtMatKhau.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtMatKhau.setError(false);
+			}
+		});
 		pnlForm.add(txtMatKhau);
 
 		Button btnDangNhap = new Button("Đăng nhập");
@@ -122,13 +165,34 @@ public class DangNhap_GUI extends JFrame {
 		btnDangNhap.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnDangNhap.setRadius(8);
 		btnDangNhap.setBounds(170, 148, 150, 40);
+		btnDangNhap.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!validator())
+					return;
+
+				String maTaiKhoan = txtMaNhanVien.getText();
+				@SuppressWarnings("deprecation")
+				String matKhau = txtMatKhau.getText();
+
+				boolean res = taiKhoan_DAO.isTaiKhoan(new TaiKhoan(maTaiKhoan, matKhau));
+
+				if (res) {
+					NhanVien.setNhanVien(new entity.NhanVien(maTaiKhoan));
+					new Main().setVisible(true);
+				} else {
+					new Notification(_this, components.notification.Notification.Type.ERROR,
+							"Tài khoản hoặc mật khẩu không đúng").showNotification();
+				}
+			}
+		});
 		pnlForm.add(btnDangNhap);
 
 		Button btnThoat = new Button("Thoát");
 		btnThoat.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.exit(0);
+				jDialogCustom.showMessage("Thoát ứng dụng", "Bạn có chắc chắn muốn thoát ứng dụng không?");
 			}
 		});
 		btnThoat.setIcon(new ImageIcon("Icon\\exit (1).png"));
@@ -163,5 +227,42 @@ public class DangNhap_GUI extends JFrame {
 		lblTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 36));
 		lblTieuDe.setBounds(0, 0, 400, 83);
 		pnlDangNhap.add(lblTieuDe);
+	}
+
+	private boolean validator() {
+		String maTaiKhoan = txtMaNhanVien.getText();
+		components.notification.Notification.Type type = components.notification.Notification.Type.ERROR;
+
+		if (maTaiKhoan.equals("")) {
+			new Notification(_this, type, "Mã tài khoản không được rỗng").showNotification();
+			txtMaNhanVien.setError(true);
+			txtMaNhanVien.requestFocus();
+			return false;
+		}
+
+		if (!Pattern.matches("NV[0-9]{3}", maTaiKhoan)) {
+			new Notification(_this, type, "Mã tài khoản phải có dạng NVxxx, x là các chữ số").showNotification();
+			txtMaNhanVien.setError(true);
+			txtMaNhanVien.requestFocus();
+			return false;
+		}
+
+		@SuppressWarnings("deprecation")
+		String matKhau = txtMatKhau.getText();
+
+		if (matKhau.equals("")) {
+			new Notification(_this, type, "Mật khẩu không được rỗng").showNotification();
+			txtMatKhau.setError(true);
+			txtMatKhau.requestFocus();
+			return false;
+		}
+		if (matKhau.length() < 8) {
+			new Notification(_this, type, "Mật khẩu phải lớn hơn 8 ký tự").showNotification();
+			txtMatKhau.setError(true);
+			txtMatKhau.requestFocus();
+			return false;
+		}
+
+		return true;
 	}
 }

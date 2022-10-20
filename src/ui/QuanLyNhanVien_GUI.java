@@ -24,6 +24,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -40,6 +42,7 @@ import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
 import utils.Utils;
+import javax.swing.JButton;
 
 public class QuanLyNhanVien_GUI extends JPanel {
 
@@ -188,6 +191,20 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlActions.add(btnEmployeeAdd);
 
 		Button btnEmployeeEdit = new Button("Sửa");
+		btnEmployeeEdit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = tbl.getSelectedRow();
+				if (row == -1) {
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+							"Vui lòng chọn nhân viên muốn sửa");
+				} else {
+					String maNhanVien = (String) tableModel.getValueAt(row, 0);
+					main.addPnlBody(new ThongTinChiTietNhanVien_GUI(main, new NhanVien(maNhanVien), true),
+							"Thông tin chi tiết nhân viên", 1, 0);
+				}
+			}
+		});
 		btnEmployeeEdit.setFocusable(false);
 		btnEmployeeEdit.setIcon(new ImageIcon("Icon\\edit 2.png"));
 		btnEmployeeEdit.setRadius(4);
@@ -202,6 +219,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlActions.add(btnEmployeeEdit);
 
 		Button btnEmployeeRemove = new Button("Nghỉ việc");
+		btnEmployeeRemove.setEnabled(false);
 		btnEmployeeRemove.setFocusable(false);
 		btnEmployeeRemove.setIcon(new ImageIcon("Icon\\unemployed 1.png"));
 		btnEmployeeRemove.setRadius(4);
@@ -290,6 +308,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 				return false;
 			}
 		};
+		tbl.setAutoCreateRowSorter(true);
 
 		tableModel = new DefaultTableModel(new String[] { "M\u00E3 NV", "H\u1ECD T\u00EAn", "CCCD", "S\u0110T",
 				"Ng\u00E0y sinh", "Gi\u1EDBi t\u00EDnh", "\u0110\u1ECBa ch\u1EC9", "Tr\u1EA1ng th\u00E1i" }, 0);
@@ -321,6 +340,19 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlControl = new ControlPanel(400, 529, main);
 		pnlControl.setLocation(400, 464);
 		this.add(pnlControl);
+
+//		...
+		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent lse) {
+				if (!lse.getValueIsAdjusting()) {
+					int row = tbl.getSelectedRow();
+
+					if (row == -1) {
+						pnlControl.setTrangHienTai(0);
+					}
+				}
+			}
+		});
 
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override

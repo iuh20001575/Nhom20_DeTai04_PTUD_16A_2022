@@ -302,6 +302,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 
 	}
 
+	@SuppressWarnings("unused")
 	private boolean validator() {
 		return true;
 	}
@@ -313,6 +314,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		return list;
 	}
 
+	@SuppressWarnings("unused")
 	private KhachHang getKhachHangTuForm() {
 		String sma = txtMa.getText();
 		String sten = txtTen.getText();

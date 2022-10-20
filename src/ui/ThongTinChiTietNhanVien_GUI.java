@@ -72,6 +72,15 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 	private boolean isEnabledEventTinh = false;
 	private boolean isEnabledEventQuan = false;
 	private boolean isEnabledEventPhuong = false;
+	private Button btnLuu;
+	private Button btnCapNhat;
+
+	public ThongTinChiTietNhanVien_GUI(JFrame jFrame, NhanVien nhanVien, boolean isCapNhat) {
+		this(jFrame, nhanVien);
+		setEnabledForm(true);
+		btnCapNhat.setVisible(false);
+		btnLuu.setEnabled(true);
+	}
 
 	/**
 	 * Create the frame.
@@ -313,7 +322,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		this.add(pnlActions);
 		pnlActions.setLayout(null);
 
-		Button btnLuu = new Button("Lưu");
+		btnLuu = new Button("Lưu");
 		btnLuu.setUI(new MetalButtonUI() {
 			protected Color getDisabledTextColor() {
 				return Color.WHITE;
@@ -333,7 +342,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		btnLuu.setBounds(349, 0, 250, 48);
 		pnlActions.add(btnLuu);
 
-		Button btnCapNhat = new Button("Cập nhật");
+		btnCapNhat = new Button("Cập nhật");
 		btnCapNhat.setIcon(new ImageIcon("Icon\\edit 1.png"));
 		btnCapNhat.setFocusable(false);
 		btnCapNhat.setRadius(8);

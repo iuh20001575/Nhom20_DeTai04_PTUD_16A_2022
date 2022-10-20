@@ -138,6 +138,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 	}
 
 	public void setTrangHienTai(int trangHienTai) {
+		soTrang = tbl.getRowCount();
 		if (trangHienTai == 0 && soTrang > 0)
 			trangHienTai = 1;
 		if (soTrang > 0)
