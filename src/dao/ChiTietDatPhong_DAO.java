@@ -99,4 +99,22 @@ public class ChiTietDatPhong_DAO {
 
 		return false;
 	}
+
+	public boolean themChiTietDatPhong(String maDatPhong, Phong phong, Time gioVao) {
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("INSERT ChiTietDatPhong(datPhong, phong, gioVao) VALUES(?, ?, ?)");
+			preparedStatement.setString(1, maDatPhong);
+			preparedStatement.setString(2, phong.getMaPhong());
+			preparedStatement.setTime(3, gioVao);
+
+			return preparedStatement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
 }

@@ -1,5 +1,6 @@
 package components.controlPanel;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
+import components.button.Button;
 import components.jDialog.JDialogCustom;
 import utils.Utils;
 
@@ -29,19 +32,25 @@ public class ControlPanel extends JPanel implements ActionListener {
 	private JTextField txtTrangHienThai;
 	private int soTrang;
 	private int trangHienTai;
-	private JButton btnFirst;
 	private JButton btnPrev;
 	private JButton btnNext;
 	private JButton btnLast;
 	private JTable tbl;
 	private JLabel lblSoTrang;
+	private Button btnFirst;
 
 	public ControlPanel(int x, int y, JFrame jFrame) {
 		setBounds(x, y, 286, 34);
 		setBackground(Utils.secondaryColor);
 		setLayout(null);
 
-		btnFirst = new JButton("");
+		btnFirst = new Button("");
+		btnFirst.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnFirst.setRadius(4);
+		btnFirst.setBorderColor(Utils.secondaryColor);
+		btnFirst.setColor(Color.WHITE);
+		btnFirst.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
+		btnFirst.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
 		btnFirst.setIcon(new ImageIcon("Icon\\first.png"));
 		btnFirst.setBounds(0, 0, 34, 34);
 		add(btnFirst);

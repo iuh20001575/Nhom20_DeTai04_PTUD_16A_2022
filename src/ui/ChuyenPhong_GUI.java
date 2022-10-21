@@ -71,12 +71,13 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 
 		setType(Type.UTILITY);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 614, 437);
+		setBounds(100, 100, 600, 400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		setLocationRelativeTo(null);
+		setUndecorated(true);
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
@@ -247,17 +248,8 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-//		Cam
-//		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
-//		Xanh
 		tbl.getTableHeader().setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-//		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-//		tbl.getColumnModel().getColumn(0).setPreferredWidth(40);
-//		tbl.getColumnModel().getColumn(1).setPreferredWidth(170);
-//		tbl.getColumnModel().getColumn(2).setPreferredWidth(150);
-//		tbl.getColumnModel().getColumn(3).setPreferredWidth(123);
-//		tbl.getColumnModel().getColumn(4).setPreferredWidth(123);
 		tbl.getTableHeader()
 				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 24));
 		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -302,6 +294,9 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 		btnChuyen.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if (!btnChuyen.isEnabled())
+					return;
+
 				String maPhongCu = (String) cmbPhongHienTai.getSelectedItem();
 				String maPhongMoi = lblmaPhongMoi.getText().trim();
 				boolean res = datPhong_DAO.chuyenPhong(maPhongCu, maPhongMoi);

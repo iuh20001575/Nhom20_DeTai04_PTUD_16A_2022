@@ -32,6 +32,7 @@ import javax.swing.table.TableCellRenderer;
 import components.button.Button;
 import components.controlPanel.ControlPanel;
 import components.jDialog.JDialogCustom;
+import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import connectDB.ConnectDB;
@@ -42,7 +43,8 @@ import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
 import utils.Utils;
-import javax.swing.JButton;
+
+// TODO Test gộp phòng
 
 public class QuanLyNhanVien_GUI extends JPanel {
 
@@ -60,6 +62,10 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private JComboBox<String> cboMaNhanVien;
 	private JComboBox<String> cboTrangThai;
 	private ControlPanel pnlControl;
+	private Button btnEmployeeRemove;
+	private Button btnEmployeeEdit;
+	private Button btnEmployeeAdd;
+	private Button btnEmployeeView;
 
 	/**
 	 * Create the frame.
@@ -148,10 +154,12 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		this.add(pnlActions);
 		pnlActions.setLayout(null);
 
-		Button btnEmployeeView = new Button("Xem");
+		btnEmployeeView = new Button("Xem");
 		btnEmployeeView.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if (!btnEmployeeView.isEnabled())
+					return;
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
 					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
@@ -176,7 +184,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeView.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlActions.add(btnEmployeeView);
 
-		Button btnEmployeeAdd = new Button("Thêm");
+		btnEmployeeAdd = new Button("Thêm");
 		btnEmployeeAdd.setFocusable(false);
 		btnEmployeeAdd.setIcon(new ImageIcon("Icon\\add-user (2) 1.png"));
 		btnEmployeeAdd.setRadius(4);
@@ -190,10 +198,12 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeAdd.setBounds(165, 0, 150, 36);
 		pnlActions.add(btnEmployeeAdd);
 
-		Button btnEmployeeEdit = new Button("Sửa");
+		btnEmployeeEdit = new Button("Sửa");
 		btnEmployeeEdit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if (!btnEmployeeEdit.isEnabled())
+					return;
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
 					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
@@ -218,7 +228,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeEdit.setBounds(330, 0, 150, 36);
 		pnlActions.add(btnEmployeeEdit);
 
-		Button btnEmployeeRemove = new Button("Nghỉ việc");
+		btnEmployeeRemove = new Button("Nghỉ việc");
 		btnEmployeeRemove.setEnabled(false);
 		btnEmployeeRemove.setFocusable(false);
 		btnEmployeeRemove.setIcon(new ImageIcon("Icon\\unemployed 1.png"));
@@ -232,6 +242,27 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeRemove.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnEmployeeRemove.setBounds(495, 0, 150, 36);
 		pnlActions.add(btnEmployeeRemove);
+		btnEmployeeRemove.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!btnEmployeeRemove.isEnabled())
+					return;
+
+				int row = tbl.getSelectedRow();
+
+				if (row != -1) {
+					String maNhanVien = (String) tbl.getValueAt(row, 0);
+					boolean res = nhanVien_DAO.setNghiLam(maNhanVien);
+
+					if (res)
+						new Notification(main, components.notification.Notification.Type.SUCCESS,
+								"Cập nhật trạng thái nhân viên thành công");
+					else
+						new Notification(main, components.notification.Notification.Type.ERROR,
+								"Cập nhật trạng thái nhân viên thất bại");
+				}
+			}
+		});
 
 		cboTrangThai = new JComboBox<String>();
 		cboTrangThai.addItemListener(new ItemListener() {
@@ -316,7 +347,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
 //		Cam
-		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
+//		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
 //		Xanh
 		tbl.getTableHeader().setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -341,15 +372,10 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlControl.setLocation(400, 464);
 		this.add(pnlControl);
 
-//		...
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
-					int row = tbl.getSelectedRow();
-
-					if (row == -1) {
-						pnlControl.setTrangHienTai(0);
-					}
+					setEnabledBtnActions();
 				}
 			}
 		});
@@ -394,6 +420,26 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		};
 
 		clock.start();
+	}
+
+	private void setEnabledBtnActions() {
+		int row = tbl.getSelectedRow();
+
+		if (row == -1) {
+			btnEmployeeView.setEnabled(false);
+			btnEmployeeEdit.setEnabled(false);
+			btnEmployeeRemove.setEnabled(false);
+		} else {
+			btnEmployeeView.setEnabled(true);
+			btnEmployeeEdit.setEnabled(true);
+
+			String trangThai = (String) tableModel.getValueAt(row, 7);
+
+			if (NhanVien.convertStringToTrangThai(trangThai).equals(NhanVien.TrangThai.DangLam))
+				btnEmployeeRemove.setEnabled(true);
+			else
+				btnEmployeeRemove.setEnabled(false);
+		}
 	}
 
 	private void filterNhanVien() {

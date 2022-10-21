@@ -639,7 +639,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		ComboBox<String> comboBox = new ComboBox<>();
 		comboBox.setBackground(Utils.primaryColor);
 		comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		comboBox.setBounds(653, 5, 91, 28);
+		comboBox.setBounds(653, 2, 91, 35);
 		pnlFilter.add(comboBox);
 
 		pnlContainerDanhSachPhong = new JPanel();

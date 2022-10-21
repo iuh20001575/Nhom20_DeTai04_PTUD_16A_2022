@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -31,6 +33,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -72,6 +76,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private DateChooser dateChoose;
 	private DatPhong_DAO datPhong_DAO;
 	private List<Phong> dsPhongDaChon;
+	private List<Phong> dsPhongDatTruoc;
 	private LoaiPhong_DAO loaiPhong_DAO;
 	private KhachHang_DAO khachHang_DAO;
 	private KhachHang khachHang;
@@ -79,6 +84,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private JComboBox<String> cmbGio;
 	private JComboBox<String> cmbPhut;
 	private TextField txtNgayNhanPhong;
+	private Button btnChonPhong;
+	private Button btnDatPhong;
 
 	/**
 	 * Create the frame.
@@ -101,7 +108,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		khachHang_DAO = new KhachHang_DAO();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 850, 536);
+		setBounds(0, 0, 850, 536);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -121,7 +128,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlContainer.add(pnlHeading);
 		pnlHeading.setLayout(null);
 
-		JLabel lblTitle = new JLabel("Đặt phòng");
+		JLabel lblTitle = new JLabel("Đặt phòng trước");
 		lblTitle.setForeground(Color.WHITE);
 		lblTitle.setBounds(325, 9, 200, 32);
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
@@ -143,26 +150,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		txtSoDienThoai.setColumns(10);
 
 		Button btnSearchSoDienThoai = new Button();
-		btnSearchSoDienThoai.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				String soDienThoai = txtSoDienThoai.getText().trim();
-
-				if (Utils.isSoDienThoai(soDienThoai)) {
-					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
-
-					if (khachHang != null) {
-						txtTenKhachHang.setText(khachHang.getHoTen());
-					} else {
-						System.out.println("Khách hàng khôn tồn tại");
-					}
-				} else {
-					new Notification(_this, components.notification.Notification.Type.ERROR,
-							"Số điện thoại không hợp lệ").showNotification();
-					txtSoDienThoai.setError(true);
-				}
-			}
-		});
 		btnSearchSoDienThoai.setFocusable(false);
 		btnSearchSoDienThoai.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnSearchSoDienThoai.setRadius(4);
@@ -195,23 +182,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlPhong.add(pnlActions);
 		pnlActions.setLayout(null);
 
-		Button btnChonPhong = new Button("");
-		btnChonPhong.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int row = tbl.getSelectedRow();
-				if (row != -1) {
-					if (dsPhongDaChon == null)
-						dsPhongDaChon = new ArrayList<>();
-					Phong phong = new Phong((String) tableModel.getValueAt(row, 0));
-					if (dsPhongDaChon.contains(phong))
-						return;
-					dsPhongDaChon.add(phong);
-
-					showDanhSachPhongDaChon();
-				}
-			}
-		});
+		btnChonPhong = new Button("");
 		btnChonPhong.setFocusable(false);
 		btnChonPhong.setRadius(8);
 		btnChonPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -221,6 +192,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnChonPhong.setBorderColor(Utils.secondaryColor);
 		btnChonPhong.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
 		btnChonPhong.setBounds(0, 94, 36, 36);
+		btnChonPhong.setEnabled(false);
 		pnlActions.add(btnChonPhong);
 
 		JScrollPane scrDanhSachPhong = new JScrollPane();
@@ -228,6 +200,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		scrDanhSachPhong.setBackground(Utils.secondaryColor);
 		scrDanhSachPhong.setBounds(0, 0, 564, 225);
 		pnlPhong.add(scrDanhSachPhong);
+
 		ScrollBarCustom scbDanhSachPhong = new ScrollBarCustom();
 //		Set color scrollbar thumb
 		scbDanhSachPhong.setScrollbarColor(new Color(203, 203, 203));
@@ -265,12 +238,11 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-//		Cam
-		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
-//		Xanh
+//		Set background cho phần header của table
 		tbl.getTableHeader().setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
+//		Set chiều rộng và chiều cao cho phần header của table
 		tbl.getTableHeader()
 				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
 		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -287,7 +259,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlBody.add(pnlBtnGroup);
 		pnlBtnGroup.setLayout(null);
 
-		Button btnDatPhong = new Button("Đặt phòng");
+		btnDatPhong = new Button("Đặt phòng trước");
 		btnDatPhong.setFocusable(false);
 		btnDatPhong.setRadius(8);
 		btnDatPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -298,6 +270,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnDatPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
 		btnDatPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		btnDatPhong.setBounds(395, 0, 150, 36);
+		btnDatPhong.setEnabled(false);
 		pnlBtnGroup.add(btnDatPhong);
 
 		Button btnQuayLai = new Button("Quay lại");
@@ -411,6 +384,92 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		lblPhut.setBounds(612, 95, 45, 30);
 		pnlBody.add(lblPhut);
 
+		showDanhSachPhongDaChon();
+		cmbMaPhong.addItemListener(_this);
+		cmbLoaiPhong.addItemListener(_this);
+		cmbSoLuong.addItemListener(_this);
+
+//		Sự kiện window
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowOpened(WindowEvent e) {
+				setTimeComboBox(LocalTime.now().getHour());
+			}
+
+			public void windowActivated(WindowEvent e) {
+				String soDienThoai = txtSoDienThoai.getText().trim();
+
+				if (Utils.isSoDienThoai(soDienThoai)) {
+					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
+
+					if (khachHang != null) {
+						txtTenKhachHang.setText(khachHang.getHoTen());
+						txtTenKhachHang.requestFocus();
+					}
+				}
+
+				cmbMaPhong.addItemListener(_this);
+				cmbLoaiPhong.addItemListener(_this);
+				cmbSoLuong.addItemListener(_this);
+			};
+		});
+
+//		Sự kiện txtSoDienThoai
+		txtSoDienThoai.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtSoDienThoai.setError(false);
+				txtTenKhachHang.setText("");
+				khachHang = null;
+				btnDatPhong.setEnabled(false);
+			}
+		});
+
+//		Sự kiện nút tìm kiếm khách hàng theo số điện thoại
+		btnSearchSoDienThoai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String soDienThoai = txtSoDienThoai.getText().trim();
+
+				if (Utils.isSoDienThoai(soDienThoai)) {
+					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
+
+					if (khachHang != null) {
+						txtTenKhachHang.setText(khachHang.getHoTen());
+
+						if (dsPhongDaChon != null && dsPhongDaChon.size() > 0)
+							btnDatPhong.setEnabled(true);
+					} else {
+						JDialogCustom jDialogCustom = new JDialogCustom(_this);
+
+						jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+							public void mouseClicked(MouseEvent e) {
+								Main main = new Main();
+								main.addPnlBody(new ThemKhachHang_GUI(main, _this, soDienThoai), "Thêm khách hàng", 2,
+										0);
+								main.setVisible(true);
+								setVisible(false);
+							};
+						});
+
+						jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
+							public void mouseClicked(MouseEvent e) {
+								quanLyDatPhongGUI.closeJFrameSub();
+							};
+						});
+
+						jDialogCustom.showMessage("Warning",
+								"Khách hàng không có trong hệ thống, bạn có muốn thêm khách hàng mới không?");
+					}
+				} else {
+					new Notification(_this, components.notification.Notification.Type.ERROR,
+							"Số điện thoại không hợp lệ").showNotification();
+					txtSoDienThoai.setError(true);
+				}
+			}
+		});
+
+//		Sự kiện tìm kiếm phòng đặt trước
 		btnSearchPhongDatTruoc.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -432,17 +491,88 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 						phut = Integer.parseInt((String) cmbPhut.getSelectedItem());
 				LocalTime gioNhanPhong = LocalTime.of(gio, phut);
 
-				List<Phong> list = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong);
-				list.forEach(phong -> cmbMaPhong.addItem(phong.getMaPhong()));
-				addRow(list);
+				dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong);
+				dsPhongDatTruoc.forEach(phong -> cmbMaPhong.addItem(phong.getMaPhong()));
+				addRow(dsPhongDatTruoc);
 				cmbMaPhong.addItemListener(_this);
 			}
 		});
 
-//		Sự kiện các nút chức năng
+//		Sự kiện nút làm mới
+		btnLamMoi.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				int gio = Integer.parseInt((String) cmbGio.getSelectedItem()),
+						phut = Integer.parseInt((String) cmbPhut.getSelectedItem());
+				LocalTime gioNhanPhong = LocalTime.of(gio, phut);
+				LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
+
+				cmbLoaiPhong.removeItemListener(_this);
+				cmbMaPhong.removeItemListener(_this);
+				cmbSoLuong.removeItemListener(_this);
+
+				emptyTable();
+				addRow(datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong));
+				cmbLoaiPhong.setSelectedIndex(0);
+				cmbMaPhong.setSelectedIndex(0);
+				cmbSoLuong.setSelectedIndex(0);
+				capNhatDanhSachPhongDatTruoc();
+
+				cmbLoaiPhong.addItemListener(_this);
+				cmbMaPhong.addItemListener(_this);
+				cmbSoLuong.addItemListener(_this);
+			};
+		});
+
+//		Sự kiện JTable
+		tbl.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				btnChonPhong.setEnabled(true);
+			};
+		});
+
+		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent lse) {
+				if (!lse.getValueIsAdjusting()) {
+					btnChonPhong.setEnabled(false);
+				}
+			}
+		});
+
+//		Sự kiện nút chọn phòng
+		btnChonPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = tbl.getSelectedRow();
+				if (row != -1) {
+					if (dsPhongDaChon == null)
+						dsPhongDaChon = new ArrayList<>();
+					Phong phong = new Phong((String) tableModel.getValueAt(row, 0));
+					if (dsPhongDaChon.contains(phong))
+						return;
+					dsPhongDaChon.add(phong);
+					capNhatDanhSachPhongDatTruoc();
+					showDanhSachPhongDaChon();
+					if (khachHang != null)
+						btnDatPhong.setEnabled(true);
+				}
+			}
+		});
+
+//		Sự kiện nút quay lại
+		btnQuayLai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				quanLyDatPhongGUI.closeJFrameSub();
+			}
+		});
+
+//		Sự kiện nút đặt phòng
 		btnDatPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if (!btnDatPhong.isEnabled())
+					return;
+
 //				Kiểm tra khách hàng đã được nhập hay chưa?
 				if (khachHang == null) {
 					new Notification(_this, components.notification.Notification.Type.ERROR, "Vui lòng nhập khách hàng")
@@ -469,50 +599,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				}
 			}
 		});
-
-		btnQuayLai.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				quanLyDatPhongGUI.closeJFrameSub();
-			}
-		});
-
-//		Sự kiện window
-		this.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowOpened(WindowEvent e) {
-				setTimeComboBox(LocalTime.now().getHour());
-			}
-		});
-
-//		Sự kiện nút làm mới
-		btnLamMoi.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				int gio = Integer.parseInt((String) cmbGio.getSelectedItem()),
-						phut = Integer.parseInt((String) cmbPhut.getSelectedItem());
-				LocalTime gioNhanPhong = LocalTime.of(gio, phut);
-				LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
-
-				cmbLoaiPhong.removeItemListener(_this);
-				cmbMaPhong.removeItemListener(_this);
-				cmbSoLuong.removeItemListener(_this);
-
-				emptyTable();
-				addRow(datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong));
-				cmbLoaiPhong.setSelectedIndex(0);
-				cmbMaPhong.setSelectedIndex(0);
-				cmbSoLuong.setSelectedIndex(0);
-
-				cmbLoaiPhong.addItemListener(_this);
-				cmbMaPhong.addItemListener(_this);
-				cmbSoLuong.addItemListener(_this);
-			};
-		});
-
-		showDanhSachPhongDaChon();
-		cmbMaPhong.addItemListener(_this);
-		cmbLoaiPhong.addItemListener(_this);
-		cmbSoLuong.addItemListener(_this);
 	}
 
 	private void setTimeComboBox(int gioSelect) {
@@ -621,7 +707,10 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				dsPhongDaChon.remove(phong);
+				capNhatDanhSachPhongDatTruoc();
 				showDanhSachPhongDaChon();
+				if (dsPhongDaChon.size() <= 0)
+					btnDatPhong.setEnabled(false);
 			}
 		});
 
@@ -674,8 +763,22 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				phut = Integer.parseInt((String) cmbPhut.getSelectedItem());
 		LocalTime gioNhanPhong = LocalTime.of(gio, phut);
 		LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
-		List<Phong> list = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
+		dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
 		emptyTable();
-		addRow(list);
+		addRow(dsPhongDatTruoc);
+		capNhatDanhSachPhongDatTruoc();
+	}
+
+	private void capNhatDanhSachPhongDatTruoc() {
+		if (dsPhongDatTruoc == null || dsPhongDaChon == null)
+			return;
+
+		emptyTable();
+		btnChonPhong.setEnabled(false);
+
+		for (Phong phong : dsPhongDatTruoc) {
+			if (!dsPhongDaChon.contains(phong))
+				addRow(phong);
+		}
 	}
 }

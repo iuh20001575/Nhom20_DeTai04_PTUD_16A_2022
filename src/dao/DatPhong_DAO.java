@@ -15,33 +15,17 @@ import connectDB.ConnectDB;
 import entity.DatPhong;
 import entity.DatPhong.TrangThai;
 import entity.KhachHang;
-import entity.LoaiPhong;
 import entity.NhanVien;
 import entity.Phong;
 import utils.Utils;
 
 public class DatPhong_DAO {
 	private Phong_DAO phong_DAO;
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
 
 	public DatPhong_DAO() {
 		phong_DAO = new Phong_DAO();
-	}
-
-	/**
-	 * Get phòng từ resultSet
-	 * 
-	 * @param resultSet
-	 * @return phòng
-	 * @throws SQLException if the columnIndex is not valid;if a database access
-	 *                      error occurs or this method iscalled on a closed result
-	 *                      set
-	 */
-	private Phong getPhong(ResultSet resultSet) throws SQLException {
-		String maPhong = resultSet.getString(1);
-		String loaiPhong = resultSet.getString(2);
-		int soLuongKhach = resultSet.getInt(3);
-		String trangThai = resultSet.getString(4);
-		return new Phong(maPhong, new LoaiPhong(loaiPhong), soLuongKhach, Phong.convertStringToTrangThai(trangThai));
+		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 	}
 
 	/**
@@ -87,6 +71,11 @@ public class DatPhong_DAO {
 		return null;
 	}
 
+	/**
+	 * Get danh sách phòng đặt ngay
+	 * 
+	 * @return danh sách phòng đặt ngay
+	 */
 	public List<Phong> getPhongDatNgay() {
 		return getPhongDatNgay("", "", "Số lượng khách");
 	}
@@ -104,7 +93,7 @@ public class DatPhong_DAO {
 		boolean isInteger = Utils.isInteger(soLuong);
 
 		try {
-			String sql = "SELECT [maPhong], [loaiPhong], [soLuongKhach], [trangThai] FROM [dbo].[Phong] P"
+			String sql = "SELECT [maPhong] FROM [dbo].[Phong] P"
 					+ "	JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai WHERE maPhong NOT IN ("
 					+ "	SELECT [phong] FROM [dbo].[DatPhong] DP"
 					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong]"
@@ -125,8 +114,10 @@ public class DatPhong_DAO {
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
-			while (resultSet.next())
-				list.add(getPhong(resultSet));
+			while (resultSet.next()) {
+				Phong phong = phong_DAO.getPhong(resultSet.getString(1));
+				list.add(phong);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -168,32 +159,17 @@ public class DatPhong_DAO {
 
 			for (Phong phong : phongs) {
 //				[ChiTietDatPhong] - Tạo chi tiết phiếu đặt phòng
-				preparedStatement = ConnectDB.getConnection()
-						.prepareStatement("INSERT ChiTietDatPhong(datPhong, phong, gioVao) VALUES(?, ?, ?)");
-				preparedStatement.setString(1, maDatPhong);
-				preparedStatement.setString(2, phong.getMaPhong());
-				preparedStatement.setTime(3, time);
-
-				res = preparedStatement.executeUpdate();
-
-				if (res <= 0)
+				if (!chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phong, time))
 					return rollback();
 
 //				[Phong] - Cập nhật trạng thái phòng
 				Phong phongFull = phong_DAO.getPhong(phong.getMaPhong());
-				preparedStatement = ConnectDB.getConnection()
-						.prepareStatement("Update Phong SET trangThai = ? WHERE maPhong = ?");
 				String trangThaiNew = Phong.convertTrangThaiToString(Phong.TrangThai.DangThue);
 
 				if (phongFull.getTrangThai().equals(entity.Phong.TrangThai.DaDat))
 					trangThaiNew = Phong.convertTrangThaiToString(entity.Phong.TrangThai.PhongTam);
 
-				preparedStatement.setString(1, trangThaiNew);
-				preparedStatement.setString(2, phong.getMaPhong());
-
-				res = preparedStatement.executeUpdate();
-
-				if (res <= 0)
+				if (!phong_DAO.capNhatTrangThaiPhong(phongFull, trangThaiNew))
 					return rollback();
 			}
 
@@ -248,32 +224,21 @@ public class DatPhong_DAO {
 
 			for (Phong phong : phongs) {
 //				[ChiTietDatPhong] - Tạo chi tiết phiếu đặt phòng
-				preparedStatement = ConnectDB.getConnection()
-						.prepareStatement("INSERT ChiTietDatPhong(datPhong, phong, gioVao) VALUES(?, ?, ?)");
-				preparedStatement.setString(1, maDatPhong);
-				preparedStatement.setString(2, phong.getMaPhong());
-				preparedStatement.setTime(3, Time.valueOf(gioNhanPhong));
-
-				res = preparedStatement.executeUpdate();
-
-				if (res <= 0)
+				if (!chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phong, Time.valueOf(gioNhanPhong)))
 					return rollback();
 
 //				[Phong] - Cập nhật trạng thái phòng
-				preparedStatement = ConnectDB.getConnection()
-						.prepareStatement("Update Phong SET trangThai = ? WHERE maPhong = ?");
+//							+ Trống -> Đã đặt
+//							+ Đang thuê -> Phòng tạm
+//							+ Đã đặt -> Đã đặt
+//							+ Phòng tạm -> Phòng tạm
 				entity.Phong.TrangThai trangThai = phong_DAO.getTrangThai(phong.getMaPhong());
 				entity.Phong.TrangThai trangThaiNew = entity.Phong.TrangThai.DaDat;
 
 				if (trangThai.equals(entity.Phong.TrangThai.DangThue)
 						|| trangThai.equals(entity.Phong.TrangThai.PhongTam))
 					trangThaiNew = entity.Phong.TrangThai.PhongTam;
-				preparedStatement.setString(1, Phong.convertTrangThaiToString(trangThaiNew));
-				preparedStatement.setString(2, phong.getMaPhong());
-
-				res = preparedStatement.executeUpdate();
-
-				if (res <= 0)
+				if (!phong_DAO.capNhatTrangThaiPhong(phong, Phong.convertTrangThaiToString(trangThaiNew)))
 					return rollback();
 			}
 
@@ -353,7 +318,7 @@ public class DatPhong_DAO {
 			boolean isDateNow = LocalDate.now().isEqual(ngayNhanPhong);
 
 			String sql = String.format(
-					"SELECT * FROM [dbo].[Phong] P JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai "
+					"SELECT maPhong FROM [dbo].[Phong] P JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai "
 							+ "WHERE [maPhong] NOT IN (SELECT [maPhong] FROM [dbo].[Phong] P"
 							+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON P.maPhong = CTDP.phong"
 							+ "	JOIN [dbo].[DatPhong] DP ON DP.maDatPhong = CTDP.datPhong"
@@ -376,8 +341,10 @@ public class DatPhong_DAO {
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
-			while (resultSet.next())
-				list.add(getPhong(resultSet));
+			while (resultSet.next()) {
+				Phong phong = phong_DAO.getPhong(resultSet.getString(1));
+				list.add(phong);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -392,6 +359,7 @@ public class DatPhong_DAO {
 	 * @param phong phòng cần lấy giờ vào
 	 * @return giờ vào phòng
 	 */
+
 	public LocalTime getGioVao(Phong phong) {
 		try {
 			Phong phong2 = phong_DAO.getPhong(phong.getMaPhong());
@@ -633,20 +601,34 @@ public class DatPhong_DAO {
 			ConnectDB.getConnection().setAutoCommit(false);
 			Statement statement = ConnectDB.getConnection().createStatement();
 
-//			[Phong] - Cập nhật trạng thái phòng
-//						+ Đã đặt -> Trống
-//						+ Phòng tạm -> Đang thuê
-			boolean res = statement.executeUpdate("UPDATE [dbo].[Phong] SET [trangThai] = ("
-					+ "	CASE WHEN [trangThai] = N'Đã đặt' THEN N'Trống'"
-					+ "	ELSE N'Đang thuê' END) WHERE [maPhong] IN (SELECT [phong] FROM [dbo].[DatPhong] DP"
-					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong]"
-					+ "	WHERE ([trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE())"
-					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) >= CONVERT(TIME(0), '1:00:00') "
-					+ "AND [gioNhanPhong] < CONVERT(TIME(0), GETDATE())) "
-					+ "OR ([trangThai] = N'Đang chờ' AND [ngayNhanPhong] < CONVERT(DATE, GETDATE())))") > 0;
+//			Get danh sách phòng cần cập nhật
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT [phong] FROM [dbo].[DatPhong] DP "
+							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
+							+ "WHERE ([trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
+							+ "AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) >= CONVERT(TIME(0), '1:00:00') "
+							+ "AND [gioNhanPhong] < CONVERT(TIME(0), GETDATE())) "
+							+ "OR ([trangThai] = N'Đang chờ' AND [ngayNhanPhong] < CONVERT(DATE, GETDATE()))");
+			List<String> maPhongList = new ArrayList<>();
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while (resultSet.next())
+				maPhongList.add(resultSet.getString(1));
 
-			if (!res)
-				return rollback();
+//			[Phong] - Cập nhật trạng thái phòng
+			boolean res;
+			for (String string : maPhongList) {
+				preparedStatement = ConnectDB.getConnection()
+						.prepareStatement("UPDATE [dbo].[Phong] SET [trangThai] = ("
+								+ "	CASE WHEN [trangThai] = N'Đã đặt' THEN ? ELSE ? END) WHERE [maPhong] = ?");
+				boolean isDatPhongTruoc = hasDatPhongTruocHopLe(string);
+				preparedStatement.setString(1, isDatPhongTruoc ? "Đã đặt" : "Trống");
+				preparedStatement.setString(2, isDatPhongTruoc ? "Phòng tạm" : "Đang thuê");
+				preparedStatement.setString(3, string);
+				res = preparedStatement.executeUpdate() > 0;
+
+				if (!res)
+					return rollback();
+			}
 
 //			[DatPhong] - Cập nhật trạng thái đặt phòng thành đã hủy
 			res = statement.executeUpdate("UPDATE [dbo].[DatPhong] SET [trangThai] = N'Đã hủy' WHERE ("
@@ -659,6 +641,35 @@ public class DatPhong_DAO {
 				return rollback();
 
 			return commit();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Kiểm tra phòng có phiếu đặt trước hợp lệ hay không? Phiếu đặt trước hợp lệ
+	 * nếu không trễ quá 1h kể từ thời điểm nhận phòng
+	 * 
+	 * @param maPhong ma phòng cần kiểm tra
+	 * @return true nếu có phiếu đặt phòng trước hợp lệ
+	 */
+	private boolean hasDatPhongTruocHopLe(String maPhong) {
+		String sql = "SELECT * FROM [dbo].[DatPhong] DP JOIN [dbo].[ChiTietDatPhong] CTDP "
+				+ "ON DP.maDatPhong = CTDP.datPhong WHERE [trangThai] = N'Đang chờ' "
+				+ "AND [phong] = ? AND ([ngayNhanPhong] > CONVERT(DATE, GETDATE()) "
+				+ "OR ([ngayNhanPhong] = CONVERT(DATE, GETDATE()) AND ([gioNhanPhong] >= CONVERT(TIME(0), GETDATE()) "
+				+ "OR [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) < CONVERT(TIME(0), '1:00:00'))))";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, maPhong);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			return resultSet.next();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -701,7 +712,7 @@ public class DatPhong_DAO {
 	public List<Phong> getPhongDangThue(String maDatPhong) {
 		List<Phong> list = new ArrayList<>();
 
-		String sql = "SELECT * FROM [dbo].[Phong] WHERE [maPhong] IN (SELECT [phong] FROM [dbo].[DatPhong] DP"
+		String sql = "SELECT maPhong FROM [dbo].[Phong] WHERE [maPhong] IN (SELECT [phong] FROM [dbo].[DatPhong] DP"
 				+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong]"
 				+ "	WHERE DP.[trangThai] = N'Đang thuê' AND [gioRa] IS NULL AND [maDatPhong] = ?)";
 		try {
@@ -710,8 +721,10 @@ public class DatPhong_DAO {
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
-			while (resultSet.next())
-				list.add(getPhong(resultSet));
+			while (resultSet.next()) {
+				Phong phong = phong_DAO.getPhong(resultSet.getString(1));
+				list.add(phong);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

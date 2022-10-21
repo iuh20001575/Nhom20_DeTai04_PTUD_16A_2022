@@ -185,4 +185,21 @@ public class Phong_DAO {
 
 		return list;
 	}
+
+	public boolean capNhatTrangThaiPhong(Phong phong, String trangThai) {
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("Update Phong SET trangThai = ? WHERE maPhong = ?");
+
+			preparedStatement.setString(1, trangThai);
+			preparedStatement.setString(2, phong.getMaPhong());
+
+			return preparedStatement.executeUpdate() >= 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

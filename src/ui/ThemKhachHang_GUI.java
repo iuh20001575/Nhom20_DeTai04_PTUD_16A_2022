@@ -32,9 +32,11 @@ import connectDB.ConnectDB;
 import dao.DiaChi_DAO;
 import dao.KhachHang_DAO;
 import entity.KhachHang;
+import entity.PanelUI;
 import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
+import utils.StackPanel;
 import utils.Utils;
 
 public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseListener {
@@ -60,9 +62,9 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 	private TextField txtDiaChiCT;
 	private JFrame main;
 
-	public ThemKhachHang_GUI(JFrame main, String soDienThoai) {
+	public ThemKhachHang_GUI(Main main, JFrame jFrameParent, String soDienThoai) {
 		this(main);
-		setjFrameParent(main);
+		setjFrameParent(jFrameParent);
 		txtSDT.setText(soDienThoai);
 	}
 
@@ -73,7 +75,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public ThemKhachHang_GUI(JFrame main) {
+	public ThemKhachHang_GUI(Main main) {
 		this.main = main;
 
 		try {
@@ -257,10 +259,20 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-//				JFrame jFrame = StackPanel.pop();
-//				StackPanel.peek().setVisible(true);
-//				jFrame.setVisible(false);
-
+				if (jFrameParent == null) {
+					StackPanel.pop();
+					PanelUI panelUI = StackPanel.peek();
+					if (panelUI.getTitle().equals("Trang chủ")) {
+						while (!StackPanel.empty())
+							StackPanel.pop();
+						StackPanel.push(new PanelUI(new TrangChu_GUI(), "Trang chủ", 0, 0));
+					}
+					main.addPnlBody(panelUI);
+					main.getMenu().setSelectedMenu(panelUI.getIndex(), panelUI.getIndexSubmenu());
+				} else {
+					main.setVisible(false);
+					jFrameParent.setVisible(false);
+				}
 			}
 		});
 
@@ -357,7 +369,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 			if (jFrameParent != null) {
 				jFrameParent.setVisible(false);
 				jFrameParent.setVisible(true);
-				setVisible(false);
+				main.setVisible(false);
 			}
 		}
 	}

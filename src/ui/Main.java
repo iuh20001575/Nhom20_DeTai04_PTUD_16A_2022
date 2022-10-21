@@ -260,6 +260,10 @@ public class Main extends JFrame {
 		StackPanel.push(panelUI);
 	}
 
+	public Menu getMenu() {
+		return menu;
+	}
+
 	@Override
 	public void setTitle(String title) {
 		super.setTitle(title);

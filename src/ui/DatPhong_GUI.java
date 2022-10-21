@@ -31,6 +31,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -67,11 +69,14 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	private JTable tbl;
 	private LoaiPhong_DAO loaiPhong_DAO;
 	private List<Phong> dsPhongDaChon;
+	private List<Phong> dsPhongDatNgay;
 	private JPanel pnlPhong;
 	private JComboBox<String> cmbMaPhong;
 	private JComboBox<String> cmbLoaiPhong;
 	private JComboBox<String> cmbSoLuong;
 	private DatPhong_GUI _this;
+	private Button btnChonPhong;
+	private Button btnDatPhong;
 
 	/**
 	 * Create the frame.
@@ -92,7 +97,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		loaiPhong_DAO = new LoaiPhong_DAO();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 850, 466);
+		setBounds(0, 0, 850, 466);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -134,42 +139,6 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		txtSoDienThoai.setColumns(10);
 
 		Button btnSearchSoDienThoai = new Button();
-		btnSearchSoDienThoai.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				String soDienThoai = txtSoDienThoai.getText().trim();
-
-				if (Utils.isSoDienThoai(soDienThoai)) {
-					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
-
-					if (khachHang != null) {
-						txtTenKhachHang.setText(khachHang.getHoTen());
-					} else {
-						JDialogCustom jDialogCustom = new JDialogCustom(_this);
-
-						jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
-							public void mouseClicked(MouseEvent e) {
-								new ThemKhachHang_GUI(_this, soDienThoai).setVisible(true);
-								setVisible(false);
-							};
-						});
-
-						jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
-							public void mouseClicked(MouseEvent e) {
-								quanLyDatPhongGUI.closeJFrameSub();
-							};
-						});
-
-						jDialogCustom.showMessage("Warning",
-								"Khách hàng không có trong hệ thống, bạn có muốn thêm khách hàng mới không?");
-					}
-				} else {
-					new Notification(_this, components.notification.Notification.Type.ERROR,
-							"Số điện thoại không hợp lệ").showNotification();
-					txtSoDienThoai.setError(true);
-				}
-			}
-		});
 		btnSearchSoDienThoai.setFocusable(false);
 		btnSearchSoDienThoai.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnSearchSoDienThoai.setRadius(4);
@@ -202,7 +171,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		pnlPhong.add(pnlActions);
 		pnlActions.setLayout(null);
 
-		Button btnChonPhong = new Button("");
+		btnChonPhong = new Button("");
 		btnChonPhong.setFocusable(false);
 		btnChonPhong.setRadius(8);
 		btnChonPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -210,24 +179,9 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		btnChonPhong.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnChonPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
 		btnChonPhong.setBorderColor(Utils.secondaryColor);
-		btnChonPhong.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int row = tbl.getSelectedRow();
-				if (row != -1) {
-					if (dsPhongDaChon == null)
-						dsPhongDaChon = new ArrayList<>();
-					Phong phong = new Phong((String) tableModel.getValueAt(row, 0));
-					if (dsPhongDaChon.contains(phong))
-						return;
-					dsPhongDaChon.add(phong);
-
-					showDanhSachPhongDaChon();
-				}
-			}
-		});
 		btnChonPhong.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
 		btnChonPhong.setBounds(0, 94, 36, 36);
+		btnChonPhong.setEnabled(false);
 		pnlActions.add(btnChonPhong);
 
 		JScrollPane scrDanhSachPhong = new JScrollPane();
@@ -235,6 +189,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		scrDanhSachPhong.setBackground(Utils.secondaryColor);
 		scrDanhSachPhong.setBounds(0, 0, 564, 225);
 		pnlPhong.add(scrDanhSachPhong);
+
 		ScrollBarCustom scbDanhSachPhong = new ScrollBarCustom();
 //		Set color scrollbar thumb
 		scbDanhSachPhong.setScrollbarColor(new Color(203, 203, 203));
@@ -272,8 +227,6 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-//		Cam
-		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
 //		Xanh
 		tbl.getTableHeader().setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -294,31 +247,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		pnlBody.add(pnlBtnGroup);
 		pnlBtnGroup.setLayout(null);
 
-		Button btnDatPhong = new Button("Đặt phòng");
-		btnDatPhong.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-//				Kiểm tra khách hàng đã được nhập hay chưa?
-				if (khachHang == null) {
-					new Notification(_this, components.notification.Notification.Type.ERROR, "Vui lòng nhập khách hàng")
-							.showNotification();
-					return;
-				}
-
-//				Kiểm tra phòng đã được chọn hay chưa?
-				if (dsPhongDaChon.size() <= 0) {
-					new Notification(_this, components.notification.Notification.Type.ERROR, "Chọn phòng muốn đặt")
-							.showNotification();
-					return;
-				}
-
-				boolean res = datPhong_DAO.themPhieuDatPhongNgay(khachHang, new NhanVien("NV112"), dsPhongDaChon);
-				if (res) {
-					quanLyDatPhongGUI.capNhatTrangThaiPhong();
-					quanLyDatPhongGUI.closeJFrameSub();
-				}
-			}
-		});
+		btnDatPhong = new Button("Đặt phòng");
 		btnDatPhong.setFocusable(false);
 		btnDatPhong.setRadius(8);
 		btnDatPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -329,15 +258,10 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		btnDatPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
 		btnDatPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		btnDatPhong.setBounds(395, 0, 150, 36);
+		btnDatPhong.setEnabled(false);
 		pnlBtnGroup.add(btnDatPhong);
 
 		Button btnQuayLai = new Button("Quay lại");
-		btnQuayLai.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				quanLyDatPhongGUI.closeJFrameSub();
-			}
-		});
 		btnQuayLai.setFocusable(false);
 		btnQuayLai.setRadius(8);
 		btnQuayLai.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -385,47 +309,14 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		btnLamMoi.setBounds(660, 0, 110, 36);
 		pnlFilter.add(btnLamMoi);
-		btnLamMoi.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				cmbLoaiPhong.removeItemListener(_this);
-				cmbMaPhong.removeItemListener(_this);
-				cmbSoLuong.removeItemListener(_this);
-
-				emptyTable();
-				addRow(datPhong_DAO.getPhongDatNgay());
-				cmbLoaiPhong.setSelectedIndex(0);
-				cmbMaPhong.setSelectedIndex(0);
-				cmbSoLuong.setSelectedIndex(0);
-
-				cmbLoaiPhong.addItemListener(_this);
-				cmbMaPhong.addItemListener(_this);
-				cmbSoLuong.addItemListener(_this);
-			}
-		});
-
-		txtSoDienThoai.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				khachHang = null;
-				txtTenKhachHang.setText("");
-				txtSoDienThoai.setError(false);
-			}
-		});
-
-		txtSoDienThoai.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				txtSoDienThoai.setError(false);
-			}
-		});
 
 		showDanhSachPhongDaChon();
 
+//		Sự kiện window
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
-				List<Phong> list = datPhong_DAO.getPhongDatNgay();
+				dsPhongDatNgay = datPhong_DAO.getPhongDatNgay();
 				List<LoaiPhong> loaiPhongs = loaiPhong_DAO.getAllLoaiPhong();
 
 				cmbMaPhong.removeItemListener(_this);
@@ -434,13 +325,12 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 				emptyComboBox(cmbMaPhong, "Mã phòng");
 				emptyComboBox(cmbLoaiPhong, "Loại phòng");
 
-				addRow(list);
-				list.forEach(phong -> {
+				addRow(dsPhongDatNgay);
+				dsPhongDatNgay.forEach(phong -> {
 					cmbMaPhong.addItem(phong.getMaPhong());
 				});
 				loaiPhongs.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));
 
-//				
 				String soDienThoai = txtSoDienThoai.getText().trim();
 
 				if (Utils.isSoDienThoai(soDienThoai)) {
@@ -455,6 +345,161 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 				cmbMaPhong.addItemListener(_this);
 				cmbLoaiPhong.addItemListener(_this);
 				cmbSoLuong.addItemListener(_this);
+			}
+		});
+
+//		Sự kiện txtSoDienThoai
+		txtSoDienThoai.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				khachHang = null;
+				txtTenKhachHang.setText("");
+				txtSoDienThoai.setError(false);
+				btnDatPhong.setEnabled(false);
+			};
+		});
+
+		txtSoDienThoai.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				txtSoDienThoai.setError(false);
+			}
+		});
+
+//		Sự kiện nút làm mới
+		btnLamMoi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				cmbLoaiPhong.removeItemListener(_this);
+				cmbMaPhong.removeItemListener(_this);
+				cmbSoLuong.removeItemListener(_this);
+
+				emptyTable();
+				dsPhongDatNgay = datPhong_DAO.getPhongDatNgay();
+				addRow(dsPhongDatNgay);
+				cmbLoaiPhong.setSelectedIndex(0);
+				cmbMaPhong.setSelectedIndex(0);
+				cmbSoLuong.setSelectedIndex(0);
+				capNhatDanhSachPhongDatNgay();
+
+				cmbLoaiPhong.addItemListener(_this);
+				cmbMaPhong.addItemListener(_this);
+				cmbSoLuong.addItemListener(_this);
+			}
+		});
+
+//		Sự kiện JTable
+		tbl.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				btnChonPhong.setEnabled(true);
+			};
+		});
+
+		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent lse) {
+				if (!lse.getValueIsAdjusting()) {
+					btnChonPhong.setEnabled(false);
+				}
+			}
+		});
+
+//		Sự kiện nút tìm kiếm khách hàng theo số điện thoại
+		btnSearchSoDienThoai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String soDienThoai = txtSoDienThoai.getText().trim();
+
+				if (Utils.isSoDienThoai(soDienThoai)) {
+					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
+
+					if (khachHang != null) {
+						txtTenKhachHang.setText(khachHang.getHoTen());
+						if (dsPhongDaChon != null && dsPhongDaChon.size() > 0)
+							btnDatPhong.setEnabled(true);
+					} else {
+						JDialogCustom jDialogCustom = new JDialogCustom(_this);
+
+						jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+							public void mouseClicked(MouseEvent e) {
+								Main main = new Main();
+								main.addPnlBody(new ThemKhachHang_GUI(main, _this, soDienThoai), "Thêm khách hàng", 2,
+										0);
+								main.setVisible(true);
+								setVisible(false);
+							};
+						});
+
+						jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
+							public void mouseClicked(MouseEvent e) {
+								quanLyDatPhongGUI.closeJFrameSub();
+							};
+						});
+
+						jDialogCustom.showMessage("Warning",
+								"Khách hàng không có trong hệ thống, bạn có muốn thêm khách hàng mới không?");
+					}
+				} else {
+					new Notification(_this, components.notification.Notification.Type.ERROR,
+							"Số điện thoại không hợp lệ").showNotification();
+					txtSoDienThoai.setError(true);
+				}
+			}
+		});
+
+//		Sự kiện nút chọn phòng
+		btnChonPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = tbl.getSelectedRow();
+				if (row != -1) {
+					if (dsPhongDaChon == null)
+						dsPhongDaChon = new ArrayList<>();
+					Phong phong = new Phong((String) tableModel.getValueAt(row, 0));
+					if (dsPhongDaChon.contains(phong))
+						return;
+					dsPhongDaChon.add(phong);
+
+					if (khachHang != null)
+						btnDatPhong.setEnabled(true);
+					capNhatDanhSachPhongDatNgay();
+					showDanhSachPhongDaChon();
+				}
+			}
+		});
+
+//		Sự kiện nút quay lại
+		btnQuayLai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				quanLyDatPhongGUI.closeJFrameSub();
+			}
+		});
+
+//		Sự kiện nút đật phòng
+		btnDatPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!btnDatPhong.isEnabled())
+					return;
+
+//				Kiểm tra khách hàng đã được nhập hay chưa?
+				if (khachHang == null) {
+					new Notification(_this, components.notification.Notification.Type.ERROR, "Vui lòng nhập khách hàng")
+							.showNotification();
+					return;
+				}
+
+//				Kiểm tra phòng đã được chọn hay chưa?
+				if (dsPhongDaChon.size() <= 0) {
+					new Notification(_this, components.notification.Notification.Type.ERROR, "Chọn phòng muốn đặt")
+							.showNotification();
+					return;
+				}
+
+				boolean res = datPhong_DAO.themPhieuDatPhongNgay(khachHang, new NhanVien("NV112"), dsPhongDaChon);
+				if (res) {
+					quanLyDatPhongGUI.capNhatTrangThaiPhong();
+					quanLyDatPhongGUI.closeJFrameSub();
+				}
 			}
 		});
 	}
@@ -489,7 +534,6 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		if (dsPhongDaChon == null)
 			return;
 
-//		
 		int heightItem = 36;
 		int gapY = 8;
 		int top = 11;
@@ -500,6 +544,19 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 		pnlPhongDaChon.setPreferredSize(
 				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
+	}
+
+	private void capNhatDanhSachPhongDatNgay() {
+		if (dsPhongDatNgay == null || dsPhongDaChon == null)
+			return;
+
+		emptyTable();
+		btnChonPhong.setEnabled(false);
+
+		for (Phong phong : dsPhongDatNgay) {
+			if (!dsPhongDaChon.contains(phong))
+				addRow(phong);
+		}
 	}
 
 	/**
@@ -528,6 +585,9 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				dsPhongDaChon.remove(phong);
+				if (dsPhongDaChon.size() <= 0)
+					btnDatPhong.setEnabled(false);
+				capNhatDanhSachPhongDatNgay();
 				showDanhSachPhongDaChon();
 			}
 		});
@@ -565,9 +625,9 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * @param jComboBox ComboBox
 	 * @param label
 	 */
-	private void emptyComboBox(JComboBox<String> jComboBox, String label) {
-		emptyComboBox(jComboBox);
-		jComboBox.addItem(label);
+	private void emptyComboBox(JComboBox<String> cmb, String label) {
+		emptyComboBox(cmb);
+		cmb.addItem(label);
 	}
 
 	/**
@@ -575,8 +635,8 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * 
 	 * @param jComboBox
 	 */
-	private void emptyComboBox(JComboBox<String> jComboBox) {
-		jComboBox.removeAllItems();
+	private void emptyComboBox(JComboBox<String> cmb) {
+		cmb.removeAllItems();
 	}
 
 	/**
@@ -608,9 +668,10 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		if (loaiPhong.equals("Loại phòng"))
 			loaiPhong = "";
 
-		List<Phong> list = datPhong_DAO.getPhongDatNgay(maPhong, loaiPhong, soLuong);
+		dsPhongDatNgay = datPhong_DAO.getPhongDatNgay(maPhong, loaiPhong, soLuong);
 		emptyTable();
-		addRow(list);
+		addRow(dsPhongDatNgay);
+		capNhatDanhSachPhongDatNgay();
 	}
 
 }
