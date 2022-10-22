@@ -16,74 +16,10 @@ public class PanelRound extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public int getRoundTopLeft() {
-		return roundTopLeft;
-	}
-
-	/**
-	 * Set border-radius top left
-	 * @param roundTopLeft
-	 */
-	public void setRoundTopLeft(int roundTopLeft) {
-		this.roundTopLeft = roundTopLeft;
-		repaint();
-	}
-
-	public int getRoundTopRight() {
-		return roundTopRight;
-	}
-
-	/**
-	 * Set border-radius top right
-	 * @param roundTopRight
-	 */
-	public void setRoundTopRight(int roundTopRight) {
-		this.roundTopRight = roundTopRight;
-		repaint();
-	}
-
-	public int getRoundBottomLeft() {
-		return roundBottomLeft;
-	}
-
-	/**
-	 * Set border-radius button left
-	 * @param roundBottomLeft
-	 */
-	public void setRoundBottomLeft(int roundBottomLeft) {
-		this.roundBottomLeft = roundBottomLeft;
-		repaint();
-	}
-
-	public int getRoundBottomRight() {
-		return roundBottomRight;
-	}
-
-	/**
-	 * Set border-radius button right
-	 * @param roundBottomRight
-	 */
-	public void setRoundBottomRight(int roundBottomRight) {
-		this.roundBottomRight = roundBottomRight;
-		repaint();
-	}
-
-	/**
-	 * Set border-radius
-	 * @param rounded
-	 */
-	public void setRounded(int rounded) {
-		setRoundTopLeft(rounded);
-		setRoundTopRight(rounded);
-		setRoundBottomRight(rounded);
-		setRoundBottomLeft(rounded);
-	}
-
-	private int roundTopLeft = 0;
-	private int roundTopRight = 0;
 	private int roundBottomLeft = 0;
 	private int roundBottomRight = 0;
+	private int roundTopLeft = 0;
+	private int roundTopRight = 0;
 
 	public PanelRound() {
 		setOpaque(false);
@@ -94,24 +30,26 @@ public class PanelRound extends JPanel {
 		setRounded(rounded);
 	}
 
-	@Override
-	protected void paintComponent(Graphics grphcs) {
-		Graphics2D g2 = (Graphics2D) grphcs.create();
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setColor(getBackground());
-		Area area = new Area(createRoundTopLeft());
-		if (roundTopRight > 0) {
-			area.intersect(new Area(createRoundTopRight()));
-		}
-		if (roundBottomLeft > 0) {
-			area.intersect(new Area(createRoundBottomLeft()));
-		}
-		if (roundBottomRight > 0) {
-			area.intersect(new Area(createRoundBottomRight()));
-		}
-		g2.fill(area);
-		g2.dispose();
-		super.paintComponent(grphcs);
+	private Shape createRoundBottomLeft() {
+		int width = getWidth();
+		int height = getHeight();
+		int roundX = Math.min(width, roundBottomLeft);
+		int roundY = Math.min(height, roundBottomLeft);
+		Area area = new Area(new RoundRectangle2D.Double(0, 0, width, height, roundX, roundY));
+		area.add(new Area(new Rectangle2D.Double(roundX / 2, 0, width - roundX / 2, height)));
+		area.add(new Area(new Rectangle2D.Double(0, 0, width, height - roundY / 2)));
+		return area;
+	}
+
+	private Shape createRoundBottomRight() {
+		int width = getWidth();
+		int height = getHeight();
+		int roundX = Math.min(width, roundBottomRight);
+		int roundY = Math.min(height, roundBottomRight);
+		Area area = new Area(new RoundRectangle2D.Double(0, 0, width, height, roundX, roundY));
+		area.add(new Area(new Rectangle2D.Double(0, 0, width - roundX / 2, height)));
+		area.add(new Area(new Rectangle2D.Double(0, 0, width, height - roundY / 2)));
+		return area;
 	}
 
 	private Shape createRoundTopLeft() {
@@ -135,26 +73,84 @@ public class PanelRound extends JPanel {
 		area.add(new Area(new Rectangle2D.Double(0, roundY / 2, width, height - roundY / 2)));
 		return area;
 	}
-
-	private Shape createRoundBottomLeft() {
-		int width = getWidth();
-		int height = getHeight();
-		int roundX = Math.min(width, roundBottomLeft);
-		int roundY = Math.min(height, roundBottomLeft);
-		Area area = new Area(new RoundRectangle2D.Double(0, 0, width, height, roundX, roundY));
-		area.add(new Area(new Rectangle2D.Double(roundX / 2, 0, width - roundX / 2, height)));
-		area.add(new Area(new Rectangle2D.Double(0, 0, width, height - roundY / 2)));
-		return area;
+	public int getRoundBottomLeft() {
+		return roundBottomLeft;
+	}
+	public int getRoundBottomRight() {
+		return roundBottomRight;
+	}
+	public int getRoundTopLeft() {
+		return roundTopLeft;
 	}
 
-	private Shape createRoundBottomRight() {
-		int width = getWidth();
-		int height = getHeight();
-		int roundX = Math.min(width, roundBottomRight);
-		int roundY = Math.min(height, roundBottomRight);
-		Area area = new Area(new RoundRectangle2D.Double(0, 0, width, height, roundX, roundY));
-		area.add(new Area(new Rectangle2D.Double(0, 0, width - roundX / 2, height)));
-		area.add(new Area(new Rectangle2D.Double(0, 0, width, height - roundY / 2)));
-		return area;
+	public int getRoundTopRight() {
+		return roundTopRight;
+	}
+
+	@Override
+	protected void paintComponent(Graphics grphcs) {
+		Graphics2D g2 = (Graphics2D) grphcs.create();
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setColor(getBackground());
+		Area area = new Area(createRoundTopLeft());
+		if (roundTopRight > 0) {
+			area.intersect(new Area(createRoundTopRight()));
+		}
+		if (roundBottomLeft > 0) {
+			area.intersect(new Area(createRoundBottomLeft()));
+		}
+		if (roundBottomRight > 0) {
+			area.intersect(new Area(createRoundBottomRight()));
+		}
+		g2.fill(area);
+		g2.dispose();
+		super.paintComponent(grphcs);
+	}
+
+	/**
+	 * Set border-radius button left
+	 * @param roundBottomLeft
+	 */
+	public void setRoundBottomLeft(int roundBottomLeft) {
+		this.roundBottomLeft = roundBottomLeft;
+		repaint();
+	}
+
+	/**
+	 * Set border-radius button right
+	 * @param roundBottomRight
+	 */
+	public void setRoundBottomRight(int roundBottomRight) {
+		this.roundBottomRight = roundBottomRight;
+		repaint();
+	}
+
+	/**
+	 * Set border-radius
+	 * @param rounded
+	 */
+	public void setRounded(int rounded) {
+		setRoundTopLeft(rounded);
+		setRoundTopRight(rounded);
+		setRoundBottomRight(rounded);
+		setRoundBottomLeft(rounded);
+	}
+
+	/**
+	 * Set border-radius top left
+	 * @param roundTopLeft
+	 */
+	public void setRoundTopLeft(int roundTopLeft) {
+		this.roundTopLeft = roundTopLeft;
+		repaint();
+	}
+
+	/**
+	 * Set border-radius top right
+	 * @param roundTopRight
+	 */
+	public void setRoundTopRight(int roundTopRight) {
+		this.roundTopRight = roundTopRight;
+		repaint();
 	}
 }

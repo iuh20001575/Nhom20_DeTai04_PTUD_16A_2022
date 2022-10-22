@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
+import components.drawer.DrawerController;
 import components.scrollbarCustom.ScrollBarCustom;
-import drawer.DrawerController;
 import javaswingdev.GoogleMaterialDesignIcon;
 import net.miginfocom.swing.MigLayout;
 
@@ -24,43 +24,45 @@ public class Menu extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private int index = -1;
-	private final List<EventMenuSelected> events = new ArrayList<>();
 	private DrawerController drawer;
+	private final List<EventMenuSelected> events = new ArrayList<>();
+	private int index = -1;
+	private MigLayout menuLayout;
+	private JPanel pnlMenu;
 
 	public Menu() {
 		init();
 	}
 
-	private void init() {
-		setBackground(Color.WHITE);
-		setLayout(new BorderLayout());
-		JScrollPane scroll = createScroll();
-		panelMenu = createPanelMenu();
-		scroll.setViewportView(panelMenu);
-		scroll.getViewport().setOpaque(false);
-		scroll.setViewportBorder(null);
-		add(scroll);
+	public void addEvent(EventMenuSelected event) {
+		events.add(event);
 	}
 
-	private JScrollPane createScroll() {
-		JScrollPane scroll = new JScrollPane();
-		scroll.setBorder(null);
-//		Set background menu
-		scroll.setBackground(Color.white);
-		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scroll.setVerticalScrollBar(new ScrollBarCustom());
-		return scroll;
+	// Public Method
+	public void addMenuItem(ModelMenuItem menu) {
+		pnlMenu.add(createMenuItem(menu), "h 35!");
 	}
 
-	private JPanel createPanelMenu() {
-		JPanel panel = new JPanel();
-		panel.setOpaque(false);
-		menuLayout = new MigLayout("wrap,fillx,inset 0,gapy 0", "[fill]");
-		panel.setLayout(menuLayout);
+	public void addSpace(int size) {
+		pnlMenu.add(new JLabel(), "h " + size + "!");
+	}
 
-		return panel;
+	public void addTitle(String title) {
+		JLabel label = new JLabel(title);
+		label.setBorder(new EmptyBorder(15, 20, 5, 5));
+		label.setFont(label.getFont().deriveFont(Font.BOLD));
+//		Color text title
+		label.setForeground(new Color(170, 170, 170));
+		pnlMenu.add(label);
+	}
+
+	public void clearSelected() {
+		for (Component com : pnlMenu.getComponents()) {
+			if (com instanceof MenuItem) {
+				MenuItem item = (MenuItem) com;
+				item.clearSelected();
+			}
+		}
 	}
 
 	private JPanel createMenuItem(ModelMenuItem item) {
@@ -78,71 +80,45 @@ public class Menu extends JPanel {
 		return menuItem;
 	}
 
-	private void runEvent(int index, int indexSubMenu) {
-		for (EventMenuSelected event : events) {
-			event.menuSelected(index, indexSubMenu);
-		}
+	private JPanel createPanelMenu() {
+		JPanel panel = new JPanel();
+		panel.setOpaque(false);
+		menuLayout = new MigLayout("wrap,fillx,inset 0,gapy 0", "[fill]");
+		panel.setLayout(menuLayout);
+
+		return panel;
 	}
 
-	// Public Method
-	public void addMenuItem(ModelMenuItem menu) {
-		panelMenu.add(createMenuItem(menu), "h 35!");
-	}
-
-	public void addTitle(String title) {
-		JLabel label = new JLabel(title);
-		label.setBorder(new EmptyBorder(15, 20, 5, 5));
-		label.setFont(label.getFont().deriveFont(Font.BOLD));
-//		Color text title
-		label.setForeground(new Color(170, 170, 170));
-		panelMenu.add(label);
-	}
-
-	public void addSpace(int size) {
-		panelMenu.add(new JLabel(), "h " + size + "!");
-	}
-
-	public void setSelectedIndex(int index, int indexSubMenu) {
-		for (Component com : panelMenu.getComponents()) {
-			if (com instanceof MenuItem) {
-				MenuItem item = (MenuItem) com;
-				if (item.getIndex() == index) {
-					item.setSelectedIndex(indexSubMenu);
-					runEvent(index, indexSubMenu);
-					break;
-				}
-			}
-		}
-	}
-
-	public void setSelectedMenu(int index, int indexSubMenu) {
-		clearSelected();
-		for (Component com : panelMenu.getComponents()) {
-			if (com instanceof MenuItem) {
-				MenuItem item = (MenuItem) com;
-				if (item.getIndex() == index) {
-					item.setSelectedIndex(indexSubMenu);
-					break;
-				}
-			}
-		}
-	}
-
-	public void clearSelected() {
-		for (Component com : panelMenu.getComponents()) {
-			if (com instanceof MenuItem) {
-				MenuItem item = (MenuItem) com;
-				item.clearSelected();
-			}
-		}
-	}
-
-	public void addEvent(EventMenuSelected event) {
-		events.add(event);
+	private JScrollPane createScroll() {
+		JScrollPane scroll = new JScrollPane();
+		scroll.setBorder(null);
+//		Set background menu
+		scroll.setBackground(Color.white);
+		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll.setVerticalScrollBar(new ScrollBarCustom());
+		return scroll;
 	}
 
 	public DrawerController getDrawer() {
 		return drawer;
+	}
+
+	private void init() {
+		setBackground(Color.WHITE);
+		setLayout(new BorderLayout());
+		JScrollPane scroll = createScroll();
+		pnlMenu = createPanelMenu();
+		scroll.setViewportView(pnlMenu);
+		scroll.getViewport().setOpaque(false);
+		scroll.setViewportBorder(null);
+		add(scroll);
+	}
+
+	private void runEvent(int index, int indexSubMenu) {
+		for (EventMenuSelected event : events) {
+			event.menuSelected(index, indexSubMenu);
+		}
 	}
 
 	public void setDrawer(DrawerController drawer) {
@@ -160,6 +136,28 @@ public class Menu extends JPanel {
 		setPreferredSize(new Dimension(getPreferredSize().width, 610));
 	}
 
-	private MigLayout menuLayout;
-	private JPanel panelMenu;
+	public void setSelectedIndex(int index, int indexSubMenu) {
+		for (Component com : pnlMenu.getComponents()) {
+			if (com instanceof MenuItem) {
+				MenuItem item = (MenuItem) com;
+				if (item.getIndex() == index) {
+					item.setSelectedIndex(indexSubMenu);
+					runEvent(index, indexSubMenu);
+					break;
+				}
+			}
+		}
+	}
+	public void setSelectedMenu(int index, int indexSubMenu) {
+		clearSelected();
+		for (Component com : pnlMenu.getComponents()) {
+			if (com instanceof MenuItem) {
+				MenuItem item = (MenuItem) com;
+				if (item.getIndex() == index) {
+					item.setSelectedIndex(indexSubMenu);
+					break;
+				}
+			}
+		}
+	}
 }

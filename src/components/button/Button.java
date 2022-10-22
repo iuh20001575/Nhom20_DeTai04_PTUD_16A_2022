@@ -20,116 +20,14 @@ public class Button extends JButton {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Hover Button
-	 * 
-	 * @return true nếu button được hover
-	 * @return false nếu button không hover
-	 */
-	public boolean isOver() {
-		return over;
-	}
-
-	/**
-	 * Set trạng thái hover cho button
-	 * 
-	 * @param over true nếu button được hover, false nếu button không được hover
-	 */
-	public void setOver(boolean over) {
-		this.over = over;
-	}
-
-	/**
-	 * Get background color của button
-	 * 
-	 * @return background color
-	 */
-	public Color getColor() {
-		return color;
-	}
-
-	/**
-	 * Set background color cho button
-	 * 
-	 * @param color background color
-	 */
-	public void setColor(Color color) {
-		this.color = color;
-		setBackground(color);
-	}
-
-	/**
-	 * Get background color khi button hover
-	 * 
-	 * @return background color button hover
-	 */
-	public Color getColorOver() {
-		return colorOver;
-	}
-
-	/**
-	 * Set background color khi button hover
-	 * 
-	 * @param colorOver
-	 */
-	public void setColorOver(Color colorOver) {
-		this.colorOver = colorOver;
-	}
-
-	/**
-	 * Get background color khi click button
-	 * 
-	 * @return background color khi click button
-	 */
-	public Color getColorClick() {
-		return colorClick;
-	}
-
-	/**
-	 * Set background color khi click
-	 * 
-	 * @param colorClick background color
-	 */
-	public void setColorClick(Color colorClick) {
-		this.colorClick = colorClick;
-	}
-
-	/**
-	 * Get margin background color
-	 * 
-	 * @return margin background color
-	 */
-	public Color getBorderColor() {
-		return borderColor;
-	}
-
-	/**
-	 * Set margin background color
-	 * 
-	 * @param borderColor margin background color
-	 */
-	public void setBorderColor(Color borderColor) {
-		this.borderColor = borderColor;
-	}
-
-	/**
-	 * Get border-radius
-	 * 
-	 * @return border-radius
-	 */
-	public int getRadius() {
-		return radius;
-	}
-
-	/**
-	 * Get border-radius
-	 * 
-	 * @param radius border-radius
-	 */
-	public void setRadius(int radius) {
-		this.radius = radius;
-	}
+	private Color borderBtnColor = Color.red;
+	private Color borderColor;
+	private int borderWidth = 0;
+	private Color color;
+	private Color colorClick;
+	private Color colorOver;
+	private boolean over;
+	private int radius = 0;
 
 	public Button() {
 //		Khởi tạo màu sắc
@@ -173,6 +71,11 @@ public class Button extends JButton {
 		});
 	}
 
+	public Button(String text) {
+		this();
+		setText(text);
+	}
+
 	/**
 	 * Get border color
 	 * 
@@ -183,12 +86,12 @@ public class Button extends JButton {
 	}
 
 	/**
-	 * Set border color
+	 * Get margin background color
 	 * 
-	 * @param borderBtnColor border color
+	 * @return margin background color
 	 */
-	public void setBorderBtnColor(Color borderBtnColor) {
-		this.borderBtnColor = borderBtnColor;
+	public Color getBorderColor() {
+		return borderColor;
 	}
 
 	/**
@@ -201,27 +104,50 @@ public class Button extends JButton {
 	}
 
 	/**
-	 * Set độ rộng của border
+	 * Get background color của button
 	 * 
-	 * @param borderWidth độ rộng của border
+	 * @return background color
 	 */
-	public void setBorderWidth(int borderWidth) {
-		this.borderWidth = borderWidth;
+	public Color getColor() {
+		return color;
 	}
 
-	public Button(String text) {
-		this();
-		setText(text);
+	/**
+	 * Get background color khi click button
+	 * 
+	 * @return background color khi click button
+	 */
+	public Color getColorClick() {
+		return colorClick;
 	}
 
-	private boolean over;
-	private Color color;
-	private Color colorOver;
-	private Color colorClick;
-	private Color borderColor;
-	private Color borderBtnColor = Color.red;
-	private int radius = 0;
-	private int borderWidth = 0;
+	/**
+	 * Get background color khi button hover
+	 * 
+	 * @return background color button hover
+	 */
+	public Color getColorOver() {
+		return colorOver;
+	}
+
+	/**
+	 * Get border-radius
+	 * 
+	 * @return border-radius
+	 */
+	public int getRadius() {
+		return radius;
+	}
+
+	/**
+	 * Hover Button
+	 * 
+	 * @return true nếu button được hover
+	 * @return false nếu button không hover
+	 */
+	public boolean isOver() {
+		return over;
+	}
 
 	@Override
 	protected void paintComponent(Graphics grphcs) {
@@ -248,5 +174,78 @@ public class Button extends JButton {
 		g2.fillRoundRect(2 + borderWidth, 2 + borderWidth, getWidth() - 4 - borderWidth * 2,
 				getHeight() - 4 - borderWidth * 2, radius, radius);
 		super.paintComponent(grphcs);
+	}
+
+	/**
+	 * Set border color
+	 * 
+	 * @param borderBtnColor border color
+	 */
+	public void setBorderBtnColor(Color borderBtnColor) {
+		this.borderBtnColor = borderBtnColor;
+	}
+
+	/**
+	 * Set margin background color
+	 * 
+	 * @param borderColor margin background color
+	 */
+	public void setBorderColor(Color borderColor) {
+		this.borderColor = borderColor;
+	}
+
+	/**
+	 * Set độ rộng của border
+	 * 
+	 * @param borderWidth độ rộng của border
+	 */
+	public void setBorderWidth(int borderWidth) {
+		this.borderWidth = borderWidth;
+	}
+
+	/**
+	 * Set background color cho button
+	 * 
+	 * @param color background color
+	 */
+	public void setColor(Color color) {
+		this.color = color;
+		setBackground(color);
+	}
+
+	/**
+	 * Set background color khi click
+	 * 
+	 * @param colorClick background color
+	 */
+	public void setColorClick(Color colorClick) {
+		this.colorClick = colorClick;
+	}
+
+	/**
+	 * Set background color khi button hover
+	 * 
+	 * @param colorOver
+	 */
+	public void setColorOver(Color colorOver) {
+		this.colorOver = colorOver;
+	}
+
+	/**
+	 * Set trạng thái hover cho button
+	 * 
+	 * @param over true nếu button được hover, false nếu button không được hover
+	 */
+	public void setOver(boolean over) {
+		this.over = over;
+	}
+
+	/**
+	 * Get border-radius
+	 * 
+	 * @param radius border-radius
+	 */
+	public void setRadius(int radius) {
+		this.radius = radius;
 	}
 }

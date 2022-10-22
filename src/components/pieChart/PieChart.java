@@ -19,28 +19,32 @@ import java.awt.geom.RoundRectangle2D;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 /**
  * Biểu đồ tròn
- * 
- * @author ThaoHa
  *
  */
 public class PieChart extends JComponent {
+
+	public static enum PieChartType {
+		DEFAULT, DONUT_CHART
+	}
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final List<ModelPieChart> models;
-	private final DecimalFormat format = new DecimalFormat("#,##0.#");
-	private PeiChartType chartType = PeiChartType.DEFAULT;
-	private int selectedIndex = -1;
-	private int hoverIndex = -1;
 	private float borderHover = 0.05f;
+	private PieChartType chartType = PieChartType.DEFAULT;
+	private final DecimalFormat format = new DecimalFormat("#,##0.#");
+	private int hoverIndex = -1;
+	private final List<ModelPieChart> models;
 	private float padding = 0.2f;
+
+	private int selectedIndex = -1;
 
 	public PieChart() {
 		models = new ArrayList<>();
@@ -74,10 +78,137 @@ public class PieChart extends JComponent {
 				}
 			}
 		};
-		
+
 //		Thêm sự kiện vào biểu đồ
 		addMouseListener(mouseEvent);
 		addMouseMotionListener(mouseEvent);
+	}
+
+	public void addData(ModelPieChart data) {
+		models.add(data);
+	}
+
+	private int checkMouseHover(Point point) {
+		int index = -1;
+		double width = getWidth();
+		double height = getHeight();
+		float p = borderHover;
+		double size = Math.min(width, height);
+		size -= (size * p) + padding * size;
+		double x = (width - size) / 2;
+		double y = (height - size) / 2;
+		double totalValue = getTotalvalue();
+		double drawAngle = 90;
+		for (int i = 0; i < models.size(); i++) {
+			ModelPieChart data = models.get(i);
+			double angle = data.getValues() * 360 / totalValue;
+			Area area = new Area(new Arc2D.Double(x, y, size, size, drawAngle, -angle, Arc2D.PIE));
+			if (chartType == PieChartType.DONUT_CHART) {
+				double s1 = size * 0.5f;
+				double x1 = (width - s1) / 2;
+				double y1 = (height - s1) / 2;
+				area.subtract(new Area(new Ellipse2D.Double(x1, y1, s1, s1)));
+			}
+			if (area.contains(point)) {
+				index = i;
+				break;
+			}
+			drawAngle -= angle;
+		}
+		return index;
+	}
+
+	public void clearData() {
+		models.clear();
+		repaint();
+	}
+
+	private Shape createShape(int index, float a, float p) {
+		Shape shape = null;
+		double width = getWidth();
+		double height = getHeight();
+		double size = Math.min(width, height);
+		size -= (size * a) + (padding * size);
+		double x = (width - size) / 2;
+		double y = (height - size) / 2;
+		double totalValue = getTotalvalue();
+		double drawAngle = 90;
+		for (int i = 0; i < models.size(); i++) {
+			double angle = models.get(i).getValues() * 360 / totalValue;
+			if (index == i) {
+				Area area = new Area(new Arc2D.Double(x, y, size, size, drawAngle, -angle, Arc2D.PIE));
+				size -= size * p - size * a * 2;
+				x = (width - size) / 2;
+				y = (height - size) / 2;
+				area.subtract(new Area(new Arc2D.Double(x, y, size, size, drawAngle, -angle, Arc2D.PIE)));
+				shape = area;
+				break;
+			}
+			drawAngle -= angle;
+		}
+		return shape;
+	}
+
+	private void drawPopupLabel(Graphics2D g2, double size, double angle, double labelX, double labelY, String text,
+			String detail) {
+		float fontSize = (float) (getFont().getSize() * size * 0.0035f);
+		boolean up = !(angle > 0 && angle < 180);
+		double space = size * 0.03f;
+		double spaceV = size * 0.01f;
+		double paceH = size * 0.01f;
+		FontMetrics fm1 = g2.getFontMetrics(getFont().deriveFont(Font.PLAIN, fontSize));
+		FontMetrics fm2 = g2.getFontMetrics(getFont().deriveFont(Font.BOLD, fontSize));
+		Rectangle2D r1 = fm1.getStringBounds(text, g2);
+		Rectangle2D r2 = fm1.getStringBounds(detail, g2);
+		double width = Math.max(r1.getWidth() + paceH * 2, r2.getWidth() + paceH * 2);
+		double height = r1.getHeight() + r2.getHeight() + spaceV * 2;
+		double recY = up ? labelY - height - space : labelY + space;
+		double recX = labelX -= width / 2;
+		g2.setColor(Color.WHITE);
+		RoundRectangle2D rec = new RoundRectangle2D.Double(recX, recY, width, height, 5, 5);
+		g2.fill(rec);
+		g2.setColor(new Color(235, 235, 235));
+		g2.draw(rec);
+		g2.setColor(getForeground());
+		recX += paceH;
+		g2.setFont(getFont().deriveFont(Font.PLAIN, fontSize));
+		g2.drawString(text, (float) recX, (float) (recY + fm1.getAscent() + spaceV));
+		g2.setFont(getFont().deriveFont(Font.BOLD, fontSize));
+		g2.drawString(detail, (float) recX, (float) (recY + height - r2.getHeight() + fm2.getAscent() - spaceV));
+
+	}
+
+	public float getBorderHover() {
+		return borderHover;
+	}
+
+	public PieChartType getChartType() {
+		return chartType;
+	}
+
+	public int getHoverIndex() {
+		return hoverIndex;
+	}
+
+	public float getPadding() {
+		return padding;
+	}
+
+	private String getPercentage(double value) {
+		double total = getTotalvalue();
+		return format.format(value * 100 / total);
+	}
+
+	public int getSelectedIndex() {
+		return selectedIndex;
+	}
+
+	private double getTotalvalue() {
+		double max = 0;
+		for (ModelPieChart data : models) {
+			max += data.getValues();
+		}
+		return max;
 	}
 
 	@Override
@@ -111,7 +242,7 @@ public class PieChart extends JComponent {
 			ModelPieChart data = models.get(i);
 			double angle = data.getValues() * 360 / totalValue;
 			Area area = new Area(new Arc2D.Double(x, y, size, size, drawAngle, -angle, Arc2D.PIE));
-			if (chartType == PeiChartType.DONUT_CHART) {
+			if (chartType == PieChartType.DONUT_CHART) {
 				double s1 = size * 0.5f;
 				double x1 = (width - s1) / 2;
 				double y1 = (height - s1) / 2;
@@ -155,130 +286,14 @@ public class PieChart extends JComponent {
 		super.paintComponent(g);
 	}
 
-	private void drawPopupLabel(Graphics2D g2, double size, double angle, double labelX, double labelY, String text,
-			String detail) {
-		float fontSize = (float) (getFont().getSize() * size * 0.0035f);
-		boolean up = !(angle > 0 && angle < 180);
-		double space = size * 0.03f;
-		double spaceV = size * 0.01f;
-		double paceH = size * 0.01f;
-		FontMetrics fm1 = g2.getFontMetrics(getFont().deriveFont(Font.PLAIN, fontSize));
-		FontMetrics fm2 = g2.getFontMetrics(getFont().deriveFont(Font.BOLD, fontSize));
-		Rectangle2D r1 = fm1.getStringBounds(text, g2);
-		Rectangle2D r2 = fm1.getStringBounds(detail, g2);
-		double width = Math.max(r1.getWidth() + paceH * 2, r2.getWidth() + paceH * 2);
-		double height = r1.getHeight() + r2.getHeight() + spaceV * 2;
-		double recY = up ? labelY - height - space : labelY + space;
-		double recX = labelX -= width / 2;
-		g2.setColor(Color.WHITE);
-		RoundRectangle2D rec = new RoundRectangle2D.Double(recX, recY, width, height, 5, 5);
-		g2.fill(rec);
-		g2.setColor(new Color(235, 235, 235));
-		g2.draw(rec);
-		g2.setColor(getForeground());
-		recX += paceH;
-		g2.setFont(getFont().deriveFont(Font.PLAIN, fontSize));
-		g2.drawString(text, (float) recX, (float) (recY + fm1.getAscent() + spaceV));
-		g2.setFont(getFont().deriveFont(Font.BOLD, fontSize));
-		g2.drawString(detail, (float) recX, (float) (recY + height - r2.getHeight() + fm2.getAscent() - spaceV));
-
-	}
-
-	private Shape createShape(int index, float a, float p) {
-		Shape shape = null;
-		double width = getWidth();
-		double height = getHeight();
-		double size = Math.min(width, height);
-		size -= (size * a) + (padding * size);
-		double x = (width - size) / 2;
-		double y = (height - size) / 2;
-		double totalValue = getTotalvalue();
-		double drawAngle = 90;
-		for (int i = 0; i < models.size(); i++) {
-			double angle = models.get(i).getValues() * 360 / totalValue;
-			if (index == i) {
-				Area area = new Area(new Arc2D.Double(x, y, size, size, drawAngle, -angle, Arc2D.PIE));
-				size -= size * p - size * a * 2;
-				x = (width - size) / 2;
-				y = (height - size) / 2;
-				area.subtract(new Area(new Arc2D.Double(x, y, size, size, drawAngle, -angle, Arc2D.PIE)));
-				shape = area;
-				break;
-			}
-			drawAngle -= angle;
-		}
-		return shape;
-	}
-
-	private String getPercentage(double value) {
-		double total = getTotalvalue();
-		return format.format(value * 100 / total);
-	}
-
-	private int checkMouseHover(Point point) {
-		int index = -1;
-		double width = getWidth();
-		double height = getHeight();
-		float p = borderHover;
-		double size = Math.min(width, height);
-		size -= (size * p) + padding * size;
-		double x = (width - size) / 2;
-		double y = (height - size) / 2;
-		double totalValue = getTotalvalue();
-		double drawAngle = 90;
-		for (int i = 0; i < models.size(); i++) {
-			ModelPieChart data = models.get(i);
-			double angle = data.getValues() * 360 / totalValue;
-			Area area = new Area(new Arc2D.Double(x, y, size, size, drawAngle, -angle, Arc2D.PIE));
-			if (chartType == PeiChartType.DONUT_CHART) {
-				double s1 = size * 0.5f;
-				double x1 = (width - s1) / 2;
-				double y1 = (height - s1) / 2;
-				area.subtract(new Area(new Ellipse2D.Double(x1, y1, s1, s1)));
-			}
-			if (area.contains(point)) {
-				index = i;
-				break;
-			}
-			drawAngle -= angle;
-		}
-		return index;
-	}
-
-	private double getTotalvalue() {
-		double max = 0;
-		for (ModelPieChart data : models) {
-			max += data.getValues();
-		}
-		return max;
-	}
-
-	public int getSelectedIndex() {
-		return selectedIndex;
-	}
-
-	public void setSelectedIndex(int selectedIndex) {
-		if (selectedIndex >= -1 && selectedIndex < models.size()) {
-			this.selectedIndex = selectedIndex;
-			repaint();
-		}
-	}
-
-	public int getHoverIndex() {
-		return hoverIndex;
-	}
-
-	public float getBorderHover() {
-		return borderHover;
-	}
-
 	public void setBorderHover(float borderHover) {
 		this.borderHover = borderHover;
 		repaint();
 	}
 
-	public float getPadding() {
-		return padding;
+	public void setChartType(PieChartType chartType) {
+		this.chartType = chartType;
+		repaint();
 	}
 
 	public void setPadding(float padding) {
@@ -286,25 +301,10 @@ public class PieChart extends JComponent {
 		repaint();
 	}
 
-	public PeiChartType getChartType() {
-		return chartType;
-	}
-
-	public void setChartType(PeiChartType chartType) {
-		this.chartType = chartType;
-		repaint();
-	}
-
-	public void clearData() {
-		models.clear();
-		repaint();
-	}
-
-	public void addData(ModelPieChart data) {
-		models.add(data);
-	}
-
-	public static enum PeiChartType {
-		DEFAULT, DONUT_CHART
+	public void setSelectedIndex(int selectedIndex) {
+		if (selectedIndex >= -1 && selectedIndex < models.size()) {
+			this.selectedIndex = selectedIndex;
+			repaint();
+		}
 	}
 }

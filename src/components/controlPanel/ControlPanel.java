@@ -29,15 +29,15 @@ public class ControlPanel extends JPanel implements ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField txtTrangHienThai;
-	private int soTrang;
-	private int trangHienTai;
-	private JButton btnPrev;
-	private JButton btnNext;
-	private JButton btnLast;
-	private JTable tbl;
-	private JLabel lblSoTrang;
 	private Button btnFirst;
+	private JButton btnLast;
+	private JButton btnNext;
+	private JButton btnPrev;
+	private JLabel lblSoTrang;
+	private int soTrang;
+	private JTable tbl;
+	private int trangHienTai;
+	private JTextField txtTrangHienThai;
 
 	public ControlPanel(int x, int y, JFrame jFrame) {
 		setBounds(x, y, 286, 34);
@@ -135,6 +135,20 @@ public class ControlPanel extends JPanel implements ActionListener {
 		btnLast.addActionListener(this);
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+
+		if (o.equals(btnFirst)) {
+			this.setTrangHienTai(1);
+		} else if (o.equals(btnPrev))
+			this.setTrangHienTai(trangHienTai - 1);
+		else if (o.equals(btnNext))
+			this.setTrangHienTai(trangHienTai + 1);
+		else if (o.equals(btnLast))
+			this.setTrangHienTai(soTrang);
+	}
+
 	public JTable getTbl() {
 		return tbl;
 	}
@@ -179,19 +193,5 @@ public class ControlPanel extends JPanel implements ActionListener {
 			btnNext.setEnabled(true);
 			btnLast.setEnabled(true);
 		}
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object o = e.getSource();
-
-		if (o.equals(btnFirst)) {
-			this.setTrangHienTai(1);
-		} else if (o.equals(btnPrev))
-			this.setTrangHienTai(trangHienTai - 1);
-		else if (o.equals(btnNext))
-			this.setTrangHienTai(trangHienTai + 1);
-		else if (o.equals(btnLast))
-			this.setTrangHienTai(soTrang);
 	}
 }

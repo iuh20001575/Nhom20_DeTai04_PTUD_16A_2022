@@ -1,7 +1,6 @@
 package components.barChart;
 
 public class NiceScale {
-
     private double max;
     private int maxTicks = 10;
     private double min;

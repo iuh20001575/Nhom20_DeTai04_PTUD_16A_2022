@@ -1,9 +1,7 @@
 package components.barChart;
 
 public class ModelChart {
-
     private String label;
-
     private double values[];
 
     public ModelChart() {

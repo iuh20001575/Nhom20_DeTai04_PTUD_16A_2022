@@ -16,23 +16,27 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 public class Notification extends javax.swing.JComponent {
 
+	public static enum Type {
+		ERROR, INFO, SUCCESS, WARNING
+	}
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JDialog dialog;
 	private Animator animator;
+	private javax.swing.JButton btnClose;
+	private JDialog dialog;
 	private final Frame fram;
+	private BufferedImage imageShadow;
+	private javax.swing.JLabel lblIcon;
+	private javax.swing.JLabel lblMessage;
+	private javax.swing.JLabel lblMessageText;
+	private javax.swing.JPanel pnl;
+	private int shadowSize = 6;
 	private boolean showing;
 	private Thread thread;
-	private BufferedImage imageShadow;
-	private int shadowSize = 6;
 	private Type type;
-	private javax.swing.JButton cmdClose;
-	private javax.swing.JLabel lbIcon;
-	private javax.swing.JLabel lbMessage;
-	private javax.swing.JLabel lbMessageText;
-	private javax.swing.JPanel panel;
 
 	public Notification(Frame fram, Type type, String message) {
 		this.fram = fram;
@@ -40,6 +44,42 @@ public class Notification extends javax.swing.JComponent {
 		initComponents();
 		init(message);
 		initAnimator();
+	}
+
+	private void closeNotification() {
+		if (thread != null && thread.isAlive()) {
+			thread.interrupt();
+		}
+		if (animator.isRunning()) {
+			if (!showing) {
+				animator.stop();
+				showing = true;
+				animator.start();
+			}
+		} else {
+			showing = true;
+			animator.start();
+		}
+	}
+
+	private void cmdCloseActionPerformed(java.awt.event.ActionEvent evt) {
+		closeNotification();
+	}
+
+	private void createImageShadow() {
+		imageShadow = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = imageShadow.createGraphics();
+		g2.drawImage(createShadow(), 0, 0, null);
+		g2.dispose();
+	}
+
+	private BufferedImage createShadow() {
+		BufferedImage img = new BufferedImage(getWidth() - shadowSize * 2, getHeight() - shadowSize * 2,
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = img.createGraphics();
+		g2.fillRect(0, 0, img.getWidth(), img.getHeight());
+		g2.dispose();
+		return new ShadowRenderer(shadowSize, 0.3f, new Color(100, 100, 100)).createShadow(img);
 	}
 
 	private void init(String message) {
@@ -51,33 +91,26 @@ public class Notification extends javax.swing.JComponent {
 		dialog.add(this);
 		dialog.setSize(getPreferredSize());
 		if (type == Type.SUCCESS) {
-			lbIcon.setIcon(new javax.swing.ImageIcon("Icon\\sucessNotification.png"));
-			lbIcon.setPreferredSize(new Dimension(30, 30));
-			lbMessage.setText("Success");
+			lblIcon.setIcon(new javax.swing.ImageIcon("Icon\\sucessNotification.png"));
+			lblIcon.setPreferredSize(new Dimension(30, 30));
+			lblMessage.setText("Success");
 		} else if (type == Type.INFO) {
-			lbIcon.setIcon(new javax.swing.ImageIcon("Icon\\infoNotification.png"));
-			lbMessage.setText("Info");
+			lblIcon.setIcon(new javax.swing.ImageIcon("Icon\\infoNotification.png"));
+			lblMessage.setText("Info");
 		} else if (type == Type.WARNING) {
-			lbIcon.setIcon(new javax.swing.ImageIcon("Icon\\warningNotification.png"));
-			lbMessage.setText("Warning");
+			lblIcon.setIcon(new javax.swing.ImageIcon("Icon\\warningNotification.png"));
+			lblMessage.setText("Warning");
 		} else {
-			lbIcon.setIcon(new javax.swing.ImageIcon("Icon\\attentionNotification.png"));
-			lbMessage.setText("Error");
+			lblIcon.setIcon(new javax.swing.ImageIcon("Icon\\attentionNotification.png"));
+			lblMessage.setText("Error");
 		}
-		lbMessageText.setText(message);
+		lblMessageText.setText(message);
 	}
 
 	private void initAnimator() {
 		TimingTarget target = new TimingTargetAdapter() {
-			private int x;
 			private int top;
-
-			@Override
-			public void timingEvent(float fraction) {
-				float alpha = showing ? 1 - fraction : fraction;
-				dialog.setLocation((int) (x + dialog.getWidth() * (1 - alpha)), top + 30);
-				dialog.setOpacity(alpha);
-			}
+			private int x;
 
 			@Override
 			public void begin() {
@@ -110,36 +143,76 @@ public class Notification extends javax.swing.JComponent {
 					dialog.dispose();
 				}
 			}
+
+			@Override
+			public void timingEvent(float fraction) {
+				float alpha = showing ? 1 - fraction : fraction;
+				dialog.setLocation((int) (x + dialog.getWidth() * (1 - alpha)), top + 30);
+				dialog.setOpacity(alpha);
+			}
 		};
 		animator = new Animator(500, target);
 		animator.setResolution(5);
 	}
 
-	public void showNotification() {
-		animator.start();
-	}
+	private void initComponents() {
+		lblIcon = new javax.swing.JLabel();
+		pnl = new javax.swing.JPanel();
+		lblMessage = new javax.swing.JLabel();
+		lblMessageText = new javax.swing.JLabel();
+		btnClose = new javax.swing.JButton();
 
-	private void closeNotification() {
-		if (thread != null && thread.isAlive()) {
-			thread.interrupt();
-		}
-		if (animator.isRunning()) {
-			if (!showing) {
-				animator.stop();
-				showing = true;
-				animator.start();
+		lblIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		lblIcon.setIcon(new javax.swing.ImageIcon("Icon\\sucessNotification.png")); // NOI18N
+
+		pnl.setOpaque(false);
+
+		lblMessage.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+		lblMessage.setForeground(new java.awt.Color(38, 38, 38));
+		lblMessage.setText("Message");
+
+		lblMessageText.setForeground(new java.awt.Color(127, 127, 127));
+		lblMessageText.setText("Message Text");
+
+		javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(pnl);
+		pnl.setLayout(panelLayout);
+		panelLayout.setHorizontalGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(panelLayout.createSequentialGroup().addContainerGap()
+						.addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(lblMessage).addComponent(lblMessageText))
+						.addContainerGap(217, Short.MAX_VALUE)));
+		panelLayout.setVerticalGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(panelLayout.createSequentialGroup().addContainerGap().addComponent(lblMessage).addGap(3, 3, 3)
+						.addComponent(lblMessageText).addContainerGap()));
+
+		btnClose.setIcon(new javax.swing.ImageIcon("Icon\\closeNotification.png")); // NOI18N
+		btnClose.setBorder(null);
+		btnClose.setContentAreaFilled(false);
+		btnClose.setFocusable(false);
+		btnClose.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				cmdCloseActionPerformed(evt);
 			}
-		} else {
-			showing = true;
-			animator.start();
-		}
-	}
+		});
 
-	private void sleep() {
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-		}
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+		this.setLayout(layout);
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup().addGap(20, 20, 20).addComponent(lblIcon).addGap(10, 10, 10)
+						.addComponent(pnl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(btnClose)
+						.addGap(15, 15, 15)));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
+				.createSequentialGroup().addGap(10, 10, 10)
+				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+						.addComponent(btnClose, javax.swing.GroupLayout.DEFAULT_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(pnl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+								Short.MAX_VALUE)
+						.addComponent(lblIcon, javax.swing.GroupLayout.DEFAULT_SIZE,
+								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+				.addGap(10, 10, 10)));
 	}
 
 	@Override
@@ -173,87 +246,14 @@ public class Notification extends javax.swing.JComponent {
 		createImageShadow();
 	}
 
-	private void createImageShadow() {
-		imageShadow = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = imageShadow.createGraphics();
-		g2.drawImage(createShadow(), 0, 0, null);
-		g2.dispose();
+	public void showNotification() {
+		animator.start();
 	}
 
-	private BufferedImage createShadow() {
-		BufferedImage img = new BufferedImage(getWidth() - shadowSize * 2, getHeight() - shadowSize * 2,
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = img.createGraphics();
-		g2.fillRect(0, 0, img.getWidth(), img.getHeight());
-		g2.dispose();
-		return new ShadowRenderer(shadowSize, 0.3f, new Color(100, 100, 100)).createShadow(img);
-	}
-
-	private void initComponents() {
-		lbIcon = new javax.swing.JLabel();
-		panel = new javax.swing.JPanel();
-		lbMessage = new javax.swing.JLabel();
-		lbMessageText = new javax.swing.JLabel();
-		cmdClose = new javax.swing.JButton();
-
-		lbIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		lbIcon.setIcon(new javax.swing.ImageIcon("Icon\\sucessNotification.png")); // NOI18N
-
-		panel.setOpaque(false);
-
-		lbMessage.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
-		lbMessage.setForeground(new java.awt.Color(38, 38, 38));
-		lbMessage.setText("Message");
-
-		lbMessageText.setForeground(new java.awt.Color(127, 127, 127));
-		lbMessageText.setText("Message Text");
-
-		javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
-		panel.setLayout(panelLayout);
-		panelLayout.setHorizontalGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(panelLayout.createSequentialGroup().addContainerGap()
-						.addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(lbMessage).addComponent(lbMessageText))
-						.addContainerGap(217, Short.MAX_VALUE)));
-		panelLayout.setVerticalGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(panelLayout.createSequentialGroup().addContainerGap().addComponent(lbMessage).addGap(3, 3, 3)
-						.addComponent(lbMessageText).addContainerGap()));
-
-		cmdClose.setIcon(new javax.swing.ImageIcon("Icon\\closeNotification.png")); // NOI18N
-		cmdClose.setBorder(null);
-		cmdClose.setContentAreaFilled(false);
-		cmdClose.setFocusable(false);
-		cmdClose.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				cmdCloseActionPerformed(evt);
-			}
-		});
-
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-		this.setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addGap(20, 20, 20).addComponent(lbIcon).addGap(10, 10, 10)
-						.addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(cmdClose)
-						.addGap(15, 15, 15)));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
-				.createSequentialGroup().addGap(10, 10, 10)
-				.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addComponent(cmdClose, javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE)
-						.addComponent(lbIcon, javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-				.addGap(10, 10, 10)));
-	}
-
-	private void cmdCloseActionPerformed(java.awt.event.ActionEvent evt) {
-		closeNotification();
-	}
-
-	public static enum Type {
-		SUCCESS, INFO, WARNING, ERROR
+	private void sleep() {
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package drawer;
+package components.drawer;
 
 public interface EventDrawer {
 

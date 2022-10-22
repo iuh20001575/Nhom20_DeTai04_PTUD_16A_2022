@@ -27,6 +27,14 @@ public class ButtonCustom extends JButton {
 		init();
 	}
 
+	public Color getColorHover() {
+		return colorHover;
+	}
+
+	public Color getColorPressed() {
+		return colorPressed;
+	}
+
 	private void init() {
 		setContentAreaFilled(false);
 		setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -68,16 +76,8 @@ public class ButtonCustom extends JButton {
 		super.setBackground(bg);
 	}
 
-	public Color getColorHover() {
-		return colorHover;
-	}
-
 	public void setColorHover(Color colorHover) {
 		this.colorHover = colorHover;
-	}
-
-	public Color getColorPressed() {
-		return colorPressed;
 	}
 
 	public void setColorPressed(Color colorPressed) {

@@ -4,14 +4,15 @@ import java.awt.Color;
 
 /**
  * Thành phần của biểu đồ tròn
- * 
- * @author ThaoHa
  *
  */
 public class ModelPieChart {
+	private Color color;
 	private String name;
 	private double values;
-	private Color color;
+
+	public ModelPieChart() {
+	}
 
 	/**
 	 * Khởi tạo thành phần của biểu đồ tròn
@@ -26,30 +27,27 @@ public class ModelPieChart {
 		this.color = color;
 	}
 
-	public ModelPieChart() {
+	public Color getColor() {
+		return color;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public double getValues() {
 		return values;
 	}
 
-	public void setValues(double values) {
-		this.values = values;
-	}
-
-	public Color getColor() {
-		return color;
-	}
-
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setValues(double values) {
+		this.values = values;
 	}
 }

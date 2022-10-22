@@ -12,12 +12,12 @@ import utils.Utils;
 public class ComboBox<E> extends JComboBox<E> {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private Color backgroundEnabled = Utils.primaryColor;
-	private Color foregroundEnabled = Color.BLACK;
 	private Color backgroundUnEnabled = Utils.getOpacity(Utils.primaryColor, 0.6f);
+	private Color foregroundEnabled = Color.BLACK;
 	private Color foregroundUnEnabled = Utils.getOpacity(Color.BLACK, 0.6f);
 
 	@SuppressWarnings("unchecked")
@@ -50,36 +50,36 @@ public class ComboBox<E> extends JComboBox<E> {
 		});
 	}
 
-	public Color getBackgroundUnEnabled() {
-		return backgroundUnEnabled;
-	}
-
-	public void setBackgroundUnEnabled(Color backgroundUnEnabled) {
-		this.backgroundUnEnabled = backgroundUnEnabled;
-	}
-
-	public Color getForegroundUnEnabled() {
-		return foregroundUnEnabled;
-	}
-
-	public void setForegroundUnEnabled(Color foregroundUnEnabled) {
-		this.foregroundUnEnabled = foregroundUnEnabled;
-	}
-
 	public Color getBackgroundEnabled() {
 		return backgroundEnabled;
 	}
 
-	public void setBackgroundEnabled(Color backgroundEnabled) {
-		this.backgroundEnabled = backgroundEnabled;
+	public Color getBackgroundUnEnabled() {
+		return backgroundUnEnabled;
 	}
 
 	public Color getForegroundEnabled() {
 		return foregroundEnabled;
 	}
 
+	public Color getForegroundUnEnabled() {
+		return foregroundUnEnabled;
+	}
+
+	public void setBackgroundEnabled(Color backgroundEnabled) {
+		this.backgroundEnabled = backgroundEnabled;
+	}
+
+	public void setBackgroundUnEnabled(Color backgroundUnEnabled) {
+		this.backgroundUnEnabled = backgroundUnEnabled;
+	}
+
 	public void setForegroundEnabled(Color foregroundEnabled) {
 		this.foregroundEnabled = foregroundEnabled;
+	}
+
+	public void setForegroundUnEnabled(Color foregroundUnEnabled) {
+		this.foregroundUnEnabled = foregroundUnEnabled;
 	}
 
 }

@@ -25,18 +25,26 @@ public class Item extends JButton {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final Color mainColor = SystemColor.MAIN_COLOR_2;
-	private final int index;
+	private float alpha;
 	private Animator animator;
 	private GoogleMaterialDesignIcon icon;
+	private final int index;
+	private final Color mainColor = SystemColor.MAIN_COLOR_2;
 	private final boolean mainMenu;
 	private boolean mouseEnter;
-	private float alpha;
 
 	public Item(boolean mainMenu, int index) {
 		this.mainMenu = mainMenu;
 		this.index = index;
 		init();
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public Color getMainColor() {
+		return mainColor;
 	}
 
 	private void init() {
@@ -86,15 +94,8 @@ public class Item extends JButton {
 		}
 	}
 
-	private void startAnimator() {
-		if (animator.isRunning()) {
-			float f = animator.getTimingFraction();
-			animator.stop();
-			animator.setStartFraction(1f - f);
-		} else {
-			animator.setStartFraction(0f);
-		}
-		animator.start();
+	public boolean isMainMenu() {
+		return mainMenu;
 	}
 
 	@Override
@@ -147,15 +148,14 @@ public class Item extends JButton {
 		setGoogleIcon(icon);
 	}
 
-	public Color getMainColor() {
-		return mainColor;
-	}
-
-	public int getIndex() {
-		return index;
-	}
-
-	public boolean isMainMenu() {
-		return mainMenu;
+	private void startAnimator() {
+		if (animator.isRunning()) {
+			float f = animator.getTimingFraction();
+			animator.stop();
+			animator.setStartFraction(1f - f);
+		} else {
+			animator.setStartFraction(0f);
+		}
+		animator.start();
 	}
 }

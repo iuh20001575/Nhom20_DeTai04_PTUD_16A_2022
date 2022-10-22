@@ -1,4 +1,4 @@
-package drawer.scroll;
+package components.drawer.scroll;
 
 import java.awt.Dimension;
 

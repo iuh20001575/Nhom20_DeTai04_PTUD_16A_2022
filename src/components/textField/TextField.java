@@ -25,58 +25,22 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
 import utils.Utils;
 
 public class TextField extends JTextField {
-	private final Animator animator;
-	private boolean animateHinText = true;
-	private float location;
-	private boolean show;
-	private boolean mouseOver = false;
-	private String labelText = "Label";
-	private Color lineColor = new Color(3, 155, 216);
-	private Color error = new Color(235, 87, 87);
-	private Color textColor = Color.BLACK;
-	private Color textDisabledColor = Utils.getOpacity(Color.BLACK, 0.6f);
-	private Icon icon;
-	private boolean isError = false;
-
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public String getLabelText() {
-		return labelText;
-	}
-
-	public void setLabelText(String labelText) {
-		this.labelText = labelText;
-	}
-
-	public Color getLineColor() {
-		return lineColor;
-	}
-
-	public void setLineColor(Color lineColor) {
-		this.lineColor = lineColor;
-	}
-
-	public Icon getIcon() {
-		return icon;
-	}
-
-	public void setIcon(Icon icon) {
-		this.icon = icon;
-		initBorder();
-	}
-
-	public boolean isError() {
-		return isError;
-	}
-
-	public void setError(boolean isError) {
-		this.isError = isError;
-		setForeground(isError ? error : textColor);
-		repaint();
-	}
+	private boolean animateHinText = true;
+	private final Animator animator;
+	private Color error = new Color(235, 87, 87);
+	private Icon icon;
+	private boolean isError = false;
+	private String labelText = "Label";
+	private Color lineColor = new Color(3, 155, 216);
+	private float location;
+	private boolean mouseOver = false;
+	private boolean show;
+	private Color textColor = Color.BLACK;
+	private Color textDisabledColor = Utils.getOpacity(Color.BLACK, 0.6f);
 
 	public TextField() {
 		textColor = getForeground();
@@ -126,37 +90,6 @@ public class TextField extends JTextField {
 		animator.setDeceleration(0.5f);
 	}
 
-	private void showing(boolean action) {
-		if (animator.isRunning()) {
-			animator.stop();
-		} else {
-			location = 1;
-		}
-		animator.setStartFraction(1f - location);
-		show = action;
-		location = 1f - location;
-		animator.start();
-	}
-
-	@Override
-	public void paint(Graphics grphcs) {
-		super.paint(grphcs);
-		Graphics2D g2 = (Graphics2D) grphcs;
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-		int width = getWidth();
-		int height = getHeight();
-		if (mouseOver) {
-			g2.setColor(lineColor);
-		} else {
-			g2.setColor(new Color(150, 150, 150));
-		}
-		g2.fillRect(2, height - 1, width - 4, 1);
-		createHintText(g2);
-		createLineStyle(g2);
-		g2.dispose();
-	}
-
 	private void createHintText(Graphics2D g2) {
 		Insets in = getInsets();
 		g2.setColor(isError ? error : Utils.labelTextField);
@@ -193,17 +126,44 @@ public class TextField extends JTextField {
 		}
 	}
 
-	@Override
-	public void setText(String string) {
-		if (!getText().equals(string)) {
-			showing(string.equals(""));
-		}
-		super.setText(string);
+	public Icon getIcon() {
+		return icon;
+	}
+
+	public String getLabelText() {
+		return labelText;
+	}
+
+	public Color getLineColor() {
+		return lineColor;
 	}
 
 	private void initBorder() {
 		if (icon != null)
 			setBorder(new EmptyBorder(20, 3, 10, 38));
+	}
+
+	public boolean isError() {
+		return isError;
+	}
+
+	@Override
+	public void paint(Graphics grphcs) {
+		super.paint(grphcs);
+		Graphics2D g2 = (Graphics2D) grphcs;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+		int width = getWidth();
+		int height = getHeight();
+		if (mouseOver) {
+			g2.setColor(lineColor);
+		} else {
+			g2.setColor(new Color(150, 150, 150));
+		}
+		g2.fillRect(2, height - 1, width - 4, 1);
+		createHintText(g2);
+		createLineStyle(g2);
+		g2.dispose();
 	}
 
 	@Override
@@ -220,5 +180,44 @@ public class TextField extends JTextField {
 //            int y = (getHeight() - icon.getIconHeight()) / 2;
 			g2.drawImage(suffix, getWidth() - icon.getIconWidth() - 3, 20, this);
 		}
+	}
+
+	public void setError(boolean isError) {
+		this.isError = isError;
+		setForeground(isError ? error : textColor);
+		repaint();
+	}
+
+	public void setIcon(Icon icon) {
+		this.icon = icon;
+		initBorder();
+	}
+
+	public void setLabelText(String labelText) {
+		this.labelText = labelText;
+	}
+
+	public void setLineColor(Color lineColor) {
+		this.lineColor = lineColor;
+	}
+
+	@Override
+	public void setText(String string) {
+		if (!getText().equals(string)) {
+			showing(string.equals(""));
+		}
+		super.setText(string);
+	}
+
+	private void showing(boolean action) {
+		if (animator.isRunning()) {
+			animator.stop();
+		} else {
+			location = 1;
+		}
+		animator.setStartFraction(1f - location);
+		show = action;
+		location = 1f - location;
+		animator.start();
 	}
 }

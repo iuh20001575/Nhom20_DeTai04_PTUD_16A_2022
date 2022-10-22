@@ -1,4 +1,4 @@
-package drawer.scroll;
+package components.drawer.scroll;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -16,9 +16,29 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
 
 public class ModernScrollBarUI extends BasicScrollBarUI {
 
-	private final int THUMB_SIZE = 5;
-	private final Color THUMB_COLOR = new Color(170, 170, 170);
+	private static class InvisibleScrollBarButton extends JButton {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		private InvisibleScrollBarButton() {
+			init();
+		}
+
+		private void init() {
+			setOpaque(false);
+			setFocusable(false);
+			setFocusPainted(false);
+			setBorderPainted(false);
+			setBorder(BorderFactory.createEmptyBorder());
+		}
+	}
+
 	private final float ALPHA = 0.3f;
+	private final Color THUMB_COLOR = new Color(170, 170, 170);
+	private final int THUMB_SIZE = 5;
 
 	public ModernScrollBarUI() {
 
@@ -32,10 +52,6 @@ public class ModernScrollBarUI extends BasicScrollBarUI {
 	@Override
 	protected JButton createIncreaseButton(int orientation) {
 		return new InvisibleScrollBarButton();
-	}
-
-	@Override
-	protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
 	}
 
 	@Override
@@ -67,23 +83,7 @@ public class ModernScrollBarUI extends BasicScrollBarUI {
 		}
 	}
 
-	private static class InvisibleScrollBarButton extends JButton {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		private InvisibleScrollBarButton() {
-			init();
-		}
-
-		private void init() {
-			setOpaque(false);
-			setFocusable(false);
-			setFocusPainted(false);
-			setBorderPainted(false);
-			setBorder(BorderFactory.createEmptyBorder());
-		}
+	@Override
+	protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
 	}
 }

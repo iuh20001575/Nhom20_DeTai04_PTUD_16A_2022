@@ -14,19 +14,14 @@ public class Glass extends JComponent {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public float getAlpha() {
-		return alpha;
-	}
-
-	public void setAlpha(float alpha) {
-		this.alpha = alpha;
-		repaint();
-	}
+	private float alpha = 0f;
 
 	public Glass() {
 	}
 
-	private float alpha = 0f;
+	public float getAlpha() {
+		return alpha;
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -36,5 +31,10 @@ public class Glass extends JComponent {
 		g2.fillRect(0, 0, getWidth(), getHeight());
 		g2.dispose();
 		super.paintComponent(g);
+	}
+
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
+		repaint();
 	}
 }

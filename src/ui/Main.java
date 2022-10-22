@@ -21,13 +21,13 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import components.button.Button;
+import components.drawer.Drawer;
+import components.drawer.DrawerController;
 import components.jDialog.JDialogCustom;
 import components.menu.EventMenuSelected;
 import components.menu.Menu;
 import connectDB.ConnectDB;
 import dao.NhanVien_DAO;
-import drawer.Drawer;
-import drawer.DrawerController;
 import entity.NhanVien;
 import entity.PanelUI;
 import utils.StackPanel;
@@ -264,7 +264,7 @@ public class Main extends JFrame {
 					title = "Thống kê khách hàng";
 					pnl = new ThongKeKhachHang_GUI();
 				} else if (index == 6 && indexSubMenu == 0) {
-					title = "Quản lý đặt phòng trước";
+					title = "Thông tin cá nhân";
 					pnl = new ThongTinCaNhan_GUI();
 				} else {
 					title = "Trang chủ";

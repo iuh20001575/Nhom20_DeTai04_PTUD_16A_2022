@@ -3,9 +3,7 @@ package components.barChart;
 import java.awt.Color;
 
 public class ModelLegend {
-
     private Color color;
-
     private String name;
 
     public ModelLegend() {

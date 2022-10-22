@@ -15,35 +15,36 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 import components.button.ButtonCustom;
-import utils.Utils;
 
 public class JDialogCustom extends JDialog {
+	public static enum MessageType {
+		CANCEL, OK
+	}
+	public static enum Type {
+		confirm, warning
+	}
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final JFrame fram;
 	private Animator animator;
-	private Glass glass;
-	private boolean show;
-	private MessageType messageType = MessageType.CANCEL;
 	private Background background1;
 	private ButtonCustom btnCancel;
 	private ButtonCustom btnOK;
+	private final JFrame fram;
+	private Glass glass;
 	private javax.swing.JLabel lblIcon;
 	private javax.swing.JLabel lblTitle;
+	private MessageType messageType = MessageType.CANCEL;
+	private boolean show;
+
 	private javax.swing.JTextPane txpMessage;
+
 	private Type type = Type.confirm;
 
 	public JDialogCustom(JFrame fram) {
 		super(fram, true);
 		this.fram = fram;
-		initComponents();
-		init();
-	}
-
-	public void setType(Type type) {
-		this.type = type;
 		initComponents();
 		init();
 	}
@@ -54,6 +55,32 @@ public class JDialogCustom extends JDialog {
 		this.fram = fram;
 		initComponents();
 		init();
+	}
+
+	private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {
+		messageType = MessageType.OK;
+		closeMessage();
+	}
+
+	public void closeMessage() {
+		startAnimator(false);
+	}
+
+	private void cmdCancelActionPerformed(java.awt.event.ActionEvent evt) {
+		messageType = MessageType.CANCEL;
+		closeMessage();
+	}
+
+	public ButtonCustom getBtnCancel() {
+		return btnCancel;
+	}
+
+	public ButtonCustom getBtnOK() {
+		return btnOK;
+	}
+
+	public MessageType getMessageType() {
+		return messageType;
 	}
 
 	private void init() {
@@ -73,18 +100,18 @@ public class JDialogCustom extends JDialog {
 		});
 		animator = new Animator(300, new TimingTargetAdapter() {
 			@Override
-			public void timingEvent(float fraction) {
-				float f = show ? fraction : 1f - fraction;
-				glass.setAlpha(f - f * 0.3f);
-				setOpacity(f);
-			}
-
-			@Override
 			public void end() {
 				if (show == false) {
 					dispose();
 					glass.setVisible(false);
 				}
+			}
+
+			@Override
+			public void timingEvent(float fraction) {
+				float f = show ? fraction : 1f - fraction;
+				glass.setAlpha(f - f * 0.3f);
+				setOpacity(f);
 			}
 		});
 		animator.setResolution(0);
@@ -92,37 +119,6 @@ public class JDialogCustom extends JDialog {
 		animator.setDeceleration(.5f);
 		setOpacity(0f);
 		glass = new Glass();
-	}
-
-	private void startAnimator(boolean show) {
-		if (animator.isRunning()) {
-			float f = animator.getTimingFraction();
-			animator.stop();
-			animator.setStartFraction(1f - f);
-		} else {
-			animator.setStartFraction(0f);
-		}
-		this.show = show;
-		animator.start();
-	}
-
-	public void showMessage(String title, String message) {
-//		if (fram.getGlassPane() == null)
-			fram.setGlassPane(glass);
-		glass.setVisible(true);
-		lblTitle.setText(title);
-		txpMessage.setText(message);
-		setLocationRelativeTo(fram);
-		startAnimator(true);
-		setVisible(true);
-	}
-
-	public void closeMessage() {
-		startAnimator(false);
-	}
-
-	public MessageType getMessageType() {
-		return messageType;
 	}
 
 	private void initComponents() {
@@ -223,29 +219,32 @@ public class JDialogCustom extends JDialog {
 		pack();
 	}
 
-	private void cmdCancelActionPerformed(java.awt.event.ActionEvent evt) {
-		messageType = MessageType.CANCEL;
-		closeMessage();
+	public void setType(Type type) {
+		this.type = type;
+		initComponents();
+		init();
 	}
 
-	private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {
-		messageType = MessageType.OK;
-		closeMessage();
+	public void showMessage(String title, String message) {
+//		if (fram.getGlassPane() == null)
+		fram.setGlassPane(glass);
+		glass.setVisible(true);
+		lblTitle.setText(title);
+		txpMessage.setText(message);
+		setLocationRelativeTo(fram);
+		startAnimator(true);
+		setVisible(true);
 	}
 
-	public ButtonCustom getBtnCancel() {
-		return btnCancel;
-	}
-
-	public ButtonCustom getBtnOK() {
-		return btnOK;
-	}
-
-	public static enum Type {
-		warning, confirm
-	}
-
-	public static enum MessageType {
-		CANCEL, OK
+	private void startAnimator(boolean show) {
+		if (animator.isRunning()) {
+			float f = animator.getTimingFraction();
+			animator.stop();
+			animator.setStartFraction(1f - f);
+		} else {
+			animator.setStartFraction(0f);
+		}
+		this.show = show;
+		animator.start();
 	}
 }

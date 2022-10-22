@@ -33,10 +33,6 @@ public class RadioButtonCustom extends JRadioButton {
 		return radioColor;
 	}
 
-	public void setRadioColor(Color radioColor) {
-		this.radioColor = radioColor;
-	}
-
 	@Override
 	public void paint(Graphics grphcs) {
 		super.paint(grphcs);
@@ -69,5 +65,9 @@ public class RadioButtonCustom extends JRadioButton {
 			g2.fillOval(2, ly + 1, 14, 14);
 		}
 		g2.dispose();
+	}
+
+	public void setRadioColor(Color radioColor) {
+		this.radioColor = radioColor;
 	}
 }

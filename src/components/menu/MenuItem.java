@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
-import drawer.DrawerController;
+import components.drawer.DrawerController;
 import net.miginfocom.swing.MigLayout;
 
 public class MenuItem extends JPanel {
@@ -29,21 +29,13 @@ public class MenuItem extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final List<EventMenuSelected> events = new ArrayList<>();
-	private final int index;
-	private final boolean hasSubMenu;
 	private Animator animator;
 	private int buttonAngle = -1;
-	private boolean open;
 	private DrawerController drawer;
-
-	public DrawerController getDrawer() {
-		return drawer;
-	}
-
-	public void setDrawer(DrawerController drawer) {
-		this.drawer = drawer;
-	}
+	private final List<EventMenuSelected> events = new ArrayList<>();
+	private final boolean hasSubMenu;
+	private final int index;
+	private boolean open;
 
 	public MenuItem(ModelMenuItem item, int index, MigLayout layout) {
 		this.index = index;
@@ -53,6 +45,26 @@ public class MenuItem extends JPanel {
 			initAnimator(layout);
 			buttonAngle = 0;
 		}
+	}
+
+	public void addEvent(EventMenuSelected event) {
+		this.events.add(event);
+	}
+
+	public void clearSelected() {
+		setForeground(new Color(170, 170, 170));
+		for (Component com : getComponents()) {
+			Item item = (Item) com;
+			item.setSelected(false);
+		}
+	}
+
+	public DrawerController getDrawer() {
+		return drawer;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 
 	private void init(ModelMenuItem item) {
@@ -132,55 +144,8 @@ public class MenuItem extends JPanel {
 		animator.setAcceleration(.5f);
 	}
 
-	private void startAnimator() {
-		if (animator.isRunning()) {
-			float f = animator.getTimingFraction();
-			animator.stop();
-			animator.setStartFraction(1f - f);
-		} else {
-			animator.setStartFraction(0f);
-		}
-		animator.start();
-	}
-
-	public void addEvent(EventMenuSelected event) {
-		this.events.add(event);
-	}
-
-	private void runEvent(int index, int subIndex) {
-		for (EventMenuSelected evnet : events) {
-			evnet.menuSelected(index, subIndex);
-		}
-	}
-
-	public int getIndex() {
-		return index;
-	}
-
 	public boolean isHasSubMenu() {
 		return hasSubMenu;
-	}
-
-	public void clearSelected() {
-		setForeground(new Color(170, 170, 170));
-		for (Component com : getComponents()) {
-			Item item = (Item) com;
-			item.setSelected(false);
-		}
-	}
-
-	public void setSelectedIndex(int index) {
-		for (Component com : getComponents()) {
-			Item item = (Item) com;
-			if (item.isMainMenu()) {
-				item.setSelected(true);
-				setForeground(item.getMainColor());
-			}
-			if (item.getIndex() == index) {
-				item.setSelected(true);
-				break;
-			}
-		}
 	}
 
 	@Override
@@ -201,5 +166,40 @@ public class MenuItem extends JPanel {
 			g2.draw(at.createTransformedShape(p2));
 			g2.dispose();
 		}
+	}
+
+	private void runEvent(int index, int subIndex) {
+		for (EventMenuSelected evnet : events) {
+			evnet.menuSelected(index, subIndex);
+		}
+	}
+
+	public void setDrawer(DrawerController drawer) {
+		this.drawer = drawer;
+	}
+
+	public void setSelectedIndex(int index) {
+		for (Component com : getComponents()) {
+			Item item = (Item) com;
+			if (item.isMainMenu()) {
+				item.setSelected(true);
+				setForeground(item.getMainColor());
+			}
+			if (item.getIndex() == index) {
+				item.setSelected(true);
+				break;
+			}
+		}
+	}
+
+	private void startAnimator() {
+		if (animator.isRunning()) {
+			float f = animator.getTimingFraction();
+			animator.stop();
+			animator.setStartFraction(1f - f);
+		} else {
+			animator.setStartFraction(0f);
+		}
+		animator.start();
 	}
 }
