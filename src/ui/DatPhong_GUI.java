@@ -59,24 +59,24 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private TextField txtSoDienThoai;
-	private TextField txtTenKhachHang;
-	private KhachHang_DAO khachHang_DAO;
-	private KhachHang khachHang;
-	private DatPhong_DAO datPhong_DAO;
-	private DefaultTableModel tableModel;
-	private JTable tbl;
-	private LoaiPhong_DAO loaiPhong_DAO;
-	private List<Phong> dsPhongDaChon;
-	private List<Phong> dsPhongDatNgay;
-	private JPanel pnlPhong;
-	private JComboBox<String> cmbMaPhong;
-	private JComboBox<String> cmbLoaiPhong;
-	private JComboBox<String> cmbSoLuong;
 	private DatPhong_GUI _this;
 	private Button btnChonPhong;
 	private Button btnDatPhong;
+	private JComboBox<String> cmbLoaiPhong;
+	private JComboBox<String> cmbMaPhong;
+	private JComboBox<String> cmbSoLuong;
+	private DatPhong_DAO datPhong_DAO;
+	private List<Phong> dsPhongDaChon;
+	private List<Phong> dsPhongDatNgay;
+	private KhachHang khachHang;
+	private KhachHang_DAO khachHang_DAO;
+	private LoaiPhong_DAO loaiPhong_DAO;
+	private JPanel pnlContent;
+	private JPanel pnlPhong;
+	private DefaultTableModel tableModel;
+	private JTable tbl;
+	private TextField txtSoDienThoai;
+	private TextField txtTenKhachHang;
 
 	/**
 	 * Create the frame.
@@ -98,17 +98,17 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 850, 466);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		pnlContent = new JPanel();
+		pnlContent.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(pnlContent);
+		pnlContent.setLayout(null);
 		setUndecorated(true);
 		setLocationRelativeTo(null);
 
 		JPanel pnlContainer = new JPanel();
-		pnlContainer.setBackground(Utils.secondaryColor);
+		pnlContainer.setBackground(Color.WHITE);
 		pnlContainer.setBounds(0, 0, 850, 466);
-		contentPane.add(pnlContainer);
+		pnlContent.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
 		JPanel pnlHeading = new JPanel();
@@ -125,13 +125,13 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		pnlHeading.add(lblTitle);
 
 		JPanel pnlBody = new JPanel();
-		pnlBody.setBackground(Utils.secondaryColor);
+		pnlBody.setBackground(Color.WHITE);
 		pnlBody.setBounds(40, 50, 770, 398);
 		pnlContainer.add(pnlBody);
 		pnlBody.setLayout(null);
 
 		txtSoDienThoai = new TextField();
-		txtSoDienThoai.setBackground(Utils.secondaryColor);
+		txtSoDienThoai.setBackground(Color.WHITE);
 		txtSoDienThoai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtSoDienThoai.setLabelText("Số điện thoại khách");
 		txtSoDienThoai.setBounds(0, 0, 340, 55);
@@ -142,7 +142,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		btnSearchSoDienThoai.setFocusable(false);
 		btnSearchSoDienThoai.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnSearchSoDienThoai.setRadius(4);
-		btnSearchSoDienThoai.setBorderColor(Utils.secondaryColor);
+		btnSearchSoDienThoai.setBorderColor(Color.WHITE);
 		btnSearchSoDienThoai.setColor(Utils.primaryColor);
 		btnSearchSoDienThoai.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.9f));
 		btnSearchSoDienThoai.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
@@ -153,20 +153,20 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		txtTenKhachHang = new TextField();
 		txtTenKhachHang.setLabelText("Họ tên khách");
 		txtTenKhachHang.setEditable(false);
-		txtTenKhachHang.setBackground(Utils.secondaryColor);
+		txtTenKhachHang.setBackground(Color.WHITE);
 		txtTenKhachHang.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTenKhachHang.setBounds(430, 0, 340, 55);
 		pnlBody.add(txtTenKhachHang);
 		txtTenKhachHang.setColumns(10);
 
 		pnlPhong = new JPanel();
-		pnlPhong.setBackground(Utils.secondaryColor);
+		pnlPhong.setBackground(Color.WHITE);
 		pnlPhong.setBounds(0, 121, 770, 225);
 		pnlBody.add(pnlPhong);
 		pnlPhong.setLayout(null);
 
 		JPanel pnlActions = new JPanel();
-		pnlActions.setBackground(Utils.secondaryColor);
+		pnlActions.setBackground(Color.WHITE);
 		pnlActions.setBounds(574, 0, 36, 225);
 		pnlPhong.add(pnlActions);
 		pnlActions.setLayout(null);
@@ -178,7 +178,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		btnChonPhong.setColor(Utils.primaryColor);
 		btnChonPhong.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnChonPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
-		btnChonPhong.setBorderColor(Utils.secondaryColor);
+		btnChonPhong.setBorderColor(Color.WHITE);
 		btnChonPhong.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
 		btnChonPhong.setBounds(0, 94, 36, 36);
 		btnChonPhong.setEnabled(false);
@@ -242,7 +242,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		tbl.getColumnModel().getColumn(2).setCellRenderer(dtcr);
 
 		JPanel pnlBtnGroup = new JPanel();
-		pnlBtnGroup.setBackground(Utils.secondaryColor);
+		pnlBtnGroup.setBackground(Color.WHITE);
 		pnlBtnGroup.setBounds(0, 362, 770, 36);
 		pnlBody.add(pnlBtnGroup);
 		pnlBtnGroup.setLayout(null);
@@ -251,13 +251,13 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		btnDatPhong.setFocusable(false);
 		btnDatPhong.setRadius(8);
 		btnDatPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnDatPhong.setBorderColor(Utils.secondaryColor);
+		btnDatPhong.setBorderColor(Color.WHITE);
 		btnDatPhong.setForeground(Color.WHITE);
 		btnDatPhong.setColor(Utils.primaryColor);
 		btnDatPhong.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnDatPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
 		btnDatPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		btnDatPhong.setBounds(395, 0, 150, 36);
+		btnDatPhong.setBounds(620, 0, 150, 36);
 		btnDatPhong.setEnabled(false);
 		pnlBtnGroup.add(btnDatPhong);
 
@@ -265,13 +265,16 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		btnQuayLai.setFocusable(false);
 		btnQuayLai.setRadius(8);
 		btnQuayLai.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnQuayLai.setBorderColor(Utils.secondaryColor);
+		btnQuayLai.setBorderColor(Color.WHITE);
+		btnQuayLai.setColor(Utils.secondaryColor);
+		btnQuayLai.setColorOver(Utils.getOpacity(Utils.secondaryColor, 0.8f));
+		btnQuayLai.setColorClick(Utils.getOpacity(Utils.secondaryColor, 0.8f));
 		btnQuayLai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		btnQuayLai.setBounds(225, 0, 150, 36);
+		btnQuayLai.setBounds(0, 0, 150, 36);
 		pnlBtnGroup.add(btnQuayLai);
 
 		JPanel pnlFilter = new JPanel();
-		pnlFilter.setBackground(Utils.secondaryColor);
+		pnlFilter.setBackground(Color.WHITE);
 		pnlFilter.setBounds(0, 70, 770, 36);
 		pnlBody.add(pnlFilter);
 		pnlFilter.setLayout(null);
@@ -302,10 +305,10 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		btnLamMoi.setFocusable(false);
 		btnLamMoi.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnLamMoi.setRadius(4);
-		btnLamMoi.setBorderColor(Utils.secondaryColor);
-		btnLamMoi.setColor(Color.WHITE);
-		btnLamMoi.setColorOver(Utils.getOpacity(Color.BLACK, 0.05f));
-		btnLamMoi.setColorClick(Utils.getOpacity(Color.BLACK, 0.1f));
+		btnLamMoi.setBorderColor(Color.WHITE);
+		btnLamMoi.setColor(Utils.secondaryColor);
+		btnLamMoi.setColorOver(Utils.getOpacity(Utils.secondaryColor, 0.8f));
+		btnLamMoi.setColorClick(Utils.getOpacity(Utils.secondaryColor, 0.8f));
 		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		btnLamMoi.setBounds(660, 0, 110, 36);
 		pnlFilter.add(btnLamMoi);
@@ -505,45 +508,27 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	}
 
 	/**
-	 * Hiển thị các phòng đã chọn vào mục phòng đã chọn
+	 * Thêm danh sách các phòng vào table
+	 * 
+	 * @param list danh sách các phòng cần thêm
 	 */
-	private void showDanhSachPhongDaChon() {
-		JScrollPane scrPhongDaChon = new JScrollPane();
-		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrPhongDaChon.setBackground(Utils.secondaryColor);
-		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
-				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		scrPhongDaChon.setBounds(620, 0, 150, 225);
+	private void addRow(List<Phong> list) {
+		emptyTable();
 
-		if (pnlPhong.getComponentAt(620, 0) != null) {
-			pnlPhong.remove(pnlPhong.getComponentAt(620, 0));
-		}
+		list.forEach(phong -> {
+			addRow(phong);
+		});
+	}
 
-		pnlPhong.add(scrPhongDaChon);
-		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
-		scbPhongDaChon.setBackgroundColor(Utils.secondaryColor);
-		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
-		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
-
-		JPanel pnlPhongDaChon = new JPanel();
-		pnlPhongDaChon.setBackground(Utils.secondaryColor);
-		scrPhongDaChon.setViewportView(pnlPhongDaChon);
-		pnlPhongDaChon.setLayout(null);
-
-		if (dsPhongDaChon == null)
-			return;
-
-		int heightItem = 36;
-		int gapY = 8;
-		int top = 11;
-		int countItem = dsPhongDaChon.size();
-		for (int i = 0; i < countItem; i++) {
-			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
-		}
-
-		pnlPhongDaChon.setPreferredSize(
-				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
+	/**
+	 * Thêm một phòng vào table
+	 * 
+	 * @param phong phòng muốn thêm
+	 */
+	private void addRow(Phong phong) {
+		phong.setLoaiPhong(loaiPhong_DAO.getLoaiPhong(phong.getLoaiPhong().getMaLoai()));
+		tableModel.addRow(new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(),
+				phong.getSoLuongKhach() + "", Phong.convertTrangThaiToString(phong.getTrangThai()) });
 	}
 
 	private void capNhatDanhSachPhongDatNgay() {
@@ -557,6 +542,53 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			if (!dsPhongDaChon.contains(phong))
 				addRow(phong);
 		}
+	}
+
+	/**
+	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
+	 * 
+	 * @param jComboBox
+	 */
+	private void emptyComboBox(JComboBox<String> cmb) {
+		cmb.removeAllItems();
+	}
+
+	/**
+	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
+	 * 
+	 * @param jComboBox ComboBox
+	 * @param label
+	 */
+	private void emptyComboBox(JComboBox<String> cmb, String label) {
+		emptyComboBox(cmb);
+		cmb.addItem(label);
+	}
+
+	/**
+	 * Xóa tất các các row trong table
+	 */
+	private void emptyTable() {
+		while (tbl.getRowCount() > 0)
+			tableModel.removeRow(0);
+	}
+
+	/**
+	 * Lọc danh sách các phòng theo mã phòng, loại phòng và số lượng
+	 */
+	private void filterPhong() {
+		String maPhong = (String) cmbMaPhong.getSelectedItem();
+		String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
+		String soLuong = (String) cmbSoLuong.getSelectedItem();
+
+		if (maPhong.equals("Mã phòng"))
+			maPhong = "";
+		if (loaiPhong.equals("Loại phòng"))
+			loaiPhong = "";
+
+		dsPhongDatNgay = datPhong_DAO.getPhongDatNgay(maPhong, loaiPhong, soLuong);
+		emptyTable();
+		addRow(dsPhongDatNgay);
+		capNhatDanhSachPhongDatNgay();
 	}
 
 	/**
@@ -595,58 +627,6 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		return pnlContainerItem;
 	}
 
-	/**
-	 * Thêm một phòng vào table
-	 * 
-	 * @param phong phòng muốn thêm
-	 */
-	private void addRow(Phong phong) {
-		phong.setLoaiPhong(loaiPhong_DAO.getLoaiPhong(phong.getLoaiPhong().getMaLoai()));
-		tableModel.addRow(new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(),
-				phong.getSoLuongKhach() + "", Phong.convertTrangThaiToString(phong.getTrangThai()) });
-	}
-
-	/**
-	 * Thêm danh sách các phòng vào table
-	 * 
-	 * @param list danh sách các phòng cần thêm
-	 */
-	private void addRow(List<Phong> list) {
-		emptyTable();
-
-		list.forEach(phong -> {
-			addRow(phong);
-		});
-	}
-
-	/**
-	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
-	 * 
-	 * @param jComboBox ComboBox
-	 * @param label
-	 */
-	private void emptyComboBox(JComboBox<String> cmb, String label) {
-		emptyComboBox(cmb);
-		cmb.addItem(label);
-	}
-
-	/**
-	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
-	 * 
-	 * @param jComboBox
-	 */
-	private void emptyComboBox(JComboBox<String> cmb) {
-		cmb.removeAllItems();
-	}
-
-	/**
-	 * Xóa tất các các row trong table
-	 */
-	private void emptyTable() {
-		while (tbl.getRowCount() > 0)
-			tableModel.removeRow(0);
-	}
-
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED)
@@ -656,22 +636,45 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	}
 
 	/**
-	 * Lọc danh sách các phòng theo mã phòng, loại phòng và số lượng
+	 * Hiển thị các phòng đã chọn vào mục phòng đã chọn
 	 */
-	private void filterPhong() {
-		String maPhong = (String) cmbMaPhong.getSelectedItem();
-		String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
-		String soLuong = (String) cmbSoLuong.getSelectedItem();
+	private void showDanhSachPhongDaChon() {
+		JScrollPane scrPhongDaChon = new JScrollPane();
+		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
+				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		scrPhongDaChon.setBounds(620, 0, 150, 225);
 
-		if (maPhong.equals("Mã phòng"))
-			maPhong = "";
-		if (loaiPhong.equals("Loại phòng"))
-			loaiPhong = "";
+		if (pnlPhong.getComponentAt(620, 0) != null) {
+			pnlPhong.remove(pnlPhong.getComponentAt(620, 0));
+		}
 
-		dsPhongDatNgay = datPhong_DAO.getPhongDatNgay(maPhong, loaiPhong, soLuong);
-		emptyTable();
-		addRow(dsPhongDatNgay);
-		capNhatDanhSachPhongDatNgay();
+		pnlPhong.add(scrPhongDaChon);
+		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
+		scbPhongDaChon.setBackgroundColor(Utils.secondaryColor);
+		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
+		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
+
+		JPanel pnlPhongDaChon = new JPanel();
+		pnlPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setViewportView(pnlPhongDaChon);
+		pnlPhongDaChon.setLayout(null);
+
+		if (dsPhongDaChon == null)
+			return;
+
+		int heightItem = 36;
+		int gapY = 8;
+		int top = 11;
+		int countItem = dsPhongDaChon.size();
+		for (int i = 0; i < countItem; i++) {
+			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
+		}
+
+		pnlPhongDaChon.setPreferredSize(
+				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
 	}
 
 }
