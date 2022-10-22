@@ -181,6 +181,65 @@ public class NhanVien_DAO {
 		return false;
 	}
 
+	public String taoMaNhanVien() {
+		try {
+			String sql = "SELECT TOP 1 [maNhanVien] FROM [dbo].[NhanVien] ORDER BY [maNhanVien] DESC";
+			Statement statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+
+			if (resultSet.next()) {
+				String maNhanVien = resultSet.getString(1);
+				int number = Integer.parseInt(maNhanVien.substring(2));
+				number++;
+				String maNhanVienNew = number + "";
+
+				while (maNhanVienNew.length() < 3)
+					maNhanVienNew = "0" + maNhanVienNew;
+
+				return "NV" + maNhanVienNew;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return "NV001";
+	}
+
+	public boolean isCCCDDaTonTai(String cccd) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM [dbo].[NhanVien] WHERE [cccd] = ?");
+			preparedStatement.setString(1, cccd);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			return resultSet.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public boolean isSoDienThoaiDaTonTai(String soDienThoai) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM [dbo].[NhanVien] WHERE [soDienThoai] = ?");
+			preparedStatement.setString(1, soDienThoai);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			return resultSet.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
 	/**
 	 * Get tất cả nhân viên theo trạng thái làm việc
 	 * 

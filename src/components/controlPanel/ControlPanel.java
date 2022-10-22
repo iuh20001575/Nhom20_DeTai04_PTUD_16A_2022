@@ -10,7 +10,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,9 +29,9 @@ public class ControlPanel extends JPanel implements ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Button btnFirst;
-	private JButton btnLast;
-	private JButton btnNext;
-	private JButton btnPrev;
+	private Button btnLast;
+	private Button btnNext;
+	private Button btnPrev;
 	private JLabel lblSoTrang;
 	private int soTrang;
 	private JTable tbl;
@@ -45,27 +44,49 @@ public class ControlPanel extends JPanel implements ActionListener {
 		setLayout(null);
 
 		btnFirst = new Button("");
+		btnFirst.setFocusable(false);
 		btnFirst.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnFirst.setRadius(4);
 		btnFirst.setBorderColor(Utils.secondaryColor);
 		btnFirst.setColor(Color.WHITE);
-		btnFirst.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
-		btnFirst.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
+		btnFirst.setColorOver(Utils.getOpacity(Color.BLACK, 0.1f));
+		btnFirst.setColorClick(Utils.getOpacity(Color.BLACK, 0.2f));
 		btnFirst.setIcon(new ImageIcon("Icon\\first.png"));
 		btnFirst.setBounds(0, 0, 34, 34);
 		add(btnFirst);
 
-		btnPrev = new JButton("");
+		btnPrev = new Button("");
+		btnPrev.setFocusable(false);
+		btnPrev.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnPrev.setRadius(4);
+		btnPrev.setBorderColor(Utils.secondaryColor);
+		btnPrev.setColor(Color.WHITE);
+		btnPrev.setColorOver(Utils.getOpacity(Color.BLACK, 0.1f));
+		btnPrev.setColorClick(Utils.getOpacity(Color.BLACK, 0.2f));
 		btnPrev.setIcon(new ImageIcon("Icon\\prev.png"));
 		btnPrev.setBounds(54, 0, 34, 34);
 		add(btnPrev);
 
-		btnNext = new JButton("");
+		btnNext = new Button("");
+		btnNext.setFocusable(false);
+		btnNext.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnNext.setRadius(4);
+		btnNext.setBorderColor(Utils.secondaryColor);
+		btnNext.setColor(Color.WHITE);
+		btnNext.setColorOver(Utils.getOpacity(Color.BLACK, 0.1f));
+		btnNext.setColorClick(Utils.getOpacity(Color.BLACK, 0.2f));
 		btnNext.setIcon(new ImageIcon("Icon\\next.png"));
 		btnNext.setBounds(198, 0, 34, 34);
 		add(btnNext);
 
-		btnLast = new JButton("0");
+		btnLast = new Button("");
+		btnLast.setFocusable(false);
+		btnLast.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnLast.setRadius(4);
+		btnLast.setBorderColor(Utils.secondaryColor);
+		btnLast.setColor(Color.WHITE);
+		btnLast.setColorOver(Utils.getOpacity(Color.BLACK, 0.1f));
+		btnLast.setColorClick(Utils.getOpacity(Color.BLACK, 0.2f));
 		btnLast.setIcon(new ImageIcon("Icon\\last.png"));
 		btnLast.setBounds(252, 0, 34, 34);
 		add(btnLast);

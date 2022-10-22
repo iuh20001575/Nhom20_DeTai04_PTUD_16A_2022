@@ -158,6 +158,16 @@ public class Utils {
 		return false;
 	}
 
+	public static boolean isDouble(String string) {
+		try {
+			Double.parseDouble(string);
+			return true;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return false;
+	}
+
 	/**
 	 * Kiểm tra số điện thoại có hợp lệ không? Số điện thoại bắt đầu bằng số 0 và 9
 	 * chữ số
@@ -179,5 +189,13 @@ public class Utils {
 		if (number < 10)
 			return "0" + number;
 		return number + "";
+	}
+
+	public static String getVietnameseDiacriticCharacters() {
+		return "ẮẰẲẴẶĂẤẦẨẪẬÂÁÀÃẢẠĐẾỀỂỄỆÊÉÈẺẼẸÍÌỈĨỊỐỒỔỖỘÔỚỜỞỠỢƠÓÒÕỎỌỨỪỬỮỰƯÚÙỦŨỤÝỲỶỸỴ";
+	}
+
+	public static String getVietnameseDiacriticCharactersLower() {
+		return getVietnameseDiacriticCharacters().toLowerCase();
 	}
 }

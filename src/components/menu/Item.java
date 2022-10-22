@@ -113,6 +113,12 @@ public class Item extends JButton {
 			if (isSelected()) {
 				alpha = 1;
 			}
+
+			if (alpha > 1)
+				alpha = 1;
+			else if (alpha < 0)
+				alpha = 0;
+
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 			g2.fillOval(27, y, size + 1, size + 1);
 			g2.dispose();
