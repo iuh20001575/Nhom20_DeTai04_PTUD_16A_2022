@@ -48,20 +48,23 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	private JPanel pnlContent;
 	private JPanel pnlPhongGop;
-	private List<Phong> dsPhongDaChon;
 	private JTable tblPhongCanGop;
 	private JTable tblPhongGop;
 	private DefaultTableModel tableModelPhongGop;
-	private DatPhong_DAO datPhong_DAO;
-	private GopPhong_GUI _this;
-	private ComboBox<String> cmbMaDatPhong;
-	private LoaiPhong_DAO loaiPhong_DAO;
-	private final String labelCmbMaDatPhong = "Mã đặt phòng";
 	private DefaultTableModel tableModelPhongCanGop;
 	private Button btnChuyen;
 	private Button btnChonPhong;
+	private ComboBox<String> cmbMaDatPhong;
+	
+	private DatPhong_DAO datPhong_DAO;
+	private LoaiPhong_DAO loaiPhong_DAO;
+	
+	private GopPhong_GUI _this;
+	
+	private final String labelCmbMaDatPhong = "Mã đặt phòng";
+	private List<Phong> dsPhongDaChon;
 	private List<Phong> dsPhongCanGop;
 
 	/**
@@ -78,17 +81,17 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		setType(Type.UTILITY);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 489);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		pnlContent = new JPanel();
+		pnlContent.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(pnlContent);
+		pnlContent.setLayout(null);
 		setLocationRelativeTo(null);
 		setUndecorated(true);
 
 		JPanel pnlContainer = new JPanel();
-		pnlContainer.setBackground(Utils.secondaryColor);
+		pnlContainer.setBackground(Color.WHITE);
 		pnlContainer.setBounds(0, 0, 600, 490);
-		contentPane.add(pnlContainer);
+		pnlContent.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
 		JPanel pnlHeader = new JPanel();
@@ -120,7 +123,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		pnlPhongGop.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				"Ph\u00F2ng c\u1EA7n g\u1ED9p", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		pnlPhongGop.setBackground(Utils.secondaryColor);
+		pnlPhongGop.setBackground(Color.WHITE);
 		pnlPhongGop.setBounds(16, 108, 568, 150);
 		pnlContainer.add(pnlPhongGop);
 		pnlPhongGop.setLayout(null);
@@ -186,7 +189,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		JPanel pnlPhongGopThanh = new JPanel();
 		pnlPhongGopThanh.setBorder(new TitledBorder(null, "Ph\u00F2ng g\u1ED9p th\u00E0nh", TitledBorder.LEADING,
 				TitledBorder.TOP, null, null));
-		pnlPhongGopThanh.setBackground(Utils.secondaryColor);
+		pnlPhongGopThanh.setBackground(Color.WHITE);
 		pnlPhongGopThanh.setBounds(16, 274, 568, 150);
 		pnlContainer.add(pnlPhongGopThanh);
 		pnlPhongGopThanh.setLayout(null);
@@ -195,7 +198,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		scrDanhSachPhongGop.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrDanhSachPhongGop.setBackground(Utils.secondaryColor);
 		scrDanhSachPhongGop.getViewport().setBackground(Color.WHITE);
-		scrDanhSachPhongGop.setBounds(0, 17, 568, 130);
+		scrDanhSachPhongGop.setBounds(3, 17, 561, 130);
 		pnlPhongGopThanh.add(scrDanhSachPhongGop);
 
 		ScrollBarCustom scbDanhSachPhongGop = new ScrollBarCustom();
@@ -237,9 +240,6 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		tblPhongGop.setModel(tableModelPhongGop);
 		tblPhongGop.setFocusable(false);
 		tblPhongGop.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//		Cam
-//		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
-//		Xanh
 		tblPhongGop.getTableHeader().setBackground(Utils.primaryColor);
 		tblPhongGop.getTableHeader().setForeground(Color.WHITE);
 		tblPhongGop.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -252,27 +252,27 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		tblPhongGop.getColumnModel().getColumn(2).setCellRenderer(dtcr);
 
 		JPanel pnlFooter = new JPanel();
-		pnlFooter.setBackground(Utils.secondaryColor);
+		pnlFooter.setBackground(Color.WHITE);
 		pnlFooter.setBounds(16, 440, 568, 34);
 		pnlContainer.add(pnlFooter);
 		pnlFooter.setLayout(null);
 
 		Button btnQuayLai = new Button("Quay lại");
-		btnQuayLai.setBorderColor(Utils.secondaryColor);
+		btnQuayLai.setBorderColor(Color.white);
 		btnQuayLai.setRadius(4);
 		btnQuayLai.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnQuayLai.setFocusable(false);
 		btnQuayLai.setForeground(Color.BLACK);
-		btnQuayLai.setColor(Color.WHITE);
-		btnQuayLai.setColorOver(Utils.getOpacity(Color.BLACK, 0.2f));
-		btnQuayLai.setColorClick(Utils.getOpacity(Color.BLACK, 0.3f));
+		btnQuayLai.setColor(Utils.secondaryColor);
+		btnQuayLai.setColorOver(Utils.getOpacity(Utils.secondaryColor, 0.8f));
+		btnQuayLai.setColorClick(Utils.getOpacity(Utils.secondaryColor, 0.6f));
 		btnQuayLai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		btnQuayLai.setBounds(0, 0, 127, 34);
 		pnlFooter.add(btnQuayLai);
 
 		btnChuyen = new Button("Gộp phòng");
 		btnChuyen.setEnabled(false);
-		btnChuyen.setBorderColor(Utils.secondaryColor);
+		btnChuyen.setBorderColor(Color.WHITE);
 		btnChuyen.setRadius(4);
 		btnChuyen.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnChuyen.setFocusable(false);
@@ -291,7 +291,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		btnChonPhong.setColor(Utils.primaryColor);
 		btnChonPhong.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnChonPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
-		btnChonPhong.setBorderColor(Utils.secondaryColor);
+		btnChonPhong.setBorderColor(Color.WHITE);
 		btnChonPhong.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
 		btnChonPhong.setBounds(374, 57, 36, 36);
 		btnChonPhong.setEnabled(false);
@@ -382,7 +382,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		JScrollPane scrPhongDaChon = new JScrollPane();
 		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrPhongDaChon.setBackground(Utils.secondaryColor);
+		scrPhongDaChon.setBackground(Color.WHITE);
 		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
 				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		scrPhongDaChon.setBounds(416, 17, 150, 130);
@@ -398,7 +398,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
 
 		JPanel pnlPhongDaChon = new JPanel();
-		pnlPhongDaChon.setBackground(Utils.secondaryColor);
+		pnlPhongDaChon.setBackground(Color.WHITE);
 		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 		pnlPhongDaChon.setLayout(null);
 
