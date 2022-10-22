@@ -37,7 +37,6 @@ import javax.swing.table.TableCellRenderer;
 import components.button.Button;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
-import connectDB.ConnectDB;
 import dao.ChiTietDatPhong_DAO;
 import dao.DatPhong_DAO;
 import dao.KhachHang_DAO;
@@ -58,7 +57,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	private JPanel pnlContent;
 	private TextField txtTienNhan;
 	private TextField txtTienThua;
 	private JTable tbl;
@@ -83,7 +82,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	private int tongThoiGian;
 	private double tongTien;
 	private JLabel lblTienPhong;
-	private JLabel lblTienThanhTien;
+	private JLabel lblTienThanhToan;
 	private Button btnThanhToan;
 
 	/**
@@ -92,12 +91,6 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	 * @param quanLyDatPhongGUI
 	 */
 	public ThanhToan_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI) {
-		try {
-			new ConnectDB().connect();
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-
 		_this = this;
 		datPhong_DAO = new DatPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
@@ -111,17 +104,18 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		setIconImage(Toolkit.getDefaultToolkit().getImage("Icon\\room.png"));
 		setTitle("Thanh toán");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(0, 0, 640, 550);
+		setBounds(0, 0, 626, 513);
 		setLocationRelativeTo(null);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setUndecorated(true);
+		pnlContent = new JPanel();
+		pnlContent.setBorder(new EmptyBorder(0, 0, 0, 0));
+		setContentPane(pnlContent);
+		pnlContent.setLayout(null);
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Color.WHITE);
 		pnlContainer.setBounds(0, 0, 626, 513);
-		contentPane.add(pnlContainer);
+		pnlContent.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
 		JPanel pnlHeader = new JPanel();
@@ -270,15 +264,10 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		pnlActions.setLayout(null);
 
 		Button btnQuayLai = new Button("Quay lại");
-		btnQuayLai.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				quanLyDatPhongGUI.closeJFrameSub();
-			}
-		});
 		btnQuayLai.setFocusable(false);
 		btnQuayLai.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnQuayLai.setRadius(4);
+		btnQuayLai.setForeground(Color.BLACK);
 		btnQuayLai.setColor(Utils.secondaryColor);
 		btnQuayLai.setColorOver(Utils.getOpacity(Utils.secondaryColor, 0.8f));
 		btnQuayLai.setColorClick(Utils.getOpacity(Utils.secondaryColor, 0.6f));
@@ -287,19 +276,6 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		pnlActions.add(btnQuayLai);
 
 		btnThanhToan = new Button("Thanh toán");
-		btnThanhToan.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (!btnThanhToan.isEnabled())
-					return;
-				boolean res = datPhong_DAO.thanhToanDatPhong(datPhong.getMaDatPhong(), timeNow);
-
-				if (res) {
-					quanLyDatPhongGUI.capNhatTrangThaiPhong();
-					quanLyDatPhongGUI.closeJFrameSub();
-				}
-			}
-		});
 		btnThanhToan.setEnabled(false);
 		btnThanhToan.setFocusable(false);
 		btnThanhToan.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -332,37 +308,37 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		pnlFooterRow1.setBounds(0, 0, 606, 24);
 		pnlFooter.add(pnlFooterRow1);
 
-		JPanel pnlMaDatPhong_1 = new JPanel();
-		pnlMaDatPhong_1.setLayout(null);
-		pnlMaDatPhong_1.setBackground(Color.WHITE);
-		pnlMaDatPhong_1.setBounds(0, 0, 293, 24);
-		pnlFooterRow1.add(pnlMaDatPhong_1);
+		JPanel pnlTienDichVu = new JPanel();
+		pnlTienDichVu.setLayout(null);
+		pnlTienDichVu.setBackground(Color.WHITE);
+		pnlTienDichVu.setBounds(0, 0, 293, 24);
+		pnlFooterRow1.add(pnlTienDichVu);
 
 		JLabel lblLabelTienDichVu = new JLabel("Tiền dịch vụ");
 		lblLabelTienDichVu.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblLabelTienDichVu.setBounds(0, 0, 105, 24);
-		pnlMaDatPhong_1.add(lblLabelTienDichVu);
+		pnlTienDichVu.add(lblLabelTienDichVu);
 
 		JLabel lblTienDichVu = new JLabel("");
 		lblTienDichVu.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblTienDichVu.setBounds(105, 0, 190, 24);
-		pnlMaDatPhong_1.add(lblTienDichVu);
+		pnlTienDichVu.add(lblTienDichVu);
 
-		JPanel pnlGioNhanPhong_2 = new JPanel();
-		pnlGioNhanPhong_2.setLayout(null);
-		pnlGioNhanPhong_2.setBackground(Color.WHITE);
-		pnlGioNhanPhong_2.setBounds(313, 0, 293, 24);
-		pnlFooterRow1.add(pnlGioNhanPhong_2);
+		JPanel pnlTienPhong = new JPanel();
+		pnlTienPhong.setLayout(null);
+		pnlTienPhong.setBackground(Color.WHITE);
+		pnlTienPhong.setBounds(313, 0, 293, 24);
+		pnlFooterRow1.add(pnlTienPhong);
 
 		JLabel lblLabelTienPhong = new JLabel("Tiền phòng");
 		lblLabelTienPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblLabelTienPhong.setBounds(0, 0, 115, 24);
-		pnlGioNhanPhong_2.add(lblLabelTienPhong);
+		pnlTienPhong.add(lblLabelTienPhong);
 
 		lblTienPhong = new JLabel("");
 		lblTienPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblTienPhong.setBounds(125, 0, 170, 24);
-		pnlGioNhanPhong_2.add(lblTienPhong);
+		pnlTienPhong.add(lblTienPhong);
 
 		JPanel pnlFooterRow2 = new JPanel();
 		pnlFooterRow2.setLayout(null);
@@ -370,45 +346,45 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		pnlFooterRow2.setBounds(0, 32, 606, 24);
 		pnlFooter.add(pnlFooterRow2);
 
-		JPanel pnlMaDatPhong_1_1 = new JPanel();
-		pnlMaDatPhong_1_1.setLayout(null);
-		pnlMaDatPhong_1_1.setBackground(Color.WHITE);
-		pnlMaDatPhong_1_1.setBounds(0, 0, 293, 24);
-		pnlFooterRow2.add(pnlMaDatPhong_1_1);
+		JPanel pnlThueVAT = new JPanel();
+		pnlThueVAT.setLayout(null);
+		pnlThueVAT.setBackground(Color.WHITE);
+		pnlThueVAT.setBounds(0, 0, 293, 24);
+		pnlFooterRow2.add(pnlThueVAT);
 
 		JLabel lblLabelThueVAT = new JLabel("Thuế VAT");
 		lblLabelThueVAT.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblLabelThueVAT.setBounds(0, 0, 105, 24);
-		pnlMaDatPhong_1_1.add(lblLabelThueVAT);
+		pnlThueVAT.add(lblLabelThueVAT);
 
 		JLabel lblThueVAT = new JLabel("10%");
 		lblThueVAT.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblThueVAT.setBounds(105, 0, 190, 24);
-		pnlMaDatPhong_1_1.add(lblThueVAT);
+		pnlThueVAT.add(lblThueVAT);
 
-		JPanel pnlGioNhanPhong_2_1 = new JPanel();
-		pnlGioNhanPhong_2_1.setLayout(null);
-		pnlGioNhanPhong_2_1.setBackground(Color.WHITE);
-		pnlGioNhanPhong_2_1.setBounds(313, 0, 293, 24);
-		pnlFooterRow2.add(pnlGioNhanPhong_2_1);
+		JPanel pnlTienThanhToan = new JPanel();
+		pnlTienThanhToan.setLayout(null);
+		pnlTienThanhToan.setBackground(Color.WHITE);
+		pnlTienThanhToan.setBounds(313, 0, 293, 24);
+		pnlFooterRow2.add(pnlTienThanhToan);
 
-		JLabel lblLabelTienThanhTien = new JLabel("Tiền thanh toán");
-		lblLabelTienThanhTien.setForeground(Color.RED);
-		lblLabelTienThanhTien.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblLabelTienThanhTien.setBounds(0, 0, 115, 24);
-		pnlGioNhanPhong_2_1.add(lblLabelTienThanhTien);
+		JLabel lblLabelTienThanhToan = new JLabel("Tiền thanh toán");
+		lblLabelTienThanhToan.setForeground(Color.RED);
+		lblLabelTienThanhToan.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblLabelTienThanhToan.setBounds(0, 0, 115, 24);
+		pnlTienThanhToan.add(lblLabelTienThanhToan);
 
-		lblTienThanhTien = new JLabel("");
-		lblTienThanhTien.setForeground(Color.RED);
-		lblTienThanhTien.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblTienThanhTien.setBounds(125, 0, 170, 24);
-		pnlGioNhanPhong_2_1.add(lblTienThanhTien);
+		lblTienThanhToan = new JLabel("");
+		lblTienThanhToan.setForeground(Color.RED);
+		lblTienThanhToan.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblTienThanhToan.setBounds(125, 0, 170, 24);
+		pnlTienThanhToan.add(lblTienThanhToan);
 
-		JPanel pnlRow6 = new JPanel();
-		pnlRow6.setBackground(Color.WHITE);
-		pnlRow6.setBounds(0, 64, 606, 55);
-		pnlFooter.add(pnlRow6);
-		pnlRow6.setLayout(null);
+		JPanel pnlFooterRow3 = new JPanel();
+		pnlFooterRow3.setBackground(Color.WHITE);
+		pnlFooterRow3.setBounds(0, 64, 606, 55);
+		pnlFooter.add(pnlFooterRow3);
+		pnlFooterRow3.setLayout(null);
 
 		txtTienNhan = new TextField() {
 			/**
@@ -438,23 +414,8 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		txtTienNhan.setLabelText("Tiền nhận");
 		txtTienNhan.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTienNhan.setBounds(0, 0, 293, 55);
-		pnlRow6.add(txtTienNhan);
+		pnlFooterRow3.add(txtTienNhan);
 		txtTienNhan.setColumns(10);
-		txtTienNhan.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if ((e.getKeyChar() >= '0' && e.getKeyChar() <= '9') || e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
-					txtTienNhan.setEditable(true);
-				} else {
-					txtTienNhan.setEditable(false);
-				}
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				xuLyTienNhanHopLe();
-			}
-		});
 
 		txtTienThua = new TextField() {
 			/**
@@ -474,7 +435,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		txtTienThua.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTienThua.setColumns(10);
 		txtTienThua.setBounds(313, 0, 293, 55);
-		pnlRow6.add(txtTienThua);
+		pnlFooterRow3.add(txtTienThua);
 
 //		Table danh sách
 		JScrollPane scr = new JScrollPane();
@@ -482,10 +443,11 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		scr.setBounds(0, 98, 606, 156);
 		scr.setBackground(Utils.primaryColor);
 		scr.getViewport().setBackground(Color.WHITE);
-		ScrollBarCustom scp = new ScrollBarCustom();
+
+		ScrollBarCustom scb = new ScrollBarCustom();
 //		Set color scrollbar thumb
-		scp.setScrollbarColor(new Color(203, 203, 203));
-		scr.setVerticalScrollBar(scp);
+		scb.setScrollbarColor(new Color(203, 203, 203));
+		scr.setVerticalScrollBar(scb);
 		pnlBody.add(scr);
 		tbl = new JTable() {
 			/**
@@ -526,9 +488,6 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-//		Cam
-//		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
-//		Xanh
 		tbl.getTableHeader().setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -549,6 +508,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		tbl.getColumnModel().getColumn(4).setCellRenderer(dtcr);
 		scr.setViewportView(tbl);
 
+//		Sự kiện window
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
@@ -562,6 +522,46 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 				cmbMaDatPhong.addItemListener(_this);
 				cmbSoDienThoai.addItemListener(_this);
+			}
+		});
+
+//		Sự kiện txtTienNhan
+		txtTienNhan.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if ((e.getKeyChar() >= '0' && e.getKeyChar() <= '9') || e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+					txtTienNhan.setEditable(true);
+				} else {
+					txtTienNhan.setEditable(false);
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				xuLyTienNhanHopLe();
+			}
+		});
+
+//		Sự kiện nút quay lại
+		btnQuayLai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				quanLyDatPhongGUI.closeJFrameSub();
+			}
+		});
+
+//		Sự kiện nút thanh toán
+		btnThanhToan.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!btnThanhToan.isEnabled())
+					return;
+				boolean res = datPhong_DAO.thanhToanDatPhong(datPhong.getMaDatPhong(), timeNow);
+
+				if (res) {
+					quanLyDatPhongGUI.capNhatTrangThaiPhong();
+					quanLyDatPhongGUI.closeJFrameSub();
+				}
 			}
 		});
 	}
@@ -685,14 +685,14 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			lblTongThoiLuong.setText(((gio > 0 ? gio + " giờ" : "") + " " + (phut > 0 ? phut + " phút" : "")).trim());
 			lblTienPhong.setText(Utils.formatTienTe(tongTien));
 			tienThanhToan *= 1.1;
-			lblTienThanhTien.setText(Utils.formatTienTe(tienThanhToan));
+			lblTienThanhToan.setText(Utils.formatTienTe(tienThanhToan));
 		} else {
 			lblTenKhach.setText("");
 			lblTenNhanVien.setText("");
 			lblGioNhanPhong.setText("");
 			lblTongThoiLuong.setText("");
 			lblTienPhong.setText("");
-			lblTienThanhTien.setText("");
+			lblTienThanhToan.setText("");
 			dsChiTietDatPhong = null;
 			btnThanhToan.setEnabled(false);
 			emptyTable();

@@ -61,6 +61,8 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	private final String labelCmbMaDatPhong = "Mã đặt phòng";
 	private DefaultTableModel tableModelPhongCanGop;
 	private Button btnChuyen;
+	private Button btnChonPhong;
+	private List<Phong> dsPhongCanGop;
 
 	/**
 	 * Create the frame.
@@ -129,6 +131,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		scrDanhSachPhong.getViewport().setBackground(Color.WHITE);
 		scrDanhSachPhong.setBounds(2, 17, 366, 130);
 		pnlPhongGop.add(scrDanhSachPhong);
+
 		ScrollBarCustom scbDanhSachPhong = new ScrollBarCustom();
 //		Set color scrollbar thumb
 		scbDanhSachPhong.setScrollbarColor(new Color(203, 203, 203));
@@ -167,9 +170,6 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		tblPhongCanGop.setModel(tableModelPhongCanGop);
 		tblPhongCanGop.setFocusable(false);
 		tblPhongCanGop.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//		Cam
-//		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
-//		Xanh
 		tblPhongCanGop.getTableHeader().setBackground(Utils.primaryColor);
 		tblPhongCanGop.getTableHeader().setForeground(Color.WHITE);
 		tblPhongCanGop.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -197,6 +197,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		scrDanhSachPhongGop.getViewport().setBackground(Color.WHITE);
 		scrDanhSachPhongGop.setBounds(0, 17, 568, 130);
 		pnlPhongGopThanh.add(scrDanhSachPhongGop);
+
 		ScrollBarCustom scbDanhSachPhongGop = new ScrollBarCustom();
 //		Set color scrollbar thumb
 		scbDanhSachPhongGop.setScrollbarColor(new Color(203, 203, 203));
@@ -283,7 +284,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		btnChuyen.setBounds(441, 0, 127, 34);
 		pnlFooter.add(btnChuyen);
 
-		Button btnChonPhong = new Button("");
+		btnChonPhong = new Button("");
 		btnChonPhong.setFocusable(false);
 		btnChonPhong.setRadius(8);
 		btnChonPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -291,6 +292,35 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		btnChonPhong.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnChonPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
 		btnChonPhong.setBorderColor(Utils.secondaryColor);
+		btnChonPhong.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
+		btnChonPhong.setBounds(374, 57, 36, 36);
+		btnChonPhong.setEnabled(false);
+		pnlPhongGop.add(btnChonPhong);
+
+		showDanhSachPhongDaChon();
+
+//		Lắng nghe sự kiện window
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				List<String> dsMaDatPhongDangThue = datPhong_DAO.getAllMaDatPhongDangThue();
+
+				cmbMaDatPhong.removeAllItems();
+				cmbMaDatPhong.addItem(labelCmbMaDatPhong);
+				dsMaDatPhongDangThue.forEach(string -> cmbMaDatPhong.addItem(string));
+
+				cmbMaDatPhong.addItemListener(_this);
+			}
+		});
+
+//		Sự kiện JTable phòng cần gộp
+		tblPhongCanGop.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				btnChonPhong.setEnabled(true);
+			};
+		});
+
+//		Sự kiện nút chọn phòng
 		btnChonPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -306,24 +336,11 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 					showDanhSachPhongDaChon();
 					showDanhSachPhongGop();
 					setEnabledBtnChuyenPhong();
+					capNhatDanhSachPhongDatTruoc();
+
+					if (tblPhongGop.getSelectedRow() != -1)
+						btnChuyen.setEnabled(true);
 				}
-			}
-		});
-		btnChonPhong.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
-		btnChonPhong.setBounds(374, 57, 36, 36);
-		pnlPhongGop.add(btnChonPhong);
-
-		showDanhSachPhongDaChon();
-
-//		Lắng nghe sự kiện window
-		this.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowActivated(WindowEvent e) {
-				List<String> dsMaDatPhongDangThue = datPhong_DAO.getAllMaDatPhongDangThue();
-
-				dsMaDatPhongDangThue.forEach(string -> cmbMaDatPhong.addItem(string));
-
-				cmbMaDatPhong.addItemListener(_this);
 			}
 		});
 
@@ -388,7 +405,6 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		if (dsPhongDaChon == null)
 			return;
 
-//		
 		int heightItem = 36;
 		int gapY = 8;
 		int top = 4;
@@ -430,6 +446,10 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 				showDanhSachPhongGop();
 				showDanhSachPhongDaChon();
 				setEnabledBtnChuyenPhong();
+				capNhatDanhSachPhongDatTruoc();
+
+				if (dsPhongDaChon == null || dsPhongDaChon.size() <= 0)
+					btnChuyen.setEnabled(false);
 			}
 		});
 
@@ -472,14 +492,13 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 			return;
 
 		String maDatPhong = (String) cmbMaDatPhong.getSelectedItem();
+		dsPhongDaChon = null;
+		showDanhSachPhongDaChon();
+		emptyTable(tblPhongGop, tableModelPhongGop);
+		emptyTable(tblPhongCanGop, tableModelPhongCanGop);
 
-		if (maDatPhong.equals(labelCmbMaDatPhong)) {
-			dsPhongDaChon = null;
-			showDanhSachPhongDaChon();
-			emptyTable(tblPhongGop, tableModelPhongGop);
-			emptyTable(tblPhongCanGop, tableModelPhongCanGop);
-		} else {
-			List<Phong> dsPhongCanGop = datPhong_DAO.getPhongDangThue(maDatPhong);
+		if (!maDatPhong.equals(labelCmbMaDatPhong)) {
+			dsPhongCanGop = datPhong_DAO.getPhongDangThue(maDatPhong);
 			List<LoaiPhong> dsLoaiPhong = loaiPhong_DAO.getAllLoaiPhong();
 
 			dsPhongCanGop.forEach(phong -> {
@@ -496,6 +515,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		}
 
 		setEnabledBtnChuyenPhong();
+		btnChonPhong.setEnabled(false);
 	}
 
 	/**
@@ -550,5 +570,18 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	private void emptyTable(JTable jTable, DefaultTableModel tableModel) {
 		while (jTable.getRowCount() > 0)
 			tableModel.removeRow(0);
+	}
+
+	private void capNhatDanhSachPhongDatTruoc() {
+		if (dsPhongCanGop == null || dsPhongDaChon == null)
+			return;
+
+		emptyTable(tblPhongCanGop, tableModelPhongCanGop);
+		btnChonPhong.setEnabled(false);
+
+		for (Phong phong : dsPhongCanGop) {
+			if (!dsPhongDaChon.contains(phong))
+				addRowTableCanGop(phong);
+		}
 	}
 }
