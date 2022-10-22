@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import components.button.Button;
@@ -35,23 +36,16 @@ import utils.Utils;
 public class Main extends JFrame {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private Menu menu;
-	private Button btnBack;
-	private Main _this;
-	private DrawerController drawer;
-	private JLabel lblTitle;
-	private JPanel pnlBody;
-	private NhanVien_DAO nhanVien_DAO;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					Main frame = new Main();
@@ -62,6 +56,16 @@ public class Main extends JFrame {
 			}
 		});
 	}
+
+	private Main _this;
+	private Button btnBack;
+	private JPanel pnlContent;
+	private DrawerController drawer;
+	private JLabel lblTitle;
+	private Menu menu;
+	private NhanVien_DAO nhanVien_DAO;
+
+	private JPanel pnlBody;
 
 	/**
 	 * Create the frame.
@@ -79,27 +83,28 @@ public class Main extends JFrame {
 		JDialogCustom jDialogCustom = new JDialogCustom(_this);
 
 		jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				System.exit(1);
-			};
+			}
 		});
 
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(0, 0, 1100, 610);
 		setLocationRelativeTo(null);
 
-		contentPane = new JPanel();
-		contentPane.setForeground(Color.GRAY);
-		contentPane.setBackground(Utils.secondaryColor);
-		setContentPane(contentPane);
-		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-		contentPane.setLayout(null);
+		pnlContent = new JPanel();
+		pnlContent.setForeground(Color.GRAY);
+		pnlContent.setBackground(Utils.secondaryColor);
+		setContentPane(pnlContent);
+		pnlContent.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnlContent.setLayout(null);
 
 		JPanel pnlHeader = new JPanel();
 		pnlHeader.setBackground(Utils.primaryColor);
 		pnlHeader.setBounds(0, 0, 1086, 65);
-		contentPane.add(pnlHeader);
+		pnlContent.add(pnlHeader);
 		pnlHeader.setLayout(null);
 
 		Button btnMenu = new Button("|||");
@@ -136,7 +141,7 @@ public class Main extends JFrame {
 		pnlBody = new JPanel();
 		pnlBody.setLayout(null);
 		pnlBody.setBounds(0, 65, 1086, 508);
-		contentPane.add(pnlBody);
+		pnlContent.add(pnlBody);
 
 //		Code menu
 		menu = new Menu();
@@ -145,6 +150,7 @@ public class Main extends JFrame {
 
 //		Show/Hide menu
 		btnMenu.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				drawer.show();
 			}
@@ -185,6 +191,44 @@ public class Main extends JFrame {
 				utils.NhanVien.setNhanVien(nhanVien);
 			}
 		});
+	}
+
+	/**
+	 * Thay đổi phần container UI
+	 *
+	 * @param pnl          panel cần thay đổi
+	 * @param title        title của trang
+	 * @param index        index menu
+	 * @param indexSubmenu index submenu
+	 */
+	public void addPnlBody(JPanel pnl, String title, int index, int indexSubmenu) {
+		PanelUI panelUI = new PanelUI(pnl, title, index, indexSubmenu);
+		menu.setSelectedMenu(index, indexSubmenu);
+		addPnlBody(panelUI);
+		StackPanel.push(panelUI);
+	}
+
+	/**
+	 * Thay đổi phần container UI
+	 *
+	 * @param panelUI panel UI
+	 */
+	public void addPnlBody(PanelUI panelUI) {
+		pnlBody.removeAll();
+		pnlBody.add(panelUI.getjPanel());
+		pnlBody.repaint();
+		pnlBody.revalidate();
+		setTitle(panelUI.getTitle());
+	}
+
+	public Menu getMenu() {
+		return menu;
+	}
+
+	@Override
+	public void setTitle(String title) {
+		super.setTitle(title);
+		lblTitle.setText(title.toUpperCase());
 	}
 
 	/**
@@ -230,43 +274,5 @@ public class Main extends JFrame {
 				addPnlBody(pnl, title, index, indexSubMenu);
 			}
 		});
-	}
-
-	/**
-	 * Thay đổi phần container UI
-	 * 
-	 * @param panelUI panel UI
-	 */
-	public void addPnlBody(PanelUI panelUI) {
-		pnlBody.removeAll();
-		pnlBody.add(panelUI.getjPanel());
-		pnlBody.repaint();
-		pnlBody.revalidate();
-		setTitle(panelUI.getTitle());
-	}
-
-	/**
-	 * Thay đổi phần container UI
-	 * 
-	 * @param pnl          panel cần thay đổi
-	 * @param title        title của trang
-	 * @param index        index menu
-	 * @param indexSubmenu index submenu
-	 */
-	public void addPnlBody(JPanel pnl, String title, int index, int indexSubmenu) {
-		PanelUI panelUI = new PanelUI(pnl, title, index, indexSubmenu);
-		menu.setSelectedMenu(index, indexSubmenu);
-		addPnlBody(panelUI);
-		StackPanel.push(panelUI);
-	}
-
-	public Menu getMenu() {
-		return menu;
-	}
-
-	@Override
-	public void setTitle(String title) {
-		super.setTitle(title);
-		lblTitle.setText(title.toUpperCase());
 	}
 }
