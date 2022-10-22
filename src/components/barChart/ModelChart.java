@@ -2,20 +2,11 @@ package components.barChart;
 
 public class ModelChart {
 
-    public String getLabel() {
-        return label;
-    }
+    private String label;
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
+    private double values[];
 
-    public double[] getValues() {
-        return values;
-    }
-
-    public void setValues(double[] values) {
-        this.values = values;
+    public ModelChart() {
     }
 
     public ModelChart(String label, double[] values) {
@@ -23,11 +14,9 @@ public class ModelChart {
         this.values = values;
     }
 
-    public ModelChart() {
+    public String getLabel() {
+        return label;
     }
-
-    private String label;
-    private double values[];
 
     public double getMaxValues() {
         double max = 0;
@@ -37,5 +26,16 @@ public class ModelChart {
             }
         }
         return max;
+    }
+
+    public double[] getValues() {
+        return values;
+    }
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setValues(double[] values) {
+        this.values = values;
     }
 }

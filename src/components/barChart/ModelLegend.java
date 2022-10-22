@@ -4,20 +4,11 @@ import java.awt.Color;
 
 public class ModelLegend {
 
-    public String getName() {
-        return name;
-    }
+    private Color color;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    private String name;
 
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
+    public ModelLegend() {
     }
 
     public ModelLegend(String name, Color color) {
@@ -25,9 +16,18 @@ public class ModelLegend {
         this.color = color;
     }
 
-    public ModelLegend() {
+    public Color getColor() {
+        return color;
     }
 
-    private String name;
-    private Color color;
+    public String getName() {
+        return name;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
 }

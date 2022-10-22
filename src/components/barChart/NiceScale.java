@@ -2,13 +2,13 @@ package components.barChart;
 
 public class NiceScale {
 
-    private double min;
     private double max;
     private int maxTicks = 10;
-    private double tickSpacing;
-    private double range;
-    private double niceMin;
+    private double min;
     private double niceMax;
+    private double niceMin;
+    private double range;
+    private double tickSpacing;
 
     public NiceScale(final double MIN, final double MAX) {
         min = MIN;
@@ -23,10 +23,34 @@ public class NiceScale {
         niceMax = Math.ceil(max / tickSpacing) * tickSpacing;
     }
 
+    public double getMax() {
+        return max;
+    }
+
+    public int getMaxTicks() {
+        return maxTicks;
+    }
+
+    public double getMin() {
+        return min;
+    }
+
+    public double getNiceMax() {
+        return niceMax;
+    }
+
+    public double getNiceMin() {
+        return niceMin;
+    }
+
+    public double getTickSpacing() {
+        return tickSpacing;
+    }
+
     private double niceNum(final double RANGE, final boolean ROUND) {
-        double exponent;     // exponent of RANGE
-        double fraction;     // fractional part of RANGE
-        double niceFraction; // nice, rounded fraction
+        double exponent;
+        double fraction;
+        double niceFraction;
 
         exponent = Math.floor(Math.log10(RANGE));
         fraction = RANGE / Math.pow(10, exponent);
@@ -55,9 +79,8 @@ public class NiceScale {
         return niceFraction * Math.pow(10, exponent);
     }
 
-    public void setMinMax(final double MIN, final double MAX) {
-        min = MIN;
-        max = MAX;
+    public void setMax(double max) {
+        this.max = max;
         calculate();
     }
 
@@ -66,37 +89,14 @@ public class NiceScale {
         calculate();
     }
 
-    public double getTickSpacing() {
-        return tickSpacing;
-    }
-
-    public double getNiceMin() {
-        return niceMin;
-    }
-
-    public double getNiceMax() {
-        return niceMax;
-    }
-
-    public int getMaxTicks() {
-        return maxTicks;
-    }
-
-    public double getMin() {
-        return min;
-    }
-
     public void setMin(double min) {
         this.min = min;
         calculate();
     }
 
-    public double getMax() {
-        return max;
-    }
-
-    public void setMax(double max) {
-        this.max = max;
+    public void setMinMax(final double MIN, final double MAX) {
+        min = MIN;
+        max = MAX;
         calculate();
     }
 

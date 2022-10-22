@@ -12,17 +12,17 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
 public class Chart extends javax.swing.JPanel {
 
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private List<ModelLegend> legends = new ArrayList<>();
+	private float animate;
+    private final Animator animator;
+    private BlankPlotChart blankPlotChart;
+    private List<ModelLegend> legends = new ArrayList<>();
     private List<ModelChart> model = new ArrayList<>();
+    private javax.swing.JPanel pnlLegend;
     private final int seriesSize = 24;
     private final int seriesSpace = 6;
-    private final Animator animator;
-    private float animate;
-    private BlankPlotChart blankPlotChart;
-    private javax.swing.JPanel panelLegend;
 
     public Chart() {
         initComponents();
@@ -58,14 +58,6 @@ public class Chart extends javax.swing.JPanel {
         });
     }
 
-    public void addLegend(String name, Color color) {
-        ModelLegend data = new ModelLegend(name, color);
-        legends.add(data);
-        panelLegend.add(new LegendItem(data));
-        panelLegend.repaint();
-        panelLegend.revalidate();
-    }
-
     public void addData(ModelChart data) {
         model.add(data);
         blankPlotChart.setLabelCount(model.size());
@@ -75,6 +67,14 @@ public class Chart extends javax.swing.JPanel {
         }
     }
 
+    public void addLegend(String name, Color color) {
+        ModelLegend data = new ModelLegend(name, color);
+        legends.add(data);
+        pnlLegend.add(new LegendItem(data));
+        pnlLegend.repaint();
+        pnlLegend.revalidate();
+    }
+
     public void clear() {
         animate = 0;
         blankPlotChart.setLabelCount(0);
@@ -82,20 +82,14 @@ public class Chart extends javax.swing.JPanel {
         repaint();
     }
 
-    public void start() {
-        if (!animator.isRunning()) {
-            animator.start();
-        }
-    }
-
     private void initComponents() {
         blankPlotChart = new BlankPlotChart();
-        panelLegend = new javax.swing.JPanel();
+        pnlLegend = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        panelLegend.setOpaque(false);
-        panelLegend.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
+        pnlLegend.setOpaque(false);
+        pnlLegend.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -104,7 +98,7 @@ public class Chart extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelLegend, javax.swing.GroupLayout.DEFAULT_SIZE, 573, Short.MAX_VALUE)
+                    .addComponent(pnlLegend, javax.swing.GroupLayout.DEFAULT_SIZE, 573, Short.MAX_VALUE)
                     .addComponent(blankPlotChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -114,8 +108,14 @@ public class Chart extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(blankPlotChart, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addComponent(panelLegend, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlLegend, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
+    }
+
+    public void start() {
+        if (!animator.isRunning()) {
+            animator.start();
+        }
     }
 }
