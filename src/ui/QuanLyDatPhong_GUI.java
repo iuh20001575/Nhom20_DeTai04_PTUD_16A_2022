@@ -408,7 +408,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 //		lblDatPhongF.setBounds(52, 35, 112, 22);
 
 		JLabel lblIconDatPhong = new JLabel("");
-		lblIconDatPhong.setIcon(new ImageIcon("Icon\\add.png"));
+		lblIconDatPhong.setIcon(new ImageIcon("Icon\\smartphone.png"));
 		lblIconDatPhong.setBounds(10, 18, 32, 32);
 		pnlDatPhong.add(lblIconDatPhong);
 
@@ -442,7 +442,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		pnlDatPhongTruoc.add(lblDatPhongTruocF);
 
 		JLabel lblIconDatPhongTruoc = new JLabel("");
-		lblIconDatPhongTruoc.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
+		lblIconDatPhongTruoc.setIcon(new ImageIcon("Icon\\online-reservation.png"));
 		lblIconDatPhongTruoc.setBounds(10, 18, 32, 32);
 		pnlDatPhongTruoc.add(lblIconDatPhongTruoc);
 
@@ -476,7 +476,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		pnlChuyenPhong.add(lblChuyenPhongF);
 
 		JLabel lblIconChuyenPhong = new JLabel("");
-		lblIconChuyenPhong.setIcon(new ImageIcon("D:\\83a767c50706c0589917.jpg"));
+		lblIconChuyenPhong.setIcon(new ImageIcon("Icon\\exchange.png"));
 		lblIconChuyenPhong.setBounds(10, 18, 32, 32);
 		pnlChuyenPhong.add(lblIconChuyenPhong);
 
@@ -510,7 +510,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		pnlGopPhong.add(lblGopPhongF);
 
 		JLabel lblIconGopPhong = new JLabel("");
-		lblIconGopPhong.setIcon(new ImageIcon("Icon\\merge.png"));
+		lblIconGopPhong.setIcon(new ImageIcon("Icon\\collapse.png"));
 		lblIconGopPhong.setBounds(10, 18, 32, 32);
 		pnlGopPhong.add(lblIconGopPhong);
 
