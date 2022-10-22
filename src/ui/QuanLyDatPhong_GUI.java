@@ -41,45 +41,45 @@ import utils.Utils;
 public class QuanLyDatPhong_GUI extends JPanel {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
+	private QuanLyDatPhong_GUI _this;
+	private Thread clock;
+	private DatPhong_DAO datPhong_DAO;
+	private List<Phong> dsPhong;
 	private final int gapX = 21;
 	private final int gapY = 30;
-	private final int widthPhong = 131;
-	private final int heightPhong = 130;
-	private final int numOfRow = 6;
-	private int soPhongTrong = 0;
-	private int soPhongCho = 0;
-	private int soPhongDangSuDung = 0;
-	private JLabel lblTime;
-	private JLabel lblThu;
-	private JLabel lblDate;
-	private Phong_DAO phong_DAO;
-	private JPanel pnlDanhSachPhong;
-	private JScrollPane scrDanhSachPhong;
-	private JLabel lblSoPhongDSD;
-	private JLabel lblSoLuongPhongCho;
-	private JLabel lblSoPhongTrong;
-	private DatPhong_DAO datPhong_DAO;
-	private JDialogCustom jDialog;
-	private PanelEvent pnlFilterPhongTrong;
-	private PanelEvent pnlFilterPhongDangSuDung;
-	private PanelEvent pnlFilterPhongCho;
 	private Glass glass;
-	private PanelEvent pnlThanhToan;
-	private List<Phong> dsPhong;
-	private QuanLyDatPhong_GUI _this;
-	private int soPhongTam;
-	private JLabel lblSoLuongPhongTam;
-	private JPanel pnlContainerDanhSachPhong;
+	private final int heightPhong = 130;
+	private JDialogCustom jDialog;
+	private JFrame jFrame;
 	private JFrame jFrameSub;
+	private JLabel lblDate;
+	private JLabel lblSoLuongPhongCho;
+	private JLabel lblSoLuongPhongTam;
+	private JLabel lblSoPhongDSD;
+	private JLabel lblSoPhongTrong;
+	private JLabel lblThu;
+	private JLabel lblTime;
+	private final int numOfRow = 6;
+	private Phong_DAO phong_DAO;
+	private PanelEvent pnlChuyenPhong;
+	private JPanel pnlContainerDanhSachPhong;
+	private JPanel pnlDanhSachPhong;
 	private PanelEvent pnlDatPhong;
 	private PanelEvent pnlDatPhongTruoc;
-	private PanelEvent pnlChuyenPhong;
+	private PanelEvent pnlFilterPhongCho;
+	private PanelEvent pnlFilterPhongDangSuDung;
+	private PanelEvent pnlFilterPhongTrong;
 	private PanelEvent pnlGopPhong;
-	private JFrame jFrame;
-	private Thread clock;
+	private PanelEvent pnlThanhToan;
+	private JScrollPane scrDanhSachPhong;
+	private int soPhongCho = 0;
+	private int soPhongDangSuDung = 0;
+	private int soPhongTam;
+	private int soPhongTrong = 0;
+	private final int widthPhong = 131;
 
 	/**
 	 * Create the frame.
@@ -109,17 +109,17 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		setBounds(0, 0, 1086, 508);
 		setLayout(null);
 
-		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 1086, 508);
-		panel.setLayout(null);
-		panel.setBackground(Utils.secondaryColor);
-		add(panel);
+		JPanel pnlContent = new JPanel();
+		pnlContent.setBounds(0, 0, 1086, 508);
+		pnlContent.setLayout(null);
+		pnlContent.setBackground(Utils.secondaryColor);
+		add(pnlContent);
 
 //		Chọn loại phòng
 		JPanel pnlLoaiPhong = new JPanel();
 		pnlLoaiPhong.setBackground(Utils.secondaryColor);
 		pnlLoaiPhong.setBounds(16, 0, 1054, 58);
-		panel.add(pnlLoaiPhong);
+		pnlContent.add(pnlLoaiPhong);
 		pnlLoaiPhong.setLayout(null);
 
 		JLabel lblLoaiPhong = new JLabel("Chọn loại phòng:");
@@ -255,13 +255,13 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		JPanel pnlSeperator = new JPanel();
 		pnlSeperator.setBounds(0, 59, Utils.width, 4);
 		pnlSeperator.setBackground(new Color(0, 0, 0, 64));
-		panel.add(pnlSeperator);
+		pnlContent.add(pnlSeperator);
 
 //		Thống kê loại phòng
 		JPanel pnlThongKeLoaiPhong = new JPanel();
 		pnlThongKeLoaiPhong.setBackground(Utils.secondaryColor);
 		pnlThongKeLoaiPhong.setBounds(924, 88, 146, 285);
-		panel.add(pnlThongKeLoaiPhong);
+		pnlContent.add(pnlThongKeLoaiPhong);
 		pnlThongKeLoaiPhong.setLayout(null);
 
 		PanelRound pnlPhongTrong = new PanelRound(10);
@@ -370,14 +370,14 @@ public class QuanLyDatPhong_GUI extends JPanel {
 //		Các nút chức năng
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
-		panel.add(pnlActions);
+		pnlContent.add(pnlActions);
 		pnlActions.setLayout(null);
 
 		int width = 190, height = 69, gapX = 20;
 
 		pnlDatPhong = new PanelEvent(13) {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -414,7 +414,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 
 		pnlDatPhongTruoc = new PanelEvent(13) {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -448,7 +448,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 
 		pnlChuyenPhong = new PanelEvent(13) {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -482,7 +482,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 
 		pnlGopPhong = new PanelEvent(13) {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -516,7 +516,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 
 		pnlThanhToan = new PanelEvent(13) {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -571,7 +571,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		JPanel pnlFilter = new JPanel();
 		pnlFilter.setBackground(Utils.secondaryColor);
 		pnlFilter.setBounds(16, 68, 860, 39);
-		panel.add(pnlFilter);
+		pnlContent.add(pnlFilter);
 		pnlFilter.setLayout(null);
 
 		pnlFilterPhongCho = new PanelEvent(8);
@@ -636,25 +636,25 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		btnSearch.setBounds(759, 0, 101, 39);
 		pnlFilter.add(btnSearch);
 
-		ComboBox<String> comboBox = new ComboBox<>();
-		comboBox.setBackground(Utils.primaryColor);
-		comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		comboBox.setBounds(653, 2, 91, 35);
-		pnlFilter.add(comboBox);
+		ComboBox<String> cmbMaPhong = new ComboBox<>();
+		cmbMaPhong.setBackground(Utils.primaryColor);
+		cmbMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		cmbMaPhong.setBounds(653, 2, 91, 35);
+		pnlFilter.add(cmbMaPhong);
 
 		pnlContainerDanhSachPhong = new JPanel();
 		pnlContainerDanhSachPhong.setBounds(16, 117, 900, 292);
 		pnlContainerDanhSachPhong.setBackground(Utils.secondaryColor);
 		pnlContainerDanhSachPhong.setLayout(null);
-		panel.add(pnlContainerDanhSachPhong);
+		pnlContent.add(pnlContainerDanhSachPhong);
 
 //		Event window
 		if (dsPhong == null) {
 			List<Phong> list = phong_DAO.getAllPhong();
 			addPhong(list);
 
-			comboBox.removeAllItems();
-			list.forEach(phong -> comboBox.addItem(phong.getMaPhong()));
+			cmbMaPhong.removeAllItems();
+			list.forEach(phong -> cmbMaPhong.addItem(phong.getMaPhong()));
 		} else
 			addPhong(phong_DAO.getAllPhongTheoMa(dsPhong));
 
@@ -795,7 +795,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		btnSearch.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				String maPhong = (String) comboBox.getSelectedItem();
+				String maPhong = (String) cmbMaPhong.getSelectedItem();
 				Phong phong = phong_DAO.getPhong(maPhong);
 
 				List<Phong> list = new ArrayList<>();
@@ -806,10 +806,11 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		});
 
 		jFrame.addWindowListener(new WindowAdapter() {
+			@Override
 			@SuppressWarnings("deprecation")
 			public void windowClosing(java.awt.event.WindowEvent e) {
 				clock.stop();
-			};
+			}
 		});
 	}
 
@@ -863,20 +864,77 @@ public class QuanLyDatPhong_GUI extends JPanel {
 	}
 
 	/**
-	 * Get kích thước JPanel chứa các JPanel Phong Item
-	 * 
-	 * @param soPhong
-	 * @return
+	 * Cập nhật số lượng các loại phòng theo trạng thái
 	 */
-	private Dimension getSizeContainerDanhSachPhong(int soPhong) {
-		int row = (int) Math.ceil(soPhong / numOfRow);
+	private void capNhatThongKeLoaiPhong() {
+		lblSoPhongTrong.setText(String.format("(%d)", soPhongTrong));
+		lblSoLuongPhongCho.setText(String.format("(%d)", soPhongCho));
+		lblSoPhongDSD.setText(String.format("(%d)", soPhongDangSuDung));
+		lblSoLuongPhongTam.setText(String.format("(%d)", soPhongTam));
+	}
 
-		return new Dimension(890, Math.max((row - 1) * gapY + row * heightPhong, 292));
+	public void capNhatTrangThaiPhong() {
+		addPhong(phong_DAO.getAllPhongTheoMa(dsPhong));
+	}
+
+	/**
+	 * Cập nhật thời gian thực
+	 */
+	public void clock() {
+		clock = new Thread() {
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						datPhong_DAO.huyPhongDatTre();
+						LocalDateTime currTime = LocalDateTime.now();
+						int day = currTime.getDayOfMonth();
+						int month = currTime.getMonthValue();
+						int year = currTime.getYear();
+						int hour = currTime.getHour();
+						int minute = currTime.getMinute();
+						lblTime.setText(Utils.convertLocalTimeToString(LocalTime.of(hour, minute)));
+						LocalDate date = LocalDate.now();
+						DayOfWeek dayNow = date.getDayOfWeek();
+						String thu = "T2";
+						if (dayNow.getValue() == DayOfWeek.TUESDAY.getValue())
+							thu = "T3";
+						else if (dayNow.getValue() == DayOfWeek.WEDNESDAY.getValue())
+							thu = "T4";
+						else if (dayNow.getValue() == DayOfWeek.THURSDAY.getValue())
+							thu = "T5";
+						else if (dayNow.getValue() == DayOfWeek.FRIDAY.getValue())
+							thu = "T6";
+						else if (dayNow.getValue() == DayOfWeek.SATURDAY.getValue())
+							thu = "T7";
+						else if (dayNow.getValue() == DayOfWeek.SUNDAY.getValue())
+							thu = "CN";
+						lblThu.setText(thu);
+						lblDate.setText(String.format("%s-%s-%d", day < 10 ? "0" + day : day,
+								month < 10 ? "0" + month : month, year));
+						sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+
+		clock.start();
+	}
+
+	public void closeJFrameSub() {
+		if (jFrameSub != null)
+			jFrameSub.setVisible(false);
+		glass.setVisible(false);
+		glass.setAlpha(0f);
+		jFrameSub = null;
 	}
 
 	/**
 	 * Get Bounds JPanel Item theo index
-	 * 
+	 *
 	 * @param itemIndex
 	 * @return
 	 */
@@ -889,7 +947,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 
 	/**
 	 * Get JPanel Item phòng
-	 * 
+	 *
 	 * @param phong
 	 * @return JPanel Item
 	 */
@@ -990,60 +1048,15 @@ public class QuanLyDatPhong_GUI extends JPanel {
 	}
 
 	/**
-	 * Cập nhật số lượng các loại phòng theo trạng thái
+	 * Get kích thước JPanel chứa các JPanel Phong Item
+	 *
+	 * @param soPhong
+	 * @return
 	 */
-	private void capNhatThongKeLoaiPhong() {
-		lblSoPhongTrong.setText(String.format("(%d)", soPhongTrong));
-		lblSoLuongPhongCho.setText(String.format("(%d)", soPhongCho));
-		lblSoPhongDSD.setText(String.format("(%d)", soPhongDangSuDung));
-		lblSoLuongPhongTam.setText(String.format("(%d)", soPhongTam));
-	}
+	private Dimension getSizeContainerDanhSachPhong(int soPhong) {
+		int row = (int) Math.ceil(soPhong / numOfRow);
 
-	/**
-	 * Cập nhật thời gian thực
-	 */
-	public void clock() {
-		clock = new Thread() {
-			@Override
-			public void run() {
-				for (;;) {
-					try {
-						datPhong_DAO.huyPhongDatTre();
-						LocalDateTime currTime = LocalDateTime.now();
-						int day = currTime.getDayOfMonth();
-						int month = currTime.getMonthValue();
-						int year = currTime.getYear();
-						int hour = currTime.getHour();
-						int minute = currTime.getMinute();
-						lblTime.setText(Utils.convertLocalTimeToString(LocalTime.of(hour, minute)));
-						LocalDate date = LocalDate.now();
-						DayOfWeek dayNow = date.getDayOfWeek();
-						String thu = "T2";
-						if (dayNow.getValue() == DayOfWeek.TUESDAY.getValue())
-							thu = "T3";
-						else if (dayNow.getValue() == DayOfWeek.WEDNESDAY.getValue())
-							thu = "T4";
-						else if (dayNow.getValue() == DayOfWeek.THURSDAY.getValue())
-							thu = "T5";
-						else if (dayNow.getValue() == DayOfWeek.FRIDAY.getValue())
-							thu = "T6";
-						else if (dayNow.getValue() == DayOfWeek.SATURDAY.getValue())
-							thu = "T7";
-						else if (dayNow.getValue() == DayOfWeek.SUNDAY.getValue())
-							thu = "CN";
-						lblThu.setText(thu);
-						lblDate.setText(String.format("%s-%s-%d", day < 10 ? "0" + day : day,
-								month < 10 ? "0" + month : month, year));
-						sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-
-		clock.start();
+		return new Dimension(890, Math.max((row - 1) * gapY + row * heightPhong, 292));
 	}
 
 	public void openJFrameSub(JFrame jFrame) {
@@ -1052,17 +1065,5 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		glass.setAlpha(0.5f);
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
-	}
-
-	public void closeJFrameSub() {
-		if (jFrameSub != null)
-			jFrameSub.setVisible(false);
-		glass.setVisible(false);
-		glass.setAlpha(0f);
-		jFrameSub = null;
-	}
-
-	public void capNhatTrangThaiPhong() {
-		addPhong(phong_DAO.getAllPhongTheoMa(dsPhong));
 	}
 }
