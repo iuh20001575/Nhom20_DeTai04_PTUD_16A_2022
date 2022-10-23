@@ -167,15 +167,7 @@ public class Main extends JFrame {
 				if (isEmpty)
 					jDialogCustom.showMessage("Đóng ứng dụng", "Bạn có muốn đóng ứng dụng không?");
 				else {
-					StackPanel.pop();
-					PanelUI panelUI = StackPanel.peek();
-					if (panelUI.getTitle().equals("Trang chủ")) {
-						while (!StackPanel.empty())
-							StackPanel.pop();
-						StackPanel.push(new PanelUI(new TrangChu_GUI(), "Trang chủ", 0, 0));
-					}
-					addPnlBody(panelUI);
-					menu.setSelectedMenu(panelUI.getIndex(), panelUI.getIndexSubmenu());
+					backPanel();
 				}
 			}
 		});
@@ -221,6 +213,11 @@ public class Main extends JFrame {
 		setTitle(panelUI.getTitle());
 	}
 
+	public void repaint() {
+		pnlBody.repaint();
+		pnlBody.revalidate();
+	}
+
 	public Menu getMenu() {
 		return menu;
 	}
@@ -229,6 +226,18 @@ public class Main extends JFrame {
 	public void setTitle(String title) {
 		super.setTitle(title);
 		lblTitle.setText(title.toUpperCase());
+	}
+
+	public void backPanel() {
+		StackPanel.pop();
+		PanelUI panelUI = StackPanel.peek();
+		if (panelUI.getTitle().equals("Trang chủ")) {
+			while (!StackPanel.empty())
+				StackPanel.pop();
+			StackPanel.push(new PanelUI(new TrangChu_GUI(), "Trang chủ", 0, 0));
+		}
+		addPnlBody(panelUI);
+		menu.setSelectedMenu(panelUI.getIndex(), panelUI.getIndexSubmenu());
 	}
 
 	/**
@@ -265,7 +274,7 @@ public class Main extends JFrame {
 					pnl = new ThongKeKhachHang_GUI();
 				} else if (index == 6 && indexSubMenu == 0) {
 					title = "Thông tin cá nhân";
-					pnl = new ThongTinCaNhan_GUI();
+					pnl = new ThongTinCaNhan_GUI(_this);
 				} else {
 					title = "Trang chủ";
 					pnl = new TrangChu_GUI();

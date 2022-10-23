@@ -17,7 +17,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -32,7 +31,6 @@ import components.radio.RadioButtonCustom;
 import components.textField.TextField;
 import dao.DiaChi_DAO;
 import dao.NhanVien_DAO;
-import dao.TaiKhoan_DAO;
 import entity.NhanVien;
 import entity.NhanVien.ChucVu;
 import entity.NhanVien.TrangThai;
@@ -48,6 +46,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private ButtonGroup buttonGroupGioiTinh;
 	private JComboBox<String> cmbChucVu;
 	private JComboBox<String> cmbPhuong;
 	private JComboBox<String> cmbQuan;
@@ -58,13 +57,12 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 	private boolean isEnabledEventPhuong = false;
 	private boolean isEnabledEventQuan = false;
 	private boolean isEnabledEventTinh = false;
-	private NhanVien nhanVien;
+	private Main main;
 	private NhanVien_DAO nhanVien_DAO;
 	private Phuong phuong;
 	private Quan quan;
 	private RadioButtonCustom radNam;
 	private RadioButtonCustom radNu;
-	private TaiKhoan_DAO taiKhoan_DAO;
 	private Tinh tinh;
 	private TextField txtCCCD;
 	private TextField txtDiaChiCT;
@@ -74,22 +72,14 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 	private TextField txtMatKhau;
 	private TextField txtNgaySinh;
 	private TextField txtSoDienThoai;
-	private JFrame main;
-
-	public static void main(String[] args) {
-		Main main = new Main();
-		main.addPnlBody(new ThemNhanVien_GUI(main), "Thêm nhân viên", 2, 0);
-		main.setVisible(true);
-	}
 
 	/**
 	 * Create the frame.
 	 * 
 	 * @wbp.parser.constructor
 	 */
-	public ThemNhanVien_GUI(JFrame jFrame) {
+	public ThemNhanVien_GUI(Main jFrame) {
 		nhanVien_DAO = new NhanVien_DAO();
-		taiKhoan_DAO = new TaiKhoan_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 		main = jFrame;
 
@@ -201,7 +191,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		radNu.setBounds(79, -2, 59, 21);
 		pnlGroupGioiTinh.add(radNu);
 
-		ButtonGroup buttonGroupGioiTinh = new ButtonGroup();
+		buttonGroupGioiTinh = new ButtonGroup();
 		buttonGroupGioiTinh.add(radNam);
 		buttonGroupGioiTinh.add(radNu);
 
@@ -269,6 +259,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		txtMatKhau.setColumns(10);
 		txtMatKhau.setBackground(new Color(203, 239, 255));
 		txtMatKhau.setBounds(499, 0, 449, 55);
+		txtMatKhau.setEditable(false);
 		pnlRow5.add(txtMatKhau);
 
 		JPanel pnlRow6 = new JPanel();
@@ -354,7 +345,22 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		btnHuy.setBounds(0, 0, 250, 48);
 		pnlActions.add(btnHuy);
 
+		Button btnLamMoi = new Button("Cập nhật");
+		btnLamMoi.setText("Làm mới");
+		btnLamMoi.setRadius(8);
+		btnLamMoi.setForeground(Color.BLACK);
+		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 32));
+		btnLamMoi.setFocusable(false);
+		btnLamMoi.setColorOver(new Color(255, 255, 255, 204));
+		btnLamMoi.setColorClick(new Color(255, 255, 255, 153));
+		btnLamMoi.setColor(Color.WHITE);
+		btnLamMoi.setBorderColor(new Color(203, 239, 255));
+		btnLamMoi.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnLamMoi.setBounds(428, 0, 250, 48);
+		pnlActions.add(btnLamMoi);
+
 		txtMaNhanVien.setText(nhanVien_DAO.taoMaNhanVien());
+		txtMatKhau.setText("1234Abc@");
 		cmbQuan.addItem(Quan.getQuanLabel());
 		cmbPhuong.addItem(Phuong.getPhuongLabel());
 
@@ -410,12 +416,38 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 			}
 		});
 
+//		Sự kiện nút hủy
+		btnHuy.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				main.backPanel();
+			}
+		});
+
+//		Sự kiện nút làm mới
+		btnLamMoi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				xoaRong();
+			}
+		});
+
 //		Sự kiện nút thêm
 		btnThem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (!validator())
 					return;
+				NhanVien nhanVien = getNhanVienTuForm();
+				boolean res = nhanVien_DAO.themNhanVien(nhanVien);
+
+				if (res) {
+					new Notification(jFrame, Type.SUCCESS, String.format("Thêm nhân viên %s - %s thành công",
+							nhanVien.getMaNhanVien(), nhanVien.getHoTen())).showNotification();
+					xoaRong();
+					txtMaNhanVien.setText(nhanVien_DAO.taoMaNhanVien());
+				} else
+					new Notification(jFrame, Type.ERROR, "Thêm nhân viên thất bại").showNotification();
 			}
 		});
 
@@ -425,6 +457,11 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		cmbPhuong.addItemListener(this);
 	}
 
+	/**
+	 * Get nhân viên từ form
+	 * 
+	 * @return nhanVien
+	 */
 	private NhanVien getNhanVienTuForm() {
 		String maNhanVien = txtMaNhanVien.getText();
 		String hoTen = txtHoTen.getText().trim();
@@ -443,6 +480,9 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 				chucVu, luongDouble, taiKhoan, trangThai);
 	}
 
+	/**
+	 * Lắng nghe sự kiện JComboBox
+	 */
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		Object object = e.getSource();
@@ -514,6 +554,14 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 
 	}
 
+	/**
+	 * Xóa tất cả các items của JComboBox và thêm chuỗi vào JComboBox
+	 * 
+	 * @param <E>
+	 * @param list       JComboBox cần xóa
+	 * @param firstLabel chuỗi cần thêm
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list, String firstLabel) {
 		list.removeAllItems();
@@ -521,27 +569,11 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		return list;
 	}
 
-	private void setNhanVienVaoForm(NhanVien nhanVien) {
-		txtMaNhanVien.setText(nhanVien.getMaNhanVien());
-		txtCCCD.setText(nhanVien.getCccd());
-		txtDiaChiCT.setText(nhanVien.getDiaChiCuThe());
-		txtHoTen.setText(nhanVien.getHoTen());
-		txtLuong.setText(Utils.formatTienTe(nhanVien.getLuong()));
-		TaiKhoan taiKhoan = taiKhoan_DAO.getTaiKhoan(nhanVien.getMaNhanVien());
-		txtMatKhau.setText(taiKhoan.getMatKhau());
-		txtNgaySinh.setText(Utils.formatDate(nhanVien.getNgaySinh()));
-		txtSoDienThoai.setText(nhanVien.getSoDienThoai());
-		cmbChucVu.setSelectedItem(NhanVien.convertChucVuToString(nhanVien.getChucVu()));
-		cmbTrangThai.setSelectedItem(NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
-		setTinhToComboBox();
-		setQuanToComboBox(tinh);
-		setPhuongToComboBox(quan);
-		if (nhanVien.isGioiTinh())
-			radNam.setSelected(true);
-		else
-			radNu.setSelected(true);
-	}
-
+	/**
+	 * Set danh sách phường của quận vào JComboBox
+	 * 
+	 * @param quan quận cần lấy phường
+	 */
 	private void setPhuongToComboBox(Quan quan) {
 		isEnabledEventPhuong = false;
 
@@ -562,6 +594,11 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		isEnabledEventPhuong = true;
 	}
 
+	/**
+	 * Set danh sách quận của tỉnh vào JComboBox
+	 * 
+	 * @param tinh tỉnh cần lấy quận
+	 */
 	private void setQuanToComboBox(Tinh tinh) {
 		isEnabledEventQuan = false;
 
@@ -578,6 +615,9 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		isEnabledEventQuan = true;
 	}
 
+	/**
+	 * Set danh sách tỉnh vào JComboBox
+	 */
 	private void setTinhToComboBox() {
 		isEnabledEventTinh = false;
 
@@ -597,6 +637,13 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		isEnabledEventTinh = true;
 	}
 
+	/**
+	 * Hiển thị thông báo lỗi và focus các JTextField
+	 * 
+	 * @param txt     JtextField cần focus
+	 * @param message thông báo lỗi
+	 * @return false
+	 */
 	private boolean showThongBaoLoi(TextField txt, String message) {
 		new Notification(main, Type.ERROR, message).showNotification();
 		txt.setError(true);
@@ -604,6 +651,11 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		return false;
 	}
 
+	/**
+	 * Kiểm tra thông tin nhân viên
+	 * 
+	 * @return true nếu thông tin nhân viên hợp lệ
+	 */
 	private boolean validator() {
 		String vietNamese = Utils.getVietnameseDiacriticCharacters() + "A-Z";
 		String vietNameseLower = Utils.getVietnameseDiacriticCharactersLower() + "a-z";
@@ -700,26 +752,28 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		if (luongNumber <= 0)
 			return showThongBaoLoi(txtLuong, "Lương phải lớn hơn 0");
 
-		String matKhau = txtMatKhau.getText();
-
-		if (matKhau.length() <= 0)
-			return showThongBaoLoi(txtMatKhau, "Vui lòng nhập mật khẩu");
-
-		if (matKhau.length() < 8)
-			return showThongBaoLoi(txtMatKhau, "Mật khẩu phảu có ít nhất 8 ký tự");
-
-		if (!Pattern.matches(".*[A-Z].*", matKhau))
-			return showThongBaoLoi(txtMatKhau, "Mật khẩu phảu chứa ít nhất 1 ký tự hoa");
-
-		if (!Pattern.matches(".*[a-z].*", matKhau))
-			return showThongBaoLoi(txtMatKhau, "Mật khẩu phảu chứa ít nhất 1 ký tự thường");
-
-		if (!Pattern.matches(".*[0-9].*", matKhau))
-			return showThongBaoLoi(txtMatKhau, "Mật khẩu phảu chứa ít nhất 1 ký tự số");
-
-		if (!Pattern.matches(".*[^A-Za-z0-9].*", matKhau))
-			return showThongBaoLoi(txtMatKhau, "Mật khẩu phảu chứa ít nhất 1 ký tự đặc biệt");
-
 		return true;
+	}
+
+	/**
+	 * Xóa rỗng các textfield và làm mới ComboBox
+	 */
+	private void xoaRong() {
+		txtHoTen.setText("");
+		txtCCCD.setText("");
+		txtSoDienThoai.setText("");
+		dateChoose.toDay();
+		buttonGroupGioiTinh.clearSelection();
+		setTinhToComboBox();
+		cmbChucVu.setSelectedIndex(0);
+		cmbTrangThai.setSelectedIndex(0);
+		cmbQuan.setSelectedIndex(0);
+		cmbPhuong.setSelectedIndex(0);
+		cmbQuan.setEnabled(false);
+		cmbPhuong.setEnabled(false);
+		txtDiaChiCT.setText("");
+		txtLuong.setText("");
+		txtHoTen.requestFocus();
+		main.repaint();
 	}
 }

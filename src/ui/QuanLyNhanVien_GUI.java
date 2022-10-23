@@ -8,7 +8,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,7 +34,6 @@ import components.jDialog.JDialogCustom;
 import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
-import connectDB.ConnectDB;
 import dao.DiaChi_DAO;
 import dao.NhanVien_DAO;
 import entity.NhanVien;
@@ -59,8 +57,8 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private NhanVien_DAO nhanVien_DAO;
 	private DiaChi_DAO diaChi_DAO;
 	private DefaultComboBoxModel<String> maNhanVienModel;
-	private JComboBox<String> cboMaNhanVien;
-	private JComboBox<String> cboTrangThai;
+	private JComboBox<String> cmbMaNhanVien;
+	private JComboBox<String> cmbTrangThai;
 	private ControlPanel pnlControl;
 	private Button btnEmployeeRemove;
 	private Button btnEmployeeEdit;
@@ -71,13 +69,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	 * Create the frame.
 	 */
 	public QuanLyNhanVien_GUI(Main main) {
-		try {
-			new ConnectDB().connect();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		nhanVien_DAO = new NhanVien_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 
@@ -111,12 +102,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlSearchForm.setLayout(null);
 
 		Button btnSearch = new Button("Tìm");
-		btnSearch.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				filterNhanVien();
-			}
-		});
 		btnSearch.setFocusable(false);
 		btnSearch.setIcon(new ImageIcon("Icon\\searching.png"));
 		btnSearch.setRadius(4);
@@ -155,22 +140,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlActions.setLayout(null);
 
 		btnEmployeeView = new Button("Xem");
-		btnEmployeeView.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (!btnEmployeeView.isEnabled())
-					return;
-				int row = tbl.getSelectedRow();
-				if (row == -1) {
-					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
-							"Vui lòng chọn nhân viên muốn xem");
-				} else {
-					String maNhanVien = (String) tableModel.getValueAt(row, 0);
-					main.addPnlBody(new ThongTinChiTietNhanVien_GUI(main, new NhanVien(maNhanVien)),
-							"Thông tin chi tiết nhân viên", 1, 0);
-				}
-			}
-		});
 		btnEmployeeView.setFocusable(false);
 		btnEmployeeView.setIcon(new ImageIcon("Icon\\user 1.png"));
 		btnEmployeeView.setBounds(0, 0, 150, 36);
@@ -199,22 +168,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlActions.add(btnEmployeeAdd);
 
 		btnEmployeeEdit = new Button("Sửa");
-		btnEmployeeEdit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (!btnEmployeeEdit.isEnabled())
-					return;
-				int row = tbl.getSelectedRow();
-				if (row == -1) {
-					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
-							"Vui lòng chọn nhân viên muốn sửa");
-				} else {
-					String maNhanVien = (String) tableModel.getValueAt(row, 0);
-					main.addPnlBody(new ThongTinChiTietNhanVien_GUI(main, new NhanVien(maNhanVien), true),
-							"Thông tin chi tiết nhân viên", 1, 0);
-				}
-			}
-		});
 		btnEmployeeEdit.setFocusable(false);
 		btnEmployeeEdit.setIcon(new ImageIcon("Icon\\edit 2.png"));
 		btnEmployeeEdit.setRadius(4);
@@ -242,57 +195,22 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeRemove.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnEmployeeRemove.setBounds(495, 0, 150, 36);
 		pnlActions.add(btnEmployeeRemove);
-		btnEmployeeRemove.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (!btnEmployeeRemove.isEnabled())
-					return;
 
-				int row = tbl.getSelectedRow();
+		cmbTrangThai = new JComboBox<String>();
+		cmbTrangThai.setModel(new DefaultComboBoxModel<String>(new String[] { "Trạng thái", "Đang làm", "Nghỉ làm" }));
+		cmbTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		cmbTrangThai.setBackground(Utils.primaryColor);
+		cmbTrangThai.setBounds(904, 0, 150, 36);
+		pnlActions.add(cmbTrangThai);
 
-				if (row != -1) {
-					String maNhanVien = (String) tbl.getValueAt(row, 0);
-					boolean res = nhanVien_DAO.setNghiLam(maNhanVien);
-
-					if (res)
-						new Notification(main, components.notification.Notification.Type.SUCCESS,
-								"Cập nhật trạng thái nhân viên thành công");
-					else
-						new Notification(main, components.notification.Notification.Type.ERROR,
-								"Cập nhật trạng thái nhân viên thất bại");
-				}
-			}
-		});
-
-		cboTrangThai = new JComboBox<String>();
-		cboTrangThai.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterNhanVien();
-				}
-			}
-		});
-		cboTrangThai.setModel(new DefaultComboBoxModel<String>(new String[] { "Trạng thái", "Đang làm", "Nghỉ làm" }));
-		cboTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cboTrangThai.setBackground(Utils.primaryColor);
-		cboTrangThai.setBounds(904, 0, 150, 36);
-		pnlActions.add(cboTrangThai);
-
-		cboMaNhanVien = new JComboBox<String>();
-		cboMaNhanVien.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterNhanVien();
-				}
-			}
-		});
+		cmbMaNhanVien = new JComboBox<String>();
 		maNhanVienModel = new DefaultComboBoxModel<String>(new String[] { "Mã NV" });
-		cboMaNhanVien.setModel(maNhanVienModel);
-		cboMaNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cboMaNhanVien.setBackground(Utils.primaryColor);
-		cboMaNhanVien.setBounds(739, 0, 150, 36);
-		cboMaNhanVien.setBorder(new EmptyBorder(0, 0, 0, 0));
-		pnlActions.add(cboMaNhanVien);
+		cmbMaNhanVien.setModel(maNhanVienModel);
+		cmbMaNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		cmbMaNhanVien.setBackground(Utils.primaryColor);
+		cmbMaNhanVien.setBounds(739, 0, 150, 36);
+		cmbMaNhanVien.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnlActions.add(cmbMaNhanVien);
 
 //		Table danh sách nhân viên
 		JScrollPane scr = new JScrollPane();
@@ -301,6 +219,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		scr.setBounds(16, 158, 1054, 300);
 		scr.setBackground(Utils.primaryColor);
 		scr.getViewport().setBackground(Color.WHITE);
+
 		ScrollBarCustom scp = new ScrollBarCustom();
 //		Set color scrollbar thumb
 		scp.setScrollbarColor(new Color(203, 203, 203));
@@ -346,9 +265,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-//		Cam
-//		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
-//		Xanh
 		tbl.getTableHeader().setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
@@ -372,6 +288,103 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlControl.setLocation(400, 464);
 		this.add(pnlControl);
 
+		setEmptyTable();
+		addRow(nhanVien_DAO.getAllNhanVien()).forEach(nhanVien -> maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
+		pnlControl.setTbl(tbl);
+
+//		Sự kiện nút tìm kiếm nhân viên
+		btnSearch.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				filterNhanVien();
+			}
+		});
+
+//		Sự kiện nút xem thông tin nhân viên
+		btnEmployeeView.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!btnEmployeeView.isEnabled())
+					return;
+				int row = tbl.getSelectedRow();
+				if (row == -1) {
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+							"Vui lòng chọn nhân viên muốn xem");
+				} else {
+					String maNhanVien = (String) tableModel.getValueAt(row, 0);
+					main.addPnlBody(new ThongTinChiTietNhanVien_GUI(main, new NhanVien(maNhanVien)),
+							"Thông tin chi tiết nhân viên", 1, 0);
+				}
+			}
+		});
+
+//		Sự kiện nút thêm nhân viên
+		btnEmployeeAdd.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				main.addPnlBody(new ThemNhanVien_GUI(main), "Thêm nhân viên", 1, 0);
+			};
+		});
+
+//		Sự kiện nút sửa thông tin nhân viên
+		btnEmployeeEdit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!btnEmployeeEdit.isEnabled())
+					return;
+				int row = tbl.getSelectedRow();
+				if (row == -1) {
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+							"Vui lòng chọn nhân viên muốn sửa");
+				} else {
+					String maNhanVien = (String) tableModel.getValueAt(row, 0);
+					main.addPnlBody(new ThongTinChiTietNhanVien_GUI(main, new NhanVien(maNhanVien), true),
+							"Thông tin chi tiết nhân viên", 1, 0);
+				}
+			}
+		});
+
+//		Sự kiện nút nghỉ việc
+		btnEmployeeRemove.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!btnEmployeeRemove.isEnabled())
+					return;
+
+				int row = tbl.getSelectedRow();
+
+				if (row != -1) {
+					String maNhanVien = (String) tbl.getValueAt(row, 0);
+					boolean res = nhanVien_DAO.setNghiLam(maNhanVien);
+
+					if (res)
+						new Notification(main, components.notification.Notification.Type.SUCCESS,
+								"Cập nhật trạng thái nhân viên thành công");
+					else
+						new Notification(main, components.notification.Notification.Type.ERROR,
+								"Cập nhật trạng thái nhân viên thất bại");
+				}
+			}
+		});
+
+//		Sự kiện JComboBox mã nhân viên
+		cmbMaNhanVien.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterNhanVien();
+				}
+			}
+		});
+
+//		Sự kiện JComboBox trạng thái
+		cmbTrangThai.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterNhanVien();
+				}
+			}
+		});
+
+//		Sự kiện JTable
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
@@ -388,10 +401,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 				}
 			}
 		});
-
-		setEmptyTable();
-		addRow(nhanVien_DAO.getAllNhanVien()).forEach(nhanVien -> maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
-		pnlControl.setTbl(tbl);
 	}
 
 	public static void clock() {
@@ -444,8 +453,8 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 	private void filterNhanVien() {
 		String hoTen = txtSearch.getText();
-		String maNhanVien = (String) cboMaNhanVien.getSelectedItem();
-		String trangThai = (String) cboTrangThai.getSelectedItem();
+		String maNhanVien = (String) cmbMaNhanVien.getSelectedItem();
+		String trangThai = (String) cmbTrangThai.getSelectedItem();
 
 		if (maNhanVien.equals("Mã NV"))
 			maNhanVien = "";
@@ -476,20 +485,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		list.forEach(nhanVien -> addRow(nhanVien));
 		return list;
 	}
-
-//	private NhanVien getNhanVienTuTable(int row) {
-//		String maNhanVien = (String) tableModel.getValueAt(row, 0);
-//		String hoTen = (String) tableModel.getValueAt(row, 1);
-//		String cccd = (String) tableModel.getValueAt(row, 2);
-//		String soDienThoai = (String) tableModel.getValueAt(row, 3);
-//		LocalDate ngaySinh = Utils.getLocalDate((String) tableModel.getValueAt(row, 4));
-//		boolean gioiTinh = ((String) tableModel.getValueAt(row, 5)).equals("Nam") ? true : false;
-//		String diaChi = (String) tableModel.getValueAt(row, 6);
-//		TrangThai trangThai = ((String) tableModel.getValueAt(row, 7)).equals("Đang làm") ? TrangThai.DangLam
-//				: TrangThai.NghiLam;
-//		return new NhanVien(maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, null, null, null, diaChi, null,
-//				row, null, trangThai);
-//	}
 
 	private void setEmptyTable() {
 		while (tbl.getRowCount() > 0)

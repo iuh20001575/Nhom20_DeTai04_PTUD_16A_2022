@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -181,6 +182,38 @@ public class NhanVien_DAO {
 		return false;
 	}
 
+	public boolean themNhanVien(NhanVien nhanVien) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		try {
+			String sql = "INSERT NhanVien VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			preparedStatement.setString(1, nhanVien.getMaNhanVien());
+			preparedStatement.setString(2, nhanVien.getHoTen());
+			preparedStatement.setString(3, nhanVien.getCccd());
+			preparedStatement.setString(4, nhanVien.getSoDienThoai());
+			preparedStatement.setDate(5, Utils.convertLocalDateToDate(nhanVien.getNgaySinh()));
+			preparedStatement.setBoolean(6, nhanVien.isGioiTinh());
+			preparedStatement.setString(7, nhanVien.getTinh().getId());
+			preparedStatement.setString(8, nhanVien.getQuan().getId());
+			preparedStatement.setString(9, nhanVien.getPhuong().getId());
+			preparedStatement.setString(10, nhanVien.getDiaChiCuThe());
+			preparedStatement.setString(11, NhanVien.convertChucVuToString(nhanVien.getChucVu()));
+			preparedStatement.setDouble(12, nhanVien.getLuong());
+			preparedStatement.setString(13, nhanVien.getMaNhanVien());
+			preparedStatement.setString(14, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
+
+			preparedStatement.executeQuery();
+			preparedStatement.close();
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
 	public String taoMaNhanVien() {
 		try {
 			String sql = "SELECT TOP 1 [maNhanVien] FROM [dbo].[NhanVien] ORDER BY [maNhanVien] DESC";
@@ -223,11 +256,47 @@ public class NhanVien_DAO {
 		return false;
 	}
 
+	public boolean isCCCDDaTonTai(NhanVien nhanVien, String cccd) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM [dbo].[NhanVien] WHERE [cccd] = ? AND maNhanVien <> ?");
+			preparedStatement.setString(1, cccd);
+			preparedStatement.setString(2, nhanVien.getMaNhanVien());
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			return resultSet.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
 	public boolean isSoDienThoaiDaTonTai(String soDienThoai) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT * FROM [dbo].[NhanVien] WHERE [soDienThoai] = ?");
 			preparedStatement.setString(1, soDienThoai);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			return resultSet.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public boolean isSoDienThoaiDaTonTai(NhanVien nhanVien, String soDienThoai) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM [dbo].[NhanVien] WHERE [soDienThoai] = ? AND maNhanVien <> ?");
+			preparedStatement.setString(1, soDienThoai);
+			preparedStatement.setString(2, nhanVien.getMaNhanVien());
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
