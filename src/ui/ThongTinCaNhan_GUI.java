@@ -365,12 +365,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				txtCCCD.setError(false);
-				txtDiaChiCT.setError(false);
-				txtHoTen.setError(false);
-				txtMatKhau.setError(false);
-				txtNgaySinh.setError(false);
-				txtSoDienThoai.setError(false);
+				setErrorAllJTextField(false);
 				setNhanVienVaoForm(nhanVien);
 				btnCapNhat.setVisible(true);
 				btnHuy.setVisible(false);
@@ -384,6 +379,9 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		btnLuu.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if (!btnLuu.isEnabled())
+					return;
+
 				if (!validator())
 					return;
 
@@ -404,6 +402,15 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 				}
 			}
 		});
+	}
+
+	private void setErrorAllJTextField(boolean b) {
+		txtCCCD.setError(b);
+		txtDiaChiCT.setError(b);
+		txtHoTen.setError(b);
+		txtMatKhau.setError(b);
+		txtNgaySinh.setError(b);
+		txtSoDienThoai.setError(b);
 	}
 
 	/**

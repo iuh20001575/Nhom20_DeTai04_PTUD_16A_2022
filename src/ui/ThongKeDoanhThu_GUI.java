@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 import javax.swing.JComboBox;
@@ -30,6 +32,11 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 	private DefaultTableModel tableModel;
 	private JComboBox<String> cboDay, cboMonth, cboYear;
 	private Chart chart;
+	private Button btnDay, btnMonth, btnYear;
+	private String valueDay = "";
+	private String valueMonth = "";
+	private String valueYear = "";
+	private JLabel lblResDate;
 
 	public ThongKeDoanhThu_GUI() {
 		try {
@@ -52,13 +59,13 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		JLabel lblRevenueCalculation = new JLabel("Tính doanh thu theo:");
 		lblRevenueCalculation.setBounds(0, 0, 299, 28);
 		lblRevenueCalculation.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblRevenueCalculation.setForeground(new Color(146, 146, 146));
+		lblRevenueCalculation.setForeground(new Color(100, 100, 100));
 		pnlRevenueCalculation.add(lblRevenueCalculation);
 
-		Button btnDay = new Button("Ngày");
+		btnDay = new Button("Ngày");
 		btnDay.setFocusable(false);
 
-		btnDay.setForeground(Color.GRAY);
+		btnDay.setForeground(new Color(100, 100, 100));
 		btnDay.setColor(Color.WHITE);
 		btnDay.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		btnDay.setBounds(500, 0, 118, 44);
@@ -69,10 +76,31 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		btnDay.setRadius(5);
 		pnlRevenueCalculation.add(btnDay);
 
-		Button btnMonth = new Button("Tháng");
+		btnDay.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnDay.setColor(Utils.primaryColor);
+				btnDay.setForeground(Color.WHITE);
+				btnDay.setColorTextOut(Color.WHITE);
+				btnYear.setColor(Color.WHITE);
+				btnYear.setForeground(new Color(100, 100, 100));
+				btnYear.setColorTextOut(new Color(100, 100, 100));
+				btnMonth.setColor(Color.WHITE);
+				btnMonth.setForeground(new Color(100, 100, 100));
+				btnMonth.setColorTextOut(new Color(100, 100, 100));
+				cboDay.setEnabled(true);
+				cboMonth.setEnabled(true);
+				valueDay = cboDay.getSelectedItem().toString();
+				valueMonth = cboMonth.getSelectedItem().toString();
+				valueYear = cboYear.getSelectedItem().toString();
+			}
+		});
+
+		btnMonth = new Button("Tháng");
 		btnMonth.setFocusable(false);
 		btnMonth.setRadius(5);
-		btnMonth.setForeground(Color.GRAY);
+		btnMonth.setForeground(new Color(100, 100, 100));
 		btnMonth.setColor(Color.WHITE);
 		btnMonth.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		btnMonth.setBounds(658, 0, 118, 44);
@@ -82,10 +110,30 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		btnMonth.setBorder(new LineBorder(new Color(146, 146, 146), 1));
 		pnlRevenueCalculation.add(btnMonth);
 
-		Button btnYear = new Button("Năm");
+		btnMonth.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnMonth.setColor(Utils.primaryColor);
+				btnMonth.setForeground(Color.WHITE);
+				btnMonth.setColorTextOut(Color.WHITE);
+				btnYear.setColor(Color.WHITE);
+				btnYear.setForeground(new Color(100, 100, 100));
+				btnYear.setColorTextOut(new Color(100, 100, 100));
+				btnDay.setColor(Color.WHITE);
+				btnDay.setForeground(new Color(100, 100, 100));
+				btnDay.setColorTextOut(new Color(100, 100, 100));
+				cboDay.setEnabled(false);
+				cboMonth.setEnabled(true);
+				valueDay = "";
+				valueMonth = cboMonth.getSelectedItem().toString();
+				valueYear = cboYear.getSelectedItem().toString();
+
+			}
+		});
+
+		btnYear = new Button("Năm");
 		btnYear.setFocusable(false);
 		btnYear.setRadius(5);
-		btnYear.setForeground(Color.GRAY);
+		btnYear.setForeground(new Color(100, 100, 100));
 		btnYear.setColor(Color.WHITE);
 		btnYear.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		btnYear.setBounds(826, 0, 118, 44);
@@ -94,6 +142,26 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		btnYear.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnYear.setBorder(new LineBorder(new Color(146, 146, 146), 1));
 		pnlRevenueCalculation.add(btnYear);
+
+		btnYear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnYear.setColor(Utils.primaryColor);
+				btnYear.setForeground(Color.WHITE);
+				btnYear.setColorTextOut(Color.WHITE);
+				btnMonth.setColor(Color.WHITE);
+				btnMonth.setForeground(new Color(100, 100, 100));
+				btnMonth.setColorTextOut(new Color(100, 100, 100));
+				btnDay.setColor(Color.WHITE);
+				btnDay.setForeground(new Color(100, 100, 100));
+				btnDay.setColorTextOut(new Color(100, 100, 100));
+				cboDay.setEnabled(false);
+				cboMonth.setEnabled(false);
+				valueDay = "";
+				valueMonth = "";
+				valueYear = cboYear.getSelectedItem().toString();
+
+			}
+		});
 
 		// ================== Kết thúc phần Button Tính doanh thu
 		// ================== Bắt đầu phần hiển thị ngày, tháng, năm
@@ -104,21 +172,28 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		pnlDate.setLayout(null);
 
 		JLabel lblDay = new JLabel("Ngày: ");
-		lblDay.setForeground(new Color(146, 146, 146));
+		lblDay.setForeground(new Color(100, 100, 100));
 		lblDay.setBounds(336, 0, 70, 28);
 		lblDay.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		pnlDate.add(lblDay);
 
-		String city[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
-		cboDay = new JComboBox<String>(city);
+		String days[] = { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15",
+				"16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" };
+		cboDay = new JComboBox<String>(days);
 		cboDay.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		cboDay.setBackground(Color.WHITE);
 		cboDay.setBounds(406, 0, 100, 36);
 		cboDay.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlDate.add(cboDay);
 
+		cboDay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				valueDay = cboDay.getSelectedItem().toString();
+			}
+		});
+
 		JLabel lblMonth = new JLabel("Tháng: ");
-		lblMonth.setForeground(new Color(146, 146, 146));
+		lblMonth.setForeground(new Color(100, 100, 100));
 		lblMonth.setBounds(556, 0, 70, 28);
 		lblMonth.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		pnlDate.add(lblMonth);
@@ -132,8 +207,14 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		cboMonth.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlDate.add(cboMonth);
 
+		cboMonth.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				valueMonth = cboMonth.getSelectedItem().toString();
+			}
+		});
+
 		JLabel lblYear = new JLabel("Năm: ");
-		lblYear.setForeground(new Color(146, 146, 146));
+		lblYear.setForeground(new Color(100, 100, 100));
 		lblYear.setBounds(776, 0, 70, 28);
 		lblYear.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		pnlDate.add(lblYear);
@@ -147,6 +228,12 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		cboYear.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlDate.add(cboYear);
 
+		cboYear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				valueYear = cboYear.getSelectedItem().toString();
+			}
+		});
+
 		// ================== Kết thúc phần hiển thị ngày, tháng, năm
 
 		Button btnStatisticize = new Button("Thống kê doanh thu");
@@ -159,6 +246,8 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		btnStatisticize.setBorderColor(Utils.secondaryColor);
 		btnStatisticize.setColorOver(Utils.primaryColor);
 		btnStatisticize.setColorClick(Utils.primaryColor);
+		btnStatisticize.setColorTextOver(Color.WHITE);
+		btnStatisticize.setColorTextOut(Color.WHITE);
 		btnStatisticize.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnStatisticize.setBorder(new LineBorder(Color.WHITE, 1));
 		this.add(btnStatisticize);
@@ -169,11 +258,28 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		this.add(pnlResult);
 		pnlResult.setLayout(null);
 
-		JLabel lblResult = new JLabel("Doanh thu trong: 01/2022");
+		JLabel lblResult = new JLabel("Doanh thu trong: ");
 		lblResult.setBounds(0, 0, 299, 28);
 		lblResult.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblResult.setForeground(new Color(146, 146, 146));
+		lblResult.setForeground(new Color(100, 100, 100));
 		pnlResult.add(lblResult);
+
+		lblResDate = new JLabel("");
+		lblResDate.setBounds(170, 0, 299, 28);
+		lblResDate.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		lblResDate.setForeground(new Color(100, 100, 100));
+		pnlResult.add(lblResDate);
+
+		btnStatisticize.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (valueDay.trim() == "" && valueMonth.trim() != "") {
+					lblResDate.setText(valueMonth + "/" + valueYear);
+				} else if (valueDay.trim() == "" && valueMonth.trim() == "") {
+					lblResDate.setText(valueYear);
+				} else
+					lblResDate.setText(valueDay + "/" + valueMonth + "/" + valueYear);
+			}
+		});
 
 		JScrollPane scr1 = new JScrollPane();
 		scr1.setBounds(70, 285, 445, 75);
@@ -258,12 +364,12 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		scr2.setViewportView(tbl2);
 
 		chart = new Chart();
-		chart.addLegend("Tháng 7", new Color(238, 255, 65));
-		chart.addLegend("Tháng 8", new Color(24, 255, 255));
-		chart.addLegend("Tháng 9", new Color(105, 240, 174));
-		chart.addData(new ModelChart("Hát", new double[] { 10, 0, 0 }));
-		chart.addData(new ModelChart("Dịch vụ", new double[] { 50, 40, 90 }));
-		chart.addData(new ModelChart("Khác", new double[] { 10, 20, 30 }));
+		chart.addLegend("", new Color(149, 166, 248));
+		chart.addLegend("", new Color(149, 166, 248));
+		chart.addLegend("", new Color(149, 166, 248));
+		chart.addData(new ModelChart("01/01/2022 - 10/01/2022", new double[] { 0, 10, 0 }));
+		chart.addData(new ModelChart("11/01/2022 - 20/01/2022", new double[] { 0, 40, 0 }));
+		chart.addData(new ModelChart("21/01/2022 - 30/01/2022", new double[] { 0, 20, 0 }));
 		chart.setBounds(550, 285, 465, 250);
 		this.add(chart);
 

@@ -28,6 +28,8 @@ public class Button extends JButton {
 	private Color colorOver;
 	private boolean over;
 	private int radius = 0;
+	private Color colorTextOver;
+	private Color colorTextOut;
 
 	public Button() {
 //		Khởi tạo màu sắc
@@ -35,6 +37,8 @@ public class Button extends JButton {
 		colorOver = new Color(255, 255, 255);
 		colorClick = new Color(226, 231, 255);
 		borderColor = new Color(255, 255, 255);
+		colorTextOver = getForeground();
+		colorTextOut = getForeground();
 		setContentAreaFilled(false);
 
 //		Lắng nghe sự kiện
@@ -43,6 +47,7 @@ public class Button extends JButton {
 			public void mouseEntered(MouseEvent me) {
 				if (isEnabled()) {
 					setBackground(colorOver);
+					setForeground(colorTextOver);
 					over = true;
 				}
 			}
@@ -50,6 +55,7 @@ public class Button extends JButton {
 			@Override
 			public void mouseExited(MouseEvent me) {
 				setBackground(color);
+				setForeground(colorTextOut);
 				over = false;
 
 			}
@@ -74,6 +80,13 @@ public class Button extends JButton {
 	public Button(String text) {
 		this();
 		setText(text);
+	}
+
+	@Override
+	public void setForeground(Color fg) {
+		super.setForeground(fg);
+		colorTextOver = fg;
+		colorTextOut = fg;
 	}
 
 	/**
@@ -238,6 +251,14 @@ public class Button extends JButton {
 	 */
 	public void setOver(boolean over) {
 		this.over = over;
+	}
+
+	public void setColorTextOver(Color colorTextOver) {
+		this.colorTextOver = colorTextOver;
+	}
+
+	public void setColorTextOut(Color colorTextOut) {
+		this.colorTextOut = colorTextOut;
 	}
 
 	/**

@@ -9,12 +9,12 @@ import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -26,6 +26,7 @@ import components.button.Button;
 import components.comboBox.ComboBox;
 import components.jDialog.JDialogCustom;
 import components.notification.Notification;
+import components.notification.Notification.Type;
 import components.radio.RadioButtonCustom;
 import components.textField.TextField;
 import dao.DiaChi_DAO;
@@ -74,9 +75,10 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 	private boolean isEnabledEventPhuong = false;
 	private Button btnLuu;
 	private Button btnCapNhat;
+	private Main main;
 
-	public ThongTinChiTietNhanVien_GUI(JFrame jFrame, NhanVien nhanVien, boolean isCapNhat) {
-		this(jFrame, nhanVien);
+	public ThongTinChiTietNhanVien_GUI(Main main, NhanVien nhanVien, boolean isCapNhat) {
+		this(main, nhanVien);
 		setEnabledForm(true);
 		btnCapNhat.setVisible(false);
 		btnLuu.setEnabled(true);
@@ -85,11 +87,12 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 	/**
 	 * Create the frame.
 	 */
-	public ThongTinChiTietNhanVien_GUI(JFrame jFrame, NhanVien nhanVien) {
+	public ThongTinChiTietNhanVien_GUI(Main main, NhanVien nhanVien) {
 		nhanVien_DAO = new NhanVien_DAO();
 		taiKhoan_DAO = new TaiKhoan_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 		this.nhanVien = nhanVien_DAO.getNhanVienTheoMa(nhanVien.getMaNhanVien());
+		this.main = main;
 
 		setBackground(Utils.secondaryColor);
 		setBounds(0, 0, 1086, 508);
@@ -355,14 +358,6 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		btnCapNhat.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnCapNhat.setBounds(49, 0, 250, 48);
 		pnlActions.add(btnCapNhat);
-		btnCapNhat.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				setEnabledForm(true);
-				btnCapNhat.setVisible(false);
-				btnLuu.setEnabled(true);
-			}
-		});
 
 		Button btnHuy = new Button("Hủy");
 		btnHuy.setIcon(new ImageIcon("Icon\\cancelled 1.png"));
@@ -377,17 +372,6 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnHuy.setBounds(49, 0, 250, 48);
 		pnlActions.add(btnHuy);
-		btnHuy.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				btnCapNhat.setVisible(true);
-				ThongTinChiTietNhanVien_GUI.this.nhanVien = nhanVien_DAO
-						.getNhanVienTheoMa(ThongTinChiTietNhanVien_GUI.this.nhanVien.getMaNhanVien());
-				setNhanVienVaoForm(ThongTinChiTietNhanVien_GUI.this.nhanVien);
-				setEnabledForm(false);
-				btnLuu.setEnabled(false);
-			}
-		});
 
 		Button btnNghiViec = new Button("Cập nhật");
 		btnNghiViec.setIcon(new ImageIcon("Icon\\unemployed 1.png"));
@@ -405,17 +389,74 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		if (this.nhanVien.getTrangThai().equals(TrangThai.NghiLam))
 			btnNghiViec.setEnabled(false);
 		pnlActions.add(btnNghiViec);
+
+		setNhanVienVaoForm(this.nhanVien);
+		txtMaNhanVien.setEnabled(false);
+		setEnabledForm(false);
+
+//		Sự kiện nút cập nhật
+		btnCapNhat.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				txtLuong.setText(ThongTinChiTietNhanVien_GUI.this.nhanVien.getLuong() + "");
+				setEnabledForm(true);
+				btnCapNhat.setVisible(false);
+				btnLuu.setEnabled(true);
+			}
+		});
+
+//		Sự kiện nút lưu
+		btnLuu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (btnLuu.isEnabled()) {
+					if (validator()) {
+						NhanVien nhanVien = getNhanVienTuForm();
+						if (nhanVien_DAO.capNhatNhanVien(nhanVien)) {
+							new Notification(main, components.notification.Notification.Type.SUCCESS,
+									"Cập nhật thông tin nhân viên thành công").showNotification();
+							btnCapNhat.setVisible(true);
+							ThongTinChiTietNhanVien_GUI.this.nhanVien = nhanVien;
+							setNhanVienVaoForm(ThongTinChiTietNhanVien_GUI.this.nhanVien);
+							if (ThongTinChiTietNhanVien_GUI.this.nhanVien.getTrangThai().equals(TrangThai.DangLam))
+								btnNghiViec.setEnabled(true);
+							setEnabledForm(false);
+							btnLuu.setEnabled(false);
+							main.repaint();
+						} else {
+							System.out.println("Error");
+						}
+					}
+				}
+			}
+		});
+
+//		Sự kiện nút hủy
+		btnHuy.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				btnCapNhat.setVisible(true);
+				ThongTinChiTietNhanVien_GUI.this.nhanVien = nhanVien_DAO
+						.getNhanVienTheoMa(ThongTinChiTietNhanVien_GUI.this.nhanVien.getMaNhanVien());
+				setNhanVienVaoForm(ThongTinChiTietNhanVien_GUI.this.nhanVien);
+				setEnabledForm(false);
+				btnLuu.setEnabled(false);
+				main.repaint();
+			}
+		});
+
+//		Sự kiện nút nghỉ việc
 		btnNghiViec.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (btnNghiViec.isEnabled()) {
-					JDialogCustom jDialogCustom = new JDialogCustom(jFrame);
+					JDialogCustom jDialogCustom = new JDialogCustom(main);
 
 					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
 							nhanVien_DAO.setNghiLam(nhanVien.getMaNhanVien());
-							new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
+							new Notification(main, components.notification.Notification.Type.SUCCESS,
 									"Cập nhật trạng thái làm việc của nhân viên thành công").showNotification();
 							setNhanVienVaoForm(nhanVien_DAO.getNhanVienTheoMa(nhanVien.getMaNhanVien()));
 							btnNghiViec.setEnabled(false);
@@ -430,41 +471,152 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 			}
 		});
 
-		setNhanVienVaoForm(this.nhanVien);
-		txtMaNhanVien.setEnabled(false);
-		setEnabledForm(false);
-
-		btnLuu.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (btnLuu.isEnabled()) {
-					if (validator()) {
-						NhanVien nhanVien = getNhanVienTuForm();
-						if (nhanVien_DAO.capNhatNhanVien(nhanVien)) {
-							new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
-									"Cập nhật thông tin nhân viên thành công").showNotification();
-							btnCapNhat.setVisible(true);
-							ThongTinChiTietNhanVien_GUI.this.nhanVien = nhanVien;
-							setNhanVienVaoForm(ThongTinChiTietNhanVien_GUI.this.nhanVien);
-							if (ThongTinChiTietNhanVien_GUI.this.nhanVien.getTrangThai().equals(TrangThai.DangLam))
-								btnNghiViec.setEnabled(true);
-							setEnabledForm(false);
-							btnLuu.setEnabled(false);
-						} else {
-							System.out.println("Error");
-						}
-					}
-				}
-			}
-		});
-
 		cmbTinh.addItemListener(this);
 		cmbQuan.addItemListener(this);
 		cmbPhuong.addItemListener(this);
 	}
 
+	private void setErrorAllJTextField(boolean b) {
+		txtCCCD.setError(b);
+		txtDiaChiCT.setError(b);
+		txtHoTen.setError(b);
+		txtMatKhau.setError(b);
+		txtNgaySinh.setError(b);
+		txtSoDienThoai.setError(b);
+		txtLuong.setError(b);
+		txtMatKhau.setError(b);
+	}
+
 	private boolean validator() {
+		String vietNamese = Utils.getVietnameseDiacriticCharacters() + "A-Z";
+		String vietNameseLower = Utils.getVietnameseDiacriticCharactersLower() + "a-z";
+
+		String hoTen = txtHoTen.getText().trim();
+
+		if (hoTen.length() <= 0)
+			return showThongBaoLoi(txtHoTen, "Vui lòng nhập họ tên nhân viên");
+
+		if (!Pattern.matches(
+				String.format("[%s][%s]*( [%s][%s]*)+", vietNamese, vietNameseLower, vietNamese, vietNameseLower),
+				hoTen))
+			return showThongBaoLoi(txtHoTen, "Họ tên phải bắt đầu bằng ký tự hoa và có ít nhất 2 từ");
+
+		String cccd = txtCCCD.getText().trim();
+
+		if (cccd.length() <= 0)
+			return showThongBaoLoi(txtCCCD, "Vui lòng nhập số căn cước công dân");
+
+		if (!Pattern.matches("\\d{12}", cccd))
+			return showThongBaoLoi(txtCCCD, "Số căn cước công dân phải có 12 ký tự số");
+
+		if (nhanVien_DAO.isCCCDDaTonTai(nhanVien, cccd))
+			return showThongBaoLoi(txtCCCD, "Số căn cước công dân đã tồn tại");
+
+		String soDienThoai = txtSoDienThoai.getText().trim();
+
+		if (soDienThoai.length() <= 0)
+			return showThongBaoLoi(txtSoDienThoai, "Vui lòng nhập số điện thoại");
+
+		if (!Utils.isSoDienThoai(soDienThoai))
+			return showThongBaoLoi(txtSoDienThoai, "Số điện thoại phải bắt đầu bằng số 0, theo sau là 9 ký tự số");
+
+		if (nhanVien_DAO.isSoDienThoaiDaTonTai(nhanVien, soDienThoai))
+			return showThongBaoLoi(txtSoDienThoai, "Số điện thoại đã tồn tại");
+
+		String ngaySinh = txtNgaySinh.getText();
+		long daysElapsed = java.time.temporal.ChronoUnit.DAYS.between(Utils.getLocalDate(ngaySinh), LocalDate.now());
+		boolean isDuTuoi = daysElapsed / (18 * 365) > 0;
+
+		if (!isDuTuoi) {
+			new Notification(main, Type.ERROR, "Nhân viên chưa đủ 18 tuổi").showNotification();
+			dateChoose.showPopup();
+			return false;
+		}
+
+		boolean isNamSelected = radNam.isSelected();
+		boolean isNuSelected = radNu.isSelected();
+
+		if (!isNamSelected && !isNuSelected) {
+			new Notification(main, Type.ERROR, "Vui lòng chọn giới tính").showNotification();
+			return false;
+		}
+
+		String tinh = (String) cmbTinh.getSelectedItem();
+
+		if (tinh.equals(Tinh.getTinhLabel())) {
+			new Notification(main, Type.ERROR, "Vui lòng chọn tỉnh/ thành phố").showNotification();
+			cmbTinh.showPopup();
+			return false;
+		}
+
+		String quan = (String) cmbQuan.getSelectedItem();
+
+		if (quan.equals(Quan.getQuanLabel())) {
+			new Notification(main, Type.ERROR, "Vui lòng chọn quận/ huyện").showNotification();
+			cmbQuan.showPopup();
+			return false;
+		}
+
+		String phuong = (String) cmbPhuong.getSelectedItem();
+
+		if (phuong.equals(Phuong.getPhuongLabel())) {
+			new Notification(main, Type.ERROR, "Vui lòng chọn phường/ xã").showNotification();
+			cmbPhuong.showPopup();
+			return false;
+		}
+
+		String diaChi = txtDiaChiCT.getText().trim();
+
+		if (diaChi.length() <= 0)
+			return showThongBaoLoi(txtDiaChiCT, "Vui lòng nhập địa chỉ");
+
+		String luong = txtLuong.getText().trim();
+
+		if (luong.length() <= 0)
+			return showThongBaoLoi(txtLuong, "Vui lòng nhập lương");
+
+		if (!Utils.isDouble(luong))
+			return showThongBaoLoi(txtLuong, "Lương chỉ chứa các ký tự số");
+
+		double luongNumber = Double.parseDouble(luong);
+
+		if (luongNumber <= 0)
+			return showThongBaoLoi(txtLuong, "Lương phải lớn hơn 0");
+
+		String matKhau = txtMatKhau.getText();
+
+		if (matKhau.length() <= 0)
+			return showThongBaoLoi(txtMatKhau, "Vui lòng nhập mật khẩu");
+
+		if (matKhau.length() < 8)
+			return showThongBaoLoi(txtMatKhau, "Mật khẩu phải có ít nhất 8 ký tự");
+
+		if (!Pattern.matches(".*[A-Z]+.*", matKhau))
+			return showThongBaoLoi(txtMatKhau, "Mật khẩu phải có ít nhất 1 ký tự hoa");
+
+		if (!Pattern.matches(".*[a-z]+.*", matKhau))
+			return showThongBaoLoi(txtMatKhau, "Mật khẩu phải có ít nhất 1 ký tự thường");
+
+		if (!Pattern.matches(".*[0-9]+.*", matKhau))
+			return showThongBaoLoi(txtMatKhau, "Mật khẩu phải có ít nhất 1 ký tự số");
+
+		if (!Pattern.matches(".*[^A-Za-z0-9]+.*", matKhau))
+			return showThongBaoLoi(txtMatKhau, "Mật khẩu phải có ít nhất 1 ký tự đặc biệt");
 		return true;
+	}
+
+	/**
+	 * Hiển thị thông báo lỗi và focus các JTextField
+	 * 
+	 * @param txt     JtextField cần focus
+	 * @param message thông báo lỗi
+	 * @return false
+	 */
+	private boolean showThongBaoLoi(TextField txt, String message) {
+		new Notification(main, Type.ERROR, message).showNotification();
+		txt.setError(true);
+		txt.requestFocus();
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
