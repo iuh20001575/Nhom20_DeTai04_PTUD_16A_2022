@@ -39,31 +39,27 @@ import utils.Utils;
 
 public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 	private static final long serialVersionUID = 1L;
+	private JComboBox<String> cmbPhuong;
+	private JComboBox<String> cmbQuan;
+	private JComboBox<String> cmbTinh;
 	private DateChooser dateChoose;
 	private DiaChi_DAO DiaChi_DAO;
-	private KhachHang_DAO khachHang_DAO;
-	private JComboBox<String> cmbTinh;
-	private JComboBox<String> cmbQuan;
-	private JComboBox<String> cmbPhuong;
-	private KhachHang khachHang;
-	private Tinh tinh;
-	private Quan quan;
-	@SuppressWarnings("unused")
-	private Phuong phuong;
-
-	private boolean isEnabledEventTinh = false;
-	private boolean isEnabledEventQuan = false;
 	private boolean isEnabledEventPhuong = false;
-
-	TextField txtMa, txtTen, txtCCCD, txtSDT, txtNgaySinh, txtTinh, txtQuan, txtPhuong, txtDiaChiCT;
+	private boolean isEnabledEventQuan = false;
+	private boolean isEnabledEventTinh = false;
+	private KhachHang khachHang;
+	private KhachHang_DAO khachHang_DAO;
+	private Quan quan;
 	RadioButtonCustom radNam, radNu;
+
+	private Tinh tinh;
+	TextField txtMa, txtTen, txtCCCD, txtSDT, txtNgaySinh, txtTinh, txtQuan, txtPhuong, txtDiaChiCT;
 
 	public CapNhatKhachHang_GUI(JFrame main, KhachHang khachHang) {
 
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		khachHang_DAO = new KhachHang_DAO();
@@ -266,13 +262,6 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list, String firstLabel) {
-		list.removeAllItems();
-		list.addItem((E) firstLabel);
-		return list;
-	}
-
 	private KhachHang getKhachHangTuForm() {
 		String sma = txtMa.getText();
 		String sten = txtTen.getText();
@@ -286,22 +275,6 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 		String sDCCT = txtDiaChiCT.getText();
 		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, DiaChi_DAO.getTinh(sTinh),
 				DiaChi_DAO.getQuan(tinh, sQuan), DiaChi_DAO.getPhuong(quan, sPhuong), sDCCT);
-	}
-
-	private void setKhachHangVaoForm(KhachHang khachHang) {
-		txtMa.setText(khachHang.getMaKhachHang());
-		txtCCCD.setText(khachHang.getCccd());
-		txtDiaChiCT.setText(khachHang.getDiaChiCuThe());
-		txtTen.setText(khachHang.getHoTen());
-		txtNgaySinh.setText(Utils.formatDate(khachHang.getNgaySinh()));
-		txtSDT.setText(khachHang.getSoDienThoai());
-		setTinhToComboBox();
-		setQuanToComboBox(tinh);
-		setPhuongToComboBox(quan);
-		if (khachHang.isGioiTinh())
-			radNam.setSelected(true);
-		else
-			radNu.setSelected(true);
 	}
 
 	@Override
@@ -321,7 +294,6 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 			cmbPhuong.setEnabled(false);
 			cmbQuan = resizeComboBox(cmbQuan, Quan.getQuanLabel());
 			quan = null;
-			phuong = null;
 
 			if (tinhSelected.equals(Tinh.getTinhLabel())) {
 				cmbQuan.setSelectedIndex(0);
@@ -342,7 +314,6 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 			isEnabledEventQuan = false;
 			String quanSelected = (String) cmbQuan.getSelectedItem();
 			cmbPhuong = resizeComboBox(cmbPhuong, Quan.getQuanLabel());
-			phuong = null;
 
 			if (quanSelected.equals(Quan.getQuanLabel())) {
 				cmbPhuong.setSelectedIndex(0);
@@ -364,15 +335,84 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 			String phuongSelect = (String) cmbPhuong.getSelectedItem();
 
 			if (phuongSelect.equals(Phuong.getPhuongLabel())) {
-				phuong = null;
 				return;
 			}
 
-			Phuong phuong = DiaChi_DAO.getPhuong(quan, phuongSelect);
-			CapNhatKhachHang_GUI.this.phuong = phuong;
 			isEnabledEventPhuong = false;
 		}
 
+	}
+
+	@SuppressWarnings("unchecked")
+	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list, String firstLabel) {
+		list.removeAllItems();
+		list.addItem((E) firstLabel);
+		return list;
+	}
+
+	private void setKhachHangVaoForm(KhachHang khachHang) {
+		txtMa.setText(khachHang.getMaKhachHang());
+		txtCCCD.setText(khachHang.getCccd());
+		txtDiaChiCT.setText(khachHang.getDiaChiCuThe());
+		txtTen.setText(khachHang.getHoTen());
+		txtNgaySinh.setText(Utils.formatDate(khachHang.getNgaySinh()));
+		txtSDT.setText(khachHang.getSoDienThoai());
+		setTinhToComboBox();
+		setQuanToComboBox(tinh);
+		setPhuongToComboBox(quan);
+		if (khachHang.isGioiTinh())
+			radNam.setSelected(true);
+		else
+			radNu.setSelected(true);
+	}
+
+	private void setPhuongToComboBox(Quan quan) {
+		isEnabledEventPhuong = false;
+
+		resizeComboBox(cmbPhuong, Phuong.getPhuongLabel());
+
+		List<Phuong> phuongs = DiaChi_DAO.getPhuong(quan);
+
+		phuongs.sort(new Comparator<Phuong>() {
+
+			@Override
+			public int compare(Phuong o1, Phuong o2) {
+				return o1.getPhuong().compareToIgnoreCase(o2.getPhuong());
+			}
+		});
+
+		phuongs.forEach(phuong -> {
+			int index = phuongs.indexOf(phuong);
+			cmbPhuong.addItem(phuong.getPhuong());
+			if (phuong.getId().equals(CapNhatKhachHang_GUI.this.khachHang.getPhuong().getId())) {
+				cmbPhuong.setSelectedIndex(index + 1);
+			}
+		});
+
+		isEnabledEventPhuong = true;
+	}
+
+	private void setQuanToComboBox(Tinh tinh) {
+		isEnabledEventQuan = false;
+
+		resizeComboBox(cmbQuan, Quan.getQuanLabel());
+		List<Quan> quans = DiaChi_DAO.getQuan(tinh);
+		quans.sort(new Comparator<Quan>() {
+			@Override
+			public int compare(Quan o1, Quan o2) {
+				return o1.getQuan().compareToIgnoreCase(o2.getQuan());
+			}
+		});
+		quans.forEach(quan -> {
+			int index = quans.indexOf(quan);
+			cmbQuan.addItem(quan.getQuan());
+			if (quan.getId().equals(CapNhatKhachHang_GUI.this.khachHang.getQuan().getId())) {
+				cmbQuan.setSelectedIndex(index + 1);
+				CapNhatKhachHang_GUI.this.quan = quan;
+			}
+		});
+
+		isEnabledEventQuan = true;
 	}
 
 	private void setTinhToComboBox() {
@@ -399,56 +439,6 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 		});
 
 		isEnabledEventTinh = true;
-	}
-
-	private void setQuanToComboBox(Tinh tinh) {
-		isEnabledEventQuan = false;
-
-		resizeComboBox(cmbQuan, Quan.getQuanLabel());
-		List<Quan> quans = DiaChi_DAO.getQuan(tinh);
-		quans.sort(new Comparator<Quan>() {
-			@Override
-			public int compare(Quan o1, Quan o2) {
-				return o1.getQuan().compareToIgnoreCase(o2.getQuan());
-			}
-		});
-		quans.forEach(quan -> {
-			int index = quans.indexOf(quan);
-			cmbQuan.addItem(quan.getQuan());
-			if (quan.getId().equals(CapNhatKhachHang_GUI.this.khachHang.getQuan().getId())) {
-				cmbQuan.setSelectedIndex(index + 1);
-				CapNhatKhachHang_GUI.this.quan = quan;
-			}
-		});
-
-		isEnabledEventQuan = true;
-	}
-
-	private void setPhuongToComboBox(Quan quan) {
-		isEnabledEventPhuong = false;
-
-		resizeComboBox(cmbPhuong, Phuong.getPhuongLabel());
-
-		List<Phuong> phuongs = DiaChi_DAO.getPhuong(quan);
-
-		phuongs.sort(new Comparator<Phuong>() {
-
-			@Override
-			public int compare(Phuong o1, Phuong o2) {
-				return o1.getPhuong().compareToIgnoreCase(o2.getPhuong());
-			}
-		});
-
-		phuongs.forEach(phuong -> {
-			int index = phuongs.indexOf(phuong);
-			cmbPhuong.addItem(phuong.getPhuong());
-			if (phuong.getId().equals(CapNhatKhachHang_GUI.this.khachHang.getPhuong().getId())) {
-				cmbPhuong.setSelectedIndex(index + 1);
-				CapNhatKhachHang_GUI.this.phuong = phuong;
-			}
-		});
-
-		isEnabledEventPhuong = true;
 	}
 
 }

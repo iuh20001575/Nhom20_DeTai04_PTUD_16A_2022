@@ -81,7 +81,6 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		khachHang_DAO = new KhachHang_DAO();
@@ -292,7 +291,6 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
 		Object object = e.getSource();
 		if (e.getStateChange() != ItemEvent.SELECTED) {
 			return;
@@ -377,25 +375,21 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 }

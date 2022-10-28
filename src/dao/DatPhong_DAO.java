@@ -64,7 +64,6 @@ public class DatPhong_DAO {
 			if (resultSet.next())
 				return getDatPhong(resultSet);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -119,7 +118,6 @@ public class DatPhong_DAO {
 				list.add(phong);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -175,13 +173,11 @@ public class DatPhong_DAO {
 
 			return commit();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			try {
 				ConnectDB.getConnection().rollback();
 				ConnectDB.getConnection().setAutoCommit(true);
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -244,13 +240,11 @@ public class DatPhong_DAO {
 
 			return commit();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			try {
 				ConnectDB.getConnection().rollback();
 				ConnectDB.getConnection().setAutoCommit(true);
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -281,7 +275,6 @@ public class DatPhong_DAO {
 
 			return "MDP" + newMaDatPhong;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -346,7 +339,6 @@ public class DatPhong_DAO {
 				list.add(phong);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -386,7 +378,6 @@ public class DatPhong_DAO {
 			if (resultSet.next())
 				return resultSet.getTime(1).toLocalTime();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -413,7 +404,6 @@ public class DatPhong_DAO {
 			if (resultSet.next())
 				return getDatPhong(resultSet);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -435,7 +425,6 @@ public class DatPhong_DAO {
 			while (resultSet.next())
 				list.add(getDatPhong(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -458,7 +447,6 @@ public class DatPhong_DAO {
 			while (resultSet.next())
 				list.add(resultSet.getString(1));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -552,13 +540,11 @@ public class DatPhong_DAO {
 
 			return commit();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			try {
 				ConnectDB.getConnection().rollback();
 				ConnectDB.getConnection().setAutoCommit(true);
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -584,7 +570,6 @@ public class DatPhong_DAO {
 			while (resultSet.next())
 				list.add(getDatPhong(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -642,7 +627,6 @@ public class DatPhong_DAO {
 
 			return commit();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -671,7 +655,6 @@ public class DatPhong_DAO {
 
 			return resultSet.next();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -696,7 +679,6 @@ public class DatPhong_DAO {
 			if (resultSet.next())
 				return Utils.convertDateToLocalDate(resultSet.getDate(1));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -726,7 +708,6 @@ public class DatPhong_DAO {
 				list.add(phong);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -771,7 +752,6 @@ public class DatPhong_DAO {
 					return true;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -849,12 +829,10 @@ public class DatPhong_DAO {
 
 			return commit();
 		} catch (Exception e) {
-			// TODO: handle exception
 			try {
 				ConnectDB.getConnection().rollback();
 				ConnectDB.getConnection().setAutoCommit(true);
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -874,7 +852,6 @@ public class DatPhong_DAO {
 			while (resultSet.next())
 				list.add(resultSet.getString(1));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -938,7 +915,6 @@ public class DatPhong_DAO {
 				ConnectDB.getConnection().rollback();
 				ConnectDB.getConnection().setAutoCommit(true);
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}

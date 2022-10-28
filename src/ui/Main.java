@@ -74,7 +74,6 @@ public class Main extends JFrame {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 

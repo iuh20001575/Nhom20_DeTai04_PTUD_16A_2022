@@ -72,6 +72,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private JPanel pnlDanhSachPhong;
 	private PanelEvent pnlDatPhong;
 	private PanelEvent pnlDatPhongTruoc;
+	private PanelEvent pnlDichVu;
 	private PanelEvent pnlFilterPhongCho;
 	private PanelEvent pnlFilterPhongDangSuDung;
 	private PanelEvent pnlFilterPhongTrong;
@@ -83,7 +84,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private int soPhongTam;
 	private int soPhongTrong = 0;
 	private final int widthPhong = 131;
-	private PanelEvent pnlDichVu;
 
 	/**
 	 * Create the frame.
@@ -95,7 +95,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -919,7 +918,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 								month < 10 ? "0" + month : month, year));
 						sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -935,6 +933,32 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		glass.setVisible(false);
 		glass.setAlpha(0f);
 		jFrameSub = null;
+	}
+
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent e) {
+
+		if (!_this.isShowing()) {
+			KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
+			return false;
+		}
+		if (jFrameSub != null && jFrameSub.isVisible())
+			return false;
+
+		if (KeyEvent.VK_F1 == e.getKeyCode())
+			handleDatPhong();
+		if (KeyEvent.VK_F2 == e.getKeyCode())
+			handleDatPhongTruoc();
+		if (KeyEvent.VK_F3 == e.getKeyCode())
+			handleChuyenPhong();
+		if (KeyEvent.VK_F4 == e.getKeyCode())
+			handleGopPhong();
+		if (KeyEvent.VK_F5 == e.getKeyCode())
+			handleDichVu();
+		if (KeyEvent.VK_F6 == e.getKeyCode())
+			handleThanhToan();
+
+		return false;
 	}
 
 	/**
@@ -1022,7 +1046,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 						lblTongGio.setText("Tổng giờ: " + tongGio);
 						sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -1064,12 +1087,10 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		return new Dimension(890, Math.max((row - 1) * gapY + row * heightPhong, 292));
 	}
 
-	public void openJFrameSub(JFrame jFrame) {
-		this.jFrame.setGlassPane(glass);
-		glass.setVisible(true);
-		glass.setAlpha(0.5f);
-		jFrameSub = jFrame;
-		jFrameSub.setVisible(true);
+	private void handleChuyenPhong() {
+		if (!pnlChuyenPhong.isEnabled())
+			return;
+		openJFrameSub(new ChuyenPhong_GUI(_this, jFrame));
 	}
 
 	private void handleDatPhong() {
@@ -1084,10 +1105,10 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		openJFrameSub(new DatPhongTruoc_GUI(_this, jFrame));
 	}
 
-	private void handleChuyenPhong() {
-		if (!pnlChuyenPhong.isEnabled())
-			return;
-		openJFrameSub(new ChuyenPhong_GUI(_this, jFrame));
+	private void handleDichVu() {
+//		if (!pnlGopPhong.isEnabled())
+//			return;
+//		openJFrameSub(new GopPhong_GUI(_this));
 	}
 
 	private void handleGopPhong() {
@@ -1096,41 +1117,17 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		openJFrameSub(new GopPhong_GUI(_this, jFrame));
 	}
 
-	private void handleDichVu() {
-//		if (!pnlGopPhong.isEnabled())
-//			return;
-//		openJFrameSub(new GopPhong_GUI(_this));
-	}
-
 	private void handleThanhToan() {
 		if (!pnlThanhToan.isEnabled())
 			return;
 		openJFrameSub(new ThanhToan_GUI(_this, jFrame));
 	}
 
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent e) {
-
-		if (!_this.isShowing()) {
-			KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
-			return false;
-		}
-		if (jFrameSub != null && jFrameSub.isVisible())
-			return false;
-
-		if (KeyEvent.VK_F1 == e.getKeyCode())
-			handleDatPhong();
-		if (KeyEvent.VK_F2 == e.getKeyCode())
-			handleDatPhongTruoc();
-		if (KeyEvent.VK_F3 == e.getKeyCode())
-			handleChuyenPhong();
-		if (KeyEvent.VK_F4 == e.getKeyCode())
-			handleGopPhong();
-		if (KeyEvent.VK_F5 == e.getKeyCode())
-			handleDichVu();
-		if (KeyEvent.VK_F6 == e.getKeyCode())
-			handleThanhToan();
-
-		return false;
+	public void openJFrameSub(JFrame jFrame) {
+		this.jFrame.setGlassPane(glass);
+		glass.setVisible(true);
+		glass.setAlpha(0.5f);
+		jFrameSub = jFrame;
+		jFrameSub.setVisible(true);
 	}
 }

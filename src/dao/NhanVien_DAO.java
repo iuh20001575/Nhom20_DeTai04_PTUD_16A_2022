@@ -21,7 +21,6 @@ public class NhanVien_DAO {
 	private TaiKhoan_DAO taiKhoan_DAO;
 
 	public NhanVien_DAO() {
-		// TODO Auto-generated constructor stub
 		taiKhoan_DAO = new TaiKhoan_DAO();
 	}
 
@@ -68,7 +67,6 @@ public class NhanVien_DAO {
 			while (resultSet.next())
 				list.add(getNhanVien(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -99,7 +97,6 @@ public class NhanVien_DAO {
 			while (resultSet.next())
 				list.add(getNhanVien(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -122,7 +119,6 @@ public class NhanVien_DAO {
 			if (resultSet.next())
 				return getNhanVien(resultSet);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -143,7 +139,6 @@ public class NhanVien_DAO {
 
 			return preparedStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
@@ -175,7 +170,6 @@ public class NhanVien_DAO {
 
 			return preparedStatement.executeUpdate() > 0 && taiKhoan_DAO.capNhatMatKhau(nhanVien.getTaiKhoan());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -207,7 +201,6 @@ public class NhanVien_DAO {
 			preparedStatement.close();
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -232,7 +225,6 @@ public class NhanVien_DAO {
 				return "NV" + maNhanVienNew;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -249,7 +241,6 @@ public class NhanVien_DAO {
 
 			return resultSet.next();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -267,7 +258,6 @@ public class NhanVien_DAO {
 
 			return resultSet.next();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -284,7 +274,6 @@ public class NhanVien_DAO {
 
 			return resultSet.next();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -302,7 +291,6 @@ public class NhanVien_DAO {
 
 			return resultSet.next();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -328,7 +316,6 @@ public class NhanVien_DAO {
 			while (resultSet.next())
 				list.add(getNhanVien(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

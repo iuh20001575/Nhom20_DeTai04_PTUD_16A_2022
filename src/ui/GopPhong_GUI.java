@@ -27,6 +27,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -49,24 +51,24 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel pnlContent;
-	private JPanel pnlPhongGop;
-	private JTable tblPhongCanGop;
-	private JTable tblPhongGop;
-	private DefaultTableModel tableModelPhongGop;
-	private DefaultTableModel tableModelPhongCanGop;
-	private Button btnChuyen;
+	private GopPhong_GUI _this;
 	private Button btnChonPhong;
+	private Button btnChuyen;
 	private ComboBox<String> cmbMaDatPhong;
-
 	private DatPhong_DAO datPhong_DAO;
+	private List<Phong> dsPhongCanGop;
+	private List<Phong> dsPhongDaChon;
+	private final String labelCmbMaDatPhong = "Mã đặt phòng";
 	private LoaiPhong_DAO loaiPhong_DAO;
 
-	private GopPhong_GUI _this;
+	private JPanel pnlContent;
+	private JPanel pnlPhongGop;
 
-	private final String labelCmbMaDatPhong = "Mã đặt phòng";
-	private List<Phong> dsPhongDaChon;
-	private List<Phong> dsPhongCanGop;
+	private DefaultTableModel tableModelPhongCanGop;
+
+	private DefaultTableModel tableModelPhongGop;
+	private JTable tblPhongCanGop;
+	private JTable tblPhongGop;
 
 	/**
 	 * Create the frame.
@@ -149,7 +151,6 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
@@ -215,7 +216,6 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
@@ -321,6 +321,16 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 			};
 		});
 
+		tblPhongCanGop.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent lse) {
+				if (!lse.getValueIsAdjusting()) {
+					int row = tblPhongCanGop.getSelectedRow();
+					if (row != -1)
+						btnChonPhong.setEnabled(true);
+				}
+			}
+		});
+
 //		Sự kiện nút chọn phòng
 		btnChonPhong.addMouseListener(new MouseAdapter() {
 			@Override
@@ -338,6 +348,8 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 					showDanhSachPhongGop();
 					setEnabledBtnChuyenPhong();
 					capNhatDanhSachPhongDatTruoc();
+					if (tblPhongCanGop.getRowCount() > 0)
+						tblPhongCanGop.setRowSelectionInterval(0, 0);
 
 					if (tblPhongGop.getSelectedRow() != -1)
 						btnChuyen.setEnabled(true);
@@ -350,6 +362,16 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				setEnabledBtnChuyenPhong();
 			};
+		});
+
+		tblPhongGop.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent lse) {
+				if (!lse.getValueIsAdjusting()) {
+					int row = tblPhongGop.getSelectedRow();
+					if (row != -1)
+						setEnabledBtnChuyenPhong();
+				}
+			}
 		});
 
 //		Lắng nghe sự kiện nút gộp phòng
@@ -379,45 +401,47 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	}
 
 	/**
-	 * Hiển thị các phòng đã chọn vào mục phòng đã chọn
+	 * Thêm một phòng vào table phòng cần gộp
+	 * 
+	 * @param phong
 	 */
-	private void showDanhSachPhongDaChon() {
-		JScrollPane scrPhongDaChon = new JScrollPane();
-		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
-				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		scrPhongDaChon.setBounds(416, 17, 150, 130);
+	private void addRowTableCanGop(Phong phong) {
+		tableModelPhongCanGop.addRow(
+				new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(), phong.getSoLuongKhach() + "" });
+	}
 
-		if (pnlPhongGop.getComponentAt(416, 17) != null) {
-			pnlPhongGop.remove(pnlPhongGop.getComponentAt(416, 17));
-		}
+	/**
+	 * Thêm một phòng vào Table gộp phòng
+	 * 
+	 * @param phong
+	 */
+	private void addRowTablePhongGop(Phong phong) {
+		tableModelPhongGop.addRow(new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(),
+				phong.getSoLuongKhach() + "", Phong.convertTrangThaiToString(phong.getTrangThai()) });
+	}
 
-		pnlPhongGop.add(scrPhongDaChon);
-		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
-		scbPhongDaChon.setBackgroundColor(Utils.secondaryColor);
-		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
-		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
-
-		JPanel pnlPhongDaChon = new JPanel();
-		pnlPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setViewportView(pnlPhongDaChon);
-		pnlPhongDaChon.setLayout(null);
-
-		if (dsPhongDaChon == null)
+	private void capNhatDanhSachPhongDatTruoc() {
+		if (dsPhongCanGop == null || dsPhongDaChon == null)
 			return;
 
-		int heightItem = 36;
-		int gapY = 8;
-		int top = 4;
-		int countItem = dsPhongDaChon.size();
-		for (int i = 0; i < countItem; i++) {
-			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
-		}
+		emptyTable(tblPhongCanGop, tableModelPhongCanGop);
+		btnChonPhong.setEnabled(false);
 
-		pnlPhongDaChon.setPreferredSize(
-				new Dimension(140, Math.max(105, top + heightItem * countItem + gapY * (countItem - 1))));
+		for (Phong phong : dsPhongCanGop) {
+			if (!dsPhongDaChon.contains(phong))
+				addRowTableCanGop(phong);
+		}
+	}
+
+	/**
+	 * Xóa tất cả các row trong table
+	 * 
+	 * @param jTable
+	 * @param tableModel
+	 */
+	private void emptyTable(JTable jTable, DefaultTableModel tableModel) {
+		while (jTable.getRowCount() > 0)
+			tableModel.removeRow(0);
 	}
 
 	/**
@@ -459,31 +483,17 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		return pnlContainerItem;
 	}
 
-	/**
-	 * Show danh sách phòng gộp to Table
-	 */
-	private void showDanhSachPhongGop() {
-		String maDatPhong = (String) cmbMaDatPhong.getSelectedItem();
+	private Phong getPhongTuTablePhongGop() {
+		int row = tblPhongGop.getSelectedRow();
 
-		if (maDatPhong.equals(labelCmbMaDatPhong))
-			return;
+		if (row == -1)
+			return null;
 
-		emptyTable(tblPhongGop, tableModelPhongGop);
-
-		List<LoaiPhong> dsLoaiPhong = loaiPhong_DAO.getAllLoaiPhong();
-		List<Phong> dsPhongGop = datPhong_DAO.getPhongCoTheGop(maDatPhong, dsPhongDaChon);
-
-		dsPhongGop.forEach(phong -> {
-			for (int i = 0; i < dsLoaiPhong.size(); i++) {
-				if (dsLoaiPhong.get(i).equals(phong.getLoaiPhong())) {
-					phong.setLoaiPhong(dsLoaiPhong.get(i));
-					break;
-				}
-			}
-			addRowTablePhongGop(phong);
-		});
-
-		tblPhongGop.scrollRectToVisible(tblPhongGop.getCellRect(0, 0, true));
+		String maPhong = (String) tableModelPhongGop.getValueAt(row, 0);
+		LoaiPhong loaiPhong = loaiPhong_DAO.getLoaiPhongTheoTenLoai((String) tableModelPhongGop.getValueAt(row, 1));
+		int soLuongKhach = Integer.parseInt((String) tableModelPhongGop.getValueAt(row, 2));
+		TrangThai trangThai = Phong.convertStringToTrangThai((String) tableModelPhongGop.getValueAt(row, 3));
+		return new Phong(maPhong, loaiPhong, soLuongKhach, trangThai);
 	}
 
 	/**
@@ -532,59 +542,71 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	}
 
 	/**
-	 * Thêm một phòng vào Table gộp phòng
-	 * 
-	 * @param phong
+	 * Hiển thị các phòng đã chọn vào mục phòng đã chọn
 	 */
-	private void addRowTablePhongGop(Phong phong) {
-		tableModelPhongGop.addRow(new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(),
-				phong.getSoLuongKhach() + "", Phong.convertTrangThaiToString(phong.getTrangThai()) });
-	}
+	private void showDanhSachPhongDaChon() {
+		JScrollPane scrPhongDaChon = new JScrollPane();
+		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
+				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		scrPhongDaChon.setBounds(416, 17, 150, 130);
 
-	/**
-	 * Thêm một phòng vào table phòng cần gộp
-	 * 
-	 * @param phong
-	 */
-	private void addRowTableCanGop(Phong phong) {
-		tableModelPhongCanGop.addRow(
-				new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(), phong.getSoLuongKhach() + "" });
-	}
+		if (pnlPhongGop.getComponentAt(416, 17) != null) {
+			pnlPhongGop.remove(pnlPhongGop.getComponentAt(416, 17));
+		}
 
-	private Phong getPhongTuTablePhongGop() {
-		int row = tblPhongGop.getSelectedRow();
+		pnlPhongGop.add(scrPhongDaChon);
+		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
+		scbPhongDaChon.setBackgroundColor(Utils.secondaryColor);
+		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
+		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
 
-		if (row == -1)
-			return null;
+		JPanel pnlPhongDaChon = new JPanel();
+		pnlPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setViewportView(pnlPhongDaChon);
+		pnlPhongDaChon.setLayout(null);
 
-		String maPhong = (String) tableModelPhongGop.getValueAt(row, 0);
-		LoaiPhong loaiPhong = loaiPhong_DAO.getLoaiPhongTheoTenLoai((String) tableModelPhongGop.getValueAt(row, 1));
-		int soLuongKhach = Integer.parseInt((String) tableModelPhongGop.getValueAt(row, 2));
-		TrangThai trangThai = Phong.convertStringToTrangThai((String) tableModelPhongGop.getValueAt(row, 3));
-		return new Phong(maPhong, loaiPhong, soLuongKhach, trangThai);
-	}
-
-	/**
-	 * Xóa tất cả các row trong table
-	 * 
-	 * @param jTable
-	 * @param tableModel
-	 */
-	private void emptyTable(JTable jTable, DefaultTableModel tableModel) {
-		while (jTable.getRowCount() > 0)
-			tableModel.removeRow(0);
-	}
-
-	private void capNhatDanhSachPhongDatTruoc() {
-		if (dsPhongCanGop == null || dsPhongDaChon == null)
+		if (dsPhongDaChon == null)
 			return;
 
-		emptyTable(tblPhongCanGop, tableModelPhongCanGop);
-		btnChonPhong.setEnabled(false);
-
-		for (Phong phong : dsPhongCanGop) {
-			if (!dsPhongDaChon.contains(phong))
-				addRowTableCanGop(phong);
+		int heightItem = 36;
+		int gapY = 8;
+		int top = 4;
+		int countItem = dsPhongDaChon.size();
+		for (int i = 0; i < countItem; i++) {
+			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
 		}
+
+		pnlPhongDaChon.setPreferredSize(
+				new Dimension(140, Math.max(105, top + heightItem * countItem + gapY * (countItem - 1))));
+	}
+
+	/**
+	 * Show danh sách phòng gộp to Table
+	 */
+	private void showDanhSachPhongGop() {
+		String maDatPhong = (String) cmbMaDatPhong.getSelectedItem();
+
+		if (maDatPhong.equals(labelCmbMaDatPhong))
+			return;
+
+		emptyTable(tblPhongGop, tableModelPhongGop);
+
+		List<LoaiPhong> dsLoaiPhong = loaiPhong_DAO.getAllLoaiPhong();
+		List<Phong> dsPhongGop = datPhong_DAO.getPhongCoTheGop(maDatPhong, dsPhongDaChon);
+
+		dsPhongGop.forEach(phong -> {
+			for (int i = 0; i < dsLoaiPhong.size(); i++) {
+				if (dsLoaiPhong.get(i).equals(phong.getLoaiPhong())) {
+					phong.setLoaiPhong(dsLoaiPhong.get(i));
+					break;
+				}
+			}
+			addRowTablePhongGop(phong);
+		});
+
+		tblPhongGop.scrollRectToVisible(tblPhongGop.getCellRect(0, 0, true));
 	}
 }

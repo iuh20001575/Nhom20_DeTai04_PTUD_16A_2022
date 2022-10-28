@@ -62,7 +62,6 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		khachHang_DAO = new KhachHang_DAO();

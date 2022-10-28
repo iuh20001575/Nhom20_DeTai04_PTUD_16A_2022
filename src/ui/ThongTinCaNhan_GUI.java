@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -258,9 +259,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		btnCapNhat.setRadius(8);
 		btnCapNhat.setBorderColor(Utils.secondaryColor);
 		btnCapNhat.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnCapNhat.setColor(Utils.primaryColor);
-		btnCapNhat.setColorOver(Utils.primaryColor);
-		btnCapNhat.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
+		btnCapNhat.setBackground(Utils.primaryColor, 1, 0.8f);
 		btnCapNhat.setForeground(Color.WHITE);
 		btnCapNhat.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnCapNhat.setBounds(199, 0, 250, 48);
@@ -273,9 +272,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		btnHuy.setRadius(8);
 		btnHuy.setBorderColor(Utils.secondaryColor);
 		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnHuy.setColor(Utils.primaryColor);
-		btnHuy.setColorOver(Utils.primaryColor);
-		btnHuy.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
+		btnHuy.setBackground(Utils.primaryColor, 1, 0.8f);
 		btnHuy.setForeground(Color.WHITE);
 		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnHuy.setBounds(199, 0, 250, 48);
@@ -293,9 +290,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		btnLuu.setForeground(Color.WHITE);
 		btnLuu.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnLuu.setFocusable(false);
-		btnLuu.setColorOver(new Color(140, 177, 180));
-		btnLuu.setColorClick(new Color(140, 177, 180, 204));
-		btnLuu.setColor(new Color(140, 177, 180));
+		btnLuu.setBackground(Utils.primaryColor, 1, 0.8f);
 		btnLuu.setBorderColor(new Color(203, 239, 255));
 		btnLuu.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnLuu.setBounds(499, 0, 250, 48);
@@ -387,9 +382,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 					return;
 
 				entity.NhanVien nhanVien = getNhanVienTuForm();
-				boolean res;
-
-				res = nhanVien_DAO.capNhatNhanVien(nhanVien);
+				boolean res = nhanVien_DAO.capNhatNhanVien(nhanVien);
 
 				if (res) {
 					new Notification(main, Type.SUCCESS, "Cập nhật thông tin nhân viên thành công").showNotification();
@@ -403,15 +396,6 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 				}
 			}
 		});
-	}
-
-	private void setErrorAllJTextField(boolean b) {
-		txtCCCD.setError(b);
-		txtDiaChiCT.setError(b);
-		txtHoTen.setError(b);
-		txtMatKhau.setError(b);
-		txtNgaySinh.setError(b);
-		txtSoDienThoai.setError(b);
 	}
 
 	/**
@@ -536,6 +520,15 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		cmbTinh.setEnabled(b);
 		cmbQuan.setEnabled(b);
 		cmbPhuong.setEnabled(b);
+	}
+
+	private void setErrorAllJTextField(boolean b) {
+		txtCCCD.setError(b);
+		txtDiaChiCT.setError(b);
+		txtHoTen.setError(b);
+		txtMatKhau.setError(b);
+		txtNgaySinh.setError(b);
+		txtSoDienThoai.setError(b);
 	}
 
 	/**
@@ -706,12 +699,12 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 			return showThongBaoLoi(txtSoDienThoai, "Số điện thoại đã tồn tại");
 
 		String ngaySinh = txtNgaySinh.getText();
-		long daysElapsed = java.time.temporal.ChronoUnit.DAYS.between(Utils.getLocalDate(ngaySinh), LocalDate.now());
-		boolean isDuTuoi = daysElapsed / (18 * 365) > 0;
+		LocalDate ngaySinhDate = Utils.getLocalDate(ngaySinh);
+		Period period = Period.between(ngaySinhDate, LocalDate.now());
+		boolean isDuTuoi = period.getYears() >= 18;
 
 		if (!isDuTuoi) {
 			new Notification(main, Type.ERROR, "Nhân viên chưa đủ 18 tuổi").showNotification();
-			dateChoose.showPopup();
 			return false;
 		}
 

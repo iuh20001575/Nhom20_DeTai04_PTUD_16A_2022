@@ -61,7 +61,6 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -269,7 +268,6 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
@@ -290,7 +288,6 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 			@Override
 			public boolean getShowVerticalLines() {
-				// TODO Auto-generated method stub
 				return false;
 			}
 		};
@@ -358,7 +355,6 @@ public class QuanLyKhachHang_GUI extends JPanel {
 								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
 						sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

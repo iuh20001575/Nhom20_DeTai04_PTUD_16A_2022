@@ -269,4 +269,16 @@ public class Button extends JButton {
 	public void setRadius(int radius) {
 		this.radius = radius;
 	}
+
+	public void setBackground(Color background, Color backgroundOver, Color backgroundClick) {
+		setColor(background);
+		setColorClick(backgroundClick);
+		setColorOver(backgroundOver);
+	}
+
+	public void setBackground(Color background, float opacityOver, float opacityClick) {
+		setColor(background);
+		setColorClick(Utils.getOpacity(background, opacityClick));
+		setColorOver(Utils.getOpacity(background, opacityOver));
+	}
 }

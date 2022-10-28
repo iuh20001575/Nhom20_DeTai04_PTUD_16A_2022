@@ -58,33 +58,33 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel pnlContent;
-	private TextField txtTienNhan;
-	private TextField txtTienThua;
-	private JTable tbl;
-	private DefaultTableModel tableModel;
-	private double tienThanhToan;
-	private DatPhong_DAO datPhong_DAO;
-	private JComboBox<String> cmbMaDatPhong;
 	private ThanhToan_GUI _this;
-	private DatPhong datPhong;
-	private KhachHang_DAO khachHang_DAO;
-	private NhanVien_DAO nhanVien_DAO;
-	private JComboBox<String> cmbSoDienThoai;
-	private JLabel lblTenKhach;
-	private JLabel lblGioNhanPhong;
-	private JLabel lblTenNhanVien;
-	private List<ChiTietDatPhong> dsChiTietDatPhong;
-	private JLabel lblTongThoiLuong;
+	private Button btnThanhToan;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private JComboBox<String> cmbMaDatPhong;
+	private JComboBox<String> cmbSoDienThoai;
+	private DatPhong datPhong;
+	private DatPhong_DAO datPhong_DAO;
+	private List<ChiTietDatPhong> dsChiTietDatPhong;
+	private KhachHang_DAO khachHang_DAO;
+	private JLabel lblGioNhanPhong;
+	private JLabel lblTenKhach;
+	private JLabel lblTenNhanVien;
+	private JLabel lblTienPhong;
+	private JLabel lblTienThanhToan;
+	private JLabel lblTongThoiLuong;
 	private LoaiPhong_DAO loaiPhong_DAO;
+	private NhanVien_DAO nhanVien_DAO;
 	private Phong_DAO phong_DAO;
+	private JPanel pnlContent;
+	private DefaultTableModel tableModel;
+	private JTable tbl;
+	private double tienThanhToan;
 	private LocalTime timeNow;
 	private int tongThoiGian;
 	private double tongTien;
-	private JLabel lblTienPhong;
-	private JLabel lblTienThanhToan;
-	private Button btnThanhToan;
+	private TextField txtTienNhan;
+	private TextField txtTienThua;
 
 	/**
 	 * Create the frame.
@@ -457,8 +457,12 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			private static final long serialVersionUID = 1L;
 
 			@Override
+			public boolean getShowVerticalLines() {
+				return false;
+			}
+
+			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
@@ -475,12 +479,6 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 				else
 					c.setBackground(new Color(232, 232, 232));
 				return c;
-			}
-
-			@Override
-			public boolean getShowVerticalLines() {
-				// TODO Auto-generated method stub
-				return false;
 			}
 		};
 
@@ -569,37 +567,6 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		});
 	}
 
-	/**
-	 * Xử lý tiền nhận
-	 */
-	private void xuLyTienNhanHopLe() {
-		String tienNhanS = txtTienNhan.getText().trim();
-
-		if (tienNhanS.length() <= 0) {
-			txtTienNhan.setError(true);
-			btnThanhToan.setEnabled(false);
-			txtTienThua.setText("");
-			return;
-		}
-
-		double tienNhan = Double.parseDouble(tienNhanS);
-
-		if (tienNhan < tienThanhToan) {
-			txtTienNhan.setError(true);
-			btnThanhToan.setEnabled(false);
-			txtTienThua.setText("");
-		} else {
-			txtTienNhan.setError(false);
-			btnThanhToan.setEnabled(true);
-			txtTienThua.setText(Utils.formatTienTe(tienNhan - tienThanhToan));
-		}
-	}
-
-	private void emptyTable() {
-		while (tbl.getRowCount() > 0)
-			tableModel.removeRow(0);
-	}
-
 	private void addRow(ChiTietDatPhong chiTietDatPhong, LocalDate ngayThanhToan) {
 		int stt = tbl.getRowCount() + 1;
 		String maPhong = chiTietDatPhong.getPhong().getMaPhong();
@@ -628,6 +595,11 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		tableModel.addRow(new String[] { stt + "", maPhong,
 				String.format("%s:%s", Utils.convertIntToString(hours), Utils.convertIntToString(minutes)),
 				Utils.formatTienTe(donGia), Utils.formatTienTe(thanhTien) });
+	}
+
+	private void emptyTable() {
+		while (tbl.getRowCount() > 0)
+			tableModel.removeRow(0);
 	}
 
 	@Override
@@ -702,5 +674,31 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		}
 		cmbMaDatPhong.addItemListener(_this);
 		cmbSoDienThoai.addItemListener(_this);
+	}
+
+	/**
+	 * Xử lý tiền nhận
+	 */
+	private void xuLyTienNhanHopLe() {
+		String tienNhanS = txtTienNhan.getText().trim();
+
+		if (tienNhanS.length() <= 0) {
+			txtTienNhan.setError(true);
+			btnThanhToan.setEnabled(false);
+			txtTienThua.setText("");
+			return;
+		}
+
+		double tienNhan = Double.parseDouble(tienNhanS);
+
+		if (tienNhan < tienThanhToan) {
+			txtTienNhan.setError(true);
+			btnThanhToan.setEnabled(false);
+			txtTienThua.setText("");
+		} else {
+			txtTienNhan.setError(false);
+			btnThanhToan.setEnabled(true);
+			txtTienThua.setText(Utils.formatTienTe(tienNhan - tienThanhToan));
+		}
 	}
 }

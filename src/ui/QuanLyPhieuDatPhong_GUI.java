@@ -30,8 +30,8 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField txtSoDienThoai;
 	private JTable tbl;
+	private JTextField txtSoDienThoai;
 
 	/**
 	 * Create the frame.
@@ -201,7 +201,6 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 

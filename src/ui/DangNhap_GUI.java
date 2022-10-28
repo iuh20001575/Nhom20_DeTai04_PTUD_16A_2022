@@ -36,12 +36,6 @@ public class DangNhap_GUI extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private TaiKhoan_DAO taiKhoan_DAO;
-	private TextField txtMaNhanVien;
-	private DangNhap_GUI _this;
-	private PasswordField txtMatKhau;
-
 	/**
 	 * Launch the application.
 	 */
@@ -57,6 +51,12 @@ public class DangNhap_GUI extends JFrame {
 			}
 		});
 	}
+	private DangNhap_GUI _this;
+	private JPanel contentPane;
+	private TaiKhoan_DAO taiKhoan_DAO;
+	private TextField txtMaNhanVien;
+
+	private PasswordField txtMatKhau;
 
 	/**
 	 * Create the frame.
@@ -65,7 +65,6 @@ public class DangNhap_GUI extends JFrame {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 

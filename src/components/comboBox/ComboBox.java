@@ -22,7 +22,6 @@ public class ComboBox<E> extends JComboBox<E> {
 
 	@SuppressWarnings("unchecked")
 	public ComboBox() {
-		// TODO Auto-generated constructor stub
 		super();
 		ComboBox<E> _this = this;
 		setRenderer(new ListCellRendererCustom());
@@ -31,7 +30,6 @@ public class ComboBox<E> extends JComboBox<E> {
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				// TODO Auto-generated method stub
 				if (evt.getNewValue() == null)
 					return;
 				if (evt.getNewValue().getClass().equals(Boolean.class)) {

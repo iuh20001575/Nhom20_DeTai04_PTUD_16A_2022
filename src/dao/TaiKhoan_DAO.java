@@ -24,7 +24,6 @@ public class TaiKhoan_DAO {
 
 			return preparedStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -42,7 +41,6 @@ public class TaiKhoan_DAO {
 			if (resultSet.next())
 				return getTaiKhoan(resultSet);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -59,7 +57,6 @@ public class TaiKhoan_DAO {
 
 			return resultSet.next();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

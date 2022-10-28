@@ -19,9 +19,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -43,23 +46,20 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel pnlContent;
-	private JTable tbl;
-	private DefaultTableModel tableModel;
-	private ComboBox<String> cmbMaPhong;
+	private ChuyenPhong_GUI _this;
 	private ComboBox<String> cmbLoaiPhong;
+	private ComboBox<String> cmbMaPhong;
 	private ComboBox<String> cmbSoKhach;
-
+	private DatPhong_DAO datPhong_DAO;
+	private List<LoaiPhong> dsLoaiPhong;
+	private final String labelCmbLoaiPhong = "Loại phòng";
+	private final String labelCmbMaPhong = "Mã phòng";
+	private final String labelCmbSoKhach = "Số khách";
 	private LoaiPhong_DAO loaiPhong_DAO;
 	private Phong_DAO phong_DAO;
-	private DatPhong_DAO datPhong_DAO;
-
-	private ChuyenPhong_GUI _this;
-
-	private List<LoaiPhong> dsLoaiPhong;
-	private final String labelCmbMaPhong = "Mã phòng";
-	private final String labelCmbLoaiPhong = "Loại phòng";
-	private final String labelCmbSoKhach = "Số khách";
+	private JPanel pnlContent;
+	private DefaultTableModel tableModel;
+	private JTable tbl;
 
 	/**
 	 * Create the frame.
@@ -220,8 +220,12 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 			private static final long serialVersionUID = 1L;
 
 			@Override
+			public boolean getShowVerticalLines() {
+				return false;
+			}
+
+			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
@@ -239,18 +243,13 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 					c.setBackground(new Color(232, 232, 232));
 				return c;
 			}
-
-			@Override
-			public boolean getShowVerticalLines() {
-				// TODO Auto-generated method stub
-				return false;
-			}
 		};
 
 		tableModel = new DefaultTableModel(
 				new String[] { "Mã phòng", "Loại phòng", "Số người", "Giá tiền/ giờ", "Trạng thái" }, 0);
 
 		tbl.setModel(tableModel);
+		tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbl.setFocusable(false);
 		tbl.getTableHeader().setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -258,7 +257,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 24));
 		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(24);
-		
+
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
 		tbl.getColumnModel().getColumn(2).setCellRenderer(dtcr);
@@ -331,6 +330,21 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 			}
 		});
 
+		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent lse) {
+				if (!lse.getValueIsAdjusting()) {
+					int row = tbl.getSelectedRow();
+					if (row == -1)
+						btnChuyen.setEnabled(false);
+					else {
+						String maPhong = (String) tableModel.getValueAt(row, 0);
+						btnChuyen.setEnabled(true);
+						lblMaPhongMoi.setText(maPhong);
+					}
+				}
+			}
+		});
+
 //		Sự kiện nút quay lại
 		btnQuayLai.addMouseListener(new MouseAdapter() {
 			@Override
@@ -385,13 +399,6 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 			tableModel.removeRow(0);
 	}
 
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		if (e.getStateChange() == ItemEvent.DESELECTED)
-			return;
-		filterDanhSachPhong();
-	}
-
 	private void filterDanhSachPhong() {
 		String maPhong = (String) cmbMaPhong.getSelectedItem();
 		String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
@@ -405,5 +412,12 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 		List<Phong> dsPhong = datPhong_DAO.getPhongDatNgay(maPhong, loaiPhong, soKhach);
 		emptyTable();
 		addRow(dsPhong);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.DESELECTED)
+			return;
+		filterDanhSachPhong();
 	}
 }

@@ -153,7 +153,6 @@ public class Utils {
 			Integer.parseInt(numString);
 			return true;
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 		return false;
 	}
@@ -163,7 +162,6 @@ public class Utils {
 			Double.parseDouble(string);
 			return true;
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 		return false;
 	}

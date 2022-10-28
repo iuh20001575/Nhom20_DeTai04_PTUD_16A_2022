@@ -12,8 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -69,6 +68,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private DatPhongTruoc_GUI _this;
 	private Button btnChonPhong;
 	private Button btnDatPhong;
+	private Button btnLamMoi;
 	private JComboBox<String> cmbGio;
 	private ComboBox<String> cmbLoaiPhong;
 	private ComboBox<String> cmbMaPhong;
@@ -81,18 +81,14 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private KhachHang khachHang;
 	private KhachHang_DAO khachHang_DAO;
 	private final String labelCmbMaPhong = "Mã phòng";
-
 	private LoaiPhong_DAO loaiPhong_DAO;
 	private JPanel pnlContent;
 	private JPanel pnlPhong;
-
 	private DefaultTableModel tableModel;
-
 	private JTable tbl;
 	private TextField txtNgayNhanPhong;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
-	private Button btnLamMoi;
 
 	/**
 	 * Create the frame.
@@ -106,7 +102,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -221,7 +216,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
@@ -244,6 +238,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		tableModel = new DefaultTableModel(new String[] { "Mã phòng", "Loại phòng", "Số lượng", "Trạng Thái" }, 0);
 
 		tbl.setModel(tableModel);
+		tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbl.setFocusable(false);
 //		Set background cho phần header của table
 		tbl.getTableHeader().setBackground(Utils.primaryColor);
@@ -344,30 +339,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlBody.add(txtNgayNhanPhong);
 		dateChoose = new DateChooser();
 		dateChoose.setDateFormat("dd/MM/yyyy");
-//		...
-		dateChoose.addEventDateChooser(new EventDateChooser() {
-
-			@Override
-			public void dateSelected(SelectedAction arg0, SelectedDate arg1) {
-				System.out.println(txtNgayNhanPhong.getText());
-			}
-		});
 		dateChoose.setTextRefernce(txtNgayNhanPhong);
-		dateChoose.addPropertyChangeListener(new PropertyChangeListener() {
-
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				// TODO Auto-generated method stub
-				if (evt.getPropertyName().equals("graphicsConfiguration")) {
-					setTimeComboBox(-1);
-					btnLamMoi.setEnabled(false);
-					dsPhongDaChon = null;
-					dsPhongDatTruoc = null;
-					emptyTable();
-					showDanhSachPhongDaChon();
-				}
-			}
-		});
 
 		Button btnSearchPhongDatTruoc = new Button();
 		btnSearchPhongDatTruoc.setIcon(new ImageIcon("Icon\\statistics.png"));
@@ -494,6 +466,16 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			}
 		});
 
+//		Sự kiện txtNgayDat
+		dateChoose.addEventDateChooser(new EventDateChooser() {
+
+			@Override
+			public void dateSelected(SelectedAction arg0, SelectedDate arg1) {
+				setTimeComboBox(-1);
+				handleChangeDateTime();
+			}
+		});
+
 //		Sự kiện tìm kiếm phòng đặt trước
 		btnSearchPhongDatTruoc.addMouseListener(new MouseAdapter() {
 			@Override
@@ -523,6 +505,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 					dsPhongDatTruoc.forEach(phong -> cmbMaPhong.addItem(phong.getMaPhong()));
 					addRow(dsPhongDatTruoc);
+					tbl.scrollRectToVisible(tbl.getCellRect(0, 0, true));
 					btnLamMoi.setEnabled(true);
 					cmbMaPhong.addItemListener(_this);
 				} else
@@ -565,7 +548,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
-					btnChonPhong.setEnabled(false);
+					if (tbl.getRowCount() == -1)
+						btnChonPhong.setEnabled(false);
 				}
 			}
 		});
@@ -721,6 +705,14 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		return pnlContainerItem;
 	}
 
+	private void handleChangeDateTime() {
+		btnLamMoi.setEnabled(false);
+		dsPhongDaChon = null;
+		dsPhongDatTruoc = null;
+		emptyTable();
+		showDanhSachPhongDaChon();
+	}
+
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		Object o = e.getSource();
@@ -729,12 +721,40 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			return;
 		if (o.equals(cmbGio)) {
 			setTimeComboBox(Integer.parseInt((String) cmbGio.getSelectedItem()));
-			btnLamMoi.setEnabled(false);
-		} else if (o.equals(cmbPhut)) {
-			btnLamMoi.setEnabled(false);
-		} else {
+			handleChangeDateTime();
+		} else if (o.equals(cmbPhut))
+			handleChangeDateTime();
+		else {
 			filterPhongDatTruoc();
 		}
+	}
+
+	private void setEnabledFilterComboBox(boolean b) {
+		cmbMaPhong.setEnabled(b);
+		cmbLoaiPhong.setEnabled(b);
+		cmbSoLuong.setEnabled(b);
+	}
+
+	private void setEnabledTimeComboBox(boolean b) {
+		cmbGio.setEnabled(b);
+		cmbPhut.setEnabled(b);
+	}
+
+	/**
+	 * Set sự kiện cho các JComboBox
+	 * 
+	 * @param b true add event, false remove event
+	 */
+	private void setEventFilterComboBox(boolean b) {
+		if (b) {
+			cmbLoaiPhong.addItemListener(_this);
+			cmbMaPhong.addItemListener(_this);
+			cmbSoLuong.addItemListener(_this);
+			return;
+		}
+		cmbLoaiPhong.removeItemListener(_this);
+		cmbMaPhong.removeItemListener(_this);
+		cmbSoLuong.removeItemListener(_this);
 	}
 
 	private void setTimeComboBox(int gioSelect) {
@@ -822,41 +842,13 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
 	}
 
-	private void setEnabledTimeComboBox(boolean b) {
-		cmbGio.setEnabled(b);
-		cmbPhut.setEnabled(b);
-	}
-
-	private void setEnabledFilterComboBox(boolean b) {
-		cmbMaPhong.setEnabled(b);
-		cmbLoaiPhong.setEnabled(b);
-		cmbSoLuong.setEnabled(b);
-	}
-
-	/**
-	 * Set sự kiện cho các JComboBox
-	 * 
-	 * @param b true add event, false remove event
-	 */
-	private void setEventFilterComboBox(boolean b) {
-		if (b) {
-			cmbLoaiPhong.addItemListener(_this);
-			cmbMaPhong.addItemListener(_this);	
-			cmbSoLuong.addItemListener(_this);
-			return;
-		}
-		cmbLoaiPhong.removeItemListener(_this);
-		cmbMaPhong.removeItemListener(_this);
-		cmbSoLuong.removeItemListener(_this);
-	}
-
-	private void setEventTimeComboBox(boolean b) {
-		if (b) {
-			cmbGio.addItemListener(_this);
-			cmbPhut.addItemListener(_this);
-			return;
-		}
-		cmbGio.removeItemListener(_this);
-		cmbPhut.removeItemListener(_this);
-	}
+//	private void setEventTimeComboBox(boolean b) {
+//		if (b) {
+//			cmbGio.addItemListener(_this);
+//			cmbPhut.addItemListener(_this);
+//			return;
+//		}
+//		cmbGio.removeItemListener(_this);
+//		cmbPhut.removeItemListener(_this);
+//	}
 }

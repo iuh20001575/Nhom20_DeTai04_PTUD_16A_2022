@@ -40,7 +40,6 @@ public class LoaiPhong_DAO {
 			if (resultSet.next())
 				return getLoaiPhong(resultSet);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -58,7 +57,6 @@ public class LoaiPhong_DAO {
 			if (resultSet.next())
 				return getLoaiPhong(resultSet);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -80,7 +78,6 @@ public class LoaiPhong_DAO {
 			while (resultSet.next())
 				list.add(getLoaiPhong(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

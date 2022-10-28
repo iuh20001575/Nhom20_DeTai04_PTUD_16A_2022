@@ -25,7 +25,6 @@ public class DiaChi_DAO {
 			while (resultSet.next())
 				list.add(new Phuong(resultSet.getString(1), resultSet.getString(2), quan));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -44,7 +43,6 @@ public class DiaChi_DAO {
 			while (resultSet.next())
 				list.add(new Quan(resultSet.getString(1), resultSet.getString(2), tinh));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -61,7 +59,6 @@ public class DiaChi_DAO {
 			while (resultSet.next())
 				list.add(new Tinh(resultSet.getString(1), resultSet.getString(2)));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -79,7 +76,6 @@ public class DiaChi_DAO {
 			if (resultSet.next())
 				return new Tinh(tinh.getId(), resultSet.getString(2));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -97,7 +93,6 @@ public class DiaChi_DAO {
 			if (resultSet.next())
 				return new Tinh(resultSet.getString(1), resultSet.getString(2));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -116,7 +111,6 @@ public class DiaChi_DAO {
 			if (resultSet.next())
 				return new Quan(quan.getId(), resultSet.getString(2), tinh);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -135,7 +129,6 @@ public class DiaChi_DAO {
 			if (resultSet.next())
 				return new Quan(resultSet.getString(1), resultSet.getString(2), tinh);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -154,7 +147,6 @@ public class DiaChi_DAO {
 			if (resultSet.next())
 				return new Phuong(phuong.getId(), resultSet.getString(2), quan);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -173,7 +165,6 @@ public class DiaChi_DAO {
 			if (resultSet.next())
 				return new Phuong(resultSet.getString(1), resultSet.getString(2), quan);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

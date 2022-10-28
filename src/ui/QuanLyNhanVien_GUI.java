@@ -42,28 +42,53 @@ import entity.Quan;
 import entity.Tinh;
 import utils.Utils;
 
-// TODO Test gộp phòng
-
 public class QuanLyNhanVien_GUI extends JPanel {
 
+	private static JLabel lblTime;
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static JLabel lblTime;
-	private JTextField txtSearch;
-	private JTable tbl;
-	private DefaultTableModel tableModel;
-	private NhanVien_DAO nhanVien_DAO;
-	private DiaChi_DAO diaChi_DAO;
-	private DefaultComboBoxModel<String> maNhanVienModel;
+	public static void clock() {
+		Thread clock = new Thread() {
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						LocalDateTime currTime = LocalDateTime.now();
+						int day = currTime.getDayOfMonth();
+						int month = currTime.getMonthValue();
+						int year = currTime.getYear();
+						int hour = currTime.getHour();
+						int minute = currTime.getMinute();
+						int second = currTime.getSecond();
+						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
+								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
+								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+
+		clock.start();
+	}
+	private Button btnEmployeeAdd;
+	private Button btnEmployeeEdit;
+	private Button btnEmployeeRemove;
+	private Button btnEmployeeView;
 	private JComboBox<String> cmbMaNhanVien;
 	private JComboBox<String> cmbTrangThai;
+	private DiaChi_DAO diaChi_DAO;
+	private DefaultComboBoxModel<String> maNhanVienModel;
+	private NhanVien_DAO nhanVien_DAO;
 	private ControlPanel pnlControl;
-	private Button btnEmployeeRemove;
-	private Button btnEmployeeEdit;
-	private Button btnEmployeeAdd;
-	private Button btnEmployeeView;
+	private DefaultTableModel tableModel;
+	private JTable tbl;
+
+	private JTextField txtSearch;
 
 	/**
 	 * Create the frame.
@@ -232,8 +257,12 @@ public class QuanLyNhanVien_GUI extends JPanel {
 			private static final long serialVersionUID = 1L;
 
 			@Override
+			public boolean getShowVerticalLines() {
+				return false;
+			}
+
+			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
@@ -250,12 +279,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 				else
 					c.setBackground(new Color(232, 232, 232));
 				return c;
-			}
-
-			@Override
-			public boolean getShowVerticalLines() {
-				// TODO Auto-generated method stub
-				return false;
 			}
 		};
 		tbl.setAutoCreateRowSorter(true);
@@ -403,52 +426,20 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		});
 	}
 
-	public static void clock() {
-		Thread clock = new Thread() {
-			@Override
-			public void run() {
-				for (;;) {
-					try {
-						LocalDateTime currTime = LocalDateTime.now();
-						int day = currTime.getDayOfMonth();
-						int month = currTime.getMonthValue();
-						int year = currTime.getYear();
-						int hour = currTime.getHour();
-						int minute = currTime.getMinute();
-						int second = currTime.getSecond();
-						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
-								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
-								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
-						sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-
-		clock.start();
+	private List<NhanVien> addRow(List<NhanVien> list) {
+		list.forEach(nhanVien -> addRow(nhanVien));
+		return list;
 	}
 
-	private void setEnabledBtnActions() {
-		int row = tbl.getSelectedRow();
-
-		if (row == -1) {
-			btnEmployeeView.setEnabled(false);
-			btnEmployeeEdit.setEnabled(false);
-			btnEmployeeRemove.setEnabled(false);
-		} else {
-			btnEmployeeView.setEnabled(true);
-			btnEmployeeEdit.setEnabled(true);
-
-			String trangThai = (String) tableModel.getValueAt(row, 7);
-
-			if (NhanVien.convertStringToTrangThai(trangThai).equals(NhanVien.TrangThai.DangLam))
-				btnEmployeeRemove.setEnabled(true);
-			else
-				btnEmployeeRemove.setEnabled(false);
-		}
+	private void addRow(NhanVien nhanVien) {
+		Tinh tinh = diaChi_DAO.getTinh(nhanVien.getTinh());
+		Quan quan = diaChi_DAO.getQuan(nhanVien.getTinh(), nhanVien.getQuan());
+		Phuong phuong = diaChi_DAO.getPhuong(nhanVien.getQuan(), nhanVien.getPhuong());
+		tableModel.addRow(new String[] { nhanVien.getMaNhanVien(), nhanVien.getHoTen(), nhanVien.getCccd(),
+				nhanVien.getSoDienThoai(), Utils.formatDate(nhanVien.getNgaySinh()),
+				nhanVien.isGioiTinh() ? "Nam" : "Nữ", String.format("%s, %s, %s, %s", tinh.getTinh(), quan.getQuan(),
+						phuong.getPhuong(), nhanVien.getDiaChiCuThe()),
+				NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()) });
 	}
 
 	private void filterNhanVien() {
@@ -470,24 +461,28 @@ public class QuanLyNhanVien_GUI extends JPanel {
 			System.out.println("Rỗng");
 	}
 
-	private void addRow(NhanVien nhanVien) {
-		Tinh tinh = diaChi_DAO.getTinh(nhanVien.getTinh());
-		Quan quan = diaChi_DAO.getQuan(nhanVien.getTinh(), nhanVien.getQuan());
-		Phuong phuong = diaChi_DAO.getPhuong(nhanVien.getQuan(), nhanVien.getPhuong());
-		tableModel.addRow(new String[] { nhanVien.getMaNhanVien(), nhanVien.getHoTen(), nhanVien.getCccd(),
-				nhanVien.getSoDienThoai(), Utils.formatDate(nhanVien.getNgaySinh()),
-				nhanVien.isGioiTinh() ? "Nam" : "Nữ", String.format("%s, %s, %s, %s", tinh.getTinh(), quan.getQuan(),
-						phuong.getPhuong(), nhanVien.getDiaChiCuThe()),
-				NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()) });
-	}
-
-	private List<NhanVien> addRow(List<NhanVien> list) {
-		list.forEach(nhanVien -> addRow(nhanVien));
-		return list;
-	}
-
 	private void setEmptyTable() {
 		while (tbl.getRowCount() > 0)
 			tableModel.removeRow(0);
+	}
+
+	private void setEnabledBtnActions() {
+		int row = tbl.getSelectedRow();
+
+		if (row == -1) {
+			btnEmployeeView.setEnabled(false);
+			btnEmployeeEdit.setEnabled(false);
+			btnEmployeeRemove.setEnabled(false);
+		} else {
+			btnEmployeeView.setEnabled(true);
+			btnEmployeeEdit.setEnabled(true);
+
+			String trangThai = (String) tableModel.getValueAt(row, 7);
+
+			if (NhanVien.convertStringToTrangThai(trangThai).equals(NhanVien.TrangThai.DangLam))
+				btnEmployeeRemove.setEnabled(true);
+			else
+				btnEmployeeRemove.setEnabled(false);
+		}
 	}
 }

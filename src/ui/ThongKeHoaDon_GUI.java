@@ -172,7 +172,6 @@ public class ThongKeHoaDon_GUI extends JPanel {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 

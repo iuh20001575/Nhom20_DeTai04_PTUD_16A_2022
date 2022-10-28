@@ -49,7 +49,6 @@ public class ChiTietDatPhong_DAO {
 			while (resultSet.next())
 				list.add(getChiTietDatPhong(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -78,7 +77,6 @@ public class ChiTietDatPhong_DAO {
 				return new ChiTietDatPhong(new DatPhong(datPhong), new Phong(maPhong), gioVao);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -106,7 +104,6 @@ public class ChiTietDatPhong_DAO {
 			while (resultSet.next())
 				list.add(getChiTietDatPhong(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -122,7 +119,6 @@ public class ChiTietDatPhong_DAO {
 
 			return preparedStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -140,7 +136,6 @@ public class ChiTietDatPhong_DAO {
 
 			return preparedStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

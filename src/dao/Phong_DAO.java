@@ -37,7 +37,6 @@ public class Phong_DAO {
 			while (resultSet.next())
 				list.add(getPhong(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -66,7 +65,6 @@ public class Phong_DAO {
 			while (resultSet.next())
 				phongs.add(getPhong(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -90,7 +88,6 @@ public class Phong_DAO {
 			if (resultSet.next())
 				return getPhong(resultSet);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -116,7 +113,6 @@ public class Phong_DAO {
 			while (resultSet.next())
 				list.add(getPhong(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -142,7 +138,6 @@ public class Phong_DAO {
 			while (resultSet.next())
 				list.add(getPhong(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -161,7 +156,6 @@ public class Phong_DAO {
 			if (resultSet.next())
 				return Phong.convertStringToTrangThai(resultSet.getString(1));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -179,7 +173,6 @@ public class Phong_DAO {
 			while (resultSet.next())
 				list.add(getPhong(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -197,7 +190,6 @@ public class Phong_DAO {
 
 			return preparedStatement.executeUpdate() >= 0;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;

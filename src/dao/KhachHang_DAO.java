@@ -59,7 +59,6 @@ public class KhachHang_DAO {
 				return "KH" + maKhachNew;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -81,7 +80,6 @@ public class KhachHang_DAO {
 			while (resultSet.next())
 				list.add(getKhachHang(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -104,7 +102,6 @@ public class KhachHang_DAO {
 			if (resultSet.next())
 				return getKhachHang(resultSet);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -128,7 +125,6 @@ public class KhachHang_DAO {
 			if (resultSet.next())
 				return getKhachHang(resultSet);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -160,7 +156,6 @@ public class KhachHang_DAO {
 			res = preparedStatement.executeUpdate();
 			preparedStatement.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return res > 0;
@@ -191,7 +186,6 @@ public class KhachHang_DAO {
 			res = preparedStatement.executeUpdate();
 			preparedStatement.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return res > 0;
@@ -212,7 +206,6 @@ public class KhachHang_DAO {
 			res = preparedStatement.executeUpdate();
 			preparedStatement.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return res > 0;
@@ -238,7 +231,6 @@ public class KhachHang_DAO {
 			while (resultSet.next())
 				list.add(getKhachHang(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
