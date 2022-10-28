@@ -14,6 +14,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -463,8 +465,15 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 //		Sự kiện nút đật phòng
 		btnDatPhong.addMouseListener(new MouseAdapter() {
 			private void handleDatPhong() {
-				boolean res = datPhong_DAO.themPhieuDatPhongNgay(khachHang, utils.NhanVien.getNhanVien(),
-						dsPhongDaChon);
+				String maDatPhong = datPhong_DAO.getMaDatPhongDangThue(khachHang.getSoDienThoai());
+				Time time = Time.valueOf(LocalTime.now());
+				boolean res = false;
+
+				if (maDatPhong == null)
+					res = datPhong_DAO.themPhieuDatPhongNgay(khachHang, utils.NhanVien.getNhanVien(), dsPhongDaChon);
+				else
+					res = chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, dsPhongDaChon, time);
+
 				if (res) {
 					quanLyDatPhongGUI.capNhatTrangThaiPhong();
 					quanLyDatPhongGUI.closeJFrameSub();

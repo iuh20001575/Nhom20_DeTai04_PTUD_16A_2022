@@ -30,12 +30,15 @@ import keeptoo.KGradientPanel;
 import utils.NhanVien;
 import utils.Utils;
 
+// Main 500ms
+
 public class DangNhap_GUI extends JFrame {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Launch the application.
 	 */
@@ -51,11 +54,11 @@ public class DangNhap_GUI extends JFrame {
 			}
 		});
 	}
+
 	private DangNhap_GUI _this;
 	private JPanel contentPane;
 	private TaiKhoan_DAO taiKhoan_DAO;
 	private TextField txtMaNhanVien;
-
 	private PasswordField txtMatKhau;
 
 	/**
@@ -179,6 +182,7 @@ public class DangNhap_GUI extends JFrame {
 				if (res) {
 					NhanVien.setNhanVien(new entity.NhanVien(maTaiKhoan));
 					new Main().setVisible(true);
+					setVisible(false);
 				} else {
 					new Notification(_this, components.notification.Notification.Type.ERROR,
 							"Tài khoản hoặc mật khẩu không đúng").showNotification();

@@ -922,6 +922,27 @@ public class DatPhong_DAO {
 		return false;
 	}
 
+	public String getMaDatPhongDangThue(String soDienThoai) {
+		String sql = "SELECT maDatPhong FROM [dbo].[DatPhong] DP "
+				+ "JOIN [dbo].[KhachHang] KH ON DP.khachHang = KH.maKhachHang "
+				+ "WHERE [trangThai] = N'Đang thuê' AND [soDienThoai] = ?";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, soDienThoai);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return resultSet.getString(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	private boolean commit() throws SQLException {
 		if (ConnectDB.getConnection().getAutoCommit())
 			ConnectDB.getConnection().setAutoCommit(false);

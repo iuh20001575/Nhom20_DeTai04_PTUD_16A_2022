@@ -12,7 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -50,7 +49,6 @@ import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
-import connectDB.ConnectDB;
 import dao.DatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiPhong_DAO;
@@ -89,6 +87,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private TextField txtNgayNhanPhong;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
+	private QuanLyDatPhong_GUI quanLyDatPhongGUI;
 
 	/**
 	 * Create the frame.
@@ -98,16 +97,10 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	 */
 	public DatPhongTruoc_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
-
-		try {
-			new ConnectDB().connect();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-
 		datPhong_DAO = new DatPhong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
+		this.quanLyDatPhongGUI = quanLyDatPhongGUI;
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 850, 536);

@@ -14,6 +14,12 @@ import entity.DatPhong;
 import entity.Phong;
 
 public class ChiTietDatPhong_DAO {
+	private Phong_DAO phong_DAO;
+
+	public ChiTietDatPhong_DAO() {
+		phong_DAO = new Phong_DAO();
+	}
+
 	/**
 	 * Get chi tiết đặt phòng resultSet
 	 * 
@@ -96,7 +102,7 @@ public class ChiTietDatPhong_DAO {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			for (int i = 0; i < length; i++) {
-				preparedStatement.setString(i+1, dsPhong.get(i).getMaPhong());
+				preparedStatement.setString(i + 1, dsPhong.get(i).getMaPhong());
 			}
 
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -125,6 +131,34 @@ public class ChiTietDatPhong_DAO {
 		return false;
 	}
 
+	public boolean themChiTietDatPhong(String maDatPhong, List<Phong> dsPhong, Time gioVao) {
+		try {
+			ConnectDB.getConnection().setAutoCommit(false);
+
+			for (Phong phong : dsPhong) {
+//			[ChiTietDatPhong] - Tạo chi tiết phiếu đặt phòng
+				if (!themChiTietDatPhong(maDatPhong, phong, gioVao))
+					return rollback();
+
+//			[Phong] - Cập nhật trạng thái phòng
+				Phong phongFull = phong_DAO.getPhong(phong.getMaPhong());
+				String trangThaiNew = Phong.convertTrangThaiToString(Phong.TrangThai.DangThue);
+
+				if (phongFull.getTrangThai().equals(entity.Phong.TrangThai.DaDat))
+					trangThaiNew = Phong.convertTrangThaiToString(entity.Phong.TrangThai.PhongTam);
+
+				if (!phong_DAO.capNhatTrangThaiPhong(phongFull, trangThaiNew))
+					return rollback();
+			}
+
+			return commit();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public boolean themChiTietDatPhong(String maDatPhong, Phong phong, Time gioVao) {
 		PreparedStatement preparedStatement;
 		try {
@@ -139,6 +173,22 @@ public class ChiTietDatPhong_DAO {
 			e.printStackTrace();
 		}
 
+		return false;
+	}
+
+	private boolean commit() throws SQLException {
+		if (ConnectDB.getConnection().getAutoCommit())
+			ConnectDB.getConnection().setAutoCommit(false);
+		ConnectDB.getConnection().commit();
+		ConnectDB.getConnection().setAutoCommit(true);
+		return true;
+	}
+
+	private boolean rollback() throws SQLException {
+		if (ConnectDB.getConnection().getAutoCommit())
+			ConnectDB.getConnection().setAutoCommit(false);
+		ConnectDB.getConnection().rollback();
+		ConnectDB.getConnection().setAutoCommit(true);
 		return false;
 	}
 }
