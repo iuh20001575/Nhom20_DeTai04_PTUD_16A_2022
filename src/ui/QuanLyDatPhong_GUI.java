@@ -3,7 +3,10 @@ package ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -38,7 +41,7 @@ import entity.Phong;
 import entity.Phong.TrangThai;
 import utils.Utils;
 
-public class QuanLyDatPhong_GUI extends JPanel {
+public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 
 	/**
 	 *
@@ -80,11 +83,14 @@ public class QuanLyDatPhong_GUI extends JPanel {
 	private int soPhongTam;
 	private int soPhongTrong = 0;
 	private final int widthPhong = 131;
+	private PanelEvent pnlDichVu;
 
 	/**
 	 * Create the frame.
 	 */
 	public QuanLyDatPhong_GUI(JFrame jFrame) {
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
+
 		_this = this;
 		try {
 			new ConnectDB().connect();
@@ -389,7 +395,6 @@ public class QuanLyDatPhong_GUI extends JPanel {
 			}
 		};
 		pnlDatPhong.setBackgroundColor(new Color(255, 154, 97));
-//		pnlDatPhong.setBounds(0, 0, width, height);
 		pnlActions.add(pnlDatPhong);
 		pnlDatPhong.setLayout(null);
 
@@ -398,19 +403,12 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		lblDatPhong.setForeground(Color.WHITE);
 		lblDatPhong.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhong.add(lblDatPhong);
-//		lblDatPhong.setBounds(52, 13, 112, 22);
 
 		JLabel lblDatPhongF = new JLabel("F1");
 		lblDatPhongF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDatPhongF.setForeground(Color.WHITE);
 		lblDatPhongF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhong.add(lblDatPhongF);
-//		lblDatPhongF.setBounds(52, 35, 112, 22);
-
-		JLabel lblIconDatPhong = new JLabel("");
-		lblIconDatPhong.setIcon(new ImageIcon("Icon\\smartphone.png"));
-		lblIconDatPhong.setBounds(10, 18, 32, 32);
-		pnlDatPhong.add(lblIconDatPhong);
 
 		pnlDatPhongTruoc = new PanelEvent(13) {
 			/**
@@ -441,11 +439,6 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		lblDatPhongTruocF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhongTruoc.add(lblDatPhongTruocF);
 
-		JLabel lblIconDatPhongTruoc = new JLabel("");
-		lblIconDatPhongTruoc.setIcon(new ImageIcon("Icon\\online-reservation.png"));
-		lblIconDatPhongTruoc.setBounds(10, 18, 32, 32);
-		pnlDatPhongTruoc.add(lblIconDatPhongTruoc);
-
 		pnlChuyenPhong = new PanelEvent(13) {
 			/**
 			 *
@@ -474,11 +467,6 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		lblChuyenPhongF.setForeground(Color.WHITE);
 		lblChuyenPhongF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlChuyenPhong.add(lblChuyenPhongF);
-
-		JLabel lblIconChuyenPhong = new JLabel("");
-		lblIconChuyenPhong.setIcon(new ImageIcon("Icon\\exchange.png"));
-		lblIconChuyenPhong.setBounds(10, 18, 32, 32);
-		pnlChuyenPhong.add(lblIconChuyenPhong);
 
 		pnlGopPhong = new PanelEvent(13) {
 			/**
@@ -509,10 +497,34 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		lblGopPhongF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlGopPhong.add(lblGopPhongF);
 
-		JLabel lblIconGopPhong = new JLabel("");
-		lblIconGopPhong.setIcon(new ImageIcon("Icon\\collapse.png"));
-		lblIconGopPhong.setBounds(10, 18, 32, 32);
-		pnlGopPhong.add(lblIconGopPhong);
+		pnlDichVu = new PanelEvent(13) {
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Color getBackground() {
+				if (!isEnabled())
+					return Utils.getOpacity(super.getBackground(), 0.5f);
+				return super.getBackground();
+			}
+		};
+		pnlDichVu.setLayout(null);
+		pnlDichVu.setBackgroundColor(new Color(255, 154, 97));
+		pnlActions.add(pnlDichVu);
+
+		JLabel lblDichVu = new JLabel("Dịch vụ");
+		lblDichVu.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDichVu.setForeground(Color.WHITE);
+		lblDichVu.setFont(new Font("Segoe UI", Font.BOLD, 17));
+		pnlDichVu.add(lblDichVu);
+
+		JLabel lblDichVuF = new JLabel("F5");
+		lblDichVuF.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDichVuF.setForeground(Color.WHITE);
+		lblDichVuF.setFont(new Font("Segoe UI", Font.BOLD, 17));
+		pnlDichVu.add(lblDichVuF);
 
 		pnlThanhToan = new PanelEvent(13) {
 			/**
@@ -537,27 +549,22 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		lblThanhToan.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlThanhToan.add(lblThanhToan);
 
-		JLabel lblThanhToanF = new JLabel("F5");
+		JLabel lblThanhToanF = new JLabel("F6");
 		lblThanhToanF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblThanhToanF.setForeground(Color.WHITE);
 		lblThanhToanF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlThanhToan.add(lblThanhToanF);
 
-		JLabel lblIconThanhToan = new JLabel("");
-		lblIconThanhToan.setIcon(new ImageIcon("Icon\\pay-per-click.png"));
-		lblIconThanhToan.setBounds(10, 18, 32, 32);
-		pnlThanhToan.add(lblIconThanhToan);
-
-		JPanel[] btnActions = { pnlDatPhong, pnlDatPhongTruoc, pnlChuyenPhong, pnlGopPhong, pnlThanhToan };
-		int[] btnActionsWidth = { 150, 200, 190, 155, 160 };
+		JPanel[] btnActions = { pnlDatPhong, pnlDatPhongTruoc, pnlChuyenPhong, pnlGopPhong, pnlDichVu, pnlThanhToan };
+		int[] btnActionsWidth = { 125, 170, 160, 125, 125, 125 };
 		pnlActions.setBounds(16, 422, width * btnActions.length + gapX * btnActions.length - 1, 69);
 		for (int i = 0; i < btnActions.length; i++) {
 			int x = 0;
 			for (int j = 0; j < i; j++)
 				x += 15 + btnActionsWidth[j];
 			btnActions[i].setBounds(x, 0, btnActionsWidth[i], height);
-			btnActions[i].getComponent(0).setBounds(52, 13, btnActionsWidth[i] - 62, 22);
-			btnActions[i].getComponent(1).setBounds(52, 35, btnActionsWidth[i] - 62, 22);
+			btnActions[i].getComponent(0).setBounds(10, 13, btnActionsWidth[i] - 20, 22);
+			btnActions[i].getComponent(1).setBounds(10, 35, btnActionsWidth[i] - 20, 22);
 		}
 
 		btnPhongThuong.setVisible(false);
@@ -749,45 +756,42 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		pnlDatPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!pnlDatPhong.isEnabled())
-					return;
-				openJFrameSub(new DatPhong_GUI(_this));
+				handleDatPhong();
 			}
 		});
 
 		pnlDatPhongTruoc.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!pnlDatPhongTruoc.isEnabled())
-					return;
-				openJFrameSub(new DatPhongTruoc_GUI(_this));
+				handleDatPhongTruoc();
 			}
 		});
 
 		pnlChuyenPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!pnlChuyenPhong.isEnabled())
-					return;
-				openJFrameSub(new ChuyenPhong_GUI(_this));
+				handleChuyenPhong();
 			}
 		});
 
 		pnlGopPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!pnlGopPhong.isEnabled())
-					return;
-				openJFrameSub(new GopPhong_GUI(_this));
+				handleGopPhong();
+			}
+		});
+
+		pnlDichVu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				handleDichVu();
 			}
 		});
 
 		pnlThanhToan.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!pnlThanhToan.isEnabled())
-					return;
-				openJFrameSub(new ThanhToan_GUI(_this));
+				handleThanhToan();
 			}
 		});
 
@@ -860,6 +864,7 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		pnlDatPhong.setEnabled(dsPhongDatNgay.size() > 0);
 		pnlChuyenPhong.setEnabled(dsPhongDatNgay.size() > 0 && soPhongDangSuDung + soPhongTam > 0);
 		pnlGopPhong.setEnabled(datPhong_DAO.isGopPhong());
+		pnlDichVu.setEnabled(soPhongDangSuDung + soPhongTam > 0);
 		capNhatThongKeLoaiPhong();
 	}
 
@@ -1065,5 +1070,67 @@ public class QuanLyDatPhong_GUI extends JPanel {
 		glass.setAlpha(0.5f);
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
+	}
+
+	private void handleDatPhong() {
+		if (!pnlDatPhong.isEnabled())
+			return;
+		openJFrameSub(new DatPhong_GUI(_this, jFrame));
+	}
+
+	private void handleDatPhongTruoc() {
+		if (!pnlDatPhongTruoc.isEnabled())
+			return;
+		openJFrameSub(new DatPhongTruoc_GUI(_this, jFrame));
+	}
+
+	private void handleChuyenPhong() {
+		if (!pnlChuyenPhong.isEnabled())
+			return;
+		openJFrameSub(new ChuyenPhong_GUI(_this, jFrame));
+	}
+
+	private void handleGopPhong() {
+		if (!pnlGopPhong.isEnabled())
+			return;
+		openJFrameSub(new GopPhong_GUI(_this, jFrame));
+	}
+
+	private void handleDichVu() {
+//		if (!pnlGopPhong.isEnabled())
+//			return;
+//		openJFrameSub(new GopPhong_GUI(_this));
+	}
+
+	private void handleThanhToan() {
+		if (!pnlThanhToan.isEnabled())
+			return;
+		openJFrameSub(new ThanhToan_GUI(_this, jFrame));
+	}
+
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent e) {
+
+		if (!_this.isShowing()) {
+			KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
+			return false;
+		}
+		if (jFrameSub != null && jFrameSub.isVisible())
+			return false;
+
+		if (KeyEvent.VK_F1 == e.getKeyCode())
+			handleDatPhong();
+		if (KeyEvent.VK_F2 == e.getKeyCode())
+			handleDatPhongTruoc();
+		if (KeyEvent.VK_F3 == e.getKeyCode())
+			handleChuyenPhong();
+		if (KeyEvent.VK_F4 == e.getKeyCode())
+			handleGopPhong();
+		if (KeyEvent.VK_F5 == e.getKeyCode())
+			handleDichVu();
+		if (KeyEvent.VK_F6 == e.getKeyCode())
+			handleThanhToan();
+
+		return false;
 	}
 }

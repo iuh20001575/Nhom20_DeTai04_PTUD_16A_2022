@@ -104,6 +104,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		txtNgaySinh.setBounds(516, 85, 371, 55);
 		this.add(txtNgaySinh);
 		dateChoose = new DateChooser();
+		dateChoose.setDateFormat("dd/MM/yyyy");
 		dateChoose.setTextRefernce(txtNgaySinh);
 
 		JPanel pnlGioiTinh = new JPanel();

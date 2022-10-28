@@ -862,6 +862,25 @@ public class DatPhong_DAO {
 		return false;
 	}
 
+	public List<String> getMaDatPhongGop() {
+		List<String> list = new ArrayList<>();
+		String sql = "SELECT [datPhong] FROM [dbo].[ChiTietDatPhong] CTDP "
+				+ "JOIN [dbo].[DatPhong] DP ON CTDP.datPhong = DP.maDatPhong "
+				+ "WHERE [gioRa] IS NULL AND [trangThai] = N'Đang thuê' GROUP BY [datPhong] HAVING COUNT(*) > 1";
+		try {
+			Statement statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+
+			while (resultSet.next())
+				list.add(resultSet.getString(1));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 	/**
 	 * Thanh toán đơn đặt phòng
 	 * 

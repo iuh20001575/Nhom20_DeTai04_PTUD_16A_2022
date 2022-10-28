@@ -28,6 +28,7 @@ import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
 import components.comboBox.ComboBox;
+import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
 import dao.DatPhong_DAO;
 import dao.LoaiPhong_DAO;
@@ -66,7 +67,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 	 * @param quanLyDatPhongGUI
 	 * @param glass
 	 */
-	public ChuyenPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI) {
+	public ChuyenPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		phong_DAO = new Phong_DAO();
@@ -352,6 +353,8 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 				if (res) {
 					quanLyDatPhongGUI.capNhatTrangThaiPhong();
 					quanLyDatPhongGUI.closeJFrameSub();
+					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
+							"Chuyển phòng thành công").showNotification();
 				}
 			}
 		});

@@ -126,7 +126,8 @@ public class Menu extends JPanel {
 
 		addTitle("MAIN");
 		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.HOME, "Trang chủ"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý nhân viên"));
+		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Nhân viên", "Quản lý nhân viên",
+				"Thêm nhân viên"));
 		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý khách hàng"));
 		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý đặt phòng"));
 		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý đặt phòng trước"));
@@ -148,6 +149,7 @@ public class Menu extends JPanel {
 			}
 		}
 	}
+
 	public void setSelectedMenu(int index, int indexSubMenu) {
 		clearSelected();
 		for (Component com : pnlMenu.getComponents()) {

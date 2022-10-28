@@ -150,6 +150,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		txtNgaySinh.setBounds(0, 0, 449, 55);
 		pnlRow3.add(txtNgaySinh);
 		dateChoose = new DateChooser();
+		dateChoose.setDateFormat("dd/MM/yyyy");
 		dateChoose.setTextRefernce(txtNgaySinh);
 
 		JPanel pnlGioiTinh = new JPanel();

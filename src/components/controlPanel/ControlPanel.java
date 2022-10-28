@@ -185,8 +185,10 @@ public class ControlPanel extends JPanel implements ActionListener {
 		soTrang = tbl.getRowCount();
 		if (trangHienTai == 0 && soTrang > 0)
 			trangHienTai = 1;
-		if (soTrang > 0)
+		if (soTrang > 0) {
 			tbl.setRowSelectionInterval(trangHienTai - 1, trangHienTai - 1);
+			tbl.scrollRectToVisible(tbl.getCellRect(trangHienTai-1, 0, true));
+		}
 		this.trangHienTai = trangHienTai;
 		txtTrangHienThai.setText(trangHienTai + "");
 		xuLiBtnPhanTrang();

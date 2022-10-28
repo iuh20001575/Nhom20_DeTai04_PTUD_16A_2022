@@ -157,6 +157,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		txtNgaySinh.setBounds(0, 0, 449, 55);
 		pnlRow3.add(txtNgaySinh);
 		dateChoose = new DateChooser();
+		dateChoose.setDateFormat("dd/MM/yyyy");
 		dateChoose.setTextRefernce(txtNgaySinh);
 
 		JPanel pnlGioiTinh = new JPanel();
@@ -334,7 +335,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		btnHuy.setIcon(new ImageIcon("Icon\\cancelled 1.png"));
 		btnHuy.setText("Hủy");
 		btnHuy.setRadius(8);
-		btnHuy.setForeground(Color.BLACK);
+		btnHuy.setForeground(new Color(51, 51, 51));
 		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnHuy.setFocusable(false);
 		btnHuy.setColorOver(Utils.getOpacity(Color.WHITE, 0.8f));
@@ -348,7 +349,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		Button btnLamMoi = new Button("Cập nhật");
 		btnLamMoi.setText("Làm mới");
 		btnLamMoi.setRadius(8);
-		btnLamMoi.setForeground(Color.BLACK);
+		btnLamMoi.setForeground(new Color(51, 51, 51));
 		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnLamMoi.setFocusable(false);
 		btnLamMoi.setColorOver(new Color(255, 255, 255, 204));
@@ -429,6 +430,8 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				xoaRong();
+
+				repaint();	
 			}
 		});
 
@@ -511,6 +514,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 			Tinh tinh = diaChi_DAO.getTinh(tinhSelected);
 			ThemNhanVien_GUI.this.tinh = tinh;
 			setQuanToComboBox(ThemNhanVien_GUI.this.tinh);
+			repaint();
 			cmbQuan.setEnabled(true);
 			isEnabledEventQuan = true;
 			isEnabledEventPhuong = true;

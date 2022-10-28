@@ -84,6 +84,35 @@ public class ChiTietDatPhong_DAO {
 		return null;
 	}
 
+	public List<ChiTietDatPhong> getGioVaoPhongCho(List<Phong> dsPhong) {
+		List<ChiTietDatPhong> list = new ArrayList<>();
+
+		String q = "?";
+		int length = dsPhong.size();
+		for (int i = 1; i < length; i++)
+			q += ", ?";
+		String sql = String.format("SELECT [datPhong], [phong], [gioVao], [gioRa] FROM [dbo].[DatPhong] DP "
+				+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.maDatPhong = CTDP.datPhong "
+				+ "WHERE [ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
+				+ "AND [trangThai] = N'Đang chờ' AND [phong] in (%s)", q);
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			for (int i = 0; i < length; i++) {
+				preparedStatement.setString(i+1, dsPhong.get(i).getMaPhong());
+			}
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getChiTietDatPhong(resultSet));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 	public boolean thanhToanDatPhong(String maDatPhong, LocalTime gioRa) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()

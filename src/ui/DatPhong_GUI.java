@@ -44,12 +44,13 @@ import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
 import connectDB.ConnectDB;
+import dao.ChiTietDatPhong_DAO;
 import dao.DatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiPhong_DAO;
+import entity.ChiTietDatPhong;
 import entity.KhachHang;
 import entity.LoaiPhong;
-import entity.NhanVien;
 import entity.Phong;
 import utils.Utils;
 
@@ -77,13 +78,15 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	private JTable tbl;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
 
 	/**
 	 * Create the frame.
 	 * 
 	 * @param quanLyDatPhongGUI
+	 * @param parentFrame
 	 */
-	public DatPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI) {
+	public DatPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e1) {
@@ -95,6 +98,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		khachHang_DAO = new KhachHang_DAO();
 		datPhong_DAO = new DatPhong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
+		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 850, 466);
@@ -498,10 +502,39 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 					return;
 				}
 
-				boolean res = datPhong_DAO.themPhieuDatPhongNgay(khachHang, new NhanVien("NV112"), dsPhongDaChon);
-				if (res) {
-					quanLyDatPhongGUI.capNhatTrangThaiPhong();
-					quanLyDatPhongGUI.closeJFrameSub();
+				List<ChiTietDatPhong> list = chiTietDatPhong_DAO.getGioVaoPhongCho(dsPhongDaChon);
+
+				JDialogCustom jDialogCustom = new JDialogCustom(_this, components.jDialog.JDialogCustom.Type.confirm);
+				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						boolean res = datPhong_DAO.themPhieuDatPhongNgay(khachHang, utils.NhanVien.getNhanVien(),
+								dsPhongDaChon);
+						if (res) {
+							quanLyDatPhongGUI.capNhatTrangThaiPhong();
+							quanLyDatPhongGUI.closeJFrameSub();
+							new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
+									"Đặt phòng thành công").showNotification();
+						}
+					}
+				});
+
+				if (list.size() > 0) {
+					String s = "";
+					for (ChiTietDatPhong chiTietDatPhong : list) {
+						s += String.format("Phòng %s phải trả trước %s, ", chiTietDatPhong.getPhong().getMaPhong(),
+								Utils.convertLocalTimeToString(chiTietDatPhong.getGioVao()));
+					}
+					s += "Bạn có muốn đặt không?";
+					jDialogCustom.showMessage("Question", s);
+				} else {
+					boolean res = datPhong_DAO.themPhieuDatPhongNgay(khachHang, utils.NhanVien.getNhanVien(),
+							dsPhongDaChon);
+					if (res) {
+						quanLyDatPhongGUI.capNhatTrangThaiPhong();
+						quanLyDatPhongGUI.closeJFrameSub();
+						new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
+								"Đặt phòng thành công").showNotification();
+					}
 				}
 			}
 		});
@@ -541,6 +574,11 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		for (Phong phong : dsPhongDatNgay) {
 			if (!dsPhongDaChon.contains(phong))
 				addRow(phong);
+		}
+
+		if (tbl.getRowCount() > 0) {
+			tbl.setRowSelectionInterval(0, 0);
+			btnChonPhong.setEnabled(true);
 		}
 	}
 

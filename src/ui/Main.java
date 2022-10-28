@@ -251,9 +251,12 @@ public class Main extends JFrame {
 				JPanel pnl;
 				String title;
 
-				if (index == 1 && indexSubMenu == 0) {
+				if (index == 1 && indexSubMenu == 1) {
 					title = "Quản lý nhân viên";
 					pnl = new QuanLyNhanVien_GUI(_this);
+				} else if (index == 1 && indexSubMenu == 2) {
+					title = "Thên nhân viên";
+					pnl = new ThemNhanVien_GUI(_this);
 				} else if (index == 2 && indexSubMenu == 0) {
 					title = "Quản lý khách hàng";
 					pnl = new QuanLyKhachHang_GUI(_this);

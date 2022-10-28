@@ -33,6 +33,7 @@ import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
 import components.comboBox.ComboBox;
+import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import dao.DatPhong_DAO;
@@ -57,12 +58,12 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	private Button btnChuyen;
 	private Button btnChonPhong;
 	private ComboBox<String> cmbMaDatPhong;
-	
+
 	private DatPhong_DAO datPhong_DAO;
 	private LoaiPhong_DAO loaiPhong_DAO;
-	
+
 	private GopPhong_GUI _this;
-	
+
 	private final String labelCmbMaDatPhong = "Mã đặt phòng";
 	private List<Phong> dsPhongDaChon;
 	private List<Phong> dsPhongCanGop;
@@ -73,7 +74,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	 * @param quanLyDatPhongGUI
 	 * @param glass
 	 */
-	public GopPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI) {
+	public GopPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
 		datPhong_DAO = new DatPhong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
@@ -303,7 +304,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
-				List<String> dsMaDatPhongDangThue = datPhong_DAO.getAllMaDatPhongDangThue();
+				List<String> dsMaDatPhongDangThue = datPhong_DAO.getMaDatPhongGop();
 
 				cmbMaDatPhong.removeAllItems();
 				cmbMaDatPhong.addItem(labelCmbMaDatPhong);
@@ -363,6 +364,8 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 				if (res) {
 					quanLyDatPhongGUI.capNhatTrangThaiPhong();
 					quanLyDatPhongGUI.closeJFrameSub();
+					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
+							"Gộp phòng thành công").showNotification();
 				}
 			};
 		});

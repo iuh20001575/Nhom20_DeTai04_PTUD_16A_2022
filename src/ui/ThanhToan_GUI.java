@@ -35,6 +35,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
+import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
 import dao.ChiTietDatPhong_DAO;
@@ -90,7 +91,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	 * 
 	 * @param quanLyDatPhongGUI
 	 */
-	public ThanhToan_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI) {
+	public ThanhToan_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
 		datPhong_DAO = new DatPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
@@ -561,6 +562,8 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 				if (res) {
 					quanLyDatPhongGUI.capNhatTrangThaiPhong();
 					quanLyDatPhongGUI.closeJFrameSub();
+					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
+							String.format("Thanh toán %s thành công", datPhong.getMaDatPhong())).showNotification();
 				}
 			}
 		});

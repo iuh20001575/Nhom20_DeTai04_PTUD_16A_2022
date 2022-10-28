@@ -168,6 +168,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		txtNgaySinh.setBounds(0, 0, 449, 55);
 		pnlRow3.add(txtNgaySinh);
 		dateChoose = new DateChooser();
+		dateChoose.setDateFormat("dd/MM/yyyy");
 		dateChoose.setTextRefernce(txtNgaySinh);
 
 		JPanel pnlGioiTinh = new JPanel();
@@ -402,6 +403,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 				setEnabledForm(true);
 				btnCapNhat.setVisible(false);
 				btnLuu.setEnabled(true);
+				btnNghiViec.setEnabled(false);
 			}
 		});
 
@@ -422,6 +424,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 								btnNghiViec.setEnabled(true);
 							setEnabledForm(false);
 							btnLuu.setEnabled(false);
+							if (nhanVien.getTrangThai().equals(NhanVien.TrangThai.DangLam))
+								btnNghiViec.setEnabled(true);
 							main.repaint();
 						} else {
 							System.out.println("Error");
@@ -441,6 +445,9 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 				setNhanVienVaoForm(ThongTinChiTietNhanVien_GUI.this.nhanVien);
 				setEnabledForm(false);
 				btnLuu.setEnabled(false);
+				setErrorAllJTextField(false);
+				if (ThongTinChiTietNhanVien_GUI.this.nhanVien.getTrangThai().equals(NhanVien.TrangThai.DangLam))
+					btnNghiViec.setEnabled(true);
 				main.repaint();
 			}
 		});
