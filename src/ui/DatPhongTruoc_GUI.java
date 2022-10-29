@@ -87,7 +87,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private TextField txtNgayNhanPhong;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
-	private QuanLyDatPhong_GUI quanLyDatPhongGUI;
 
 	/**
 	 * Create the frame.
@@ -100,7 +99,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		datPhong_DAO = new DatPhong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
-		this.quanLyDatPhongGUI = quanLyDatPhongGUI;
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 850, 536);

@@ -3,9 +3,9 @@ package components.menu;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -15,7 +15,6 @@ import javax.swing.border.EmptyBorder;
 
 import components.drawer.DrawerController;
 import components.scrollbarCustom.ScrollBarCustom;
-import javaswingdev.GoogleMaterialDesignIcon;
 import net.miginfocom.swing.MigLayout;
 
 public class Menu extends JPanel {
@@ -29,9 +28,15 @@ public class Menu extends JPanel {
 	private int index = -1;
 	private MigLayout menuLayout;
 	private JPanel pnlMenu;
+	private List<List<String>> menu;
+
+	public List<List<String>> getMenu() {
+		return menu;
+	}
 
 	public Menu() {
 		init();
+		menu = new ArrayList<>();
 	}
 
 	public void addEvent(EventMenuSelected event) {
@@ -67,6 +72,14 @@ public class Menu extends JPanel {
 
 	private JPanel createMenuItem(ModelMenuItem item) {
 		MenuItem menuItem = new MenuItem(item, ++index, menuLayout);
+
+		List<String> subMenu = new ArrayList<>();
+		subMenu.add(item.getMenuName());
+		if (menuItem.isHasSubMenu())
+			subMenu.addAll(Arrays.asList(item.getSubMenu()));
+
+		menu.add(subMenu);
+
 		menuItem.setDrawer(drawer);
 		menuItem.addEvent(new EventMenuSelected() {
 			@Override
@@ -123,18 +136,6 @@ public class Menu extends JPanel {
 
 	public void setDrawer(DrawerController drawer) {
 		this.drawer = drawer;
-
-		addTitle("MAIN");
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.HOME, "Trang chủ"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Nhân viên", "Quản lý nhân viên",
-				"Thêm nhân viên"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý khách hàng"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý đặt phòng"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Quản lý đặt phòng trước"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Thống kê", "Doanh thu", "Hóa đơn",
-				"Khách hàng"));
-		addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, "Thông tin cá nhân"));
-		setPreferredSize(new Dimension(getPreferredSize().width, 610));
 	}
 
 	public void setSelectedIndex(int index, int indexSubMenu) {

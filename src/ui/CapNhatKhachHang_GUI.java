@@ -56,12 +56,6 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 	TextField txtMa, txtTen, txtCCCD, txtSDT, txtNgaySinh, txtTinh, txtQuan, txtPhuong, txtDiaChiCT;
 
 	public CapNhatKhachHang_GUI(JFrame main, KhachHang khachHang) {
-
-		try {
-			new ConnectDB().connect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		khachHang_DAO = new KhachHang_DAO();
 		DiaChi_DAO = new DiaChi_DAO();
 		this.khachHang = khachHang_DAO.getKhachHangTheoMa(khachHang.getMaKhachHang());

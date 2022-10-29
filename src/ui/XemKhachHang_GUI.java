@@ -58,12 +58,6 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 	RadioButtonCustom radNam, radNu;
 
 	public XemKhachHang_GUI(JFrame main, KhachHang khachHang) {
-
-		try {
-			new ConnectDB().connect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		khachHang_DAO = new KhachHang_DAO();
 		DiaChi_DAO = new DiaChi_DAO();
 		this.khachHang = khachHang_DAO.getKhachHangTheoMa(khachHang.getMaKhachHang());

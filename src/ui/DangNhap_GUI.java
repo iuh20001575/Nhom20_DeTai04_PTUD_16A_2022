@@ -230,6 +230,10 @@ public class DangNhap_GUI extends JFrame {
 		lblTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 36));
 		lblTieuDe.setBounds(0, 0, 400, 83);
 		pnlDangNhap.add(lblTieuDe);
+
+//		Default Value
+		txtMaNhanVien.setText("NV114");
+		txtMatKhau.setText("1234Abc@");
 	}
 
 	private boolean validator() {

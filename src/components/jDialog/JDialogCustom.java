@@ -226,7 +226,6 @@ public class JDialogCustom extends JDialog {
 	}
 
 	public void showMessage(String title, String message) {
-//		if (fram.getGlassPane() == null)
 		fram.setGlassPane(glass);
 		glass.setVisible(true);
 		lblTitle.setText(title);

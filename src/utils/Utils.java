@@ -14,6 +14,20 @@ import java.util.regex.Pattern;
 import javax.swing.JFrame;
 
 public class Utils {
+	public static final String trangChuMenuItem = "Trang chủ";
+	public static final String nhanVienMenuItem = "Nhân viên";
+	public static final String thongKeMenuItem = "Thống kê";
+	public static final String quanLyNhanVienMenuItem = "Quản lý nhân viên";
+	public static final String themNhanVienMenuItem = "Thêm nhân viên";
+	public static final String quanLyKhachHangMenuItem = "Quản lý khách hàng";
+	public static final String quanLyDatPhongMenuItem = "Quản lý đặt phòng";
+	public static final String quanLyDatPhongTruocMenuItem = "Quản lý đặt phòng trước";
+	public static final String thongKeDoanhThuMenuItem = "Doanh thu";
+	public static final String thongKeHoaDonMenuItem = "Hóa đơn";
+	public static final String thongKeKhachHangMenuItem = "Khách hàng";
+	public static final String thongTinCaNhanMenuItem = "Thông tin cá nhân";
+	public static final String thoatMenuItem = "Thoát";
+
 	public static final Color primaryColor = new Color(140, 177, 180);
 	public static final Color secondaryColor = new Color(203, 239, 255);
 	public static final Color phongCho = getRGBA(4, 191, 173, 0.85f);
@@ -22,9 +36,12 @@ public class Utils {
 	public static final Color phongTam = new Color(115, 120, 234);
 	public static final Color lineTextField = new Color(149, 166, 248);
 	public static final Color labelTextField = new Color(150, 150, 150);
+
 	public static final Rectangle boundsPnlBody = new Rectangle(0, 65, 1086, 508);
+
 	public static final int width = 1086;
 	public static final int height = 573;
+
 	private static JFrame main;
 
 	public static JFrame getMain() {

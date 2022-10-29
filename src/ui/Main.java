@@ -1,15 +1,14 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -26,10 +25,12 @@ import components.drawer.DrawerController;
 import components.jDialog.JDialogCustom;
 import components.menu.EventMenuSelected;
 import components.menu.Menu;
-import connectDB.ConnectDB;
+import components.menu.ModelMenuItem;
 import dao.NhanVien_DAO;
 import entity.NhanVien;
+import entity.NhanVien.ChucVu;
 import entity.PanelUI;
+import javaswingdev.GoogleMaterialDesignIcon;
 import utils.StackPanel;
 import utils.Utils;
 
@@ -64,19 +65,13 @@ public class Main extends JFrame {
 	private JLabel lblTitle;
 	private Menu menu;
 	private NhanVien_DAO nhanVien_DAO;
-
 	private JPanel pnlBody;
+	private Menu footer;
 
 	/**
 	 * Create the frame.
 	 */
 	public Main() {
-		try {
-			new ConnectDB().connect();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-
 		_this = this;
 		nhanVien_DAO = new NhanVien_DAO();
 		JDialogCustom jDialogCustom = new JDialogCustom(_this);
@@ -142,10 +137,32 @@ public class Main extends JFrame {
 		pnlBody.setBounds(0, 65, 1086, 508);
 		pnlContent.add(pnlBody);
 
+		String maNhanVien = utils.NhanVien.getNhanVien().getMaNhanVien();
+//		String maNhanVien = "NV111";
+		NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(maNhanVien);
+		utils.NhanVien.setNhanVien(nhanVien);
+		ChucVu chucVu = utils.NhanVien.getNhanVien().getChucVu();
+
 //		Code menu
 		menu = new Menu();
-		drawer = Drawer.newDrawer(this).addChild(menu).build();
+		footer = new Menu();
+		drawer = Drawer.newDrawer(this).addChild(menu).addFooter(footer).build();
+
 		menu.setDrawer(drawer);
+		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.HOME, Utils.trangChuMenuItem));
+		if (chucVu.equals(NhanVien.ChucVu.QuanLy))
+			menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.nhanVienMenuItem,
+					Utils.quanLyNhanVienMenuItem, Utils.themNhanVienMenuItem));
+		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.quanLyKhachHangMenuItem));
+		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.quanLyDatPhongMenuItem));
+		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.quanLyDatPhongTruocMenuItem));
+		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.thongKeMenuItem,
+				Utils.thongKeDoanhThuMenuItem, Utils.thongKeHoaDonMenuItem, Utils.thongKeKhachHangMenuItem));
+		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.thongTinCaNhanMenuItem));
+		menu.setPreferredSize(new Dimension(getPreferredSize().width, 508));
+
+		footer.setDrawer(drawer);
+		footer.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.HOME, Utils.thoatMenuItem));
 
 //		Show/Hide menu
 		btnMenu.addActionListener(new ActionListener() {
@@ -159,9 +176,14 @@ public class Main extends JFrame {
 		btnBack.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				PanelUI jPanel = StackPanel.pop();
+				PanelUI pnl = StackPanel.pop();
 				boolean isEmpty = StackPanel.empty();
-				StackPanel.push(jPanel);
+
+				if (pnl.getTitle().equals("Trang chủ"))
+					while (!StackPanel.empty())
+						StackPanel.pop();
+
+				StackPanel.push(pnl);
 
 				if (isEmpty)
 					jDialogCustom.showMessage("Đóng ứng dụng", "Bạn có muốn đóng ứng dụng không?");
@@ -173,15 +195,6 @@ public class Main extends JFrame {
 
 		xuLySuKienMenu();
 		addPnlBody(new TrangChu_GUI(), "Trang chủ", 0, 0);
-		this.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowOpened(WindowEvent e) {
-//				String maNhanVien = utils.NhanVien.getNhanVien().getMaNhanVien();
-				String maNhanVien = "NV111";
-				NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(maNhanVien);
-				utils.NhanVien.setNhanVien(nhanVien);
-			}
-		});
 	}
 
 	/**
@@ -250,31 +263,34 @@ public class Main extends JFrame {
 				JPanel pnl;
 				String title;
 
-				if (index == 1 && indexSubMenu == 1) {
+				List<String> list = menu.getMenu().get(index);
+				String titleMenu = list.get(indexSubMenu);
+
+				if (titleMenu.equals(Utils.quanLyNhanVienMenuItem)) {
 					title = "Quản lý nhân viên";
 					pnl = new QuanLyNhanVien_GUI(_this);
-				} else if (index == 1 && indexSubMenu == 2) {
+				} else if (titleMenu.equals(Utils.themNhanVienMenuItem)) {
 					title = "Thên nhân viên";
 					pnl = new ThemNhanVien_GUI(_this);
-				} else if (index == 2 && indexSubMenu == 0) {
+				} else if (titleMenu.equals(Utils.quanLyKhachHangMenuItem)) {
 					title = "Quản lý khách hàng";
 					pnl = new QuanLyKhachHang_GUI(_this);
-				} else if (index == 3 && indexSubMenu == 0) {
+				} else if (titleMenu.equals(Utils.quanLyDatPhongMenuItem)) {
 					title = "Quản lý đặt phòng";
 					pnl = new QuanLyDatPhong_GUI(_this);
-				} else if (index == 4 && indexSubMenu == 0) {
+				} else if (titleMenu.equals(Utils.quanLyDatPhongTruocMenuItem)) {
 					title = "Quản lý đặt phòng trước";
 					pnl = new QuanLyPhieuDatPhong_GUI();
-				} else if (index == 5 && indexSubMenu == 1) {
+				} else if (titleMenu.equals(Utils.thongKeDoanhThuMenuItem)) {
 					title = "Thống kê doanh thu";
 					pnl = new ThongKeDoanhThu_GUI();
-				} else if (index == 5 && indexSubMenu == 2) {
+				} else if (titleMenu.equals(Utils.thongKeHoaDonMenuItem)) {
 					title = "Thống kê hóa đơn";
 					pnl = new ThongKeHoaDon_GUI();
-				} else if (index == 5 && indexSubMenu == 3) {
+				} else if (titleMenu.equals(Utils.thongKeKhachHangMenuItem)) {
 					title = "Thống kê khách hàng";
 					pnl = new ThongKeKhachHang_GUI();
-				} else if (index == 6 && indexSubMenu == 0) {
+				} else if (titleMenu.equals(Utils.thongTinCaNhanMenuItem)) {
 					title = "Thông tin cá nhân";
 					pnl = new ThongTinCaNhan_GUI(_this);
 				} else {
@@ -283,6 +299,24 @@ public class Main extends JFrame {
 				}
 
 				addPnlBody(pnl, title, index, indexSubMenu);
+			}
+		});
+
+		footer.addEvent(new EventMenuSelected() {
+
+			@Override
+			public void menuSelected(int index, int indexSubMenu) {
+				footer.clearSelected();
+				JDialogCustom jDialogCustom = new JDialogCustom(_this);
+
+				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						System.exit(0);
+					}
+				});
+
+				jDialogCustom.showMessage("Thoát ứng dụng", "Bạn có chắc chắn muốn thoát ứng dụng không?");
 			}
 		});
 	}

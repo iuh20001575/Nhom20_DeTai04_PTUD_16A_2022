@@ -41,8 +41,6 @@ import entity.Phong;
 import entity.Phong.TrangThai;
 import utils.Utils;
 
-// TODO ESC SubFrame
-
 public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 
 	/**
@@ -92,13 +90,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	 */
 	public QuanLyDatPhong_GUI(JFrame jFrame) {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
-
-		_this = this;
-		try {
-			new ConnectDB().connect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 
 		this.jFrame = jFrame;
 		phong_DAO = new Phong_DAO();
@@ -757,42 +748,42 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDatPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleDatPhong();
+				handleOpenSubFrame(pnlDatPhong, new DatPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
 
 		pnlDatPhongTruoc.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleDatPhongTruoc();
+				handleOpenSubFrame(pnlDatPhongTruoc, new DatPhongTruoc_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
 
 		pnlChuyenPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleChuyenPhong();
+				handleOpenSubFrame(pnlChuyenPhong, new ChuyenPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
 
 		pnlGopPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleGopPhong();
+				handleOpenSubFrame(pnlGopPhong, new GopPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
 
 		pnlDichVu.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleDichVu();
+//				handleOpenSubFrame(pnlGopPhong, new GopPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
 
 		pnlThanhToan.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleThanhToan();
+				handleOpenSubFrame(pnlThanhToan, new ThanhToan_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
 
@@ -929,14 +920,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		clock.start();
 	}
 
-	public void closeJFrameSub() {
-		if (jFrameSub != null)
-			jFrameSub.setVisible(false);
-		glass.setVisible(false);
-		glass.setAlpha(0f);
-		jFrameSub = null;
-	}
-
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent e) {
 
@@ -948,17 +931,17 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			return false;
 
 		if (KeyEvent.VK_F1 == e.getKeyCode())
-			handleDatPhong();
+			handleOpenSubFrame(pnlDatPhong, new DatPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 		if (KeyEvent.VK_F2 == e.getKeyCode())
-			handleDatPhongTruoc();
+			handleOpenSubFrame(pnlDatPhongTruoc, new DatPhongTruoc_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 		if (KeyEvent.VK_F3 == e.getKeyCode())
-			handleChuyenPhong();
+			handleOpenSubFrame(pnlChuyenPhong, new ChuyenPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 		if (KeyEvent.VK_F4 == e.getKeyCode())
-			handleGopPhong();
+			handleOpenSubFrame(pnlGopPhong, new GopPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 		if (KeyEvent.VK_F5 == e.getKeyCode())
-			handleDichVu();
+			handleOpenSubFrame(pnlDatPhong, new DatPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 		if (KeyEvent.VK_F6 == e.getKeyCode())
-			handleThanhToan();
+			handleOpenSubFrame(pnlThanhToan, new ThanhToan_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 
 		return false;
 	}
@@ -1089,40 +1072,10 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		return new Dimension(890, Math.max((row - 1) * gapY + row * heightPhong, 292));
 	}
 
-	private void handleChuyenPhong() {
-		if (!pnlChuyenPhong.isEnabled())
+	private void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
+		if (!pnl.isEnabled())
 			return;
-		openJFrameSub(new ChuyenPhong_GUI(_this, jFrame));
-	}
-
-	private void handleDatPhong() {
-		if (!pnlDatPhong.isEnabled())
-			return;
-		openJFrameSub(new DatPhong_GUI(_this, jFrame));
-	}
-
-	private void handleDatPhongTruoc() {
-		if (!pnlDatPhongTruoc.isEnabled())
-			return;
-		openJFrameSub(new DatPhongTruoc_GUI(_this, jFrame));
-	}
-
-	private void handleDichVu() {
-//		if (!pnlGopPhong.isEnabled())
-//			return;
-//		openJFrameSub(new GopPhong_GUI(_this));
-	}
-
-	private void handleGopPhong() {
-		if (!pnlGopPhong.isEnabled())
-			return;
-		openJFrameSub(new GopPhong_GUI(_this, jFrame));
-	}
-
-	private void handleThanhToan() {
-		if (!pnlThanhToan.isEnabled())
-			return;
-		openJFrameSub(new ThanhToan_GUI(_this, jFrame));
+		openJFrameSub(jFrame);
 	}
 
 	public void openJFrameSub(JFrame jFrame) {
@@ -1131,5 +1084,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		glass.setAlpha(0.5f);
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
+	}
+
+	public void closeJFrameSub() {
+		if (jFrameSub != null)
+			jFrameSub.setVisible(false);
+		glass.setVisible(false);
+		glass.setAlpha(0f);
+		jFrameSub = null;
 	}
 }

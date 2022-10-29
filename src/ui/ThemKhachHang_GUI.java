@@ -77,12 +77,6 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 	 */
 	public ThemKhachHang_GUI(Main main) {
 		this.main = main;
-
-		try {
-			new ConnectDB().connect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		khachHang_DAO = new KhachHang_DAO();
 		DiaChi_DAO = new DiaChi_DAO();
 

@@ -562,7 +562,9 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 					quanLyDatPhongGUI.closeJFrameSub();
 					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
 							String.format("Thanh toán %s thành công", datPhong.getMaDatPhong())).showNotification();
-				}
+				} else
+					new Notification(parentFrame, components.notification.Notification.Type.ERROR,
+							String.format("Thanh toán thất bại", datPhong.getMaDatPhong())).showNotification();
 			}
 		});
 	}

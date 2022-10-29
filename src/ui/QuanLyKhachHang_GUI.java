@@ -57,13 +57,6 @@ public class QuanLyKhachHang_GUI extends JPanel {
 	 * Create the frame.
 	 */
 	public QuanLyKhachHang_GUI(Main main) {
-
-		try {
-			new ConnectDB().connect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
 		khachHang_DAO = new KhachHang_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 

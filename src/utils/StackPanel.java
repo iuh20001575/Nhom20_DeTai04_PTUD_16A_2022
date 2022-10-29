@@ -46,8 +46,4 @@ public class StackPanel {
 	public static PanelUI peek() {
 		return stack.peek();
 	}
-
-	public static Stack<PanelUI> name() {
-		return stack;
-	}
 }

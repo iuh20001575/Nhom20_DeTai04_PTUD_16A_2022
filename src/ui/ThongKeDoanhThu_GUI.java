@@ -39,12 +39,6 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 	private JLabel lblResDate;
 
 	public ThongKeDoanhThu_GUI() {
-		try {
-			new ConnectDB().connect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
 		setBackground(Utils.secondaryColor);
 		setBounds(0, 0, 1086, 508);
 		setLayout(null);
