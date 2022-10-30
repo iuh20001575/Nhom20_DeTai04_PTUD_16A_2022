@@ -2,7 +2,6 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,7 +29,6 @@ import dao.NhanVien_DAO;
 import entity.NhanVien;
 import entity.NhanVien.ChucVu;
 import entity.PanelUI;
-import javaswingdev.GoogleMaterialDesignIcon;
 import utils.StackPanel;
 import utils.Utils;
 
@@ -40,23 +38,6 @@ public class Main extends JFrame {
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Main frame = new Main();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	private Main _this;
 	private Button btnBack;
@@ -138,7 +119,6 @@ public class Main extends JFrame {
 		pnlContent.add(pnlBody);
 
 		String maNhanVien = utils.NhanVien.getNhanVien().getMaNhanVien();
-//		String maNhanVien = "NV111";
 		NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(maNhanVien);
 		utils.NhanVien.setNhanVien(nhanVien);
 		ChucVu chucVu = utils.NhanVien.getNhanVien().getChucVu();
@@ -149,20 +129,22 @@ public class Main extends JFrame {
 		drawer = Drawer.newDrawer(this).addChild(menu).addFooter(footer).build();
 
 		menu.setDrawer(drawer);
-		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.HOME, Utils.trangChuMenuItem));
+		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\homeIcon.png"), Utils.trangChuMenuItem));
 		if (chucVu.equals(NhanVien.ChucVu.QuanLy))
-			menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.nhanVienMenuItem,
+			menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\businessman.png"), Utils.nhanVienMenuItem,
 					Utils.quanLyNhanVienMenuItem, Utils.themNhanVienMenuItem));
-		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.quanLyKhachHangMenuItem));
-		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.quanLyDatPhongMenuItem));
-		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.quanLyDatPhongTruocMenuItem));
-		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.thongKeMenuItem,
+		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\users-avatar.png"), Utils.quanLyKhachHangMenuItem));
+		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\doorMenuItem.png"), Utils.quanLyDatPhongMenuItem));
+		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\doorMenuItem.png"), Utils.quanLyDatPhongTruocMenuItem));
+		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\bar-graph.png"), Utils.thongKeMenuItem,
 				Utils.thongKeDoanhThuMenuItem, Utils.thongKeHoaDonMenuItem, Utils.thongKeKhachHangMenuItem));
-		menu.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.DASHBOARD, Utils.thongTinCaNhanMenuItem));
-		menu.setPreferredSize(new Dimension(getPreferredSize().width, 508));
+		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\user.png"), Utils.thongTinCaNhanMenuItem));
+		menu.setPreferredSize(new Dimension(getPreferredSize().width, 473));
 
 		footer.setDrawer(drawer);
-		footer.addMenuItem(new ModelMenuItem(GoogleMaterialDesignIcon.HOME, Utils.thoatMenuItem));
+		footer.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\logout.png"), Utils.dangXuatMenuItem));
+		footer.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\power.png"), Utils.thoatMenuItem));
+		footer.setPreferredSize(new Dimension(getPreferredSize().width, 70));
 
 //		Show/Hide menu
 		btnMenu.addActionListener(new ActionListener() {
@@ -308,15 +290,27 @@ public class Main extends JFrame {
 			public void menuSelected(int index, int indexSubMenu) {
 				footer.clearSelected();
 				JDialogCustom jDialogCustom = new JDialogCustom(_this);
+				if (index == 1 && indexSubMenu == 0) {
+					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							System.exit(0);
+						}
+					});
 
-				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						System.exit(0);
-					}
-				});
+					jDialogCustom.showMessage("Thoát ứng dụng", "Bạn có chắc chắn muốn thoát ứng dụng không?");
+				} else {
+					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							utils.NhanVien.setNhanVien(null);
+							new DangNhap_GUI().setVisible(true);
+							setVisible(false);
+						}
+					});
 
-				jDialogCustom.showMessage("Thoát ứng dụng", "Bạn có chắc chắn muốn thoát ứng dụng không?");
+					jDialogCustom.showMessage("Đăng xuất", "Bạn có chắc chắn muốn đăng xuất không?");
+				}
 			}
 		});
 	}

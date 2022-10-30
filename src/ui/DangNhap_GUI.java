@@ -1,7 +1,6 @@
 package ui;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -30,30 +29,12 @@ import keeptoo.KGradientPanel;
 import utils.NhanVien;
 import utils.Utils;
 
-// Main 500ms
-
 public class DangNhap_GUI extends JFrame {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DangNhap_GUI frame = new DangNhap_GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	private DangNhap_GUI _this;
 	private JPanel contentPane;
@@ -82,7 +63,7 @@ public class DangNhap_GUI extends JFrame {
 		setUndecorated(true);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.CYAN);
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		setLocationRelativeTo(null);
@@ -232,8 +213,10 @@ public class DangNhap_GUI extends JFrame {
 		pnlDangNhap.add(lblTieuDe);
 
 //		Default Value
-		txtMaNhanVien.setText("NV114");
-		txtMatKhau.setText("1234Abc@");
+		txtMaNhanVien.setText("NV111");
+		txtMatKhau.setText("1234Abc.");
+
+		setAlwaysOnTop(false);
 	}
 
 	private boolean validator() {

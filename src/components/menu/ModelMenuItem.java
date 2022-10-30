@@ -1,22 +1,22 @@
 package components.menu;
 
-import javaswingdev.GoogleMaterialDesignIcon;
+import javax.swing.Icon;
 
 public class ModelMenuItem {
-	private GoogleMaterialDesignIcon icon;
+	private Icon icon;
 	private String menuName;
 	private String subMenu[];
 
 	public ModelMenuItem() {
 	}
 
-	public ModelMenuItem(GoogleMaterialDesignIcon icon, String menuName, String... subMenu) {
+	public ModelMenuItem(Icon icon, String menuName, String... subMenu) {
 		this.icon = icon;
 		this.menuName = menuName;
 		this.subMenu = subMenu;
 	}
 
-	public GoogleMaterialDesignIcon getIcon() {
+	public Icon getIcon() {
 		return icon;
 	}
 
@@ -28,12 +28,14 @@ public class ModelMenuItem {
 		return subMenu;
 	}
 
-	public void setIcon(GoogleMaterialDesignIcon icon) {
+	public void setIcon(Icon icon) {
 		this.icon = icon;
 	}
+
 	public void setMenuName(String menuName) {
 		this.menuName = menuName;
 	}
+
 	public void setSubMenu(String[] subMenu) {
 		this.subMenu = subMenu;
 	}

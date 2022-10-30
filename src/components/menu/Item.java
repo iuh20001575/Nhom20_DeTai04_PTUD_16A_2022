@@ -9,15 +9,12 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
-
-import javaswingdev.GoogleMaterialDesignIcon;
-import javaswingdev.GoogleMaterialIcon;
-import javaswingdev.GradientType;
 
 public class Item extends JButton {
 
@@ -27,7 +24,7 @@ public class Item extends JButton {
 	private static final long serialVersionUID = 1L;
 	private float alpha;
 	private Animator animator;
-	private GoogleMaterialDesignIcon icon;
+	private Icon icon;
 	private final int index;
 	private final Color mainColor = SystemColor.MAIN_COLOR_2;
 	private final boolean mainMenu;
@@ -134,11 +131,10 @@ public class Item extends JButton {
 		}
 	}
 
-	public void setGoogleIcon(GoogleMaterialDesignIcon icon) {
+	public void setGoogleIcon(Icon icon) {
 		if (icon != null) {
 			this.icon = icon;
-			setIcon(new GoogleMaterialIcon(icon, GradientType.HORIZONTAL, SystemColor.MAIN_COLOR_1,
-					SystemColor.MAIN_COLOR_2, 19).toIcon());
+			setIcon(icon);
 		}
 	}
 

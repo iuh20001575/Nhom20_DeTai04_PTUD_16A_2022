@@ -8,10 +8,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class SplashScreen extends JFrame {
+public class SplashScreen extends JWindow {
 
 	/**
 	 * 
@@ -26,10 +27,7 @@ public class SplashScreen extends JFrame {
 	 * Create the frame.
 	 */
 	public SplashScreen() {
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(0, 0, 450, 400);
-		setUndecorated(true);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -44,7 +42,7 @@ public class SplashScreen extends JFrame {
 		setLocationRelativeTo(null);
 
 		JLabel lblIcon = new JLabel("");
-		lblIcon.setIcon(new ImageIcon("D:\\microphone.png"));
+		lblIcon.setIcon(new ImageIcon("Icon\\microphone.png"));
 		lblIcon.setBounds(97, 100, 256, 256);
 		contentPane.add(lblIcon);
 
@@ -55,22 +53,22 @@ public class SplashScreen extends JFrame {
 		lblLoading = new JLabel("Loading...");
 		lblLoading.setForeground(Color.WHITE);
 		lblLoading.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblLoading.setBounds(10, 365, 150, 24);
+		lblLoading.setBounds(10, 355, 350, 24);
 		contentPane.add(lblLoading);
 
 		lblPhanTram = new JLabel("0%");
 		lblPhanTram.setForeground(Color.WHITE);
 		lblPhanTram.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblPhanTram.setBounds(390, 365, 50, 24);
+		lblPhanTram.setBounds(390, 355, 50, 24);
 		contentPane.add(lblPhanTram);
 
 		JLabel lblBackground = new JLabel("");
-		lblBackground.setIcon(new ImageIcon("D:\\SplashScreen.png"));
+		lblBackground.setIcon(new ImageIcon("Icon\\SplashScreen.png"));
 		lblBackground.setBounds(0, 0, 450, 400);
 		contentPane.add(lblBackground);
 	}
 
-	public void hanleOpen(JFrame jFrame) {
+	public void handleOpen(JFrame jFrame) {
 		Thread thread = new Thread() {
 			@Override
 			public void run() {
@@ -78,12 +76,23 @@ public class SplashScreen extends JFrame {
 					try {
 						prg.setValue(i * 10);
 						lblPhanTram.setText(i * 10 + "%");
+
+						if (i == 1)
+							lblLoading.setText("Turning On Modules...");
+						else if (i == 2)
+							lblLoading.setText("Loading Modules...");
+						else if (i == 5)
+							lblLoading.setText("Connecting to Database...");
+						else if (i == 7)
+							lblLoading.setText("Connection Successfull!");
+						else if (i == 8)
+							lblLoading.setText("Launching Application...");
 						sleep(100);
 
 						if (i == 10) {
 							jFrame.setAlwaysOnTop(true);
 							jFrame.setVisible(true);
-							setVisible(false);
+							dispose();
 						}
 					} catch (Exception e) {
 						// TODO: handle exception

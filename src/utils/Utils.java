@@ -26,6 +26,7 @@ public class Utils {
 	public static final String thongKeKhachHangMenuItem = "Khách hàng";
 	public static final String thongTinCaNhanMenuItem = "Thông tin cá nhân";
 	public static final String thoatMenuItem = "Thoát";
+	public static final String dangXuatMenuItem = "Đăng xuất";
 
 	public static final Color primaryColor = new Color(140, 177, 180);
 	public static final Color secondaryColor = new Color(203, 239, 255);
