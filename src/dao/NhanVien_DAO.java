@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +16,6 @@ import entity.Phuong;
 import entity.Quan;
 import entity.TaiKhoan;
 import entity.Tinh;
-import utils.Utils;
 
 public class NhanVien_DAO {
 	private TaiKhoan_DAO taiKhoan_DAO;
@@ -36,7 +36,7 @@ public class NhanVien_DAO {
 		String hoTen = resultSet.getString("hoTen");
 		String cccd = resultSet.getString("cccd");
 		String soDienThoai = resultSet.getString("soDienThoai");
-		LocalDate ngaySinh = Utils.convertDateToLocalDate(resultSet.getDate("ngaySinh"));
+		LocalDate ngaySinh = resultSet.getDate("ngaySinh").toLocalDate();
 		boolean gioiTinh = resultSet.getBoolean("gioiTinh");
 		String tinh = resultSet.getString("tinh");
 		String quan = resultSet.getString("quan");
@@ -157,7 +157,7 @@ public class NhanVien_DAO {
 			preparedStatement.setString(1, nhanVien.getHoTen());
 			preparedStatement.setString(2, nhanVien.getCccd());
 			preparedStatement.setString(3, nhanVien.getSoDienThoai());
-			preparedStatement.setDate(4, Utils.convertLocalDateToDate(nhanVien.getNgaySinh()));
+			preparedStatement.setDate(4, Date.valueOf(nhanVien.getNgaySinh()));
 			preparedStatement.setBoolean(5, nhanVien.isGioiTinh());
 			preparedStatement.setString(6, nhanVien.getTinh().getId());
 			preparedStatement.setString(7, nhanVien.getQuan().getId());
@@ -186,7 +186,7 @@ public class NhanVien_DAO {
 			preparedStatement.setString(2, nhanVien.getHoTen());
 			preparedStatement.setString(3, nhanVien.getCccd());
 			preparedStatement.setString(4, nhanVien.getSoDienThoai());
-			preparedStatement.setDate(5, Utils.convertLocalDateToDate(nhanVien.getNgaySinh()));
+			preparedStatement.setDate(5, Date.valueOf(nhanVien.getNgaySinh()));
 			preparedStatement.setBoolean(6, nhanVien.isGioiTinh());
 			preparedStatement.setString(7, nhanVien.getTinh().getId());
 			preparedStatement.setString(8, nhanVien.getQuan().getId());

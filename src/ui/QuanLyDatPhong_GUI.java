@@ -10,7 +10,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
-import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,7 +33,6 @@ import components.jDialog.JDialogCustom;
 import components.panelEvent.PanelEvent;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
-import connectDB.ConnectDB;
 import dao.DatPhong_DAO;
 import dao.Phong_DAO;
 import entity.Phong;
@@ -92,6 +90,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
 
 		this.jFrame = jFrame;
+		_this = this;
 		phong_DAO = new Phong_DAO();
 		datPhong_DAO = new DatPhong_DAO();
 		jDialog = new JDialogCustom(jFrame, components.jDialog.JDialogCustom.Type.warning);

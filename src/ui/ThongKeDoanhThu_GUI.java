@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -22,7 +21,6 @@ import javax.swing.table.TableCellRenderer;
 import components.barChart.Chart;
 import components.barChart.ModelChart;
 import components.button.Button;
-import connectDB.ConnectDB;
 import utils.Utils;
 
 public class ThongKeDoanhThu_GUI extends JPanel {

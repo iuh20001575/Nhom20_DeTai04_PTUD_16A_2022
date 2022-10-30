@@ -6,7 +6,6 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,32 +108,6 @@ public class Utils {
 			dates[2] = "19" + dates[2];
 		return LocalDate
 				.parse(String.format(date.contains("/") ? "%s/%s/%s" : "%s-%s-%s", dates[0], dates[1], dates[2]), dtf);
-	}
-
-	/**
-	 * Chuyển Date sang LocalDate
-	 * 
-	 * @param dateToConvert
-	 * @return
-	 */
-	@SuppressWarnings("deprecation")
-	public static LocalDate convertDateToLocalDate(Date dateToConvert) {
-		LocalDate localDate = LocalDate.of(dateToConvert.getYear() + 1900, dateToConvert.getMonth() + 1,
-				dateToConvert.getDate());
-		return localDate;
-	}
-
-	/**
-	 * Chuyển LocalDate sang Date của SQL
-	 * 
-	 * @param localDate
-	 * @return
-	 */
-	@SuppressWarnings("deprecation")
-	public static java.sql.Date convertLocalDateToDate(LocalDate localDate) {
-		return new java.sql.Date(
-				new Date(localDate.getYear() - 1900, localDate.getMonthValue() - 1, localDate.getDayOfMonth())
-						.getTime());
 	}
 
 	/**

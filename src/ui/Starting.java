@@ -10,7 +10,11 @@ public class Starting {
 
 			@Override
 			public void run() {
-				new DangNhap_GUI().setVisible(true);
+				DangNhap_GUI dangNhap_GUI = new DangNhap_GUI();
+				SplashScreen splashScreen = new SplashScreen();
+
+				splashScreen.setVisible(true);
+				splashScreen.hanleOpen(dangNhap_GUI);
 			}
 		});
 	}

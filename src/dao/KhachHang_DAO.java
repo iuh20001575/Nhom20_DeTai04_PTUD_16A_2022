@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +14,6 @@ import entity.KhachHang;
 import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
-import utils.Utils;
 
 public class KhachHang_DAO {
 	/**
@@ -27,7 +27,7 @@ public class KhachHang_DAO {
 		String maKhachHang = resultSet.getString(1);
 		String hoTen = resultSet.getString(2);
 		String cccd = resultSet.getString(3);
-		LocalDate ngaySinh = Utils.convertDateToLocalDate(resultSet.getDate(4));
+		LocalDate ngaySinh = resultSet.getDate(4).toLocalDate();
 		boolean gioiTinh = resultSet.getBoolean(5);
 		String soDienThoai = resultSet.getString(6);
 		Tinh tinh = new Tinh(resultSet.getString(7));
@@ -146,7 +146,7 @@ public class KhachHang_DAO {
 			preparedStatement.setString(1, khachHang.getMaKhachHang());
 			preparedStatement.setString(2, khachHang.getHoTen());
 			preparedStatement.setString(3, khachHang.getCccd());
-			preparedStatement.setDate(4, Utils.convertLocalDateToDate(khachHang.getNgaySinh()));
+			preparedStatement.setDate(4, Date.valueOf(khachHang.getNgaySinh()));
 			preparedStatement.setBoolean(5, khachHang.isGioiTinh());
 			preparedStatement.setString(6, khachHang.getSoDienThoai());
 			preparedStatement.setString(7, khachHang.getTinh().getId());
@@ -175,7 +175,7 @@ public class KhachHang_DAO {
 					"UPDATE KhachHang SET hoTen = ?, cccd = ?, ngaySinh = ?, gioiTinh = ?, soDienThoai = ?, tinh = ?, quan = ?, phuong = ?, diaChiCuThe = ? WHERE maKhachHang = ?");
 			preparedStatement.setString(1, khachHang.getHoTen());
 			preparedStatement.setString(2, khachHang.getCccd());
-			preparedStatement.setDate(3, Utils.convertLocalDateToDate(khachHang.getNgaySinh()));
+			preparedStatement.setDate(3, Date.valueOf(khachHang.getNgaySinh()));
 			preparedStatement.setBoolean(4, khachHang.isGioiTinh());
 			preparedStatement.setString(5, khachHang.getSoDienThoai());
 			preparedStatement.setString(6, khachHang.getTinh().getId());

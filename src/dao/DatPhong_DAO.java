@@ -39,9 +39,9 @@ public class DatPhong_DAO {
 		String maDatPhong = resultSet.getString("maDatPhong");
 		KhachHang khachHang = new KhachHang(resultSet.getString("khachHang"));
 		NhanVien nhanVien = new NhanVien(resultSet.getString("nhanVien"));
-		LocalDate ngayDatPhong = Utils.convertDateToLocalDate(resultSet.getDate("ngayDatPhong"));
+		LocalDate ngayDatPhong = resultSet.getDate("ngayDatPhong").toLocalDate();
 		LocalTime gioDatPhong = resultSet.getTime("gioDatPhong").toLocalTime();
-		LocalDate ngayNhanPhong = Utils.convertDateToLocalDate(resultSet.getDate("ngayNhanPhong"));
+		LocalDate ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
 		LocalTime gioNhanPhong = resultSet.getTime("gioNhanPhong").toLocalTime();
 		TrangThai trangThai = DatPhong.convertStringToTrangThai(resultSet.getString("trangThai"));
 		return new DatPhong(maDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong, gioNhanPhong,
@@ -137,7 +137,7 @@ public class DatPhong_DAO {
 			ConnectDB.getConnection().setAutoCommit(false);
 			String maDatPhong = taoMaDatPhong();
 			Time time = Time.valueOf(LocalTime.now());
-			Date date = Utils.convertLocalDateToDate(LocalDate.now());
+			Date date = Date.valueOf(LocalDate.now());
 
 //			[DatPhong] - Tạo phiếu đặt phòng
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
@@ -200,7 +200,7 @@ public class DatPhong_DAO {
 			ConnectDB.getConnection().setAutoCommit(false);
 			String maDatPhong = taoMaDatPhong();
 			Time time = Time.valueOf(LocalTime.now());
-			Date date = Utils.convertLocalDateToDate(LocalDate.now());
+			Date date = Date.valueOf(LocalDate.now());
 
 //			[DatPhong] - Tạo phiếu đặt phòng
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
@@ -210,7 +210,7 @@ public class DatPhong_DAO {
 			preparedStatement.setString(3, nhanVien.getMaNhanVien());
 			preparedStatement.setDate(4, date);
 			preparedStatement.setTime(5, time);
-			preparedStatement.setDate(6, Utils.convertLocalDateToDate(ngayNhanPhong));
+			preparedStatement.setDate(6, Date.valueOf(ngayNhanPhong));
 			preparedStatement.setTime(7, Time.valueOf(gioNhanPhong));
 			preparedStatement.setString(8, DatPhong.convertTrangThaiToString(TrangThai.DangCho));
 			int res = preparedStatement.executeUpdate();
@@ -324,7 +324,7 @@ public class DatPhong_DAO {
 				sql += " AND soLuongKhach = ?";
 
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setDate(1, Utils.convertLocalDateToDate(ngayNhanPhong));
+			preparedStatement.setDate(1, Date.valueOf(ngayNhanPhong));
 			preparedStatement.setTime(2, Time.valueOf(gioNhanPhong));
 			preparedStatement.setString(3, "%" + maPhong + "%");
 			preparedStatement.setString(4, "%" + loaiPhong + "%");
@@ -677,7 +677,7 @@ public class DatPhong_DAO {
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 			if (resultSet.next())
-				return Utils.convertDateToLocalDate(resultSet.getDate(1));
+				return resultSet.getDate(1).toLocalDate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

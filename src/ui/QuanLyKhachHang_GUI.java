@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,7 +28,6 @@ import components.controlPanel.ControlPanel;
 import components.jDialog.JDialogCustom;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
-import connectDB.ConnectDB;
 import dao.DiaChi_DAO;
 import dao.KhachHang_DAO;
 import entity.KhachHang;
