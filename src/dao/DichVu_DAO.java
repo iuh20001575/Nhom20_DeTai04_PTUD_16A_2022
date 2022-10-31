@@ -19,7 +19,7 @@ public class DichVu_DAO {
 	
 	private LoaiDichVu_DAO loaiDichVu_DAO;
 	public DichVu_DAO(){
-		loaiDichVu_DAO = new LoaiDichVu_DAO();
+		loaiDichVu_DAO = new LoaiDichVu_DAO(); 
 	}
 	 
 	private DichVu getDichVu(ResultSet resultSet) throws SQLException {

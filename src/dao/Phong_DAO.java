@@ -8,17 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connectDB.ConnectDB;
+import entity.DichVu;
 import entity.LoaiPhong;
 import entity.Phong;
 import entity.Phong.TrangThai;
+import dao.LoaiPhong_DAO;
 
 public class Phong_DAO {
+	private LoaiPhong_DAO loaiPhong_DAO = new LoaiPhong_DAO();
+
 	private Phong getPhong(ResultSet resultSet) throws SQLException {
 		String maPhong = resultSet.getString(1);
 		String loaiPhong = resultSet.getString(2);
 		int soLuongKhach = resultSet.getInt(3);
 		String trangThai = resultSet.getString(4);
-		return new Phong(maPhong, new LoaiPhong(loaiPhong), soLuongKhach, Phong.convertStringToTrangThai(trangThai));
+		return new Phong(maPhong, loaiPhong_DAO.getLoaiPhong(loaiPhong), soLuongKhach,
+				Phong.convertStringToTrangThai(trangThai));
 	}
 
 	/**
@@ -61,6 +66,22 @@ public class Phong_DAO {
 		return false;
 	}
 
+	public boolean suaPhong(Phong phong) {
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
+					"UPDATE Phong SET loaiPhong = ?, soLuongKhach = ? WHERE maPhong = ?");
+			preparedStatement.setString(1, phong.getLoaiPhong().getMaLoai());
+			preparedStatement.setInt(2, phong.getSoLuongKhach());
+			preparedStatement.setString(3, phong.getMaPhong());
+			return preparedStatement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public List<Phong> getAllPhongTheoMa(List<Phong> list) {
 		List<Phong> phongs = new ArrayList<>();
 
@@ -225,5 +246,48 @@ public class Phong_DAO {
 			e.printStackTrace();
 		}
 		return false;
+	}
+ 
+	public List<Phong> getPhongTheoLoaiVaSoLuongKhach(String maPhong, String tenLoaiPhong, String soLuongKhach) {
+		List<Phong> list = new ArrayList<>();
+
+		try {
+			if (soLuongKhach.equals("")) {
+				PreparedStatement preparedStatement = ConnectDB.getConnection()
+						.prepareStatement("SELECT * FROM   Phong INNER JOIN "
+								+ " LoaiPhong ON Phong.loaiPhong = LoaiPhong.maLoai "
+								+ "WHERE maPhong like ? and tenLoai like ? ");
+
+				preparedStatement.setString(1, "%" + maPhong + "%");
+				preparedStatement.setString(2, "%" + tenLoaiPhong + "%");
+				ResultSet resultSet = preparedStatement.executeQuery();
+
+				while (resultSet.next())
+					list.add(getPhong(resultSet));
+
+				resultSet.close();
+			} else {
+				PreparedStatement preparedStatement = ConnectDB.getConnection()
+						.prepareStatement("SELECT * FROM   Phong INNER JOIN "
+								+ " LoaiPhong ON Phong.loaiPhong = LoaiPhong.maLoai "
+								+ "WHERE maPhong like ? and tenLoai like ? and soLuongKhach = ?");
+
+				preparedStatement.setString(1, "%" + maPhong + "%");
+				preparedStatement.setString(2, "%" + tenLoaiPhong + "%");
+				preparedStatement.setInt(3, Integer.parseInt(soLuongKhach));
+				ResultSet resultSet = preparedStatement.executeQuery();
+
+				while (resultSet.next())
+					list.add(getPhong(resultSet));
+
+				resultSet.close();
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 }
