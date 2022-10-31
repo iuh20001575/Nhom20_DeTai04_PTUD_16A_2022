@@ -44,7 +44,7 @@ public class ThemPhong_GUI extends JFrame {
 
 	/**
 	 * Create the frame.
-	 * 
+	 *  
 	 * @param quanLyPhong_GUI
 	 */
 	public ThemPhong_GUI(QuanLyPhong_GUI quanLyPhong_GUI) {
@@ -54,7 +54,7 @@ public class ThemPhong_GUI extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+ 
 		_this = this;
 		phong_DAO = new Phong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
@@ -130,7 +130,7 @@ public class ThemPhong_GUI extends JFrame {
 		btnThemPhong.setBounds(350, -2, 100, 38);
 		pnlActions.add(btnThemPhong);
 
-		Button btnLamMoi = new Button("Quay lại");
+		Button btnLamMoi = new Button("Làm mới");
 		btnLamMoi.setText("Làm mới");
 		btnLamMoi.setRadius(4);
 		btnLamMoi.setForeground(Color.BLACK);

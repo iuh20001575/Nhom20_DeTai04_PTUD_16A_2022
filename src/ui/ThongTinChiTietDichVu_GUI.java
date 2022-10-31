@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -27,8 +28,6 @@ import utils.Utils;
 
 import entity.DichVu;
 import entity.LoaiDichVu;
-import entity.NhanVien;
-import entity.TaiKhoan;
 import dao.LoaiDichVu_DAO;
 import dao.DichVu_DAO;
 
@@ -41,15 +40,15 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 	private LoaiDichVu_DAO loaiDichVu_DAO;
 	private DichVu dichVu;
 	private DichVu_DAO dichVu_DAO;
-	private JComboBox<String> cmbLoaiDichVu;
+	private JComboBox<String> cmbLoaiDichVu; 
 	private JLabel lblTime;
 	private JLabel lblThu;
 	private JLabel lblDate;
 	private Main main;
-	private TextField txtMa, txtTen, txtDonViTinh, txtSoLuong, txtGiaMua;
+	private TextField txtMa, txtTen, txtDonViTinh, txtSoLuong, txtGiaMua; 
 
 	public ThongTinChiTietDichVu_GUI(Main jFrame, DichVu dichVu, boolean isCapNhat) {
-
+ 
 		main = jFrame;
 		dichVu_DAO = new DichVu_DAO();
 		loaiDichVu_DAO = new LoaiDichVu_DAO();
@@ -190,7 +189,7 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		panel_1.add(btnLuu);
 		
 		setEnabledForm(false);
-		
+		txtMa.setEnabled(false);
 		this.dichVu = dichVu;
 		setDichVuVaoForm(dichVu);
 		
@@ -346,7 +345,6 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 	 * @param b
 	 */
 	private void setEnabledForm(boolean b) {
-		txtMa.setEnabled(b);
 		txtSoLuong.setEnabled(b);
 		txtTen.setEnabled(b);
 		txtDonViTinh.setEnabled(b);
