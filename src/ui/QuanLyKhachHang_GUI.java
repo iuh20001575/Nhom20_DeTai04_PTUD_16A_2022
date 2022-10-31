@@ -141,7 +141,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 							"Vui lòng chọn khách hàng muốn xem");
 				} else {
 					String maKhachHang = (String) tbl.getValueAt(row, 0);
-					main.addPnlBody(new XemKhachHang_GUI(main, new KhachHang(maKhachHang)), "Cập nhật khách hàng", 2,
+					main.addPnlBody(new XemKhachHang_GUI(main, new KhachHang(maKhachHang)), "Xem khách hàng", 2,
 							0);
 				}
 			}
@@ -354,6 +354,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 		clock.start();
 	}
+
 
 	private void filterKhachHang() {
 		String hoTen = txtSearch.getText();

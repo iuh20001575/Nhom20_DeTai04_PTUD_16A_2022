@@ -49,11 +49,13 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 	private KhachHang_DAO khachHang_DAO;
 	private Quan quan;
 	RadioButtonCustom radNam, radNu;
+	private Main main;
 
 	private Tinh tinh;
 	TextField txtMa, txtTen, txtCCCD, txtSDT, txtNgaySinh, txtTinh, txtQuan, txtPhuong, txtDiaChiCT;
 
-	public CapNhatKhachHang_GUI(JFrame main, KhachHang khachHang) {
+	public CapNhatKhachHang_GUI(Main jFrame, KhachHang khachHang) {
+		main = jFrame;
 		khachHang_DAO = new KhachHang_DAO();
 		DiaChi_DAO = new DiaChi_DAO();
 		this.khachHang = khachHang_DAO.getKhachHangTheoMa(khachHang.getMaKhachHang());
@@ -238,9 +240,7 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-//				JFrame jFrame = StackPanel.pop();
-//				StackPanel.peek().setVisible(true);
-//				jFrame.setVisible(false);
+					main.backPanel();
 
 			}
 		});

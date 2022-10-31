@@ -251,20 +251,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (jFrameParent == null) {
-					StackPanel.pop();
-					PanelUI panelUI = StackPanel.peek();
-					if (panelUI.getTitle().equals("Trang chủ")) {
-						while (!StackPanel.empty())
-							StackPanel.pop();
-						StackPanel.push(new PanelUI(new TrangChu_GUI(), "Trang chủ", 0, 0));
-					}
-					main.addPnlBody(panelUI);
-					main.getMenu().setSelectedMenu(panelUI.getIndex(), panelUI.getIndexSubmenu());
-				} else {
-					main.setVisible(false);
-					jFrameParent.setVisible(false);
-				}
+				main.backPanel();
 			}
 		});
 
