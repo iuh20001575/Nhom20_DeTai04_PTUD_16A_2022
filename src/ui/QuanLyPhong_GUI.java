@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,6 +13,7 @@ import java.time.LocalTime;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -27,6 +30,7 @@ import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
 import components.comboBox.ComboBox;
+import components.jDialog.Glass;
 import components.scrollbarCustom.ScrollBarCustom;
 import utils.Utils;
 
@@ -43,16 +47,23 @@ public class QuanLyPhong_GUI extends JPanel {
 	private JLabel lblGio;
 	private JLabel lblThu;
 	private JLabel lblNgay;
+	private Glass glass;
+	private JFrame jFrame;
+	private JFrame jFrameSub;
+	private QuanLyPhong_GUI _this;
 
 	/**
 	 * Create the panel.
 	 * 
 	 * @param _this
 	 */
-	public QuanLyPhong_GUI(Main _this) {
+	public QuanLyPhong_GUI(JFrame jFrame) {
 		setBackground(Utils.secondaryColor);
 		setBounds(0, 0, 1086, 508);
 		setLayout(null);
+		glass = new Glass();
+		this.jFrame = jFrame;
+		_this = this;
 
 		JPanel pnlHeader = new JPanel();
 		pnlHeader.setBounds(0, 6, 1086, 64);
@@ -274,6 +285,13 @@ public class QuanLyPhong_GUI extends JPanel {
 			}
 		};
 
+		btnThem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				openJFrameSub(new ThemPhong_GUI(_this));
+			}
+		});
+
 		addAncestorListener(new AncestorListener() {
 			public void ancestorAdded(AncestorEvent event) {
 				clock.start();
@@ -287,5 +305,28 @@ public class QuanLyPhong_GUI extends JPanel {
 				clock.stop();
 			}
 		});
+		
+		glass.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				closeJFrameSub();
+			}
+		});
+	}
+
+	public void openJFrameSub(JFrame jFrame) {
+		this.jFrame.setGlassPane(glass);
+		glass.setVisible(true);
+		glass.setAlpha(0.5f);
+		jFrameSub = jFrame;
+		jFrameSub.setVisible(true);
+	}
+
+	public void closeJFrameSub() {
+		if (jFrameSub != null)
+			jFrameSub.setVisible(false);
+		glass.setVisible(false);
+		glass.setAlpha(0f);
+		jFrameSub = null;
 	}
 }

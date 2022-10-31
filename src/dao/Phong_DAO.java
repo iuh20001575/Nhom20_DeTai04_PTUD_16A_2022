@@ -43,6 +43,24 @@ public class Phong_DAO {
 		return list;
 	}
 
+	public boolean themPhong(Phong phong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("INSERT Phong VALUES (?, ?, ?, ?)");
+			preparedStatement.setString(1, phong.getMaPhong());
+			preparedStatement.setString(2, phong.getLoaiPhong().getMaLoai());
+			preparedStatement.setInt(3, phong.getSoLuongKhach());
+			preparedStatement.setString(4, Phong.convertTrangThaiToString(Phong.TrangThai.Trong));
+
+			return preparedStatement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
 	public List<Phong> getAllPhongTheoMa(List<Phong> list) {
 		List<Phong> phongs = new ArrayList<>();
 
@@ -177,6 +195,20 @@ public class Phong_DAO {
 		}
 
 		return list;
+	}
+
+	public boolean isMaPhongTonTai(String maPhong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT maPhong FROM Phong WHERE maPhong = ?");
+			preparedStatement.setString(1, maPhong);
+			return preparedStatement.executeQuery().next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 	public boolean capNhatTrangThaiPhong(Phong phong, String trangThai) {
