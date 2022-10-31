@@ -2,8 +2,6 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -22,6 +20,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import com.raven.datechooser.DateChooser;
 
@@ -371,7 +371,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		cmbQuan.setEnabled(false);
 		cmbPhuong.setEnabled(false);
 		txtMaNhanVien.setEnabled(false);
-		
+
 		cmbTinh.addItemListener(this);
 		cmbQuan.addItemListener(this);
 		cmbPhuong.addItemListener(this);
@@ -438,7 +438,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				xoaRong();
 
-				repaint();	
+				repaint();
 			}
 		});
 
@@ -462,11 +462,19 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		});
 
 //		Sự kiện Component được hiển thị
-		addComponentListener(new ComponentAdapter() {
+		addAncestorListener(new AncestorListener() {
 			@Override
-			public void componentShown(ComponentEvent e) {
+			public void ancestorAdded(AncestorEvent event) {
 				dateChoose.showPopup();
 				dateChoose.hidePopup();
+			}
+
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
 			}
 		});
 	}

@@ -2,8 +2,6 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -23,6 +21,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.plaf.metal.MetalButtonUI;
 
 import com.raven.datechooser.DateChooser;
@@ -398,12 +398,17 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 			}
 		});
 
-//		Sự kiện Component được hiển thị
-		addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentShown(ComponentEvent e) {
+//		Sự kiện Component được thêm
+		addAncestorListener(new AncestorListener() {
+			public void ancestorAdded(AncestorEvent event) {
 				dateChoose.showPopup();
 				dateChoose.hidePopup();
+			}
+
+			public void ancestorMoved(AncestorEvent event) {
+			}
+
+			public void ancestorRemoved(AncestorEvent event) {
 			}
 		});
 	}
