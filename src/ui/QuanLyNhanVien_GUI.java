@@ -47,41 +47,10 @@ import utils.Utils;
 
 public class QuanLyNhanVien_GUI extends JPanel {
 
-	private JLabel lblTime;
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public Thread clock() {
-		Thread clock = new Thread() {
-			@Override
-			public void run() {
-				for (;;) {
-					try {
-						LocalDateTime currTime = LocalDateTime.now();
-						int day = currTime.getDayOfMonth();
-						int month = currTime.getMonthValue();
-						int year = currTime.getYear();
-						int hour = currTime.getHour();
-						int minute = currTime.getMinute();
-						int second = currTime.getSecond();
-						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
-								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
-								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
-						sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-
-		clock.start();
-
-		return clock;
-	}
-
 	private Button btnEmployeeAdd;
 	private Button btnEmployeeEdit;
 	private Button btnEmployeeRemove;
@@ -89,15 +58,14 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private JComboBox<String> cmbMaNhanVien;
 	private JComboBox<String> cmbTrangThai;
 	private DiaChi_DAO diaChi_DAO;
+	private JLabel lblTime;
+	private Main main;
 	private DefaultComboBoxModel<String> maNhanVienModel;
 	private NhanVien_DAO nhanVien_DAO;
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
-
 	private JTextField txtSearch;
-	private Main main;
-
 	/**
 	 * Create the frame.
 	 */
@@ -458,6 +426,35 @@ public class QuanLyNhanVien_GUI extends JPanel {
 				nhanVien.isGioiTinh() ? "Nam" : "Nữ", String.format("%s, %s, %s, %s", tinh.getTinh(), quan.getQuan(),
 						phuong.getPhuong(), nhanVien.getDiaChiCuThe()),
 				NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()) });
+	}
+
+	public Thread clock() {
+		Thread clock = new Thread() {
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						LocalDateTime currTime = LocalDateTime.now();
+						int day = currTime.getDayOfMonth();
+						int month = currTime.getMonthValue();
+						int year = currTime.getYear();
+						int hour = currTime.getHour();
+						int minute = currTime.getMinute();
+						int second = currTime.getSecond();
+						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
+								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
+								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+
+		clock.start();
+
+		return clock;
 	}
 
 	private void filterNhanVien() {

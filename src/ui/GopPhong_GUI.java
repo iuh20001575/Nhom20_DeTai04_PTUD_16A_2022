@@ -23,6 +23,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
@@ -48,7 +49,7 @@ import utils.Utils;
 public class GopPhong_GUI extends JFrame implements ItemListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private GopPhong_GUI _this;
@@ -60,19 +61,16 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	private List<Phong> dsPhongDaChon;
 	private final String labelCmbMaDatPhong = "Mã đặt phòng";
 	private LoaiPhong_DAO loaiPhong_DAO;
-
 	private JPanel pnlContent;
 	private JPanel pnlPhongGop;
-
 	private DefaultTableModel tableModelPhongCanGop;
-
 	private DefaultTableModel tableModelPhongGop;
 	private JTable tblPhongCanGop;
 	private JTable tblPhongGop;
 
 	/**
 	 * Create the frame.
-	 * 
+	 *
 	 * @param quanLyDatPhongGUI
 	 * @param glass
 	 */
@@ -82,7 +80,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		loaiPhong_DAO = new LoaiPhong_DAO();
 
 		setType(Type.UTILITY);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 489);
 		pnlContent = new JPanel();
 		pnlContent.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -117,7 +115,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 		cmbMaDatPhong = new ComboBox<>();
 		cmbMaDatPhong.setBackground(Utils.primaryColor);
-		cmbMaDatPhong.setModel(new DefaultComboBoxModel<String>(new String[] { labelCmbMaDatPhong }));
+		cmbMaDatPhong.setModel(new DefaultComboBoxModel<>(new String[] { labelCmbMaDatPhong }));
 		cmbMaDatPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		cmbMaDatPhong.setBounds(126, 59, 150, 32);
 		pnlContainer.add(cmbMaDatPhong);
@@ -145,7 +143,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 		tblPhongCanGop = new JTable() {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -210,7 +208,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 		tblPhongGop = new JTable() {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -316,12 +314,14 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 //		Sự kiện JTable phòng cần gộp
 		tblPhongCanGop.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				btnChonPhong.setEnabled(true);
-			};
+			}
 		});
 
 		tblPhongCanGop.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
 					int row = tblPhongCanGop.getSelectedRow();
@@ -359,12 +359,14 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 //		Lắng nghe sự kiện table gộp phòng
 		tblPhongGop.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				setEnabledBtnChuyenPhong();
-			};
+			}
 		});
 
 		tblPhongGop.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
 					int row = tblPhongGop.getSelectedRow();
@@ -376,6 +378,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 //		Lắng nghe sự kiện nút gộp phòng
 		btnChuyen.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (!btnChuyen.isEnabled())
 					return;
@@ -389,20 +392,21 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
 							"Gộp phòng thành công").showNotification();
 				}
-			};
+			}
 		});
 
 //		Lắng nghe sự kiện nút quay lại
 		btnQuayLai.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				quanLyDatPhongGUI.closeJFrameSub();
-			};
+			}
 		});
 	}
 
 	/**
 	 * Thêm một phòng vào table phòng cần gộp
-	 * 
+	 *
 	 * @param phong
 	 */
 	private void addRowTableCanGop(Phong phong) {
@@ -412,7 +416,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Thêm một phòng vào Table gộp phòng
-	 * 
+	 *
 	 * @param phong
 	 */
 	private void addRowTablePhongGop(Phong phong) {
@@ -435,7 +439,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Xóa tất cả các row trong table
-	 * 
+	 *
 	 * @param jTable
 	 * @param tableModel
 	 */
@@ -446,7 +450,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Get pnlContainer phòng đã chọn
-	 * 
+	 *
 	 * @param top   khoảng cách top từ container đến item
 	 * @param phong phòng được chọn
 	 * @return pnlContainer
@@ -515,9 +519,9 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 			List<LoaiPhong> dsLoaiPhong = loaiPhong_DAO.getAllLoaiPhong();
 
 			dsPhongCanGop.forEach(phong -> {
-				for (int i = 0; i < dsLoaiPhong.size(); i++) {
-					if (dsLoaiPhong.get(i).equals(phong.getLoaiPhong())) {
-						phong.setLoaiPhong(dsLoaiPhong.get(i));
+				for (LoaiPhong element : dsLoaiPhong) {
+					if (element.equals(phong.getLoaiPhong())) {
+						phong.setLoaiPhong(element);
 						break;
 					}
 				}
@@ -598,9 +602,9 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		List<Phong> dsPhongGop = datPhong_DAO.getPhongCoTheGop(maDatPhong, dsPhongDaChon);
 
 		dsPhongGop.forEach(phong -> {
-			for (int i = 0; i < dsLoaiPhong.size(); i++) {
-				if (dsLoaiPhong.get(i).equals(phong.getLoaiPhong())) {
-					phong.setLoaiPhong(dsLoaiPhong.get(i));
+			for (LoaiPhong element : dsLoaiPhong) {
+				if (element.equals(phong.getLoaiPhong())) {
+					phong.setLoaiPhong(element);
 					break;
 				}
 			}

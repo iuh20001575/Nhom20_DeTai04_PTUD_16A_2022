@@ -30,6 +30,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -60,7 +61,7 @@ import utils.Utils;
 public class DatPhong_GUI extends JFrame implements ItemListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private DatPhong_GUI _this;
@@ -85,7 +86,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Create the frame.
-	 * 
+	 *
 	 * @param quanLyDatPhongGUI
 	 * @param parentFrame
 	 */
@@ -96,7 +97,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(0, 0, 850, 466);
 		setUndecorated(true);
 		setLocationRelativeTo(null);
@@ -194,7 +195,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 		tbl = new JTable() {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -271,24 +272,24 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		pnlBody.add(pnlFilter);
 		pnlFilter.setLayout(null);
 
-		cmbMaPhong = new JComboBox<String>();
+		cmbMaPhong = new JComboBox<>();
 		cmbMaPhong.setBackground(Utils.primaryColor);
 		cmbMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cmbMaPhong.setModel(new DefaultComboBoxModel<String>(new String[] { "Mã phòng" }));
+		cmbMaPhong.setModel(new DefaultComboBoxModel<>(new String[] { "Mã phòng" }));
 		cmbMaPhong.setBounds(0, 0, 200, 36);
 		pnlFilter.add(cmbMaPhong);
 
-		cmbLoaiPhong = new JComboBox<String>();
+		cmbLoaiPhong = new JComboBox<>();
 		cmbLoaiPhong.setBackground(Utils.primaryColor);
 		cmbLoaiPhong
-				.setModel(new DefaultComboBoxModel<String>(new String[] { "Loại phòng", "Phòng thường", "Phòng VIP" }));
+				.setModel(new DefaultComboBoxModel<>(new String[] { "Loại phòng", "Phòng thường", "Phòng VIP" }));
 		cmbLoaiPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbLoaiPhong.setBounds(220, 0, 200, 36);
 		pnlFilter.add(cmbLoaiPhong);
 
-		cmbSoLuong = new JComboBox<String>();
+		cmbSoLuong = new JComboBox<>();
 		cmbSoLuong.setBackground(Utils.primaryColor);
-		cmbSoLuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Số lượng", "5", "10", "20" }));
+		cmbSoLuong.setModel(new DefaultComboBoxModel<>(new String[] { "Số lượng", "5", "10", "20" }));
 		cmbSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbSoLuong.setBounds(440, 0, 200, 36);
 		pnlFilter.add(cmbSoLuong);
@@ -341,12 +342,13 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 //		Sự kiện txtSoDienThoai
 		txtSoDienThoai.addKeyListener(new KeyAdapter() {
+			@Override
 			public void keyPressed(KeyEvent e) {
 				khachHang = null;
 				txtTenKhachHang.setText("");
 				txtSoDienThoai.setError(false);
 				btnDatPhong.setEnabled(false);
-			};
+			}
 		});
 
 		txtSoDienThoai.addFocusListener(new FocusAdapter() {
@@ -376,12 +378,14 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 //		Sự kiện JTable
 		tbl.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				btnChonPhong.setEnabled(true);
-			};
+			}
 		});
 
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
 					if (tbl.getRowCount() == -1)
@@ -407,19 +411,21 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 						JDialogCustom jDialogCustom = new JDialogCustom(_this);
 
 						jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+							@Override
 							public void mouseClicked(MouseEvent e) {
 								Main main = new Main();
 								main.addPnlBody(new ThemKhachHang_GUI(main, _this, soDienThoai), "Thêm khách hàng", 2,
 										0);
 								main.setVisible(true);
 								setVisible(false);
-							};
+							}
 						});
 
 						jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
+							@Override
 							public void mouseClicked(MouseEvent e) {
 								quanLyDatPhongGUI.closeJFrameSub();
-							};
+							}
 						});
 
 						jDialogCustom.showMessage("Warning",
@@ -505,6 +511,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 				JDialogCustom jDialogCustom = new JDialogCustom(_this, components.jDialog.JDialogCustom.Type.confirm);
 				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+					@Override
 					public void mouseClicked(MouseEvent e) {
 						handleDatPhong();
 					}
@@ -526,7 +533,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Thêm danh sách các phòng vào table
-	 * 
+	 *
 	 * @param list danh sách các phòng cần thêm
 	 */
 	private void addRow(List<Phong> list) {
@@ -539,7 +546,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Thêm một phòng vào table
-	 * 
+	 *
 	 * @param phong phòng muốn thêm
 	 */
 	private void addRow(Phong phong) {
@@ -568,7 +575,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
-	 * 
+	 *
 	 * @param jComboBox
 	 */
 	private void emptyComboBox(JComboBox<String> cmb) {
@@ -577,7 +584,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
-	 * 
+	 *
 	 * @param jComboBox ComboBox
 	 * @param label
 	 */
@@ -615,7 +622,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Get panel phòng đã chọn
-	 * 
+	 *
 	 * @param top   khoảng cách top từ container đến item
 	 * @param phong phòng được chọn
 	 * @return panel

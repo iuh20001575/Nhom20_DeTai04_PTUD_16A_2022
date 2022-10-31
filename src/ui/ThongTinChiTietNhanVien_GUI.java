@@ -48,46 +48,38 @@ import utils.Utils;
 public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private TextField txtMaNhanVien;
+	private Button btnCapNhat;
+	private Button btnLuu;
+	private JComboBox<String> cmbChucVu;
+	private JComboBox<String> cmbPhuong;
+	private JComboBox<String> cmbQuan;
+	private JComboBox<String> cmbTinh;
+	private JComboBox<String> cmbTrangThai;
 	private DateChooser dateChoose;
+	private DiaChi_DAO diaChi_DAO;
+	private boolean isEnabledEventPhuong = false;
+	private boolean isEnabledEventQuan = false;
+	private boolean isEnabledEventTinh = false;
+	private Main main;
 	private NhanVien nhanVien;
 	private NhanVien_DAO nhanVien_DAO;
-	private TextField txtHoTen;
-	private TextField txtCCCD;
-	private TextField txtSoDienThoai;
-	private TextField txtNgaySinh;
+	private Phuong phuong;
+	private Quan quan;
 	private RadioButtonCustom radNam;
 	private RadioButtonCustom radNu;
-	private JComboBox<String> cmbTinh;
-	private JComboBox<String> cmbQuan;
-	private JComboBox<String> cmbPhuong;
-	private TextField txtDiaChiCT;
-	private TextField txtLuong;
-	private TextField txtMatKhau;
-	private JComboBox<String> cmbChucVu;
-	private JComboBox<String> cmbTrangThai;
 	private TaiKhoan_DAO taiKhoan_DAO;
-	private DiaChi_DAO diaChi_DAO;
 	private Tinh tinh;
-	private Quan quan;
-	private Phuong phuong;
-	private boolean isEnabledEventTinh = false;
-	private boolean isEnabledEventQuan = false;
-	private boolean isEnabledEventPhuong = false;
-	private Button btnLuu;
-	private Button btnCapNhat;
-	private Main main;
-
-	public ThongTinChiTietNhanVien_GUI(Main main, NhanVien nhanVien, boolean isCapNhat) {
-		this(main, nhanVien);
-		setEnabledForm(true);
-		txtLuong.setText(ThongTinChiTietNhanVien_GUI.this.nhanVien.getLuong() + "");
-		btnCapNhat.setVisible(false);
-		btnLuu.setEnabled(true);
-	}
+	private TextField txtCCCD;
+	private TextField txtDiaChiCT;
+	private TextField txtHoTen;
+	private TextField txtLuong;
+	private TextField txtMaNhanVien;
+	private TextField txtMatKhau;
+	private TextField txtNgaySinh;
+	private TextField txtSoDienThoai;
 
 	/**
 	 * Create the frame.
@@ -297,7 +289,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlChucVu.add(lblChucVu);
 
 		cmbChucVu = new ComboBox<>();
-		cmbChucVu.setModel(new DefaultComboBoxModel<String>(new String[] {
+		cmbChucVu.setModel(new DefaultComboBoxModel<>(new String[] {
 				NhanVien.convertChucVuToString(ChucVu.QuanLy), NhanVien.convertChucVuToString(ChucVu.NhanVien) }));
 		cmbChucVu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbChucVu.setBackground(new Color(140, 177, 180));
@@ -318,7 +310,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 
 		cmbTrangThai = new ComboBox<>();
 		cmbTrangThai.setModel(
-				new DefaultComboBoxModel<String>(new String[] { NhanVien.convertTrangThaiToString(TrangThai.DangLam),
+				new DefaultComboBoxModel<>(new String[] { NhanVien.convertTrangThaiToString(TrangThai.DangLam),
 						NhanVien.convertTrangThaiToString(TrangThai.NghiLam) }));
 		cmbTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbTrangThai.setBackground(new Color(140, 177, 180));
@@ -333,6 +325,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 
 		btnLuu = new Button("Lưu");
 		btnLuu.setUI(new MetalButtonUI() {
+			@Override
 			protected Color getDisabledTextColor() {
 				return Color.WHITE;
 			}
@@ -447,7 +440,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 				txtMatKhau.setError(false);
 			}
 		});
-		
+
 //		Sự kiện nút cập nhật
 		btnCapNhat.addMouseListener(new MouseAdapter() {
 			@Override
@@ -539,17 +532,138 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 			}
 
 			@Override
-			public void ancestorRemoved(AncestorEvent event) {
+			public void ancestorMoved(AncestorEvent event) {
 			}
 
 			@Override
-			public void ancestorMoved(AncestorEvent event) {
+			public void ancestorRemoved(AncestorEvent event) {
 			}
 		});
 
 		cmbTinh.addItemListener(this);
 		cmbQuan.addItemListener(this);
 		cmbPhuong.addItemListener(this);
+	}
+
+	public ThongTinChiTietNhanVien_GUI(Main main, NhanVien nhanVien, boolean isCapNhat) {
+		this(main, nhanVien);
+		setEnabledForm(true);
+		txtLuong.setText(ThongTinChiTietNhanVien_GUI.this.nhanVien.getLuong() + "");
+		btnCapNhat.setVisible(false);
+		btnLuu.setEnabled(true);
+	}
+
+	private NhanVien getNhanVienTuForm() {
+		String maNhanVien = txtMaNhanVien.getText();
+		String hoTen = txtHoTen.getText().trim();
+		String cccd = txtCCCD.getText().trim();
+		String soDienThoai = txtSoDienThoai.getText().trim();
+		LocalDate ngaySinh = Utils.getLocalDate(txtNgaySinh.getText());
+		String diaChiCuThe = txtDiaChiCT.getText().trim();
+		String luong = txtLuong.getText().trim();
+		double luongDouble = luong.endsWith(" ₫") ? Utils.convertStringToTienTe(luong) : Double.parseDouble(luong);
+		String matKhau = txtMatKhau.getText().trim();
+		TaiKhoan taiKhoan = new TaiKhoan(maNhanVien, matKhau);
+		boolean gioiTinh = radNam.isSelected();
+		ChucVu chucVu = NhanVien.convertStringToChucVu((String) cmbChucVu.getSelectedItem());
+		TrangThai trangThai = NhanVien.convertStringToTrangThai((String) cmbTrangThai.getSelectedItem());
+		return new NhanVien(maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, tinh, quan, phuong, diaChiCuThe,
+				chucVu, luongDouble, taiKhoan, trangThai);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		Object object = e.getSource();
+		if (e.getStateChange() != ItemEvent.SELECTED) {
+			return;
+		}
+		if (cmbTinh.equals(object)) {
+			if (!isEnabledEventTinh)
+				return;
+			isEnabledEventQuan = false;
+			isEnabledEventPhuong = false;
+			String tinhSelected = (String) cmbTinh.getSelectedItem();
+
+			cmbPhuong.setSelectedIndex(0);
+			cmbPhuong.setEnabled(false);
+			cmbQuan = resizeComboBox(cmbQuan, Quan.getQuanLabel());
+			quan = null;
+			phuong = null;
+
+			if (tinhSelected.equals(Tinh.getTinhLabel())) {
+				cmbQuan.setSelectedIndex(0);
+				cmbQuan.setEnabled(false);
+				tinh = null;
+				return;
+			}
+			Tinh tinh = diaChi_DAO.getTinh(tinhSelected);
+			ThongTinChiTietNhanVien_GUI.this.tinh = tinh;
+			setQuanToComboBox(ThongTinChiTietNhanVien_GUI.this.tinh);
+			cmbQuan.setEnabled(true);
+			isEnabledEventQuan = true;
+			isEnabledEventPhuong = true;
+		} else if (cmbQuan.equals(object)) {
+			if (!isEnabledEventQuan)
+				return;
+			isEnabledEventPhuong = false;
+			isEnabledEventQuan = false;
+			String quanSelected = (String) cmbQuan.getSelectedItem();
+			cmbPhuong = resizeComboBox(cmbPhuong, Quan.getQuanLabel());
+			phuong = null;
+
+			if (quanSelected.equals(Quan.getQuanLabel())) {
+				cmbPhuong.setSelectedIndex(0);
+				cmbPhuong.setEnabled(false);
+				quan = null;
+			} else {
+				Quan quan = diaChi_DAO.getQuan(tinh, quanSelected);
+				ThongTinChiTietNhanVien_GUI.this.quan = quan;
+				cmbPhuong.setEnabled(true);
+				setPhuongToComboBox(this.quan);
+			}
+
+			isEnabledEventPhuong = true;
+			isEnabledEventQuan = true;
+		} else if (cmbPhuong.equals(object)) {
+			if (!isEnabledEventPhuong)
+				return;
+			isEnabledEventPhuong = false;
+			String phuongSelect = (String) cmbPhuong.getSelectedItem();
+
+			if (phuongSelect.equals(Phuong.getPhuongLabel())) {
+				phuong = null;
+				return;
+			}
+
+			Phuong phuong = diaChi_DAO.getPhuong(quan, phuongSelect);
+			ThongTinChiTietNhanVien_GUI.this.phuong = phuong;
+			isEnabledEventPhuong = false;
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list, String firstLabel) {
+		list.removeAllItems();
+		list.addItem((E) firstLabel);
+		return list;
+	}
+
+	private void setEnabledForm(boolean b) {
+		txtCCCD.setEnabled(b);
+		txtDiaChiCT.setEnabled(b);
+		txtHoTen.setEnabled(b);
+		txtLuong.setEnabled(b);
+		txtMatKhau.setEnabled(b);
+		txtNgaySinh.setEnabled(b);
+		txtSoDienThoai.setEnabled(b);
+		radNam.setEnabled(b);
+		radNu.setEnabled(b);
+		cmbTinh.setEnabled(b);
+		cmbQuan.setEnabled(b);
+		cmbPhuong.setEnabled(b);
+		cmbChucVu.setEnabled(b);
+		cmbTrangThai.setEnabled(b);
 	}
 
 	private void setErrorAllJTextField(boolean b) {
@@ -561,6 +675,117 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		txtSoDienThoai.setError(b);
 		txtLuong.setError(b);
 		txtMatKhau.setError(b);
+	}
+
+	private void setNhanVienVaoForm(NhanVien nhanVien) {
+		txtMaNhanVien.setText(nhanVien.getMaNhanVien());
+		txtCCCD.setText(nhanVien.getCccd());
+		txtDiaChiCT.setText(nhanVien.getDiaChiCuThe());
+		txtHoTen.setText(nhanVien.getHoTen());
+		txtLuong.setText(Utils.formatTienTe(nhanVien.getLuong()));
+		TaiKhoan taiKhoan = taiKhoan_DAO.getTaiKhoan(nhanVien.getMaNhanVien());
+		txtMatKhau.setText(taiKhoan.getMatKhau());
+		txtNgaySinh.setText(Utils.formatDate(nhanVien.getNgaySinh()));
+		txtSoDienThoai.setText(nhanVien.getSoDienThoai());
+		cmbChucVu.setSelectedItem(NhanVien.convertChucVuToString(nhanVien.getChucVu()));
+		cmbTrangThai.setSelectedItem(NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
+		setTinhToComboBox();
+		setQuanToComboBox(tinh);
+		setPhuongToComboBox(quan);
+		if (nhanVien.isGioiTinh())
+			radNam.setSelected(true);
+		else
+			radNu.setSelected(true);
+	}
+
+	private void setPhuongToComboBox(Quan quan) {
+		isEnabledEventPhuong = false;
+
+		resizeComboBox(cmbPhuong, Phuong.getPhuongLabel());
+
+		List<Phuong> phuongs = diaChi_DAO.getPhuong(quan);
+
+		phuongs.sort(new Comparator<Phuong>() {
+
+			@Override
+			public int compare(Phuong o1, Phuong o2) {
+				return o1.getPhuong().compareToIgnoreCase(o2.getPhuong());
+			}
+		});
+
+		phuongs.forEach(phuong -> {
+			int index = phuongs.indexOf(phuong);
+			cmbPhuong.addItem(phuong.getPhuong());
+			if (phuong.getId().equals(ThongTinChiTietNhanVien_GUI.this.nhanVien.getPhuong().getId())) {
+				cmbPhuong.setSelectedIndex(index + 1);
+				ThongTinChiTietNhanVien_GUI.this.phuong = phuong;
+			}
+		});
+
+		isEnabledEventPhuong = true;
+	}
+
+	private void setQuanToComboBox(Tinh tinh) {
+		isEnabledEventQuan = false;
+
+		resizeComboBox(cmbQuan, Quan.getQuanLabel());
+		List<Quan> quans = diaChi_DAO.getQuan(tinh);
+		quans.sort(new Comparator<Quan>() {
+			@Override
+			public int compare(Quan o1, Quan o2) {
+				return o1.getQuan().compareToIgnoreCase(o2.getQuan());
+			}
+		});
+		quans.forEach(quan -> {
+			int index = quans.indexOf(quan);
+			cmbQuan.addItem(quan.getQuan());
+			if (quan.getId().equals(ThongTinChiTietNhanVien_GUI.this.nhanVien.getQuan().getId())) {
+				cmbQuan.setSelectedIndex(index + 1);
+				ThongTinChiTietNhanVien_GUI.this.quan = quan;
+			}
+		});
+
+		isEnabledEventQuan = true;
+	}
+
+	private void setTinhToComboBox() {
+		isEnabledEventTinh = false;
+
+		resizeComboBox(cmbTinh, Tinh.getTinhLabel());
+
+		List<Tinh> tinhs = diaChi_DAO.getTinh();
+
+		tinhs.sort(new Comparator<Tinh>() {
+			@Override
+			public int compare(Tinh o1, Tinh o2) {
+				return o1.getTinh().compareToIgnoreCase(o2.getTinh());
+			}
+		});
+
+		tinhs.forEach(tinh -> {
+			int index = tinhs.indexOf(tinh);
+			cmbTinh.addItem(tinh.getTinh());
+			if (tinh.getId().equals(ThongTinChiTietNhanVien_GUI.this.nhanVien.getTinh().getId())) {
+				cmbTinh.setSelectedIndex(index + 1);
+				ThongTinChiTietNhanVien_GUI.this.tinh = tinh;
+			}
+		});
+
+		isEnabledEventTinh = true;
+	}
+
+	/**
+	 * Hiển thị thông báo lỗi và focus các JTextField
+	 *
+	 * @param txt     JtextField cần focus
+	 * @param message thông báo lỗi
+	 * @return false
+	 */
+	private boolean showThongBaoLoi(TextField txt, String message) {
+		new Notification(main, Type.ERROR, message).showNotification();
+		txt.setError(true);
+		txt.requestFocus();
+		return false;
 	}
 
 	private boolean validator() {
@@ -679,230 +904,6 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		if (!Pattern.matches(".*[^A-Za-z0-9]+.*", matKhau))
 			return showThongBaoLoi(txtMatKhau, "Mật khẩu phải có ít nhất 1 ký tự đặc biệt");
 		return true;
-	}
-
-	/**
-	 * Hiển thị thông báo lỗi và focus các JTextField
-	 * 
-	 * @param txt     JtextField cần focus
-	 * @param message thông báo lỗi
-	 * @return false
-	 */
-	private boolean showThongBaoLoi(TextField txt, String message) {
-		new Notification(main, Type.ERROR, message).showNotification();
-		txt.setError(true);
-		txt.requestFocus();
-		return false;
-	}
-
-	@SuppressWarnings("unchecked")
-	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list, String firstLabel) {
-		list.removeAllItems();
-		list.addItem((E) firstLabel);
-		return list;
-	}
-
-	private void setEnabledForm(boolean b) {
-		txtCCCD.setEnabled(b);
-		txtDiaChiCT.setEnabled(b);
-		txtHoTen.setEnabled(b);
-		txtLuong.setEnabled(b);
-		txtMatKhau.setEnabled(b);
-		txtNgaySinh.setEnabled(b);
-		txtSoDienThoai.setEnabled(b);
-		radNam.setEnabled(b);
-		radNu.setEnabled(b);
-		cmbTinh.setEnabled(b);
-		cmbQuan.setEnabled(b);
-		cmbPhuong.setEnabled(b);
-		cmbChucVu.setEnabled(b);
-		cmbTrangThai.setEnabled(b);
-	}
-
-	private NhanVien getNhanVienTuForm() {
-		String maNhanVien = txtMaNhanVien.getText();
-		String hoTen = txtHoTen.getText().trim();
-		String cccd = txtCCCD.getText().trim();
-		String soDienThoai = txtSoDienThoai.getText().trim();
-		LocalDate ngaySinh = Utils.getLocalDate(txtNgaySinh.getText());
-		String diaChiCuThe = txtDiaChiCT.getText().trim();
-		String luong = txtLuong.getText().trim();
-		double luongDouble = luong.endsWith(" ₫") ? Utils.convertStringToTienTe(luong) : Double.parseDouble(luong);
-		String matKhau = txtMatKhau.getText().trim();
-		TaiKhoan taiKhoan = new TaiKhoan(maNhanVien, matKhau);
-		boolean gioiTinh = radNam.isSelected();
-		ChucVu chucVu = NhanVien.convertStringToChucVu((String) cmbChucVu.getSelectedItem());
-		TrangThai trangThai = NhanVien.convertStringToTrangThai((String) cmbTrangThai.getSelectedItem());
-		return new NhanVien(maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, tinh, quan, phuong, diaChiCuThe,
-				chucVu, luongDouble, taiKhoan, trangThai);
-	}
-
-	private void setNhanVienVaoForm(NhanVien nhanVien) {
-		txtMaNhanVien.setText(nhanVien.getMaNhanVien());
-		txtCCCD.setText(nhanVien.getCccd());
-		txtDiaChiCT.setText(nhanVien.getDiaChiCuThe());
-		txtHoTen.setText(nhanVien.getHoTen());
-		txtLuong.setText(Utils.formatTienTe(nhanVien.getLuong()));
-		TaiKhoan taiKhoan = taiKhoan_DAO.getTaiKhoan(nhanVien.getMaNhanVien());
-		txtMatKhau.setText(taiKhoan.getMatKhau());
-		txtNgaySinh.setText(Utils.formatDate(nhanVien.getNgaySinh()));
-		txtSoDienThoai.setText(nhanVien.getSoDienThoai());
-		cmbChucVu.setSelectedItem(NhanVien.convertChucVuToString(nhanVien.getChucVu()));
-		cmbTrangThai.setSelectedItem(NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
-		setTinhToComboBox();
-		setQuanToComboBox(tinh);
-		setPhuongToComboBox(quan);
-		if (nhanVien.isGioiTinh())
-			radNam.setSelected(true);
-		else
-			radNu.setSelected(true);
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		Object object = e.getSource();
-		if (e.getStateChange() != ItemEvent.SELECTED) {
-			return;
-		}
-		if (cmbTinh.equals(object)) {
-			if (!isEnabledEventTinh)
-				return;
-			isEnabledEventQuan = false;
-			isEnabledEventPhuong = false;
-			String tinhSelected = (String) cmbTinh.getSelectedItem();
-
-			cmbPhuong.setSelectedIndex(0);
-			cmbPhuong.setEnabled(false);
-			cmbQuan = resizeComboBox(cmbQuan, Quan.getQuanLabel());
-			quan = null;
-			phuong = null;
-
-			if (tinhSelected.equals(Tinh.getTinhLabel())) {
-				cmbQuan.setSelectedIndex(0);
-				cmbQuan.setEnabled(false);
-				tinh = null;
-				return;
-			}
-			Tinh tinh = diaChi_DAO.getTinh(tinhSelected);
-			ThongTinChiTietNhanVien_GUI.this.tinh = tinh;
-			setQuanToComboBox(ThongTinChiTietNhanVien_GUI.this.tinh);
-			cmbQuan.setEnabled(true);
-			isEnabledEventQuan = true;
-			isEnabledEventPhuong = true;
-		} else if (cmbQuan.equals(object)) {
-			if (!isEnabledEventQuan)
-				return;
-			isEnabledEventPhuong = false;
-			isEnabledEventQuan = false;
-			String quanSelected = (String) cmbQuan.getSelectedItem();
-			cmbPhuong = resizeComboBox(cmbPhuong, Quan.getQuanLabel());
-			phuong = null;
-
-			if (quanSelected.equals(Quan.getQuanLabel())) {
-				cmbPhuong.setSelectedIndex(0);
-				cmbPhuong.setEnabled(false);
-				quan = null;
-			} else {
-				Quan quan = diaChi_DAO.getQuan(tinh, quanSelected);
-				ThongTinChiTietNhanVien_GUI.this.quan = quan;
-				cmbPhuong.setEnabled(true);
-				setPhuongToComboBox(this.quan);
-			}
-
-			isEnabledEventPhuong = true;
-			isEnabledEventQuan = true;
-		} else if (cmbPhuong.equals(object)) {
-			if (!isEnabledEventPhuong)
-				return;
-			isEnabledEventPhuong = false;
-			String phuongSelect = (String) cmbPhuong.getSelectedItem();
-
-			if (phuongSelect.equals(Phuong.getPhuongLabel())) {
-				phuong = null;
-				return;
-			}
-
-			Phuong phuong = diaChi_DAO.getPhuong(quan, phuongSelect);
-			ThongTinChiTietNhanVien_GUI.this.phuong = phuong;
-			isEnabledEventPhuong = false;
-		}
-
-	}
-
-	private void setTinhToComboBox() {
-		isEnabledEventTinh = false;
-
-		resizeComboBox(cmbTinh, Tinh.getTinhLabel());
-
-		List<Tinh> tinhs = diaChi_DAO.getTinh();
-
-		tinhs.sort(new Comparator<Tinh>() {
-			@Override
-			public int compare(Tinh o1, Tinh o2) {
-				return o1.getTinh().compareToIgnoreCase(o2.getTinh());
-			}
-		});
-
-		tinhs.forEach(tinh -> {
-			int index = tinhs.indexOf(tinh);
-			cmbTinh.addItem(tinh.getTinh());
-			if (tinh.getId().equals(ThongTinChiTietNhanVien_GUI.this.nhanVien.getTinh().getId())) {
-				cmbTinh.setSelectedIndex(index + 1);
-				ThongTinChiTietNhanVien_GUI.this.tinh = tinh;
-			}
-		});
-
-		isEnabledEventTinh = true;
-	}
-
-	private void setQuanToComboBox(Tinh tinh) {
-		isEnabledEventQuan = false;
-
-		resizeComboBox(cmbQuan, Quan.getQuanLabel());
-		List<Quan> quans = diaChi_DAO.getQuan(tinh);
-		quans.sort(new Comparator<Quan>() {
-			@Override
-			public int compare(Quan o1, Quan o2) {
-				return o1.getQuan().compareToIgnoreCase(o2.getQuan());
-			}
-		});
-		quans.forEach(quan -> {
-			int index = quans.indexOf(quan);
-			cmbQuan.addItem(quan.getQuan());
-			if (quan.getId().equals(ThongTinChiTietNhanVien_GUI.this.nhanVien.getQuan().getId())) {
-				cmbQuan.setSelectedIndex(index + 1);
-				ThongTinChiTietNhanVien_GUI.this.quan = quan;
-			}
-		});
-
-		isEnabledEventQuan = true;
-	}
-
-	private void setPhuongToComboBox(Quan quan) {
-		isEnabledEventPhuong = false;
-
-		resizeComboBox(cmbPhuong, Phuong.getPhuongLabel());
-
-		List<Phuong> phuongs = diaChi_DAO.getPhuong(quan);
-
-		phuongs.sort(new Comparator<Phuong>() {
-
-			@Override
-			public int compare(Phuong o1, Phuong o2) {
-				return o1.getPhuong().compareToIgnoreCase(o2.getPhuong());
-			}
-		});
-
-		phuongs.forEach(phuong -> {
-			int index = phuongs.indexOf(phuong);
-			cmbPhuong.addItem(phuong.getPhuong());
-			if (phuong.getId().equals(ThongTinChiTietNhanVien_GUI.this.nhanVien.getPhuong().getId())) {
-				cmbPhuong.setSelectedIndex(index + 1);
-				ThongTinChiTietNhanVien_GUI.this.phuong = phuong;
-			}
-		});
-
-		isEnabledEventPhuong = true;
 	}
 
 }

@@ -15,13 +15,13 @@ import javax.swing.border.EmptyBorder;
 public class SplashScreen_GUI extends JWindow {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JProgressBar prg;
-	private JLabel lblPhanTram;
 	private JLabel lblLoading;
+	private JLabel lblPhanTram;
+	private JProgressBar prg;
 
 	/**
 	 * Create the frame.

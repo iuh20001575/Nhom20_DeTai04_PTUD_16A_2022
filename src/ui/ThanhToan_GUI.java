@@ -29,6 +29,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -59,21 +60,24 @@ import utils.Utils;
 public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private ThanhToan_GUI _this;
 	private Button btnThanhToan;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private ChiTietDichVu_DAO chiTietDichVu_DAO;
 	private JComboBox<String> cmbMaDatPhong;
 	private JComboBox<String> cmbSoDienThoai;
 	private DatPhong datPhong;
 	private DatPhong_DAO datPhong_DAO;
+	private DichVu_DAO dichVu_DAO;
 	private List<ChiTietDatPhong> dsChiTietDatPhong;
 	private KhachHang_DAO khachHang_DAO;
 	private JLabel lblGioNhanPhong;
 	private JLabel lblTenKhach;
 	private JLabel lblTenNhanVien;
+	private JLabel lblTienDichVu;
 	private JLabel lblTienPhong;
 	private JLabel lblTienThanhToan;
 	private JLabel lblTongThoiLuong;
@@ -89,13 +93,10 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	private double tongTien;
 	private TextField txtTienNhan;
 	private TextField txtTienThua;
-	private ChiTietDichVu_DAO chiTietDichVu_DAO;
-	private DichVu_DAO dichVu_DAO;
-	private JLabel lblTienDichVu;
 
 	/**
 	 * Create the frame.
-	 * 
+	 *
 	 * @param quanLyDatPhongGUI
 	 */
 	public ThanhToan_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
@@ -113,7 +114,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage("Icon\\room.png"));
 		setTitle("Thanh toán");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(0, 0, 626, 513);
 		setLocationRelativeTo(null);
 		setUndecorated(true);
@@ -164,10 +165,10 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		lblLabelMaDatPhong.setBounds(0, 0, 105, 24);
 		pnlMaDatPhong.add(lblLabelMaDatPhong);
 
-		cmbMaDatPhong = new JComboBox<String>();
+		cmbMaDatPhong = new JComboBox<>();
 		cmbMaDatPhong.setBackground(Utils.primaryColor);
 		cmbMaDatPhong.setForeground(Color.BLACK);
-		cmbMaDatPhong.setModel(new DefaultComboBoxModel<String>(new String[] { "Mã đặt phòng" }));
+		cmbMaDatPhong.setModel(new DefaultComboBoxModel<>(new String[] { "Mã đặt phòng" }));
 		cmbMaDatPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		cmbMaDatPhong.setBounds(105, 0, 188, 24);
 		pnlMaDatPhong.add(cmbMaDatPhong);
@@ -243,8 +244,8 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		lblLabelSoDienThoai.setBounds(0, 0, 105, 24);
 		pnlSoDienThoai.add(lblLabelSoDienThoai);
 
-		cmbSoDienThoai = new JComboBox<String>();
-		cmbSoDienThoai.setModel(new DefaultComboBoxModel<String>(new String[] { "Số điện thoại" }));
+		cmbSoDienThoai = new JComboBox<>();
+		cmbSoDienThoai.setModel(new DefaultComboBoxModel<>(new String[] { "Số điện thoại" }));
 		cmbSoDienThoai.setForeground(Color.BLACK);
 		cmbSoDienThoai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		cmbSoDienThoai.setBackground(new Color(140, 177, 180));
@@ -398,7 +399,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 		txtTienNhan = new TextField() {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -429,7 +430,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 		txtTienThua = new TextField() {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -461,7 +462,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		pnlBody.add(scr);
 		tbl = new JTable() {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 

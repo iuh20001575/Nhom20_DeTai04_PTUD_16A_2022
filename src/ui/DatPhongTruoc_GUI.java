@@ -30,6 +30,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -62,7 +63,7 @@ import utils.Utils;
 public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private DatPhongTruoc_GUI _this;
@@ -84,6 +85,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private LoaiPhong_DAO loaiPhong_DAO;
 	private JPanel pnlContent;
 	private JPanel pnlPhong;
+	private JPanel pnlPhongDaChon;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
 	private TextField txtNgayNhanPhong;
@@ -92,7 +94,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Create the frame.
-	 * 
+	 *
 	 * @param quanLyDatPhongGUI
 	 * @param glass
 	 */
@@ -102,7 +104,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(0, 0, 850, 536);
 		pnlContent = new JPanel();
 		pnlContent.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -203,7 +205,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 		tbl = new JTable() {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -290,21 +292,21 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		cmbMaPhong = new ComboBox<>();
 		cmbMaPhong.setBackground(Utils.primaryColor);
 		cmbMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cmbMaPhong.setModel(new DefaultComboBoxModel<String>(new String[] { labelCmbMaPhong }));
+		cmbMaPhong.setModel(new DefaultComboBoxModel<>(new String[] { labelCmbMaPhong }));
 		cmbMaPhong.setBounds(0, 0, 200, 36);
 		pnlFilter.add(cmbMaPhong);
 
 		cmbLoaiPhong = new ComboBox<>();
 		cmbLoaiPhong.setBackground(Utils.primaryColor);
 		cmbLoaiPhong
-				.setModel(new DefaultComboBoxModel<String>(new String[] { "Loại phòng", "Phòng thường", "Phòng VIP" }));
+				.setModel(new DefaultComboBoxModel<>(new String[] { "Loại phòng", "Phòng thường", "Phòng VIP" }));
 		cmbLoaiPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbLoaiPhong.setBounds(220, 0, 200, 36);
 		pnlFilter.add(cmbLoaiPhong);
 
 		cmbSoLuong = new ComboBox<>();
 		cmbSoLuong.setBackground(Utils.primaryColor);
-		cmbSoLuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Số lượng", "5", "10", "20" }));
+		cmbSoLuong.setModel(new DefaultComboBoxModel<>(new String[] { "Số lượng", "5", "10", "20" }));
 		cmbSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbSoLuong.setBounds(440, 0, 200, 36);
 		pnlFilter.add(cmbSoLuong);
@@ -346,14 +348,14 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnSearchPhongDatTruoc.setBounds(675, 72, 50, 50);
 		pnlBody.add(btnSearchPhongDatTruoc);
 
-		cmbGio = new ComboBox<String>();
+		cmbGio = new ComboBox<>();
 		cmbGio.setModel(new DefaultComboBoxModel<String>());
 		cmbGio.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbGio.setBackground(new Color(140, 177, 180));
 		cmbGio.setBounds(400, 89, 70, 36);
 		pnlBody.add(cmbGio);
 
-		cmbPhut = new ComboBox<String>();
+		cmbPhut = new ComboBox<>();
 		cmbPhut.setModel(new DefaultComboBoxModel<String>());
 		cmbPhut.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbPhut.setBackground(new Color(140, 177, 180));
@@ -375,6 +377,25 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		lblPhut.setBounds(612, 95, 45, 30);
 		pnlBody.add(lblPhut);
 
+		JScrollPane scrPhongDaChon = new JScrollPane();
+		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
+				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		scrPhongDaChon.setBounds(620, 0, 150, 225);
+		pnlPhong.add(scrPhongDaChon);
+
+		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
+		scbPhongDaChon.setBackgroundColor(Utils.secondaryColor);
+		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
+		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
+
+		pnlPhongDaChon = new JPanel();
+		pnlPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setViewportView(pnlPhongDaChon);
+		pnlPhongDaChon.setLayout(null);
+
 		setEnabledFilterComboBox(false);
 
 		showDanhSachPhongDaChon();
@@ -383,6 +404,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 //		Sự kiện window
 		this.addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowActivated(WindowEvent e) {
 				String soDienThoai = txtSoDienThoai.getText().trim();
 
@@ -429,19 +451,21 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 						JDialogCustom jDialogCustom = new JDialogCustom(_this);
 
 						jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+							@Override
 							public void mouseClicked(MouseEvent e) {
 								Main main = new Main();
 								main.addPnlBody(new ThemKhachHang_GUI(main, _this, soDienThoai), "Thêm khách hàng", 2,
 										0);
 								main.setVisible(true);
 								setVisible(false);
-							};
+							}
 						});
 
 						jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
+							@Override
 							public void mouseClicked(MouseEvent e) {
 								quanLyDatPhongGUI.closeJFrameSub();
-							};
+							}
 						});
 
 						jDialogCustom.showMessage("Warning",
@@ -469,6 +493,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnSearchPhongDatTruoc.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				dsPhongDaChon = null;
+				showDanhSachPhongDaChon();
 				LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
 				LocalDate dateNow = LocalDate.now();
 				cmbMaPhong.removeItemListener(_this);
@@ -505,6 +531,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 //		Sự kiện nút làm mới
 		btnLamMoi.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (!btnLamMoi.isEnabled())
 					return;
@@ -524,17 +551,19 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				capNhatDanhSachPhongDatTruoc();
 
 				setEventFilterComboBox(true);
-			};
+			}
 		});
 
 //		Sự kiện JTable
 		tbl.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				btnChonPhong.setEnabled(true);
-			};
+			}
 		});
 
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
 					if (tbl.getRowCount() == -1)
@@ -650,6 +679,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	}
 
 	private void emptyTable() {
+		btnChonPhong.setEnabled(false);
 		while (tbl.getRowCount() > 0)
 			tableModel.removeRow(0);
 	}
@@ -722,9 +752,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			handleChangeDateTime();
 		} else if (o.equals(cmbPhut))
 			handleChangeDateTime();
-		else {
+		else
 			filterPhongDatTruoc();
-		}
 	}
 
 	private void setEnabledFilterComboBox(boolean b) {
@@ -740,7 +769,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 	/**
 	 * Set sự kiện cho các JComboBox
-	 * 
+	 *
 	 * @param b true add event, false remove event
 	 */
 	private void setEventFilterComboBox(boolean b) {
@@ -807,38 +836,18 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	}
 
 	private void showDanhSachPhongDaChon() {
-		JScrollPane scrPhongDaChon = new JScrollPane();
-		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
-				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		scrPhongDaChon.setBounds(620, 0, 150, 225);
+		pnlPhongDaChon.removeAll();
 
-		if (pnlPhong.getComponentAt(620, 0) != null)
-			pnlPhong.remove(pnlPhong.getComponentAt(620, 0));
-
-		pnlPhong.add(scrPhongDaChon);
-		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
-		scbPhongDaChon.setBackgroundColor(Utils.secondaryColor);
-		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
-		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
-
-		JPanel pnlPhongDaChon = new JPanel();
-		pnlPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setViewportView(pnlPhongDaChon);
-		pnlPhongDaChon.setLayout(null);
-
-		if (dsPhongDaChon == null)
-			return;
-
-		int heightItem = 36;
-		int gapY = 8;
-		int top = 11;
-		int countItem = dsPhongDaChon.size();
-		for (int i = 0; i < countItem; i++)
-			pnlPhongDaChon.add(getPanelphongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
-		pnlPhongDaChon.setPreferredSize(
-				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
+		if (dsPhongDaChon != null) {
+			int heightItem = 36;
+			int gapY = 8;
+			int top = 11;
+			int countItem = dsPhongDaChon.size();
+			for (int i = 0; i < countItem; i++)
+				pnlPhongDaChon.add(getPanelphongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
+			pnlPhongDaChon.setPreferredSize(
+					new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
+		}
+		repaint();
 	}
 }

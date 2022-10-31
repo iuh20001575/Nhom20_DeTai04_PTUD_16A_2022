@@ -89,12 +89,15 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	 */
 	public QuanLyDatPhong_GUI(JFrame jFrame) {
 		addAncestorListener(new AncestorListener() {
+			@Override
 			public void ancestorAdded(AncestorEvent event) {
 			}
 
+			@Override
 			public void ancestorMoved(AncestorEvent event) {
 			}
 
+			@Override
 			@SuppressWarnings("deprecation")
 			public void ancestorRemoved(AncestorEvent event) {
 				clock.stop();
@@ -923,6 +926,14 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		clock.start();
 	}
 
+	public void closeJFrameSub() {
+		if (jFrameSub != null)
+			jFrameSub.setVisible(false);
+		glass.setVisible(false);
+		glass.setAlpha(0f);
+		jFrameSub = null;
+	}
+
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent e) {
 
@@ -1087,13 +1098,5 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		glass.setAlpha(0.5f);
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
-	}
-
-	public void closeJFrameSub() {
-		if (jFrameSub != null)
-			jFrameSub.setVisible(false);
-		glass.setVisible(false);
-		glass.setAlpha(0f);
-		jFrameSub = null;
 	}
 }

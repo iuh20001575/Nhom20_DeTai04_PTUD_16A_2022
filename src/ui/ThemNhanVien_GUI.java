@@ -45,7 +45,7 @@ import utils.Utils;
 public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private ButtonGroup buttonGroupGioiTinh;
@@ -77,7 +77,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Create the frame.
-	 * 
+	 *
 	 * @wbp.parser.constructor
 	 */
 	public ThemNhanVien_GUI(Main jFrame) {
@@ -284,7 +284,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		pnlChucVu.add(lblChucVu);
 
 		cmbChucVu = new ComboBox<>();
-		cmbChucVu.setModel(new DefaultComboBoxModel<String>(new String[] {
+		cmbChucVu.setModel(new DefaultComboBoxModel<>(new String[] {
 				NhanVien.convertChucVuToString(ChucVu.QuanLy), NhanVien.convertChucVuToString(ChucVu.NhanVien) }));
 		cmbChucVu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbChucVu.setBackground(new Color(140, 177, 180));
@@ -305,7 +305,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 
 		cmbTrangThai = new ComboBox<>();
 		cmbTrangThai.setModel(
-				new DefaultComboBoxModel<String>(new String[] { NhanVien.convertTrangThaiToString(TrangThai.DangLam),
+				new DefaultComboBoxModel<>(new String[] { NhanVien.convertTrangThaiToString(TrangThai.DangLam),
 						NhanVien.convertTrangThaiToString(TrangThai.NghiLam) }));
 		cmbTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbTrangThai.setBackground(new Color(140, 177, 180));
@@ -470,18 +470,18 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 			}
 
 			@Override
-			public void ancestorRemoved(AncestorEvent event) {
+			public void ancestorMoved(AncestorEvent event) {
 			}
 
 			@Override
-			public void ancestorMoved(AncestorEvent event) {
+			public void ancestorRemoved(AncestorEvent event) {
 			}
 		});
 	}
 
 	/**
 	 * Get nhân viên từ form
-	 * 
+	 *
 	 * @return nhanVien
 	 */
 	private NhanVien getNhanVienTuForm() {
@@ -579,7 +579,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Xóa tất cả các items của JComboBox và thêm chuỗi vào JComboBox
-	 * 
+	 *
 	 * @param <E>
 	 * @param list       JComboBox cần xóa
 	 * @param firstLabel chuỗi cần thêm
@@ -594,7 +594,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Set danh sách phường của quận vào JComboBox
-	 * 
+	 *
 	 * @param quan quận cần lấy phường
 	 */
 	private void setPhuongToComboBox(Quan quan) {
@@ -619,7 +619,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Set danh sách quận của tỉnh vào JComboBox
-	 * 
+	 *
 	 * @param tinh tỉnh cần lấy quận
 	 */
 	private void setQuanToComboBox(Tinh tinh) {
@@ -662,7 +662,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Hiển thị thông báo lỗi và focus các JTextField
-	 * 
+	 *
 	 * @param txt     JtextField cần focus
 	 * @param message thông báo lỗi
 	 * @return false
@@ -676,7 +676,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Kiểm tra thông tin nhân viên
-	 * 
+	 *
 	 * @return true nếu thông tin nhân viên hợp lệ
 	 */
 	private boolean validator() {

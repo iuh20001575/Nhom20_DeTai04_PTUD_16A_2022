@@ -46,7 +46,7 @@ import utils.Utils;
 public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private ComboBox<String> cmbPhuong;
@@ -76,7 +76,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Create the frame.
-	 * 
+	 *
 	 * @param main
 	 */
 	public ThongTinCaNhan_GUI(Main main) {
@@ -282,6 +282,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 		Button btnLuu = new Button("Lưu");
 		btnLuu.setUI(new MetalButtonUI() {
+			@Override
 			protected Color getDisabledTextColor() {
 				return Color.WHITE;
 			}
@@ -376,10 +377,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		btnLuu.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!btnLuu.isEnabled())
-					return;
-
-				if (!validator())
+				if (!btnLuu.isEnabled() || !validator())
 					return;
 
 				entity.NhanVien nhanVien = getNhanVienTuForm();
@@ -400,14 +398,17 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 //		Sự kiện Component được thêm
 		addAncestorListener(new AncestorListener() {
+			@Override
 			public void ancestorAdded(AncestorEvent event) {
 				dateChoose.showPopup();
 				dateChoose.hidePopup();
 			}
 
+			@Override
 			public void ancestorMoved(AncestorEvent event) {
 			}
 
+			@Override
 			public void ancestorRemoved(AncestorEvent event) {
 			}
 		});
@@ -415,7 +416,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Get nhân viên từ form
-	 * 
+	 *
 	 * @return nhân viên
 	 */
 	private entity.NhanVien getNhanVienTuForm() {
@@ -497,7 +498,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 	@SuppressWarnings("unchecked")
 	/**
 	 * Remove tất cả các item của JComboBox và thêm firstLabel vào JComboBox
-	 * 
+	 *
 	 * @param <E>
 	 * @param list
 	 * @param firstLabel
@@ -511,7 +512,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * set Enabled input form
-	 * 
+	 *
 	 * @param b
 	 */
 	private void setEnabledForm(boolean b) {
@@ -539,7 +540,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Set nhân viên vào form
-	 * 
+	 *
 	 * @param nhanVien
 	 */
 	private void setNhanVienVaoForm(entity.NhanVien nhanVien) {
@@ -562,7 +563,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Set phường vào JComboBox
-	 * 
+	 *
 	 * @param quan
 	 */
 	private void setPhuongToComboBox(Quan quan) {
@@ -594,7 +595,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Set quận vào JComboBox
-	 * 
+	 *
 	 * @param tinh
 	 */
 	private void setQuanToComboBox(Tinh tinh) {
@@ -651,7 +652,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Hiển thị thông báo lỗi và focus các JTextField
-	 * 
+	 *
 	 * @param txt     JtextField cần focus
 	 * @param message thông báo lỗi
 	 * @return false
@@ -665,7 +666,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 	/**
 	 * Kiểm tra thông tin nhân viên từ form
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean validator() {
