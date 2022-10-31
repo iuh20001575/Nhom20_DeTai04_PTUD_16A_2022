@@ -8,7 +8,7 @@ public class Starting {
 
 			@Override
 			public void run() {
-				SplashScreen splashScreen = new SplashScreen();
+				SplashScreen_GUI splashScreen = new SplashScreen_GUI();
 				DangNhap_GUI dangNhap_GUI = new DangNhap_GUI();
 
 				splashScreen.setVisible(true);

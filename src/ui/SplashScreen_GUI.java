@@ -12,7 +12,7 @@ import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class SplashScreen extends JWindow {
+public class SplashScreen_GUI extends JWindow {
 
 	/**
 	 * 
@@ -26,7 +26,7 @@ public class SplashScreen extends JWindow {
 	/**
 	 * Create the frame.
 	 */
-	public SplashScreen() {
+	public SplashScreen_GUI() {
 		setBounds(0, 0, 450, 400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

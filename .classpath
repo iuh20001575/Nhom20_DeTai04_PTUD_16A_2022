@@ -18,5 +18,15 @@
 	<classpathentry kind="lib" path="libs/KGradientPanel.jar"/>
 	<classpathentry kind="lib" path="libs/RadioLib.jar"/>
 	<classpathentry kind="lib" path="libs/PanelLib.jar"/>
+	<classpathentry kind="lib" path="libs/DialogLib.jar"/>
+	<classpathentry kind="lib" path="libs/InputLib.jar"/>
+	<classpathentry kind="lib" path="libs/ChartLib.jar"/>
+	<classpathentry kind="lib" path="libs/DrawerLib.jar"/>
+	<classpathentry kind="lib" path="libs/ScrollbarLib.jar"/>
+	<classpathentry kind="lib" path="libs/NotificationLib.jar"/>
+	<classpathentry kind="lib" path="libs/MenuLib.jar"/>
+	<classpathentry kind="lib" path="libs/ControlPanelLib.jar"/>
+	<classpathentry kind="lib" path="libs/ComboBoxLib.jar"/>
+	<classpathentry kind="lib" path="libs/ButtonLib.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
