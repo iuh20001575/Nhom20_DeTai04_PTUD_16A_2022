@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connectDB.ConnectDB;
+import entity.DichVu;
 import entity.LoaiDichVu;
+
+
 
 public class LoaiDichVu_DAO {
 	public LoaiDichVu getLoaiDichVu(String maLoaiDV) {
@@ -45,14 +48,13 @@ public class LoaiDichVu_DAO {
 
 		return null;
 	}
-
+	
 	private LoaiDichVu getLoaiDichVu(ResultSet resultSet) throws SQLException {
 		String maLoaiDV = resultSet.getString(1);
 		String tenLoaiDV = resultSet.getString(2);
 
 		return new LoaiDichVu(maLoaiDV, tenLoaiDV);
 	}
-
 	public List<LoaiDichVu> getAllLoaiDichVu() {
 		List<LoaiDichVu> list = new ArrayList<>();
 
@@ -70,5 +72,6 @@ public class LoaiDichVu_DAO {
 		}
 		return list;
 	}
+
 
 }
