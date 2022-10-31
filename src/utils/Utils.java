@@ -18,7 +18,6 @@ public class Utils {
 	public static final String thongKeMenuItem = "Thống kê";
 	public static final String quanLyNhanVienMenuItem = "Quản lý nhân viên";
 	public static final String themNhanVienMenuItem = "Thêm nhân viên";
-	public static final String quanLyPhongMenuItem = "Quản lý phòng";
 	public static final String quanLyKhachHangMenuItem = "Quản lý khách hàng";
 	public static final String quanLyDatPhongMenuItem = "Quản lý đặt phòng";
 	public static final String quanLyDatPhongTruocMenuItem = "Quản lý đặt phòng trước";
@@ -26,6 +25,8 @@ public class Utils {
 	public static final String thongKeHoaDonMenuItem = "Hóa đơn";
 	public static final String thongKeKhachHangMenuItem = "Khách hàng";
 	public static final String thongTinCaNhanMenuItem = "Thông tin cá nhân";
+	public static final String quanLyDichVuMenuItem = "Quản lý dịch vụ";
+	public static final String quanLyPhongMenuItem = "Quản lý phòng";
 	public static final String thoatMenuItem = "Thoát";
 	public static final String dangXuatMenuItem = "Đăng xuất";
 
