@@ -41,13 +41,13 @@ public class Main extends JFrame {
 
 	private Main _this;
 	private Button btnBack;
+	private JPanel pnlContent;
 	private DrawerController drawer;
-	private Menu footer;
 	private JLabel lblTitle;
 	private Menu menu;
 	private NhanVien_DAO nhanVien_DAO;
 	private JPanel pnlBody;
-	private JPanel pnlContent;
+	private Menu footer;
 
 	/**
 	 * Create the frame.
@@ -121,7 +121,7 @@ public class Main extends JFrame {
 		String maNhanVien = utils.NhanVien.getNhanVien().getMaNhanVien();
 		NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(maNhanVien);
 		utils.NhanVien.setNhanVien(nhanVien);
-		ChucVu chucVu = nhanVien.getChucVu();
+		ChucVu chucVu = utils.NhanVien.getNhanVien().getChucVu();
 
 //		Code menu
 		menu = new Menu();
@@ -134,12 +134,13 @@ public class Main extends JFrame {
 			menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\businessman.png"), Utils.nhanVienMenuItem,
 					Utils.quanLyNhanVienMenuItem, Utils.themNhanVienMenuItem));
 		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\users-avatar.png"), Utils.quanLyKhachHangMenuItem));
-		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\doorMenuItem.png"), Utils.quanLyPhongMenuItem));
 		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\doorMenuItem.png"), Utils.quanLyDatPhongMenuItem));
 		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\doorMenuItem.png"), Utils.quanLyDatPhongTruocMenuItem));
 		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\bar-graph.png"), Utils.thongKeMenuItem,
 				Utils.thongKeDoanhThuMenuItem, Utils.thongKeHoaDonMenuItem, Utils.thongKeKhachHangMenuItem));
 		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\user.png"), Utils.thongTinCaNhanMenuItem));
+		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\user.png"), Utils.quanLyDichVuMenuItem));
+		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\user.png"), Utils.quanLyKhachHangMenuItem));
 		menu.setPreferredSize(new Dimension(getPreferredSize().width, 473));
 
 		footer.setDrawer(drawer);
@@ -208,6 +209,21 @@ public class Main extends JFrame {
 		setTitle(panelUI.getTitle());
 	}
 
+	public void repaint() {
+		pnlBody.repaint();
+		pnlBody.revalidate();
+	}
+
+	public Menu getMenu() {
+		return menu;
+	}
+
+	@Override
+	public void setTitle(String title) {
+		super.setTitle(title);
+		lblTitle.setText(title.toUpperCase());
+	}
+
 	public void backPanel() {
 		StackPanel.pop();
 		PanelUI panelUI = StackPanel.peek();
@@ -218,22 +234,6 @@ public class Main extends JFrame {
 		}
 		addPnlBody(panelUI);
 		menu.setSelectedMenu(panelUI.getIndex(), panelUI.getIndexSubmenu());
-	}
-
-	public Menu getMenu() {
-		return menu;
-	}
-
-	@Override
-	public void repaint() {
-		pnlBody.repaint();
-		pnlBody.revalidate();
-	}
-
-	@Override
-	public void setTitle(String title) {
-		super.setTitle(title);
-		lblTitle.setText(title.toUpperCase());
 	}
 
 	/**
@@ -259,9 +259,6 @@ public class Main extends JFrame {
 				} else if (titleMenu.equals(Utils.quanLyKhachHangMenuItem)) {
 					title = "Quản lý khách hàng";
 					pnl = new QuanLyKhachHang_GUI(_this);
-				} else if (titleMenu.equals(Utils.quanLyPhongMenuItem)) {
-					title = "Quản lý phòng";
-					pnl = new QuanLyPhong_GUI(_this);
 				} else if (titleMenu.equals(Utils.quanLyDatPhongMenuItem)) {
 					title = "Quản lý đặt phòng";
 					pnl = new QuanLyDatPhong_GUI(_this);
@@ -280,7 +277,13 @@ public class Main extends JFrame {
 				} else if (titleMenu.equals(Utils.thongTinCaNhanMenuItem)) {
 					title = "Thông tin cá nhân";
 					pnl = new ThongTinCaNhan_GUI(_this);
-				} else {
+				} else if (titleMenu.equals(Utils.quanLyDichVuMenuItem)) {
+					title = "Quản lý dịch vụ";
+					pnl = new QuanLyDichVu_GUI(_this);
+				} else if (titleMenu.equals(Utils.quanLyPhongMenuItem)) {
+					title = "Quản lý phòng";
+					pnl = new ThongTinCaNhan_GUI(_this);
+				}else {
 					title = "Trang chủ";
 					pnl = new TrangChu_GUI();
 				}
