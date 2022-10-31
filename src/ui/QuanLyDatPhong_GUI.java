@@ -786,7 +786,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDichVu.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleOpenSubFrame(pnlDichVu, new ThemDichVuVaoPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
+				handleOpenSubFrame(pnlDichVu, new QuanLyDichVuPhongDat_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
 
@@ -839,7 +839,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		}
 
 		pnlDanhSachPhong.setPreferredSize(getSizeContainerDanhSachPhong(dsPhong.size()));
-
 		scrDanhSachPhong = new JScrollPane(pnlDanhSachPhong);
 		scrDanhSachPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
 		scrDanhSachPhong.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -861,6 +860,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlGopPhong.setEnabled(datPhong_DAO.isGopPhong());
 		pnlDichVu.setEnabled(soPhongDangSuDung + soPhongTam > 0);
 		capNhatThongKeLoaiPhong();
+		repaint();
 	}
 
 	/**
@@ -1014,7 +1014,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 
 		JLabel lblTongGio = new JLabel("Tổng giờ: " + "00:00");
 
-		Thread clockPhong = new Thread() {
+		Thread clock = new Thread() {
 			@Override
 			public void run() {
 				LocalDate ngayNhanPhong = datPhong_DAO.getNgayNhanPhongCuaPhongDangThue(phong.getMaPhong());
@@ -1041,7 +1041,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		};
 
 		if (gioVao != null && (trangThai.equals(TrangThai.DangThue) || trangThai.equals(TrangThai.PhongTam)))
-			clockPhong.start();
+			clock.start();
 
 		lblTongGio.setForeground(Color.WHITE);
 		lblTongGio.setFont(new Font("Segoe UI", Font.BOLD, 14));

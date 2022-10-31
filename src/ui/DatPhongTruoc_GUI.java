@@ -796,6 +796,12 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			for (int j = 0; j < 60; j += 5)
 				cmbPhut.addItem(j + "");
 		}
+
+		if (gioSelect == 23) {
+			cmbPhut.removeAllItems();
+			cmbPhut.addItem("0");
+		}
+
 		cmbGio.setSelectedItem(gioSelect + "");
 		cmbGio.addItemListener(_this);
 	}
@@ -809,9 +815,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		scrPhongDaChon.setBounds(620, 0, 150, 225);
 
-		if (pnlPhong.getComponentAt(620, 0) != null) {
+		if (pnlPhong.getComponentAt(620, 0) != null)
 			pnlPhong.remove(pnlPhong.getComponentAt(620, 0));
-		}
 
 		pnlPhong.add(scrPhongDaChon);
 		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
@@ -827,26 +832,13 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		if (dsPhongDaChon == null)
 			return;
 
-//		
 		int heightItem = 36;
 		int gapY = 8;
 		int top = 11;
 		int countItem = dsPhongDaChon.size();
-		for (int i = 0; i < countItem; i++) {
+		for (int i = 0; i < countItem; i++)
 			pnlPhongDaChon.add(getPanelphongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
-		}
-
 		pnlPhongDaChon.setPreferredSize(
 				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
 	}
-
-//	private void setEventTimeComboBox(boolean b) {
-//		if (b) {
-//			cmbGio.addItemListener(_this);
-//			cmbPhut.addItemListener(_this);
-//			return;
-//		}
-//		cmbGio.removeItemListener(_this);
-//		cmbPhut.removeItemListener(_this);
-//	}
 }

@@ -47,6 +47,27 @@ public class ChiTietDichVu_DAO {
 		return list;
 	}
 
+	public ChiTietDichVu getChiTietDichVuTheoMa(String maDichVu, String maDatPhong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * " + "FROM   ChiTietDichVu INNER JOIN "
+							+ "             DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu INNER JOIN "
+							+ "             DatPhong ON ChiTietDichVu.datPhong = DatPhong.maDatPhong "
+							+ "WHERE maDichVu = ? and maDatPhong = ?");
+			preparedStatement.setString(1, maDichVu);
+			preparedStatement.setString(2, maDatPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getChiTietDichVu(resultSet);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public List<ChiTietDichVu> getAllChiTietDichVu() {
 		List<ChiTietDichVu> list = new ArrayList<>();
 
@@ -65,7 +86,28 @@ public class ChiTietDichVu_DAO {
 		return list;
 	}
 
-	public boolean ThemChiTietDichVu(ChiTietDichVu chiTietDichVu) {
+	public List<ChiTietDichVu> getAllChiTietDichVuTheoMaDatPhong(String maDP) {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * " + "FROM   ChiTietDichVu INNER JOIN DatPhong ON  "
+							+ "	   ChiTietDichVu.datPhong = DatPhong.maDatPhong " + "WHERE  maDatPhong = ?");
+
+			preparedStatement.setString(1, maDP);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getChiTietDichVu(resultSet));
+			resultSet.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public boolean themChiTietDichVu(ChiTietDichVu chiTietDichVu) {
 		int res = 0;
 		PreparedStatement preparedStatement;
 		try {
@@ -83,12 +125,12 @@ public class ChiTietDichVu_DAO {
 		return res > 0;
 	}
 
-	public boolean CapNhatSoLuongDichVu(String maDV, String maDP, int soLuongMua) {
+	public boolean capNhatSoLuongDichVu(String maDV, String maDP, int soLuongMua) {
 		boolean res = false;
 		PreparedStatement preparedStatement;
 		try {
 			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE ChiTietDichVu SET soLuong += ? WHERE dichVu = ? and datPhong = ?");
+					.prepareStatement("UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and datPhong = ?");
 			preparedStatement.setInt(1, soLuongMua);
 			preparedStatement.setString(2, maDV);
 			preparedStatement.setString(3, maDP);
@@ -99,6 +141,25 @@ public class ChiTietDichVu_DAO {
 			e.printStackTrace();
 		}
 		return res;
+	}
+
+	public boolean xoaChiTietDichVu(String maDichVu, String maDatPhong) {
+		int res = 0;
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("DELETE ChiTietDichVu  " + "FROM   ChiTietDichVu INNER JOIN "
+							+ "       DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu INNER JOIN "
+							+ "       DatPhong ON ChiTietDichVu.datPhong = DatPhong.maDatPhong "
+							+ "WHERE maDichVu = ? and maDatPhong = ?");
+			preparedStatement.setString(1, maDichVu);
+			preparedStatement.setString(2, maDatPhong);
+			res = preparedStatement.executeUpdate();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res > 0;
 	}
 
 }
