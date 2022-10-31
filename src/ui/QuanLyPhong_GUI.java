@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -16,6 +20,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -33,10 +39,15 @@ public class QuanLyPhong_GUI extends JPanel {
 	private JTextField txtTimKiem;
 	private JTable tbl;
 	private DefaultTableModel tableModel;
+	private Thread clock;
+	private JLabel lblGio;
+	private JLabel lblThu;
+	private JLabel lblNgay;
 
 	/**
 	 * Create the panel.
-	 * @param _this 
+	 * 
+	 * @param _this
 	 */
 	public QuanLyPhong_GUI(Main _this) {
 		setBackground(Utils.secondaryColor);
@@ -92,21 +103,21 @@ public class QuanLyPhong_GUI extends JPanel {
 		lnlIcon.setBounds(0, 0, 64, 64);
 		pnlThoiGian.add(lnlIcon);
 
-		JLabel lblGio = new JLabel("18:07");
+		lblGio = new JLabel("18:07");
 		lblGio.setForeground(Utils.getOpacity(Color.BLACK, 0.55f));
 		lblGio.setHorizontalAlignment(SwingConstants.CENTER);
 		lblGio.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblGio.setBounds(64, 1, 136, 21);
 		pnlThoiGian.add(lblGio);
 
-		JLabel lblThu = new JLabel("T2");
+		lblThu = new JLabel("T2");
 		lblThu.setHorizontalAlignment(SwingConstants.CENTER);
 		lblThu.setForeground(new Color(0, 0, 0, 140));
 		lblThu.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblThu.setBounds(64, 22, 136, 21);
 		pnlThoiGian.add(lblThu);
 
-		JLabel lblNgay = new JLabel("26-09-2022");
+		lblNgay = new JLabel("26-09-2022");
 		lblNgay.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNgay.setForeground(new Color(0, 0, 0, 140));
 		lblNgay.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -141,7 +152,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		btnSua.setBackground(Utils.getRGBA(140, 177, 180, 0.7f), 0.9f, 0.8f);
 		btnSua.setForeground(Color.WHITE);
 		btnSua.setFont(new Font("Segoe UI", Font.BOLD, 27));
-		btnSua.setBounds(221, 0, 173, 53);
+		btnSua.setBounds(221, -2, 173, 53);
 		pnlActions.add(btnSua);
 
 		Button btnXoa = new Button("Thêm");
@@ -154,7 +165,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		btnXoa.setBackground(Utils.getRGBA(140, 177, 180, 0.7f), 0.9f, 0.8f);
 		btnXoa.setForeground(Color.WHITE);
 		btnXoa.setFont(new Font("Segoe UI", Font.BOLD, 27));
-		btnXoa.setBounds(410, 0, 173, 53);
+		btnXoa.setBounds(410, -2, 173, 53);
 		pnlActions.add(btnXoa);
 
 		ComboBox<String> cmbLoaiPhong = new ComboBox<String>();
@@ -224,5 +235,57 @@ public class QuanLyPhong_GUI extends JPanel {
 		tbl.getTableHeader().setForeground(Utils.getOpacity(Color.BLACK, 0.55f));
 		tbl.setRowHeight(36);
 		scr.setViewportView(tbl);
+
+		clock = new Thread() {
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						LocalDateTime currTime = LocalDateTime.now();
+						int day = currTime.getDayOfMonth();
+						int month = currTime.getMonthValue();
+						int year = currTime.getYear();
+						int hour = currTime.getHour();
+						int minute = currTime.getMinute();
+						lblGio.setText(Utils.convertLocalTimeToString(LocalTime.of(hour, minute)));
+						LocalDate date = LocalDate.now();
+						DayOfWeek dayNow = date.getDayOfWeek();
+						String thu = "T2";
+						if (dayNow.getValue() == DayOfWeek.TUESDAY.getValue())
+							thu = "T3";
+						else if (dayNow.getValue() == DayOfWeek.WEDNESDAY.getValue())
+							thu = "T4";
+						else if (dayNow.getValue() == DayOfWeek.THURSDAY.getValue())
+							thu = "T5";
+						else if (dayNow.getValue() == DayOfWeek.FRIDAY.getValue())
+							thu = "T6";
+						else if (dayNow.getValue() == DayOfWeek.SATURDAY.getValue())
+							thu = "T7";
+						else if (dayNow.getValue() == DayOfWeek.SUNDAY.getValue())
+							thu = "CN";
+						lblThu.setText(thu);
+						lblNgay.setText(String.format("%s-%s-%d", day < 10 ? "0" + day : day,
+								month < 10 ? "0" + month : month, year));
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+
+		addAncestorListener(new AncestorListener() {
+			public void ancestorAdded(AncestorEvent event) {
+				clock.start();
+			}
+
+			public void ancestorMoved(AncestorEvent event) {
+			}
+
+			@SuppressWarnings("deprecation")
+			public void ancestorRemoved(AncestorEvent event) {
+				clock.stop();
+			}
+		});
 	}
 }
