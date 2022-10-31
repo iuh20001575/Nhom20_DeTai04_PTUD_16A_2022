@@ -140,7 +140,7 @@ public class Main extends JFrame {
 				Utils.thongKeDoanhThuMenuItem, Utils.thongKeHoaDonMenuItem, Utils.thongKeKhachHangMenuItem));
 		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\user.png"), Utils.thongTinCaNhanMenuItem));
 		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\user.png"), Utils.quanLyDichVuMenuItem));
-		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\user.png"), Utils.quanLyKhachHangMenuItem));
+		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\user.png"), Utils.quanLyPhongMenuItem));
 		menu.setPreferredSize(new Dimension(getPreferredSize().width, 473));
 
 		footer.setDrawer(drawer);
@@ -282,7 +282,7 @@ public class Main extends JFrame {
 					pnl = new QuanLyDichVu_GUI(_this);
 				} else if (titleMenu.equals(Utils.quanLyPhongMenuItem)) {
 					title = "Quản lý phòng";
-					pnl = new ThongTinCaNhan_GUI(_this);
+					pnl = new QuanLyPhong_GUI(_this);
 				}else {
 					title = "Trang chủ";
 					pnl = new TrangChu_GUI();
