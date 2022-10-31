@@ -9,7 +9,6 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,6 +24,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import components.button.Button;
 import components.comboBox.ComboBox;
@@ -87,6 +88,18 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	 * Create the frame.
 	 */
 	public QuanLyDatPhong_GUI(JFrame jFrame) {
+		addAncestorListener(new AncestorListener() {
+			public void ancestorAdded(AncestorEvent event) {
+			}
+
+			public void ancestorMoved(AncestorEvent event) {
+			}
+
+			@SuppressWarnings("deprecation")
+			public void ancestorRemoved(AncestorEvent event) {
+				clock.stop();
+			}
+		});
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
 
 		this.jFrame = jFrame;
@@ -626,9 +639,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		btnSearch.setFocusable(false);
 		btnSearch.setBorderColor(Utils.secondaryColor);
 		btnSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnSearch.setColor(new Color(140, 177, 180));
-		btnSearch.setColorOver(Utils.getRGBA(140, 177, 180, 0.8f));
-		btnSearch.setColorClick(Utils.getRGBA(140, 177, 180, 0.6f));
+		btnSearch.setBackground(new Color(140, 177, 180), 0.8f, 0.6f);
 		btnSearch.setIcon(new ImageIcon("Icon\\search_34x34.png"));
 		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		btnSearch.setBounds(759, 0, 101, 39);
@@ -775,7 +786,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDichVu.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-//				handleOpenSubFrame(pnlGopPhong, new GopPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
+				handleOpenSubFrame(pnlDichVu, new ThemDichVuVaoPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
 
@@ -800,13 +811,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			}
 		});
 
-		jFrame.addWindowListener(new WindowAdapter() {
-			@Override
-			@SuppressWarnings("deprecation")
-			public void windowClosing(java.awt.event.WindowEvent e) {
-				clock.stop();
-			}
-		});
 	}
 
 	/**
@@ -1010,7 +1014,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 
 		JLabel lblTongGio = new JLabel("Tổng giờ: " + "00:00");
 
-		Thread clock = new Thread() {
+		Thread clockPhong = new Thread() {
 			@Override
 			public void run() {
 				LocalDate ngayNhanPhong = datPhong_DAO.getNgayNhanPhongCuaPhongDangThue(phong.getMaPhong());
@@ -1037,7 +1041,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		};
 
 		if (gioVao != null && (trangThai.equals(TrangThai.DangThue) || trangThai.equals(TrangThai.PhongTam)))
-			clock.start();
+			clockPhong.start();
 
 		lblTongGio.setForeground(Color.WHITE);
 		lblTongGio.setFont(new Font("Segoe UI", Font.BOLD, 14));

@@ -121,7 +121,7 @@ public class Main extends JFrame {
 		String maNhanVien = utils.NhanVien.getNhanVien().getMaNhanVien();
 		NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(maNhanVien);
 		utils.NhanVien.setNhanVien(nhanVien);
-		ChucVu chucVu = utils.NhanVien.getNhanVien().getChucVu();
+		ChucVu chucVu = nhanVien.getChucVu();
 
 //		Code menu
 		menu = new Menu();

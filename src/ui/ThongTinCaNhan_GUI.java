@@ -2,6 +2,8 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -99,8 +101,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		txtMaNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtMaNhanVien.setLabelText("Mã nhân viên");
 		txtMaNhanVien.setBounds(0, 0, 449, 55);
-		pnlRow1.add(txtMaNhanVien);
 		txtMaNhanVien.setColumns(10);
+		pnlRow1.add(txtMaNhanVien);
 
 		txtHoTen = new TextField();
 		txtHoTen.setLineColor(Utils.lineTextField);
@@ -157,8 +159,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		JPanel pnlGioiTinh = new JPanel();
 		pnlGioiTinh.setBackground(Utils.secondaryColor);
 		pnlGioiTinh.setBounds(499, 0, 449, 55);
-		pnlRow3.add(pnlGioiTinh);
 		pnlGioiTinh.setLayout(null);
+		pnlRow3.add(pnlGioiTinh);
 
 		JLabel lblGioiTinh = new JLabel("Giới tính");
 		lblGioiTinh.setForeground(Utils.labelTextField);
@@ -169,8 +171,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		JPanel pnlGroupGioiTinh = new JPanel();
 		pnlGroupGioiTinh.setBackground(Utils.secondaryColor);
 		pnlGroupGioiTinh.setBounds(4, 39, 138, 16);
-		pnlGioiTinh.add(pnlGroupGioiTinh);
 		pnlGroupGioiTinh.setLayout(null);
+		pnlGioiTinh.add(pnlGroupGioiTinh);
 
 		radNam = new RadioButtonCustom("Nam");
 		radNam.setFocusable(false);
@@ -203,21 +205,21 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		pnlRow4.add(lblDiaChi);
 
 		cmbTinh = new ComboBox<>();
-		cmbTinh.setModel(new DefaultComboBoxModel<String>(new String[] { "TP. Cần Thơ" }));
+		cmbTinh.setModel(new DefaultComboBoxModel<String>());
 		cmbTinh.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbTinh.setBackground(Utils.primaryColor);
 		cmbTinh.setBounds(4, 29, 200, 36);
 		pnlRow4.add(cmbTinh);
 
 		cmbQuan = new ComboBox<>();
-		cmbQuan.setModel(new DefaultComboBoxModel<String>(new String[] { "Phong Điền" }));
+		cmbQuan.setModel(new DefaultComboBoxModel<String>());
 		cmbQuan.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbQuan.setBackground(new Color(140, 177, 180));
 		cmbQuan.setBounds(220, 29, 200, 36);
 		pnlRow4.add(cmbQuan);
 
 		cmbPhuong = new ComboBox<>();
-		cmbPhuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Phong Điền" }));
+		cmbPhuong.setModel(new DefaultComboBoxModel<String>());
 		cmbPhuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbPhuong.setBackground(new Color(140, 177, 180));
 		cmbPhuong.setBounds(440, 29, 200, 36);
@@ -298,7 +300,6 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 		txtMaNhanVien.setEnabled(false);
 		setEnabledForm(false);
-
 		this.nhanVien = NhanVien.getNhanVien();
 		setNhanVienVaoForm(nhanVien);
 
@@ -396,6 +397,15 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 				}
 			}
 		});
+
+//		Sự kiện Component được hiển thị
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				dateChoose.showPopup();
+				dateChoose.hidePopup();
+			}
+		});
 	}
 
 	/**
@@ -420,9 +430,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		Object object = e.getSource();
-		if (e.getStateChange() != ItemEvent.SELECTED) {
+		if (e.getStateChange() != ItemEvent.SELECTED)
 			return;
-		}
 		if (cmbTinh.equals(object)) {
 			if (!isEnabledEventTinh)
 				return;
@@ -442,8 +451,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 				tinh = null;
 				return;
 			}
-			Tinh tinh = diaChi_DAO.getTinh(tinhSelected);
-			this.tinh = tinh;
+			this.tinh = diaChi_DAO.getTinh(tinhSelected);
 			setQuanToComboBox(this.tinh);
 			cmbQuan.setEnabled(true);
 			isEnabledEventQuan = true;
@@ -452,7 +460,6 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 			if (!isEnabledEventQuan)
 				return;
 			isEnabledEventPhuong = false;
-			isEnabledEventQuan = false;
 			String quanSelected = (String) cmbQuan.getSelectedItem();
 			cmbPhuong = (ComboBox<String>) resizeComboBox(cmbPhuong, Quan.getQuanLabel());
 			phuong = null;
@@ -462,28 +469,22 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 				cmbPhuong.setEnabled(false);
 				quan = null;
 			} else {
-				Quan quan = diaChi_DAO.getQuan(tinh, quanSelected);
-				this.quan = quan;
+				this.quan = diaChi_DAO.getQuan(tinh, quanSelected);
 				cmbPhuong.setEnabled(true);
 				setPhuongToComboBox(this.quan);
 			}
 
 			isEnabledEventPhuong = true;
-			isEnabledEventQuan = true;
 		} else if (cmbPhuong.equals(object)) {
 			if (!isEnabledEventPhuong)
 				return;
-			isEnabledEventPhuong = false;
 			String phuongSelect = (String) cmbPhuong.getSelectedItem();
 
 			if (phuongSelect.equals(Phuong.getPhuongLabel())) {
 				phuong = null;
-				return;
-			}
+			} else
 
-			Phuong phuong = diaChi_DAO.getPhuong(quan, phuongSelect);
-			this.phuong = phuong;
-			isEnabledEventPhuong = false;
+				this.phuong = diaChi_DAO.getPhuong(quan, phuongSelect);
 		}
 
 	}

@@ -6,7 +6,6 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JComboBox;
 
-import components.listCellRenderer.ListCellRendererCustom;
 import utils.Utils;
 
 public class ComboBox<E> extends JComboBox<E> {

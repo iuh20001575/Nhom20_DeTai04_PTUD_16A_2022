@@ -1,4 +1,4 @@
-package components.listCellRenderer;
+package components.comboBox;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -10,6 +10,10 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 @SuppressWarnings("rawtypes")
+/**
+ * Custom Item JComboBox
+ *
+ */
 public class ListCellRendererCustom implements ListCellRenderer {
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 

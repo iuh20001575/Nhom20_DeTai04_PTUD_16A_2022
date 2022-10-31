@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -394,12 +396,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				}
 
 				setEventFilterComboBox(true);
-			}
-
-			@Override
-			public void windowOpened(WindowEvent e) {
 				setTimeComboBox(LocalTime.now().getHour());
-			};
+			}
 		});
 
 //		Sự kiện txtSoDienThoai
@@ -606,6 +604,15 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
 							"Đặt phòng thành công").showNotification();
 				}
+			}
+		});
+
+//		Sự kiện Component được hiển thị
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				dateChoose.showPopup();
+				dateChoose.hidePopup();
 			}
 		});
 	}

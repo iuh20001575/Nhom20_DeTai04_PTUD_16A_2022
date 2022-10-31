@@ -2,6 +2,8 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -368,6 +370,11 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		setTinhToComboBox();
 		cmbQuan.setEnabled(false);
 		cmbPhuong.setEnabled(false);
+		txtMaNhanVien.setEnabled(false);
+		
+		cmbTinh.addItemListener(this);
+		cmbQuan.addItemListener(this);
+		cmbPhuong.addItemListener(this);
 
 //		Sự kiện txtHoten
 		txtHoTen.addKeyListener(new KeyAdapter() {
@@ -454,10 +461,14 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 			}
 		});
 
-		txtMaNhanVien.setEnabled(false);
-		cmbTinh.addItemListener(this);
-		cmbQuan.addItemListener(this);
-		cmbPhuong.addItemListener(this);
+//		Sự kiện Component được hiển thị
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				dateChoose.showPopup();
+				dateChoose.hidePopup();
+			}
+		});
 	}
 
 	/**

@@ -39,13 +39,17 @@ import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
 import dao.ChiTietDatPhong_DAO;
+import dao.ChiTietDichVu_DAO;
 import dao.DatPhong_DAO;
+import dao.DichVu_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiPhong_DAO;
 import dao.NhanVien_DAO;
 import dao.Phong_DAO;
 import entity.ChiTietDatPhong;
+import entity.ChiTietDichVu;
 import entity.DatPhong;
+import entity.DichVu;
 import entity.KhachHang;
 import entity.LoaiPhong;
 import entity.NhanVien;
@@ -85,6 +89,9 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	private double tongTien;
 	private TextField txtTienNhan;
 	private TextField txtTienThua;
+	private ChiTietDichVu_DAO chiTietDichVu_DAO;
+	private DichVu_DAO dichVu_DAO;
+	private JLabel lblTienDichVu;
 
 	/**
 	 * Create the frame.
@@ -99,6 +106,8 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		phong_DAO = new Phong_DAO();
+		chiTietDichVu_DAO = new ChiTietDichVu_DAO();
+		dichVu_DAO = new DichVu_DAO();
 
 		setType(Type.UTILITY);
 		setResizable(false);
@@ -320,7 +329,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		lblLabelTienDichVu.setBounds(0, 0, 105, 24);
 		pnlTienDichVu.add(lblLabelTienDichVu);
 
-		JLabel lblTienDichVu = new JLabel("");
+		lblTienDichVu = new JLabel("");
 		lblTienDichVu.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblTienDichVu.setBounds(105, 0, 190, 24);
 		pnlTienDichVu.add(lblTienDichVu);
@@ -632,6 +641,8 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		if (datPhong != null) {
 			KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(datPhong.getKhachHang().getMaKhachHang());
 			NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(datPhong.getNhanVien().getMaNhanVien());
+			List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO
+					.getDichVuTheoPhieuDatPhong(datPhong.getMaDatPhong());
 
 			if (isMaDatPhong) {
 				cmbSoDienThoai.setSelectedItem(khachHang.getSoDienThoai());
@@ -656,11 +667,26 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 				addRow(dsChiTietDatPhong.get(i), ngayThanhToan);
 			}
 
+			int n = dsChiTietDichVu.size();
+			DichVu dichVu;
+			ChiTietDichVu chiTietDichVu;
+			double tongTienDichVu = 0;
+			double tienDichVu;
+			for (int i = 0; i < n; i++) {
+				chiTietDichVu = dsChiTietDichVu.get(i);
+				dichVu = dichVu_DAO.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu());
+				tienDichVu = dichVu.getGiaBan() * chiTietDichVu.getSoLuong();
+				tongTienDichVu += tienDichVu;
+				tableModel.addRow(new String[] { n + i + 1 + "", dichVu.getTenDichVu(), chiTietDichVu.getSoLuong() + "",
+						Utils.formatTienTe(dichVu.getGiaBan()), Utils.formatTienTe(tienDichVu) });
+			}
+
 			int gio = tongThoiGian / 60;
 			int phut = tongThoiGian % 60;
-			tienThanhToan = tongTien;
+			tienThanhToan = tongTien + tongTienDichVu;
 			lblTongThoiLuong.setText(((gio > 0 ? gio + " giờ" : "") + " " + (phut > 0 ? phut + " phút" : "")).trim());
 			lblTienPhong.setText(Utils.formatTienTe(tongTien));
+			lblTienDichVu.setText(Utils.formatTienTe(tongTienDichVu));
 			tienThanhToan *= 1.1;
 			lblTienThanhToan.setText(Utils.formatTienTe(tienThanhToan));
 		} else {
@@ -670,6 +696,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			lblTongThoiLuong.setText("");
 			lblTienPhong.setText("");
 			lblTienThanhToan.setText("");
+			lblTienDichVu.setText("");
 			dsChiTietDatPhong = null;
 			btnThanhToan.setEnabled(false);
 			emptyTable();

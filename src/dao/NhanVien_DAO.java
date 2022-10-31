@@ -152,6 +152,9 @@ public class NhanVien_DAO {
 	 */
 	public boolean capNhatNhanVien(NhanVien nhanVien) {
 		try {
+			if (!taiKhoan_DAO.capNhatMatKhau(nhanVien.getTaiKhoan()))
+				return rollback();
+
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
 					"UPDATE NhanVien SET hoTen = ?, cccd = ?, soDienThoai = ?, ngaySinh = ?, gioiTinh = ?, tinh = ?, quan = ?, phuong = ?, diaChiCuThe = ?, chucVu = ?, luong = ?, trangThai = ? WHERE maNhanVien = ?");
 			preparedStatement.setString(1, nhanVien.getHoTen());
@@ -168,7 +171,7 @@ public class NhanVien_DAO {
 			preparedStatement.setString(12, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
 			preparedStatement.setString(13, nhanVien.getMaNhanVien());
 
-			return preparedStatement.executeUpdate() > 0 && taiKhoan_DAO.capNhatMatKhau(nhanVien.getTaiKhoan());
+			return preparedStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -320,5 +323,13 @@ public class NhanVien_DAO {
 		}
 
 		return list;
+	}
+
+	private boolean rollback() throws SQLException {
+		if (ConnectDB.getConnection().getAutoCommit())
+			ConnectDB.getConnection().setAutoCommit(false);
+		ConnectDB.getConnection().rollback();
+		ConnectDB.getConnection().setAutoCommit(true);
+		return false;
 	}
 }

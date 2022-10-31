@@ -23,6 +23,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -31,6 +33,7 @@ import javax.swing.table.TableCellRenderer;
 import components.button.Button;
 import components.controlPanel.ControlPanel;
 import components.jDialog.JDialogCustom;
+import components.jDialog.JDialogCustom.Type;
 import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
@@ -44,12 +47,13 @@ import utils.Utils;
 
 public class QuanLyNhanVien_GUI extends JPanel {
 
-	private static JLabel lblTime;
+	private JLabel lblTime;
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static void clock() {
+
+	public Thread clock() {
 		Thread clock = new Thread() {
 			@Override
 			public void run() {
@@ -74,7 +78,10 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		};
 
 		clock.start();
+
+		return clock;
 	}
+
 	private Button btnEmployeeAdd;
 	private Button btnEmployeeEdit;
 	private Button btnEmployeeRemove;
@@ -89,11 +96,13 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private JTable tbl;
 
 	private JTextField txtSearch;
+	private Main main;
 
 	/**
 	 * Create the frame.
 	 */
 	public QuanLyNhanVien_GUI(Main main) {
+		this.main = main;
 		nhanVien_DAO = new NhanVien_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 
@@ -118,25 +127,22 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		lblTime.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		lblTime.setBounds(874, 0, 180, 24);
 		pnlSearch.add(lblTime);
-		clock();
 
 		JPanel pnlSearchForm = new JPanel();
 		pnlSearchForm.setBackground(Utils.secondaryColor);
 		pnlSearchForm.setBounds(16, 52, 1054, 36);
-		this.add(pnlSearchForm);
 		pnlSearchForm.setLayout(null);
+		this.add(pnlSearchForm);
 
 		Button btnSearch = new Button("Tìm");
 		btnSearch.setFocusable(false);
 		btnSearch.setIcon(new ImageIcon("Icon\\searching.png"));
 		btnSearch.setRadius(4);
 		btnSearch.setForeground(Color.WHITE);
-		btnSearch.setColor(new Color(134, 229, 138));
 		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		btnSearch.setBounds(904, -2, 150, 40);
 		btnSearch.setBorderColor(Utils.secondaryColor);
-		btnSearch.setColorOver(new Color(134, 229, 138));
-		btnSearch.setColorClick(new Color(59, 238, 66));
+		btnSearch.setBackground(new Color(134, 229, 138), new Color(134, 229, 138), new Color(59, 238, 66));
 		btnSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlSearchForm.add(btnSearch);
 
@@ -171,9 +177,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeView.setRadius(4);
 		btnEmployeeView.setForeground(Color.WHITE);
 		btnEmployeeView.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnEmployeeView.setColorOver(Utils.primaryColor);
-		btnEmployeeView.setColorClick(new Color(161, 184, 186));
-		btnEmployeeView.setColor(Utils.primaryColor);
+		btnEmployeeView.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
 		btnEmployeeView.setBorderColor(Utils.secondaryColor);
 		btnEmployeeView.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlActions.add(btnEmployeeView);
@@ -184,9 +188,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeAdd.setRadius(4);
 		btnEmployeeAdd.setForeground(Color.WHITE);
 		btnEmployeeAdd.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnEmployeeAdd.setColorOver(Utils.primaryColor);
-		btnEmployeeAdd.setColorClick(new Color(161, 184, 186));
-		btnEmployeeAdd.setColor(Utils.primaryColor);
+		btnEmployeeAdd.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
 		btnEmployeeAdd.setBorderColor(Utils.secondaryColor);
 		btnEmployeeAdd.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnEmployeeAdd.setBounds(165, 0, 150, 36);
@@ -198,9 +200,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeEdit.setRadius(4);
 		btnEmployeeEdit.setForeground(Color.WHITE);
 		btnEmployeeEdit.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnEmployeeEdit.setColorOver(Utils.primaryColor);
-		btnEmployeeEdit.setColorClick(new Color(161, 184, 186));
-		btnEmployeeEdit.setColor(Utils.primaryColor);
+		btnEmployeeEdit.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
 		btnEmployeeEdit.setBorderColor(Utils.secondaryColor);
 		btnEmployeeEdit.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnEmployeeEdit.setBounds(330, 0, 150, 36);
@@ -213,9 +213,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeRemove.setRadius(4);
 		btnEmployeeRemove.setForeground(Color.WHITE);
 		btnEmployeeRemove.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnEmployeeRemove.setColorOver(Utils.primaryColor);
-		btnEmployeeRemove.setColorClick(new Color(161, 184, 186));
-		btnEmployeeRemove.setColor(Utils.primaryColor);
+		btnEmployeeRemove.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
 		btnEmployeeRemove.setBorderColor(Utils.secondaryColor);
 		btnEmployeeRemove.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnEmployeeRemove.setBounds(495, 0, 150, 36);
@@ -304,16 +302,11 @@ public class QuanLyNhanVien_GUI extends JPanel {
 				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
 		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
-//		tbl.setShowGrid(false);
 		scr.setViewportView(tbl);
 
 		pnlControl = new ControlPanel(400, 529, main);
 		pnlControl.setLocation(400, 464);
 		this.add(pnlControl);
-
-		setEmptyTable();
-		addRow(nhanVien_DAO.getAllNhanVien()).forEach(nhanVien -> maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
-		pnlControl.setTbl(tbl);
 
 //		Sự kiện nút tìm kiếm nhân viên
 		btnSearch.addMouseListener(new MouseAdapter() {
@@ -335,8 +328,9 @@ public class QuanLyNhanVien_GUI extends JPanel {
 							"Vui lòng chọn nhân viên muốn xem");
 				} else {
 					String maNhanVien = (String) tableModel.getValueAt(row, 0);
-					main.addPnlBody(new ThongTinChiTietNhanVien_GUI(main, new NhanVien(maNhanVien)),
-							"Thông tin chi tiết nhân viên", 1, 0);
+					NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(maNhanVien);
+					ThongTinChiTietNhanVien_GUI jFrame = new ThongTinChiTietNhanVien_GUI(main, nhanVien);
+					main.addPnlBody(jFrame, "Thông tin chi tiết nhân viên", 1, 0);
 				}
 			}
 		});
@@ -360,8 +354,9 @@ public class QuanLyNhanVien_GUI extends JPanel {
 							"Vui lòng chọn nhân viên muốn sửa");
 				} else {
 					String maNhanVien = (String) tableModel.getValueAt(row, 0);
-					main.addPnlBody(new ThongTinChiTietNhanVien_GUI(main, new NhanVien(maNhanVien), true),
-							"Thông tin chi tiết nhân viên", 1, 0);
+					NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(maNhanVien);
+					JPanel pnl = new ThongTinChiTietNhanVien_GUI(main, nhanVien, true);
+					main.addPnlBody(pnl, "Thông tin chi tiết nhân viên", 1, 0);
 				}
 			}
 		});
@@ -379,12 +374,13 @@ public class QuanLyNhanVien_GUI extends JPanel {
 					String maNhanVien = (String) tbl.getValueAt(row, 0);
 					boolean res = nhanVien_DAO.setNghiLam(maNhanVien);
 
-					if (res)
+					if (res) {
 						new Notification(main, components.notification.Notification.Type.SUCCESS,
-								"Cập nhật trạng thái nhân viên thành công");
-					else
+								"Cập nhật trạng thái nhân viên thành công").showNotification();
+						tableModel.setValueAt("Nghỉ làm", row, 7);
+					} else
 						new Notification(main, components.notification.Notification.Type.ERROR,
-								"Cập nhật trạng thái nhân viên thất bại");
+								"Cập nhật trạng thái nhân viên thất bại").showNotification();
 				}
 			}
 		});
@@ -424,6 +420,28 @@ public class QuanLyNhanVien_GUI extends JPanel {
 				}
 			}
 		});
+
+//		Panel event
+		addAncestorListener(new AncestorListener() {
+			Thread clockThread;
+
+			public void ancestorAdded(AncestorEvent event) {
+				clockThread = clock();
+
+				setEmptyTable();
+				addRow(nhanVien_DAO.getAllNhanVien())
+						.forEach(nhanVien -> maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
+				pnlControl.setTbl(tbl);
+			}
+
+			public void ancestorMoved(AncestorEvent event) {
+			}
+
+			@SuppressWarnings("deprecation")
+			public void ancestorRemoved(AncestorEvent event) {
+				clockThread.stop();
+			}
+		});
 	}
 
 	private List<NhanVien> addRow(List<NhanVien> list) {
@@ -457,8 +475,10 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		addRow(list);
 		pnlControl.setTbl(tbl);
 
-		if (list.size() == 0)
-			System.out.println("Rỗng");
+		if (list.size() == 0) {
+			JDialogCustom jDialogCustom = new JDialogCustom(main, Type.warning);
+			jDialogCustom.showMessage("Thông báo", "Không có nhân viên cần tìm");
+		}
 	}
 
 	private void setEmptyTable() {

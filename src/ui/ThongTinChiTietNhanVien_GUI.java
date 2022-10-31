@@ -2,8 +2,12 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
@@ -80,6 +84,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 	public ThongTinChiTietNhanVien_GUI(Main main, NhanVien nhanVien, boolean isCapNhat) {
 		this(main, nhanVien);
 		setEnabledForm(true);
+		txtLuong.setText(ThongTinChiTietNhanVien_GUI.this.nhanVien.getLuong() + "");
 		btnCapNhat.setVisible(false);
 		btnLuu.setEnabled(true);
 	}
@@ -88,10 +93,10 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 	 * Create the frame.
 	 */
 	public ThongTinChiTietNhanVien_GUI(Main main, NhanVien nhanVien) {
+		this.nhanVien = nhanVien;
 		nhanVien_DAO = new NhanVien_DAO();
 		taiKhoan_DAO = new TaiKhoan_DAO();
 		diaChi_DAO = new DiaChi_DAO();
-		this.nhanVien = nhanVien_DAO.getNhanVienTheoMa(nhanVien.getMaNhanVien());
 		this.main = main;
 
 		setBackground(Utils.secondaryColor);
@@ -395,6 +400,54 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		txtMaNhanVien.setEnabled(false);
 		setEnabledForm(false);
 
+//		Sự kiện txtHoTen
+		txtHoTen.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtHoTen.setError(false);
+			}
+		});
+
+//		Sự kiện txtCCCD
+		txtCCCD.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtCCCD.setError(false);
+			}
+		});
+
+//		Sự kiện txtSoDienThoai
+		txtSoDienThoai.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtSoDienThoai.setError(false);
+			}
+		});
+
+//		Sự kiện txtDiaChiCT
+		txtDiaChiCT.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtDiaChiCT.setError(false);
+			}
+		});
+
+//		Sự kiện txtLuong
+		txtLuong.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtLuong.setError(false);
+			}
+		});
+
+//		Sự kiện txtMatKhau
+		txtMatKhau.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtMatKhau.setError(false);
+			}
+		});
+		
 //		Sự kiện nút cập nhật
 		btnCapNhat.addMouseListener(new MouseAdapter() {
 			@Override
@@ -419,16 +472,15 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 									"Cập nhật thông tin nhân viên thành công").showNotification();
 							btnCapNhat.setVisible(true);
 							ThongTinChiTietNhanVien_GUI.this.nhanVien = nhanVien;
-							setNhanVienVaoForm(ThongTinChiTietNhanVien_GUI.this.nhanVien);
-							if (ThongTinChiTietNhanVien_GUI.this.nhanVien.getTrangThai().equals(TrangThai.DangLam))
-								btnNghiViec.setEnabled(true);
+							setNhanVienVaoForm(nhanVien);
 							setEnabledForm(false);
 							btnLuu.setEnabled(false);
 							if (nhanVien.getTrangThai().equals(NhanVien.TrangThai.DangLam))
 								btnNghiViec.setEnabled(true);
 							main.repaint();
 						} else {
-							System.out.println("Error");
+							new Notification(main, components.notification.Notification.Type.SUCCESS,
+									"Cập nhật thông tin nhân viên thất bại").showNotification();
 						}
 					}
 				}
@@ -475,6 +527,15 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 									ThongTinChiTietNhanVien_GUI.this.nhanVien.getMaNhanVien(),
 									ThongTinChiTietNhanVien_GUI.this.nhanVien.getHoTen()));
 				}
+			}
+		});
+
+//		Sự kiện Component được hiển thị
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				dateChoose.showPopup();
+				dateChoose.hidePopup();
 			}
 		});
 
@@ -835,4 +896,5 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 
 		isEnabledEventPhuong = true;
 	}
+
 }
