@@ -43,6 +43,11 @@ public class ChiTietDatPhong {
 	public ChiTietDatPhong() {
 		super();
 	}
+	
+	public ChiTietDatPhong(DatPhong datPhong) {
+		super();
+		this.datPhong = datPhong;
+	}
 
 	public ChiTietDatPhong(DatPhong datPhong, Phong phong, LocalTime gioVao) {
 		super();
