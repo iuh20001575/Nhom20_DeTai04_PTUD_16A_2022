@@ -16,5 +16,7 @@
 	<classpathentry kind="lib" path="libs/flatlaf-2.4.jar"/>
 	<classpathentry kind="lib" path="libs/datechooser.jar"/>
 	<classpathentry kind="lib" path="libs/KGradientPanel.jar"/>
+	<classpathentry kind="lib" path="libs/RadioLib.jar"/>
+	<classpathentry kind="lib" path="libs/PanelLib.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
