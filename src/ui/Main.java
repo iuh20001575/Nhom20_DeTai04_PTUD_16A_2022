@@ -134,6 +134,7 @@ public class Main extends JFrame {
 			menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\businessman.png"), Utils.nhanVienMenuItem,
 					Utils.quanLyNhanVienMenuItem, Utils.themNhanVienMenuItem));
 		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\users-avatar.png"), Utils.quanLyKhachHangMenuItem));
+		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\doorMenuItem.png"), Utils.quanLyPhongMenuItem));
 		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\doorMenuItem.png"), Utils.quanLyDatPhongMenuItem));
 		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\doorMenuItem.png"), Utils.quanLyDatPhongTruocMenuItem));
 		menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\bar-graph.png"), Utils.thongKeMenuItem,
@@ -258,6 +259,9 @@ public class Main extends JFrame {
 				} else if (titleMenu.equals(Utils.quanLyKhachHangMenuItem)) {
 					title = "Quản lý khách hàng";
 					pnl = new QuanLyKhachHang_GUI(_this);
+				} else if (titleMenu.equals(Utils.quanLyPhongMenuItem)) {
+					title = "Quản lý phòng";
+					pnl = new QuanLyPhong_GUI(_this);
 				} else if (titleMenu.equals(Utils.quanLyDatPhongMenuItem)) {
 					title = "Quản lý đặt phòng";
 					pnl = new QuanLyDatPhong_GUI(_this);

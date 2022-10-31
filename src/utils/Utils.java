@@ -18,6 +18,7 @@ public class Utils {
 	public static final String thongKeMenuItem = "Thống kê";
 	public static final String quanLyNhanVienMenuItem = "Quản lý nhân viên";
 	public static final String themNhanVienMenuItem = "Thêm nhân viên";
+	public static final String quanLyPhongMenuItem = "Quản lý phòng";
 	public static final String quanLyKhachHangMenuItem = "Quản lý khách hàng";
 	public static final String quanLyDatPhongMenuItem = "Quản lý đặt phòng";
 	public static final String quanLyDatPhongTruocMenuItem = "Quản lý đặt phòng trước";
