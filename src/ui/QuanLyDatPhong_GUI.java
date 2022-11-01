@@ -952,7 +952,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		if (KeyEvent.VK_F4 == e.getKeyCode())
 			handleOpenSubFrame(pnlGopPhong, new GopPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 		if (KeyEvent.VK_F5 == e.getKeyCode())
-			handleOpenSubFrame(pnlDatPhong, new DatPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
+			handleOpenSubFrame(pnlDatPhong, new QuanLyDichVuPhongDat_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 		if (KeyEvent.VK_F6 == e.getKeyCode())
 			handleOpenSubFrame(pnlThanhToan, new ThanhToan_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 

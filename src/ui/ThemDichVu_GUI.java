@@ -4,12 +4,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -19,25 +19,17 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.metal.MetalButtonUI;
 
-
 import components.button.Button;
 import components.notification.Notification;
 import components.textField.TextField;
-
-import utils.Utils;
-
+import dao.DichVu_DAO;
+import dao.LoaiDichVu_DAO;
 import entity.DichVu;
 import entity.LoaiDichVu;
-
-import dao.LoaiDichVu_DAO;
-import dao.DichVu_DAO;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import utils.Utils;
 
 public class ThemDichVu_GUI extends JPanel implements ItemListener {
 	private static final long serialVersionUID = 1L;
-	
 
 	private LoaiDichVu_DAO loaiDichVu_DAO;
 	private DichVu_DAO dichVu_DAO;
@@ -46,8 +38,6 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 	private JLabel lblThu;
 	private JLabel lblDate;
 	private Main main;
-
-
 
 	public ThemDichVu_GUI(Main jFrame) {
 
@@ -58,8 +48,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		setBackground(Utils.secondaryColor);
 		setBounds(0, 0, 1086, 508);
 		setLayout(null);
-		
-		
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(203, 239, 255));
 		panel_1.setBounds(0, 0, 1100, 500);
@@ -93,19 +82,16 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		txtSoLuong.setBackground(new Color(203, 239, 255));
 		txtSoLuong.setBounds(516, 195, 371, 55);
 		panel_1.add(txtSoLuong);
-		
-		
+
 		cmbLoaiDichVu = new JComboBox<String>();
-		ArrayList<LoaiDichVu> listLoaiDV= (ArrayList<LoaiDichVu>) loaiDichVu_DAO.getAllLoaiDichVu();
-		for (LoaiDichVu loaiDV: listLoaiDV) {
+		ArrayList<LoaiDichVu> listLoaiDV = (ArrayList<LoaiDichVu>) loaiDichVu_DAO.getAllLoaiDichVu();
+		for (LoaiDichVu loaiDV : listLoaiDV) {
 			cmbLoaiDichVu.addItem(loaiDV.getTenLoaiDichVu());
 		}
 		cmbLoaiDichVu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbLoaiDichVu.setBackground(Utils.primaryColor);
 		cmbLoaiDichVu.setBounds(44, 290, 371, 45);
 		panel_1.add(cmbLoaiDichVu);
-
-
 
 		TextField txtGiaMua = new TextField();
 		txtGiaMua.setLabelText("Giá mua:");
@@ -147,7 +133,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		lblNewLabel.setIcon(new ImageIcon("Icon\\clock (1) 1.png"));
 		lblNewLabel.setBounds(885, 2, 64, 64);
 		panel_1.add(lblNewLabel);
-		
+
 		Button btnLuu = new Button("Lưu");
 		btnLuu.setUI(new MetalButtonUI() {
 			protected Color getDisabledTextColor() {
@@ -166,7 +152,6 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		btnLuu.setBounds(280, 420, 250, 50);
 		panel_1.add(btnLuu);
 
-
 		btnLuu.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -177,7 +162,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 				double sGiaMua = Double.valueOf(txtGiaMua.getText());
 				String sLoaiDichVu = cmbLoaiDichVu.getSelectedItem().toString();
 				LoaiDichVu loaiDichVuSelect = loaiDichVu_DAO.getLoaiDichVuTheoTen(sLoaiDichVu);
-				if (dichVu_DAO.ThemDichVu(new DichVu(sma, sten, sSoLuong, sDonViTinh, loaiDichVuSelect, sGiaMua))) {
+				if (dichVu_DAO.themDichVu(new DichVu(sma, sten, sSoLuong, sDonViTinh, loaiDichVuSelect, sGiaMua))) {
 					new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
 							"Đã thêm dịch vụ mới thành công").showNotification();
 				}
@@ -214,20 +199,13 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list) {
-		list.removeAllItems();
-		// list.addItem((E) firstLabel);
-		return list;
-	}
-
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// TODO Auto-generated method stub
-		Object object = e.getSource();
 		if (e.getStateChange() != ItemEvent.SELECTED) {
 			return;
-		}}
+		}
+	}
 
 	public void clock() {
 		Thread clock = new Thread() {
@@ -272,6 +250,5 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 
 		clock.start();
 	}
-
 
 }

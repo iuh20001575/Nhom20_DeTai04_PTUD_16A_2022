@@ -20,13 +20,10 @@ import javax.swing.border.EmptyBorder;
 import components.button.Button;
 import components.comboBox.ComboBox;
 import components.notification.Notification;
-import components.notification.Notification.Type;
 import components.textField.TextField;
 import connectDB.ConnectDB;
 import dao.LoaiPhong_DAO;
 import dao.Phong_DAO;
-import entity.DichVu;
-import entity.LoaiDichVu;
 import entity.LoaiPhong;
 import entity.Phong;
 import entity.Phong.TrangThai;
@@ -47,9 +44,10 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 	private Phong_DAO phong_DAO;
 	private JFrame main;
 	private QuanLyPhong_GUI quanLyPhong_GUI;
+
 	/**
 	 * Create the frame.
-	 *  
+	 * 
 	 * @param quanLyPhong_GUI
 	 */
 	public ThongTinChiTietPhong_GUI(JFrame jFrame, Phong phong, boolean isCapNhat) {
@@ -148,7 +146,7 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnHuy.setBounds(234, -2, 100, 38);
 		pnlActions.add(btnHuy);
-		
+
 		Button btnCapNhat = new Button("Cập nhật");
 		btnCapNhat.setText("Cập nhật");
 		btnCapNhat.setRadius(4);
@@ -170,7 +168,8 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 
 		cmbSoLuong = new ComboBox<String>();
 		cmbSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		//cmbSoLuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Số lượng khách", "5", "10", "20" }));
+		// cmbSoLuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Số lượng
+		// khách", "5", "10", "20" }));
 		cmbSoLuong.addItem("Số lượng khách");
 		cmbSoLuong.addItem("5");
 		cmbSoLuong.addItem("10");
@@ -181,11 +180,9 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 
 		List<LoaiPhong> dsLoaiPhong = loaiPhong_DAO.getAllLoaiPhong();
 		dsLoaiPhong.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));
-		
-		
+
 		setPhongVaoForm(phong);
-		
-		
+
 //		Sự kiện txtMaPhong
 		txtMaPhong.addKeyListener(new KeyAdapter() {
 			public void keyPressed(java.awt.event.KeyEvent e) {
@@ -199,7 +196,7 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 				quanLyPhong_GUI.closeJFrameSub();
 			};
 		});
-		
+
 //		Sự kiện nút cập nhật
 		btnCapNhat.addMouseListener(new MouseAdapter() {
 			@Override
@@ -215,7 +212,7 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				 //setErrorAllJTextField(false);
+				// setErrorAllJTextField(false);
 				setPhongVaoForm(phong);
 				btnCapNhat.setVisible(true);
 				btnHuy.setVisible(false);
@@ -236,7 +233,7 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 
 				Phong phong = getPhongTuForm();
 				boolean res = phong_DAO.suaPhong(phong);
-				
+
 				if (res) {
 					new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
 							"Cập nhật thông tin phòng thành công").showNotification();
@@ -250,7 +247,7 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 				}
 			}
 		});
-		
+
 	}
 
 	/**
@@ -265,7 +262,7 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 		LoaiPhong loaiPhong = loaiPhong_DAO.getLoaiPhongTheoTenLoai(tenLoai);
 		return new Phong(maPhong, loaiPhong, Integer.parseInt(soLuongKhach), TrangThai.Trong);
 	}
-	
+
 	/**
 	 * Set dịch vụ vào form
 	 * 
@@ -276,8 +273,6 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 		cmbSoLuong.setSelectedItem(String.valueOf(phong.getSoLuongKhach()));
 		cmbLoaiPhong.setSelectedItem(phong.getLoaiPhong().getTenLoai());
 	}
-	
-
 
 	private boolean validator() {
 		Notification notification;
@@ -330,12 +325,6 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 		return true;
 	}
 
-	private void xoaRong() {
-		txtMaPhong.setText("");
-		cmbLoaiPhong.setSelectedIndex(0);
-		cmbSoLuong.setSelectedIndex(0);
-	}
-	
 	/**
 	 * set Enabled input form
 	 * 

@@ -30,11 +30,9 @@ import components.textField.TextField;
 import dao.DiaChi_DAO;
 import dao.KhachHang_DAO;
 import entity.KhachHang;
-import entity.PanelUI;
 import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
-import utils.StackPanel;
 import utils.Utils;
 
 public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseListener {

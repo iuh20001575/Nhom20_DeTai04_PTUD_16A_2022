@@ -15,7 +15,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -240,7 +239,7 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-					main.backPanel();
+				main.backPanel();
 
 			}
 		});

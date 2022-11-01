@@ -38,11 +38,8 @@ import components.comboBox.ComboBox;
 import components.jDialog.Glass;
 import components.jDialog.JDialogCustom;
 import components.scrollbarCustom.ScrollBarCustom;
-import dao.Phong_DAO;
-import dao.DichVu_DAO;
 import dao.LoaiPhong_DAO;
-import entity.DichVu;
-import entity.LoaiDichVu;
+import dao.Phong_DAO;
 import entity.LoaiPhong;
 import entity.Phong;
 import utils.Utils;
@@ -76,7 +73,7 @@ public class QuanLyPhong_GUI extends JPanel {
 	public QuanLyPhong_GUI(JFrame jFrame) {
 		LoaiPhong_DAO = new LoaiPhong_DAO();
 		phong_DAO = new Phong_DAO();
-		
+
 		setBackground(Utils.secondaryColor);
 		setBounds(0, 0, 1086, 508);
 		setLayout(null);
@@ -209,19 +206,17 @@ public class QuanLyPhong_GUI extends JPanel {
 		for (LoaiPhong loaiPhong : listLoaiPhong) {
 			cmbLoaiPhong.addItem(loaiPhong.getTenLoai());
 		}
-		
+
 		pnlActions.add(cmbLoaiPhong);
-		
+
 		cmbSoLuongKhach = new ComboBox<String>();
 		cmbSoLuongKhach.setFocusable(false);
-		cmbSoLuongKhach.setModel(new DefaultComboBoxModel<String>(
-				new String[] { "Số lượng khách", "5", "10", "20" }));
+		cmbSoLuongKhach.setModel(new DefaultComboBoxModel<String>(new String[] { "Số lượng khách", "5", "10", "20" }));
 		cmbSoLuongKhach.setForeground(Color.WHITE);
 		cmbSoLuongKhach.setBackground(Utils.getRGBA(140, 177, 180, 0.7f));
 		cmbSoLuongKhach.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		cmbSoLuongKhach.setBounds(874, 0, 180, 49);
-		
-		
+
 		pnlActions.add(cmbSoLuongKhach);
 
 		JScrollPane scr = new JScrollPane();
@@ -274,7 +269,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
+
 		tbl.getColumnModel().getColumn(0).setPreferredWidth(250);
 		tbl.getColumnModel().getColumn(1).setPreferredWidth(260);
 		tbl.getColumnModel().getColumn(2).setPreferredWidth(250);
@@ -291,9 +286,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		tbl.getColumnModel().getColumn(2).setCellRenderer(dtcr);
 		tbl.getColumnModel().getColumn(3).setCellRenderer(dtcr);
 
-		
 		addRow(phong_DAO.getAllPhong());
-
 
 		clock = new Thread() {
 			@Override
@@ -340,7 +333,7 @@ public class QuanLyPhong_GUI extends JPanel {
 				filterPhong();
 			}
 		});
-		
+
 //		Sự kiện JComboBox loại phong
 		cmbLoaiPhong.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -357,7 +350,7 @@ public class QuanLyPhong_GUI extends JPanel {
 				}
 			}
 		});
-		
+
 		btnThem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -378,11 +371,11 @@ public class QuanLyPhong_GUI extends JPanel {
 				} else {
 					String maPhong = tableModel.getValueAt(row, 0).toString();
 					openJFrameSub(new ThongTinChiTietPhong_GUI(jFrame, phong_DAO.getPhong(maPhong), true));
-					
+
 				}
 			}
 		});
-		
+
 		addAncestorListener(new AncestorListener() {
 			public void ancestorAdded(AncestorEvent event) {
 				clock.start();
@@ -396,7 +389,7 @@ public class QuanLyPhong_GUI extends JPanel {
 				clock.stop();
 			}
 		});
-		
+
 		glass.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -420,13 +413,13 @@ public class QuanLyPhong_GUI extends JPanel {
 		glass.setAlpha(0f);
 		jFrameSub = null;
 	}
-	
+
 	private void addRow(Phong phong) {
 
-		tableModel.addRow(new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(),Utils.formatTienTe(phong.getGiaTien()),
-				String.valueOf(phong.getSoLuongKhach()) });
+		tableModel.addRow(new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(),
+				Utils.formatTienTe(phong.getGiaTien()), String.valueOf(phong.getSoLuongKhach()) });
 	}
- 
+
 	private List<Phong> addRow(List<Phong> list) {
 		list.forEach(phong -> addRow(phong));
 		return list;
@@ -436,7 +429,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		while (tbl.getRowCount() > 0)
 			tableModel.removeRow(0);
 	}
-	
+
 	private void filterPhong() {
 		String maPhong = txtTimKiem.getText();
 		String tenLoaiPhong = cmbLoaiPhong.getSelectedItem().toString();
@@ -447,8 +440,8 @@ public class QuanLyPhong_GUI extends JPanel {
 			soLuongKhach = "";
 
 		List<Phong> list = new ArrayList<Phong>();
-		list = phong_DAO.getPhongTheoLoaiVaSoLuongKhach(maPhong, tenLoaiPhong,soLuongKhach );
-				
+		list = phong_DAO.getPhongTheoLoaiVaSoLuongKhach(maPhong, tenLoaiPhong, soLuongKhach);
+
 		setEmptyTable();
 		addRow(list);
 	}

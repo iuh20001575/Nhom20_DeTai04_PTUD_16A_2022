@@ -40,11 +40,13 @@ import dao.DichVu_DAO;
 import dao.LoaiDichVu_DAO;
 import entity.DichVu;
 import entity.LoaiDichVu;
-import entity.NhanVien;
 import utils.Utils;
 
 public class QuanLyDichVu_GUI extends JPanel {
-	private static final long SerialVersionUID = 1L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private static JLabel lblTime;
 	private JTextField txtSearch;
@@ -56,6 +58,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 	private DefaultTableModel tableModel;
 	private ControlPanel pnlControl;
 	private Button btnXem, btnThem, btnSua, btnXoa;
+
 	public QuanLyDichVu_GUI(Main main) {
 
 		LoaiDichVu_DAO = new LoaiDichVu_DAO();
@@ -201,8 +204,8 @@ public class QuanLyDichVu_GUI extends JPanel {
 
 		cmbSoLuong = new JComboBox<String>();
 
-		cmbSoLuong.setModel(new DefaultComboBoxModel<String>(
-				new String[] { "Số lượng", "<50", "50-100", "100-200", ">200" }));
+		cmbSoLuong.setModel(
+				new DefaultComboBoxModel<String>(new String[] { "Số lượng", "<50", "50-100", "100-200", ">200" }));
 		cmbSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbSoLuong.setBackground(Utils.primaryColor);
 		cmbSoLuong.setBounds(900, 0, 150, 36);
@@ -381,15 +384,14 @@ public class QuanLyDichVu_GUI extends JPanel {
 						};
 					});
 					jDialogCustom.showMessage("Warning", "Bạn chắc chắn muốn xóa dịch vụ này");
-					
-				}
-				else {
+
+				} else {
 					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
 							"Vui lòng chọn dịch vụ muốn xóa");
 				}
 			}
 		});
-		
+
 //		Sự kiện JComboBox loại dịch vụ
 		cmbLoaiDV.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -473,7 +475,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 			btnXoa.setEnabled(true);
 		}
 	}
-	
+
 	public static void clock() {
 		Thread clock = new Thread() {
 			@Override

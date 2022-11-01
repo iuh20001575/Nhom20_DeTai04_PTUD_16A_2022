@@ -4,7 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -23,32 +23,28 @@ import components.button.Button;
 import components.notification.Notification;
 import components.notification.Notification.Type;
 import components.textField.TextField;
-
-import utils.Utils;
-
+import dao.DichVu_DAO;
+import dao.LoaiDichVu_DAO;
 import entity.DichVu;
 import entity.LoaiDichVu;
-import dao.LoaiDichVu_DAO;
-import dao.DichVu_DAO;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import utils.Utils;
 
 public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 	private static final long serialVersionUID = 1L;
 
 	private LoaiDichVu_DAO loaiDichVu_DAO;
+	@SuppressWarnings("unused")
 	private DichVu dichVu;
 	private DichVu_DAO dichVu_DAO;
-	private JComboBox<String> cmbLoaiDichVu; 
+	private JComboBox<String> cmbLoaiDichVu;
 	private JLabel lblTime;
 	private JLabel lblThu;
 	private JLabel lblDate;
 	private Main main;
-	private TextField txtMa, txtTen, txtDonViTinh, txtSoLuong, txtGiaMua; 
+	private TextField txtMa, txtTen, txtDonViTinh, txtSoLuong, txtGiaMua;
 
 	public ThongTinChiTietDichVu_GUI(Main jFrame, DichVu dichVu, boolean isCapNhat) {
- 
+
 		main = jFrame;
 		dichVu_DAO = new DichVu_DAO();
 		loaiDichVu_DAO = new LoaiDichVu_DAO();
@@ -187,12 +183,11 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		btnLuu.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnLuu.setBounds(500, 420, 250, 50);
 		panel_1.add(btnLuu);
-		
+
 		setEnabledForm(false);
 		txtMa.setEnabled(false);
 		this.dichVu = dichVu;
 		setDichVuVaoForm(dichVu);
-		
 
 //		Sự kiện nút cập nhật
 		btnCapNhat.addMouseListener(new MouseAdapter() {
@@ -230,7 +225,7 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 
 				DichVu dichVu = getDichVuTuForm();
 				boolean res = dichVu_DAO.suaDichVu(dichVu);
-				
+
 				if (res) {
 					new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
 							"Cập nhật dịch vụ thành công").showNotification();
@@ -239,7 +234,7 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 					btnLuu.setEnabled(false);
 					setEnabledForm(false);
 					ThongTinChiTietDichVu_GUI.this.main.repaint();
-				}else {
+				} else {
 					new Notification(main, Type.ERROR, "Cập nhật thông tin dịch vụ thất bại").showNotification();
 				}
 			}
@@ -249,17 +244,9 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list) {
-		list.removeAllItems();
-		// list.addItem((E) firstLabel);
-		return list;
-	}
-
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// TODO Auto-generated method stub
-		Object object = e.getSource();
 		if (e.getStateChange() != ItemEvent.SELECTED) {
 			return;
 		}
@@ -278,9 +265,10 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		String giaMua = txtGiaMua.getText().trim();
 		String tenLoaiDichVu = cmbLoaiDichVu.getSelectedItem().toString();
 		LoaiDichVu loaiDichVu = loaiDichVu_DAO.getLoaiDichVuTheoTen(tenLoaiDichVu);
-		return new DichVu(maDichVu, tenDichVu, Integer.parseInt(soLuong), donViTinh, loaiDichVu ,Double.parseDouble(giaMua));
+		return new DichVu(maDichVu, tenDichVu, Integer.parseInt(soLuong), donViTinh, loaiDichVu,
+				Double.parseDouble(giaMua));
 	}
-	
+
 	/**
 	 * Set dịch vụ vào form
 	 * 
@@ -294,7 +282,7 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		txtGiaMua.setText(String.valueOf(dichVu.getGiaMua()));
 		cmbLoaiDichVu.setSelectedItem(dichVu.getLoaiDichVu().getTenLoaiDichVu());
 	}
-	
+
 	public void clock() {
 		Thread clock = new Thread() {
 			@Override

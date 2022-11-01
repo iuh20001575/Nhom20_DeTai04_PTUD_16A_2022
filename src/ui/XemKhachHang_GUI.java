@@ -15,7 +15,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -24,7 +23,6 @@ import javax.swing.plaf.metal.MetalButtonUI;
 import com.raven.datechooser.DateChooser;
 
 import components.button.Button;
-import components.jDialog.JDialogCustom;
 import components.radio.RadioButtonCustom;
 import components.textField.TextField;
 import dao.DiaChi_DAO;
@@ -214,7 +212,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		btnCapNhat.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+
 				main.addPnlBody(new CapNhatKhachHang_GUI(main, khachHang), "Cập nhật khách hàng", 2, 0);
 			}
 		});
@@ -288,8 +286,8 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		cmbPhuong.addItemListener(this);
 
 		setKhachHangVaoForm(this.khachHang);
-		//txtMa.setEnabled(false);
-		
+		// txtMa.setEnabled(false);
+
 		setEnabledForm(false);
 	}
 
@@ -483,7 +481,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 
 		isEnabledEventPhuong = true;
 	}
-	
+
 	private void setEnabledForm(boolean b) {
 		txtMa.setEnabled(b);
 		txtTen.setEnabled(b);
@@ -496,7 +494,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		cmbTinh.setEnabled(b);
 		cmbQuan.setEnabled(b);
 		cmbPhuong.setEnabled(b);
-		
+
 	}
 
 }

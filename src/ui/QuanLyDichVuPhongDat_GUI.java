@@ -256,7 +256,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 				}
 			}
 		});
-		btnChonDichVu.setIcon(new ImageIcon("Icon\\\\rightArrow_32x32.png"));
+		btnChonDichVu.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
 		btnChonDichVu.setBounds(0, 70, 36, 36);
 		pnlActions.add(btnChonDichVu);
 

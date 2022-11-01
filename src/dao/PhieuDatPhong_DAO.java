@@ -3,8 +3,6 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +23,7 @@ public class PhieuDatPhong_DAO {
 		DatPhong datPhong = new DatPhong(resultSet.getString("datPhong"));
 		return new ChiTietDatPhong(datPhong);
 	}
+
 	/**
 	 * Get chi tiết đặt phòng của phòng đang chờ
 	 * 
@@ -33,8 +32,8 @@ public class PhieuDatPhong_DAO {
 	 */
 	public ChiTietDatPhong getChiTietDatPhongTheoMa(DatPhong datPhong) {
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT * FROM ChiTietDatPhong WHERE datPhong = ? ");
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE datPhong = ? ");
 			preparedStatement.setString(1, datPhong.getMaDatPhong());
 
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -49,8 +48,9 @@ public class PhieuDatPhong_DAO {
 		}
 		return null;
 	}
+
 	/**
-	 * Get tất cả các chi tiết đặt phòng 
+	 * Get tất cả các chi tiết đặt phòng
 	 * 
 	 * @param resultSet
 	 * @return
@@ -74,6 +74,7 @@ public class PhieuDatPhong_DAO {
 
 		return list;
 	}
+
 	/**
 	 * Get chi tiết phiếu đặt phòng theo mã phiếu đặt, trạng thái và số điện thoại
 	 * 
@@ -82,28 +83,28 @@ public class PhieuDatPhong_DAO {
 	 * @param trangThai
 	 * @return
 	 */
-		public List<ChiTietDatPhong> filterPhieuDatPhong(String maDatPhong,String soDienThoai, String trangThai) {
+	public List<ChiTietDatPhong> filterPhieuDatPhong(String maDatPhong, String soDienThoai, String trangThai) {
 		List<ChiTietDatPhong> list = new ArrayList<>();
-	
+
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-			"SELECT * FROM  ChiTietDatPhong INNER JOIN DatPhong ON ChiTietDatPhong.datPhong = DatPhong.maDatPhong \r\n"
-			+ "INNER JOIN KhachHang ON DatPhong.khachHang = KhachHang.maKhachHang\r\n"
-			+ "WHERE ChiTietDatPhong.datPhong LIKE ? and DatPhong.trangThai like ? and KhachHang.soDienThoai like ?");
-	
+					"SELECT * FROM  ChiTietDatPhong INNER JOIN DatPhong ON ChiTietDatPhong.datPhong = DatPhong.maDatPhong \r\n"
+							+ "INNER JOIN KhachHang ON DatPhong.khachHang = KhachHang.maKhachHang\r\n"
+							+ "WHERE ChiTietDatPhong.datPhong LIKE ? and DatPhong.trangThai like ? and KhachHang.soDienThoai like ?");
+
 			preparedStatement.setString(1, "%" + maDatPhong + "%");
 			preparedStatement.setString(2, "%" + trangThai + "%");
 			preparedStatement.setString(3, soDienThoai);
-	
+
 			ResultSet resultSet = preparedStatement.executeQuery();
-	
+
 			while (resultSet.next())
 				list.add(getChiTietDatPhong(resultSet));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+
 		return list;
 	}
 }

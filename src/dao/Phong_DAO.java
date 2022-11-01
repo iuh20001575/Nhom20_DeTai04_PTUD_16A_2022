@@ -8,11 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connectDB.ConnectDB;
-import entity.DichVu;
-import entity.LoaiPhong;
 import entity.Phong;
 import entity.Phong.TrangThai;
-import dao.LoaiPhong_DAO;
 
 public class Phong_DAO {
 	private LoaiPhong_DAO loaiPhong_DAO = new LoaiPhong_DAO();
@@ -69,8 +66,8 @@ public class Phong_DAO {
 	public boolean suaPhong(Phong phong) {
 
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"UPDATE Phong SET loaiPhong = ?, soLuongKhach = ? WHERE maPhong = ?");
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE Phong SET loaiPhong = ?, soLuongKhach = ? WHERE maPhong = ?");
 			preparedStatement.setString(1, phong.getLoaiPhong().getMaLoai());
 			preparedStatement.setInt(2, phong.getSoLuongKhach());
 			preparedStatement.setString(3, phong.getMaPhong());
@@ -81,7 +78,7 @@ public class Phong_DAO {
 		}
 		return false;
 	}
-	
+
 	public List<Phong> getAllPhongTheoMa(List<Phong> list) {
 		List<Phong> phongs = new ArrayList<>();
 
@@ -247,7 +244,7 @@ public class Phong_DAO {
 		}
 		return false;
 	}
- 
+
 	public List<Phong> getPhongTheoLoaiVaSoLuongKhach(String maPhong, String tenLoaiPhong, String soLuongKhach) {
 		List<Phong> list = new ArrayList<>();
 
