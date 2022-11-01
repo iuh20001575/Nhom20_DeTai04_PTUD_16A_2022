@@ -889,7 +889,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			public void run() {
 				for (;;) {
 					try {
-						datPhong_DAO.huyPhongDatTre();
 						LocalDateTime currTime = LocalDateTime.now();
 						int day = currTime.getDayOfMonth();
 						int month = currTime.getMonthValue();

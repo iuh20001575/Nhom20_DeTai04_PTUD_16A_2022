@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -25,6 +27,7 @@ import components.jDialog.JDialogCustom;
 import components.menu.EventMenuSelected;
 import components.menu.Menu;
 import components.menu.ModelMenuItem;
+import dao.DatPhong_DAO;
 import dao.NhanVien_DAO;
 import entity.NhanVien;
 import entity.NhanVien.ChucVu;
@@ -49,12 +52,35 @@ public class Main extends JFrame {
 	private JPanel pnlBody;
 	private Menu footer;
 
+	private DatPhong_DAO datPhong_DAO;
+
 	/**
 	 * Create the frame.
 	 */
 	public Main() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				Thread clock = new Thread() {
+					@Override
+					public void run() {
+						for (;;) {
+							try {
+								if (datPhong_DAO.huyPhongDatTre())
+									repaint();
+								sleep(1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				};
+				clock.start();
+			}
+		});
 		_this = this;
 		nhanVien_DAO = new NhanVien_DAO();
+		datPhong_DAO = new DatPhong_DAO();
 		JDialogCustom jDialogCustom = new JDialogCustom(_this);
 
 		jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
@@ -264,7 +290,7 @@ public class Main extends JFrame {
 					pnl = new QuanLyDatPhong_GUI(_this);
 				} else if (titleMenu.equals(Utils.quanLyDatPhongTruocMenuItem)) {
 					title = "Quản lý đặt phòng trước";
-					pnl = new QuanLyPhieuDatPhong_GUI();
+					pnl = new QuanLyPhieuDatPhong_GUI(_this);
 				} else if (titleMenu.equals(Utils.thongKeDoanhThuMenuItem)) {
 					title = "Thống kê doanh thu";
 					pnl = new ThongKeDoanhThu_GUI();
@@ -283,7 +309,7 @@ public class Main extends JFrame {
 				} else if (titleMenu.equals(Utils.quanLyPhongMenuItem)) {
 					title = "Quản lý phòng";
 					pnl = new QuanLyPhong_GUI(_this);
-				}else {
+				} else {
 					title = "Trang chủ";
 					pnl = new TrangChu_GUI();
 				}

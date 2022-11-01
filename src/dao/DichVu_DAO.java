@@ -103,7 +103,7 @@ public class DichVu_DAO {
 	}
 	
 	
-	public boolean ThemDichVu(DichVu dichVu) {
+	public boolean themDichVu(DichVu dichVu) {
 		int res = 0;
 		PreparedStatement preparedStatement;
 		try {
@@ -143,7 +143,7 @@ public class DichVu_DAO {
 		return false;
 	}
 
-	public boolean CapNhatSoLuongDichVuGiam(String maDV, int soLuongMua) {
+	public boolean capNhatSoLuongDichVuGiam(String maDV, int soLuongMua) {
 		boolean res = false;
 		PreparedStatement preparedStatement;
 		try {
@@ -159,7 +159,7 @@ public class DichVu_DAO {
 		}
 		return res;
 	}
-	public boolean CapNhatSoLuongDichVuTang(String maDV, int soLuong) {
+	public boolean capNhatSoLuongDichVuTang(String maDV, int soLuong) {
 		boolean res = false;
 		PreparedStatement preparedStatement;
 		try {
