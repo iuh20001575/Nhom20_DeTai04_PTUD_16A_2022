@@ -43,11 +43,11 @@ import entity.LoaiDichVu;
 import utils.Utils;
 
 public class QuanLyDichVu_GUI extends JPanel {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
 	private static JLabel lblTime;
 	private JTextField txtSearch;
 	private JComboBox<String> cmbLoaiDV;

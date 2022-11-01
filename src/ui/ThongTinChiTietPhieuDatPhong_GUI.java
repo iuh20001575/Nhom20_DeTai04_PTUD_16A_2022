@@ -37,10 +37,6 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 	private TextField txtDichVu;
 	private TextField txtTGLP;
 	private TextField txtTGNP;
-	@SuppressWarnings("unused")
-	private PhieuDatPhong_DAO phieuDatPhong_DAO;
-	@SuppressWarnings("unused")
-	private Main main;
 	private DatPhong_DAO datPhong_DAO;
 	private Button btnNhanPhong;
 	private Button btnCapNhat;
@@ -50,9 +46,8 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 	 * Create the frame.
 	 */
 	public ThongTinChiTietPhieuDatPhong_GUI(Main main, ChiTietDatPhong chiTietDatPhong) {
-		phieuDatPhong_DAO = new PhieuDatPhong_DAO();
+		new PhieuDatPhong_DAO();
 		datPhong_DAO = new DatPhong_DAO();
-		this.main = main;
 		this.chiTietDatPhong = chiTietDatPhong;
 
 		setBackground(Utils.secondaryColor);
