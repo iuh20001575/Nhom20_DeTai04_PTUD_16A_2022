@@ -262,9 +262,6 @@ public class QuanLyPhong_GUI extends JPanel {
 		tableModel = new DefaultTableModel(new String[] { "Mã phòng", "Loại phòng", "Giá tiền", "Số lượng khách" }, 0);
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-//		Cam
-		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
-//		Xanh
 		tbl.getTableHeader().setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
@@ -404,6 +401,9 @@ public class QuanLyPhong_GUI extends JPanel {
 		glass.setAlpha(0.5f);
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
+
+		setEmptyTable();
+		addRow(phong_DAO.getAllPhong());
 	}
 
 	public void closeJFrameSub() {
@@ -415,7 +415,6 @@ public class QuanLyPhong_GUI extends JPanel {
 	}
 
 	private void addRow(Phong phong) {
-
 		tableModel.addRow(new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(),
 				Utils.formatTienTe(phong.getGiaTien()), String.valueOf(phong.getSoLuongKhach()) });
 	}

@@ -47,14 +47,7 @@ public class ThemPhong_GUI extends JFrame {
 	 *  
 	 * @param quanLyPhong_GUI
 	 */
-	public ThemPhong_GUI(QuanLyPhong_GUI quanLyPhong_GUI) {
-		try {
-			new ConnectDB().connect();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
- 
+	public ThemPhong_GUI(QuanLyPhong_GUI quanLyPhong_GUI) { 
 		_this = this;
 		phong_DAO = new Phong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
