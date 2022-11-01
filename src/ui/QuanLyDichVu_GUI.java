@@ -148,7 +148,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnThem = new Button("Thêm");
 
 		btnThem.setFocusable(false);
-		btnThem.setIcon(new ImageIcon("Icon\\searching.png"));
+		btnThem.setIcon(new ImageIcon("Icon\\add 1.png"));
 		btnThem.setRadius(4);
 		btnThem.setForeground(Color.WHITE);
 		btnThem.setColor(new Color(134, 229, 138));
@@ -163,7 +163,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnSua = new Button("Sửa");
 
 		btnSua.setFocusable(false);
-		btnSua.setIcon(new ImageIcon("Icon\\searching.png"));
+		btnSua.setIcon(new ImageIcon("Icon\\update 1.png"));
 		btnSua.setRadius(4);
 		btnSua.setForeground(Color.WHITE);
 		btnSua.setColor(new Color(134, 229, 138));
@@ -178,7 +178,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnXoa = new Button("Xóa");
 
 		btnXoa.setFocusable(false);
-		btnXoa.setIcon(new ImageIcon("Icon\\searching.png"));
+		btnXoa.setIcon(new ImageIcon("Icon\\download 1.png"));
 		btnXoa.setRadius(4);
 		btnXoa.setForeground(Color.WHITE);
 		btnXoa.setColor(new Color(134, 229, 138));

@@ -164,14 +164,14 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 
 		JPanel pnlGioiTinh = new JPanel();
 		pnlGioiTinh.setBackground(Utils.secondaryColor);
-		pnlGioiTinh.setBounds(499, 0, 449, 55);
+		pnlGioiTinh.setBounds(499, 0, 550, 55);
 		pnlRow3.add(pnlGioiTinh);
 		pnlGioiTinh.setLayout(null);
 
 		JLabel lblGioiTinh = new JLabel("Giới tính");
 		lblGioiTinh.setForeground(Utils.labelTextField);
 		lblGioiTinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblGioiTinh.setBounds(4, 6, 60, 19);
+		lblGioiTinh.setBounds(4, 6, 260, 19);
 		pnlGioiTinh.add(lblGioiTinh);
 
 		JPanel pnlGroupGioiTinh = new JPanel();
@@ -284,8 +284,8 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		pnlChucVu.add(lblChucVu);
 
 		cmbChucVu = new ComboBox<>();
-		cmbChucVu.setModel(new DefaultComboBoxModel<>(new String[] {
-				NhanVien.convertChucVuToString(ChucVu.QuanLy), NhanVien.convertChucVuToString(ChucVu.NhanVien) }));
+		cmbChucVu.setModel(new DefaultComboBoxModel<>(new String[] { NhanVien.convertChucVuToString(ChucVu.QuanLy),
+				NhanVien.convertChucVuToString(ChucVu.NhanVien) }));
 		cmbChucVu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbChucVu.setBackground(new Color(140, 177, 180));
 		cmbChucVu.setBounds(4, 29, 200, 36);

@@ -25,7 +25,7 @@ import utils.Utils;
 public class ThongKeHoaDon_GUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JTable tableThongKe;
+	private JTable tblThongKe;
 
 	/**
 	 * Create the frame.
@@ -164,7 +164,7 @@ public class ThongKeHoaDon_GUI extends JPanel {
 		scr.setVerticalScrollBar(scp);
 		pnlThongKe.add(scr);
 
-		tableThongKe = new JTable() {
+		tblThongKe = new JTable() {
 			/**
 			 * 
 			 */
@@ -185,31 +185,31 @@ public class ThongKeHoaDon_GUI extends JPanel {
 				return c;
 			}
 		};
-		tableThongKe.setModel(new DefaultTableModel(
+		tblThongKe.setModel(new DefaultTableModel(
 				new Object[][] { { "MKH0001", "Xem chi tiết", "MKH001", "Xem chi tiết", "12-02-2022", "400.000VNĐ" }, },
 				new String[] { "Mã hoá đơn", "Mã phòng", "Mã KH", "Dịch vụ", "Ngày thuê", "Thành tiền" }));
-		tableThongKe.getColumnModel().getColumn(0).setPreferredWidth(100);
-		tableThongKe.getColumnModel().getColumn(1).setPreferredWidth(100);
-		tableThongKe.getColumnModel().getColumn(2).setPreferredWidth(100);
-		tableThongKe.getColumnModel().getColumn(3).setPreferredWidth(100);
-		tableThongKe.getColumnModel().getColumn(4).setPreferredWidth(100);
-		tableThongKe.getColumnModel().getColumn(5).setPreferredWidth(150);
+		tblThongKe.getColumnModel().getColumn(0).setPreferredWidth(100);
+		tblThongKe.getColumnModel().getColumn(1).setPreferredWidth(100);
+		tblThongKe.getColumnModel().getColumn(2).setPreferredWidth(100);
+		tblThongKe.getColumnModel().getColumn(3).setPreferredWidth(100);
+		tblThongKe.getColumnModel().getColumn(4).setPreferredWidth(100);
+		tblThongKe.getColumnModel().getColumn(5).setPreferredWidth(150);
 		// Cam
-		tableThongKe.getTableHeader().setBackground(new Color(255, 195, 174));
+		tblThongKe.getTableHeader().setBackground(new Color(255, 195, 174));
 		// Xanh
-		tableThongKe.getTableHeader().setBackground(Utils.primaryColor);
-		tableThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		tableThongKe.setBackground(Utils.secondaryColor);
-		tableThongKe.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tableThongKe.getTableHeader()
-				.setPreferredSize(new Dimension((int) tableThongKe.getTableHeader().getPreferredSize().getWidth(), 36));
-		tableThongKe.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		tableThongKe.setRowHeight(36);
+		tblThongKe.getTableHeader().setBackground(Utils.primaryColor);
+		tblThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		tblThongKe.setBackground(Utils.secondaryColor);
+		tblThongKe.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblThongKe.getTableHeader()
+				.setPreferredSize(new Dimension((int) tblThongKe.getTableHeader().getPreferredSize().getWidth(), 36));
+		tblThongKe.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblThongKe.setRowHeight(36);
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
-		tableThongKe.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-		scr.setViewportView(tableThongKe);
+		tblThongKe.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+		scr.setViewportView(tblThongKe);
 
 	}
 }

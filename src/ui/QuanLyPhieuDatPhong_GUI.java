@@ -64,7 +64,6 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	private Button btnHuyPhong;
 	private Button btnXuatPDF;
 	private Button btnLamMoi;
-	private JTextField txtErr;
 
 	/**
 	 * Create the frame.
@@ -84,10 +83,6 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		pnlSearch.setBounds(16, 10, 1054, 75);
 		this.add(pnlSearch);
 		pnlSearch.setLayout(null);
-
-		txtErr = new JTextField();
-		txtErr.setBounds(500, 0, 180, 36);
-		pnlSearch.add(txtErr);
 
 		lblTime = new JLabel("");
 		lblTime.setHorizontalAlignment(SwingConstants.LEFT);

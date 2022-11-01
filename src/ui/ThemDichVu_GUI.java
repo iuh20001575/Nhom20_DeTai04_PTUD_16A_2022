@@ -49,39 +49,39 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		setBounds(0, 0, 1086, 508);
 		setLayout(null);
 
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(new Color(203, 239, 255));
-		panel_1.setBounds(0, 0, 1100, 500);
-		this.add(panel_1);
-		panel_1.setLayout(null);
+		JPanel pnlContainer = new JPanel();
+		pnlContainer.setBackground(new Color(203, 239, 255));
+		pnlContainer.setBounds(0, 0, 1100, 500);
+		this.add(pnlContainer);
+		pnlContainer.setLayout(null);
 
 		TextField txtMa = new TextField();
 		txtMa.setLabelText("Mã dịch vụ:");
 		txtMa.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtMa.setBackground(new Color(203, 239, 255));
 		txtMa.setBounds(44, 25, 842, 55);
-		panel_1.add(txtMa);
+		pnlContainer.add(txtMa);
 
 		TextField txtTen = new TextField();
 		txtTen.setLabelText("Tên dịch vụ:");
 		txtTen.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTen.setBackground(new Color(203, 239, 255));
 		txtTen.setBounds(44, 105, 842, 55);
-		panel_1.add(txtTen);
+		pnlContainer.add(txtTen);
 
 		TextField txtDonViTinh = new TextField();
 		txtDonViTinh.setLabelText("Đơn vị tính:");
 		txtDonViTinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtDonViTinh.setBackground(new Color(203, 239, 255));
 		txtDonViTinh.setBounds(44, 195, 371, 55);
-		panel_1.add(txtDonViTinh);
+		pnlContainer.add(txtDonViTinh);
 
 		TextField txtSoLuong = new TextField();
 		txtSoLuong.setLabelText("Số lượng:");
 		txtSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtSoLuong.setBackground(new Color(203, 239, 255));
 		txtSoLuong.setBounds(516, 195, 371, 55);
-		panel_1.add(txtSoLuong);
+		pnlContainer.add(txtSoLuong);
 
 		cmbLoaiDichVu = new JComboBox<String>();
 		ArrayList<LoaiDichVu> listLoaiDV = (ArrayList<LoaiDichVu>) loaiDichVu_DAO.getAllLoaiDichVu();
@@ -91,21 +91,21 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		cmbLoaiDichVu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbLoaiDichVu.setBackground(Utils.primaryColor);
 		cmbLoaiDichVu.setBounds(44, 290, 371, 45);
-		panel_1.add(cmbLoaiDichVu);
+		pnlContainer.add(cmbLoaiDichVu);
 
 		TextField txtGiaMua = new TextField();
 		txtGiaMua.setLabelText("Giá mua:");
 		txtGiaMua.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtGiaMua.setBackground(new Color(203, 239, 255));
 		txtGiaMua.setBounds(516, 285, 371, 50);
-		panel_1.add(txtGiaMua);
+		pnlContainer.add(txtGiaMua);
 
 //		Date time
 
 		JPanel pnlDateTime = new JPanel();
 		pnlDateTime.setBackground(Utils.secondaryColor);
 		pnlDateTime.setBounds(949, 5, 105, 58);
-		panel_1.add(pnlDateTime);
+		pnlContainer.add(pnlDateTime);
 		pnlDateTime.setLayout(null);
 
 		lblTime = new JLabel("10:30");
@@ -132,7 +132,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setIcon(new ImageIcon("Icon\\clock (1) 1.png"));
 		lblNewLabel.setBounds(885, 2, 64, 64);
-		panel_1.add(lblNewLabel);
+		pnlContainer.add(lblNewLabel);
 
 		Button btnLuu = new Button("Lưu");
 		btnLuu.setUI(new MetalButtonUI() {
@@ -150,7 +150,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		btnLuu.setBorderColor(new Color(203, 239, 255));
 		btnLuu.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnLuu.setBounds(280, 420, 250, 50);
-		panel_1.add(btnLuu);
+		pnlContainer.add(btnLuu);
 
 		btnLuu.addMouseListener(new MouseAdapter() {
 			@Override
@@ -185,7 +185,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		btnHuy.setBorderColor(new Color(203, 239, 255));
 		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnHuy.setBounds(570, 420, 250, 50);
-		panel_1.add(btnHuy);
+		pnlContainer.add(btnHuy);
 
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override

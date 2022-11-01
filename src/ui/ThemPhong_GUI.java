@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -20,7 +19,6 @@ import components.button.Button;
 import components.comboBox.ComboBox;
 import components.notification.Notification;
 import components.textField.TextField;
-import connectDB.ConnectDB;
 import dao.LoaiPhong_DAO;
 import dao.Phong_DAO;
 import entity.LoaiPhong;

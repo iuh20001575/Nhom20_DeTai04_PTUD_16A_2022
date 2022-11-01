@@ -14,7 +14,6 @@ import java.util.List;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -23,6 +22,7 @@ import javax.swing.plaf.metal.MetalButtonUI;
 import com.raven.datechooser.DateChooser;
 
 import components.button.Button;
+import components.comboBox.ComboBox;
 import components.radio.RadioButtonCustom;
 import components.textField.TextField;
 import dao.DiaChi_DAO;
@@ -38,9 +38,9 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 	private DateChooser dateChoose;
 	private DiaChi_DAO DiaChi_DAO;
 	private KhachHang_DAO khachHang_DAO;
-	private JComboBox<String> cmbTinh;
-	private JComboBox<String> cmbQuan;
-	private JComboBox<String> cmbPhuong;
+	private ComboBox<String> cmbTinh;
+	private ComboBox<String> cmbQuan;
+	private ComboBox<String> cmbPhuong;
 	private KhachHang khachHang;
 	private Tinh tinh;
 	private Quan quan;
@@ -149,7 +149,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		lblDiaChi.setForeground(Utils.labelTextField);
 		this.add(lblDiaChi);
 
-		cmbTinh = new JComboBox<String>();
+		cmbTinh = new ComboBox<String>();
 		ArrayList<Tinh> listTinh = (ArrayList<Tinh>) DiaChi_DAO.getTinh();
 		for (Tinh tinh : listTinh) {
 			cmbTinh.addItem(tinh.getTinh());
@@ -159,7 +159,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		cmbTinh.setBounds(44, 280, 220, 36);
 		this.add(cmbTinh);
 
-		cmbQuan = new JComboBox<String>();
+		cmbQuan = new ComboBox<String>();
 		String tinhSelected = (String) cmbTinh.getSelectedItem();
 		Tinh tinh = DiaChi_DAO.getTinh(tinhSelected);
 		XemKhachHang_GUI.this.tinh = tinh;
@@ -173,7 +173,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		cmbQuan.setBounds(324, 280, 220, 36);
 		this.add(cmbQuan);
 
-		cmbPhuong = new JComboBox<String>();
+		cmbPhuong = new ComboBox<String>();
 		cmbQuan.setModel(new DefaultComboBoxModel<String>());
 		// cmbPhuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Phong
 		// Điền" }));
@@ -297,7 +297,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list, String firstLabel) {
+	private <E> ComboBox<E> resizeComboBox(ComboBox<E> list, String firstLabel) {
 		list.removeAllItems();
 		list.addItem((E) firstLabel);
 		return list;
