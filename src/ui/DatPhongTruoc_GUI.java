@@ -34,8 +34,6 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -298,8 +296,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 		cmbLoaiPhong = new ComboBox<>();
 		cmbLoaiPhong.setBackground(Utils.primaryColor);
-		cmbLoaiPhong
-				.setModel(new DefaultComboBoxModel<>(new String[] { "Loại phòng", "Phòng thường", "Phòng VIP" }));
+		cmbLoaiPhong.setModel(new DefaultComboBoxModel<>(new String[] { "Loại phòng", "Phòng thường", "Phòng VIP" }));
 		cmbLoaiPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbLoaiPhong.setBounds(220, 0, 200, 36);
 		pnlFilter.add(cmbLoaiPhong);
@@ -520,7 +517,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 					dsPhongDatTruoc.forEach(phong -> cmbMaPhong.addItem(phong.getMaPhong()));
 					addRow(dsPhongDatTruoc);
-					tbl.scrollRectToVisible(tbl.getCellRect(0, 0, true));
+					Utils.scrollToVisiable(tbl, 0, 0);
 					btnLamMoi.setEnabled(true);
 					cmbMaPhong.addItemListener(_this);
 				} else
@@ -558,17 +555,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("mouseClicked");
 				btnChonPhong.setEnabled(true);
-			}
-		});
-
-		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent lse) {
-				if (!lse.getValueIsAdjusting()) {
-					if (tbl.getRowCount() == -1)
-						btnChonPhong.setEnabled(false);
-				}
 			}
 		});
 
@@ -702,6 +690,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		emptyTable();
 		addRow(dsPhongDatTruoc);
 		capNhatDanhSachPhongDatTruoc();
+		Utils.scrollToVisiable(tbl, 0, 0);
 	}
 
 	private PanelRound getPanelphongDaChonItem(int top, Phong phong) {

@@ -1,7 +1,9 @@
 package utils;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -11,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
+import javax.swing.JTable;
 
 public class Utils {
 	public static final String trangChuMenuItem = "Trang chủ";
@@ -40,6 +43,7 @@ public class Utils {
 	public static final Color labelTextField = new Color(150, 150, 150);
 
 	public static final Rectangle boundsPnlBody = new Rectangle(0, 65, 1086, 508);
+	private final static Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 
 	public static final int width = 1086;
 	public static final int height = 573;
@@ -48,6 +52,22 @@ public class Utils {
 
 	public static JFrame getMain() {
 		return main;
+	}
+
+	public static int getScreenWidth() {
+		return (int) dimension.getWidth() + 14;
+	}
+
+	public static int getScreenHeight() {
+		return (int) dimension.getHeight() + 7;
+	}
+
+	public static int getHeaderHeight() {
+		return 65;
+	}
+
+	public static int getBodyHeight() {
+		return getScreenHeight() - getHeaderHeight();
 	}
 
 	public static void setMain(JFrame main) {
@@ -170,6 +190,10 @@ public class Utils {
 		Pattern pattern = Pattern.compile("0[0-9]{9}");
 		Matcher matcher = pattern.matcher(soDienThoai);
 		return matcher.matches();
+	}
+
+	public static void scrollToVisiable(JTable tbl, int row, int col) {
+		tbl.scrollRectToVisible(tbl.getCellRect(row, col, true));
 	}
 
 	public static String convertLocalTimeToString(LocalTime time) {

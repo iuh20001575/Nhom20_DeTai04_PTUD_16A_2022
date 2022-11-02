@@ -4,6 +4,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import utils.Utils;
+
 public class TrangChu_GUI extends JPanel {
 
 	/**
@@ -15,12 +17,12 @@ public class TrangChu_GUI extends JPanel {
 	 * Create the frame.
 	 */
 	public TrangChu_GUI() {
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
 
 		JLabel lblBackground = new JLabel("");
-		lblBackground.setIcon(new ImageIcon("Hinh\\Rectangle 1.png"));
-		lblBackground.setBounds(0, 0, 1086, 508);
+		lblBackground.setIcon(new ImageIcon("D:\\R.jpg"));
+		lblBackground.setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		this.add(lblBackground);
 	}
 }

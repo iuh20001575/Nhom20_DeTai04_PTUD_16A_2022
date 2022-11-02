@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +20,7 @@ import entity.NhanVien;
 import entity.Phong;
 import utils.Utils;
 
-public class DatPhong_DAO {
+public class DatPhong_DAO extends DAO {
 	private Phong_DAO phong_DAO;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
 
@@ -134,13 +135,18 @@ public class DatPhong_DAO {
 	 */
 	public boolean themPhieuDatPhongNgay(KhachHang khachHang, NhanVien nhanVien, List<Phong> phongs) {
 		try {
-			ConnectDB.getConnection().setAutoCommit(false);
+			Connection connection = ConnectDB.getConnection();
 			String maDatPhong = taoMaDatPhong();
+
+			if (maDatPhong == null)
+				return false;
+
+			connection.setAutoCommit(false);
 			Time time = Time.valueOf(LocalTime.now());
 			Date date = Date.valueOf(LocalDate.now());
 
 //			[DatPhong] - Tạo phiếu đặt phòng
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
+			PreparedStatement preparedStatement = connection
 					.prepareStatement("INSERT DatPhong VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, maDatPhong);
 			preparedStatement.setString(2, khachHang.getMaKhachHang());
@@ -162,10 +168,12 @@ public class DatPhong_DAO {
 
 //				[Phong] - Cập nhật trạng thái phòng
 				Phong phongFull = phong_DAO.getPhong(phong.getMaPhong());
-				String trangThaiNew = Phong.convertTrangThaiToString(Phong.TrangThai.DangThue);
+				String trangThaiNew;
 
 				if (phongFull.getTrangThai().equals(entity.Phong.TrangThai.DaDat))
 					trangThaiNew = Phong.convertTrangThaiToString(entity.Phong.TrangThai.PhongTam);
+				else
+					trangThaiNew = Phong.convertTrangThaiToString(Phong.TrangThai.DangThue);
 
 				if (!phong_DAO.capNhatTrangThaiPhong(phongFull, trangThaiNew))
 					return rollback();
@@ -173,14 +181,8 @@ public class DatPhong_DAO {
 
 			return commit();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			try {
-				ConnectDB.getConnection().rollback();
-				ConnectDB.getConnection().setAutoCommit(true);
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
 		}
+
 		return false;
 	}
 
@@ -197,13 +199,18 @@ public class DatPhong_DAO {
 	public boolean themPhieuDatPhongTruoc(KhachHang khachHang, NhanVien nhanVien, List<Phong> phongs,
 			LocalDate ngayNhanPhong, LocalTime gioNhanPhong) {
 		try {
-			ConnectDB.getConnection().setAutoCommit(false);
 			String maDatPhong = taoMaDatPhong();
+
+			if (maDatPhong == null)
+				return false;
+
+			Connection connection = ConnectDB.getConnection();
+			connection.setAutoCommit(false);
 			Time time = Time.valueOf(LocalTime.now());
 			Date date = Date.valueOf(LocalDate.now());
 
 //			[DatPhong] - Tạo phiếu đặt phòng
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
+			PreparedStatement preparedStatement = connection
 					.prepareStatement("INSERT DatPhong VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, maDatPhong);
 			preparedStatement.setString(2, khachHang.getMaKhachHang());
@@ -229,11 +236,13 @@ public class DatPhong_DAO {
 //							+ Đã đặt -> Đã đặt
 //							+ Phòng tạm -> Phòng tạm
 				entity.Phong.TrangThai trangThai = phong_DAO.getTrangThai(phong.getMaPhong());
-				entity.Phong.TrangThai trangThaiNew = entity.Phong.TrangThai.DaDat;
+				entity.Phong.TrangThai trangThaiNew;
 
 				if (trangThai.equals(entity.Phong.TrangThai.DangThue)
 						|| trangThai.equals(entity.Phong.TrangThai.PhongTam))
 					trangThaiNew = entity.Phong.TrangThai.PhongTam;
+				else
+					trangThaiNew = entity.Phong.TrangThai.DaDat;
 				if (!phong_DAO.capNhatTrangThaiPhong(phong, Phong.convertTrangThaiToString(trangThaiNew)))
 					return rollback();
 			}
@@ -241,12 +250,6 @@ public class DatPhong_DAO {
 			return commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			try {
-				ConnectDB.getConnection().rollback();
-				ConnectDB.getConnection().setAutoCommit(true);
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
 		}
 
 		return false;
@@ -273,12 +276,13 @@ public class DatPhong_DAO {
 			while (newMaDatPhong.length() < 4)
 				newMaDatPhong = "0" + newMaDatPhong;
 
+			statement.close();
 			return "MDP" + newMaDatPhong;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return "MDP0001";
+		return null;
 	}
 
 	/**
@@ -941,21 +945,5 @@ public class DatPhong_DAO {
 		}
 
 		return null;
-	}
-
-	private boolean commit() throws SQLException {
-		if (ConnectDB.getConnection().getAutoCommit())
-			ConnectDB.getConnection().setAutoCommit(false);
-		ConnectDB.getConnection().commit();
-		ConnectDB.getConnection().setAutoCommit(true);
-		return true;
-	}
-
-	private boolean rollback() throws SQLException {
-		if (ConnectDB.getConnection().getAutoCommit())
-			ConnectDB.getConnection().setAutoCommit(false);
-		ConnectDB.getConnection().rollback();
-		ConnectDB.getConnection().setAutoCommit(true);
-		return false;
 	}
 }

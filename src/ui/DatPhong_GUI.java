@@ -281,8 +281,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 		cmbLoaiPhong = new JComboBox<>();
 		cmbLoaiPhong.setBackground(Utils.primaryColor);
-		cmbLoaiPhong
-				.setModel(new DefaultComboBoxModel<>(new String[] { "Loại phòng", "Phòng thường", "Phòng VIP" }));
+		cmbLoaiPhong.setModel(new DefaultComboBoxModel<>(new String[] { "Loại phòng", "Phòng thường", "Phòng VIP" }));
 		cmbLoaiPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbLoaiPhong.setBounds(220, 0, 200, 36);
 		pnlFilter.add(cmbLoaiPhong);
@@ -421,13 +420,6 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 							}
 						});
 
-						jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								quanLyDatPhongGUI.closeJFrameSub();
-							}
-						});
-
 						jDialogCustom.showMessage("Warning",
 								"Khách hàng không có trong hệ thống, bạn có muốn thêm khách hàng mới không?");
 					}
@@ -468,7 +460,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			}
 		});
 
-//		Sự kiện nút đật phòng
+//		Sự kiện nút đặt phòng
 		btnDatPhong.addMouseListener(new MouseAdapter() {
 			private void handleDatPhong() {
 				String maDatPhong = datPhong_DAO.getMaDatPhongDangThue(khachHang.getSoDienThoai());
@@ -485,7 +477,9 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 					quanLyDatPhongGUI.closeJFrameSub();
 					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
 							"Đặt phòng thành công").showNotification();
-				}
+				} else
+					new Notification(parentFrame, components.notification.Notification.Type.ERROR, "Đặt phòng thất bại")
+							.showNotification();
 			}
 
 			@Override
