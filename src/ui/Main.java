@@ -90,13 +90,13 @@ public class Main extends JFrame {
 
 		JPanel pnlHeader = new JPanel();
 		pnlHeader.setBackground(Utils.primaryColor);
-		pnlHeader.setBounds((int) Math.ceil((Utils.getScreenWidth() - 1030) / 2), 0, 1030, Utils.getHeaderHeight());
+		pnlHeader.setBounds((int) Math.ceil((Utils.getScreenWidth() - 1086) / 2), 0, 1086, Utils.getHeaderHeight());
 		pnlHeaderWrapper.add(pnlHeader);
 		pnlHeader.setLayout(null);
 
 		Button btnMenu = new Button("|||");
 		btnMenu.setFocusable(false);
-		btnMenu.setBounds(23, 16, 38, 38);
+		btnMenu.setBounds(0, 16, 38, 38);
 		btnMenu.setForeground(Utils.primaryColor);
 		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
 		btnMenu.setBorder(BorderFactory.createEmptyBorder());
@@ -108,7 +108,7 @@ public class Main extends JFrame {
 
 		lblTitle = new JLabel("TRANG CHỦ");
 		lblTitle.setForeground(Color.WHITE);
-		lblTitle.setBounds(76, 17, 948, 32);
+		lblTitle.setBounds(53, 17, 948, 32);
 		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		pnlHeader.add(lblTitle);
@@ -121,7 +121,7 @@ public class Main extends JFrame {
 		btnBack.setColorClick(Utils.primaryColor);
 		btnBack.setBorderColor(Utils.primaryColor);
 		btnBack.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnBack.setBounds(954, 1, 62, 62);
+		btnBack.setBounds(1016, 1, 62, 62);
 		pnlHeader.add(btnBack);
 //		End Default Layout
 

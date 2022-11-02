@@ -66,6 +66,8 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private DefaultTableModel tableModel;
 	private JTable tbl;
 	private JTextField txtSearch;
+	private final int widthPnlContainer = 1086;
+
 	/**
 	 * Create the frame.
 	 */
@@ -75,14 +77,20 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		diaChi_DAO = new DiaChi_DAO();
 
 		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
+
+		JPanel pnlContainer = new JPanel();
+		pnlContainer.setBackground(Utils.secondaryColor);
+		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
+		pnlContainer.setLayout(null);
+		this.add(pnlContainer);
 
 //		Search
 		JPanel pnlSearch = new JPanel();
 		pnlSearch.setBackground(Utils.secondaryColor);
 		pnlSearch.setBounds(16, 18, 1054, 24);
-		this.add(pnlSearch);
+		pnlContainer.add(pnlSearch);
 		pnlSearch.setLayout(null);
 
 		JLabel lblSearch = new JLabel("TÌM KIẾM NHÂN VIÊN THEO TÊN:");
@@ -100,7 +108,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlSearchForm.setBackground(Utils.secondaryColor);
 		pnlSearchForm.setBounds(16, 52, 1054, 36);
 		pnlSearchForm.setLayout(null);
-		this.add(pnlSearchForm);
+		pnlContainer.add(pnlSearchForm);
 
 		Button btnSearch = new Button("Tìm");
 		btnSearch.setFocusable(false);
@@ -118,7 +126,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlSearchInput.setRounded(4);
 		pnlSearchInput.setBackground(Utils.secondaryColor);
 		pnlSearchInput.setBounds(0, 0, 894, 36);
-		pnlSearchInput.setBorder(new LineBorder(Color.BLACK));
+		pnlSearchInput.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		pnlSearchInput.setRounded(4);
 		pnlSearchForm.add(pnlSearchInput);
 		pnlSearchInput.setLayout(null);
@@ -135,7 +143,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
 		pnlActions.setBounds(16, 104, 1054, 36);
-		this.add(pnlActions);
+		pnlContainer.add(pnlActions);
 		pnlActions.setLayout(null);
 
 		btnEmployeeView = new Button("Xem");
@@ -204,10 +212,12 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlActions.add(cmbMaNhanVien);
 
 //		Table danh sách nhân viên
+		int topPnlControl = Utils.getBodyHeight() - 80;
+
 		JScrollPane scr = new JScrollPane();
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(16, 158, 1054, 300);
+		scr.setBounds(16, 158, 1054, topPnlControl - 174);
 		scr.setBackground(Utils.primaryColor);
 		scr.getViewport().setBackground(Color.WHITE);
 
@@ -215,7 +225,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 //		Set color scrollbar thumb
 		scp.setScrollbarColor(new Color(203, 203, 203));
 		scr.setVerticalScrollBar(scp);
-		this.add(scr);
+		pnlContainer.add(scr);
 		tbl = new JTable() {
 			/**
 			 * 
@@ -272,9 +282,8 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		tbl.setRowHeight(36);
 		scr.setViewportView(tbl);
 
-		pnlControl = new ControlPanel(400, 529, main);
-		pnlControl.setLocation(400, 464);
-		this.add(pnlControl);
+		pnlControl = new ControlPanel(400, topPnlControl, main);
+		pnlContainer.add(pnlControl);
 
 //		Sự kiện nút tìm kiếm nhân viên
 		btnSearch.addMouseListener(new MouseAdapter() {

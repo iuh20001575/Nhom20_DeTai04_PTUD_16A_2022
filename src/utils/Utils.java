@@ -70,10 +70,14 @@ public class Utils {
 		return getScreenHeight() - getHeaderHeight();
 	}
 
+	public static int getLeft(int width) {
+		return (int) Math.ceil((Utils.getScreenWidth() - width) / 2);
+	}
+
 	public static void setMain(JFrame main) {
 		Utils.main = main;
 	}
-
+	
 	/**
 	 * Get màu RGBA
 	 * 

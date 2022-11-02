@@ -74,6 +74,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 	private TextField txtMatKhau;
 	private TextField txtNgaySinh;
 	private TextField txtSoDienThoai;
+	private final int widthPnlContainer = 948;
 
 	/**
 	 * Create the frame.
@@ -84,20 +85,23 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		nhanVien_DAO = new NhanVien_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 		main = jFrame;
+		int padding = (int) Math.floor((Utils.getBodyHeight() - 418) / 8);
+		int top = padding;
 
 		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
-		pnlContainer.setBounds(69, 7, 948, 425);
+		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
 		this.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
 		JPanel pnlRow1 = new JPanel();
 		pnlRow1.setBackground(Utils.secondaryColor);
-		pnlRow1.setBounds(0, 0, 948, 55);
+		pnlRow1.setBounds(0, top, 948, 55);
+		top += 55 + padding;
 		pnlContainer.add(pnlRow1);
 		pnlRow1.setLayout(null);
 
@@ -122,7 +126,8 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		JPanel pnlRow2 = new JPanel();
 		pnlRow2.setLayout(null);
 		pnlRow2.setBackground(new Color(203, 239, 255));
-		pnlRow2.setBounds(0, 70, 948, 55);
+		pnlRow2.setBounds(0, top, 948, 55);
+		top += 55 + padding;
 		pnlContainer.add(pnlRow2);
 
 		txtCCCD = new TextField();
@@ -146,7 +151,8 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		JPanel pnlRow3 = new JPanel();
 		pnlRow3.setLayout(null);
 		pnlRow3.setBackground(new Color(203, 239, 255));
-		pnlRow3.setBounds(0, 140, 948, 55);
+		pnlRow3.setBounds(0, top, 948, 55);
+		top += 55 + padding;
 		pnlContainer.add(pnlRow3);
 
 		txtNgaySinh = new TextField();
@@ -200,7 +206,8 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 
 		JPanel pnlRow4 = new JPanel();
 		pnlRow4.setBackground(Utils.secondaryColor);
-		pnlRow4.setBounds(0, 210, 948, 65);
+		pnlRow4.setBounds(0, top, 948, 65);
+		top += 65 + padding;
 		pnlContainer.add(pnlRow4);
 		pnlRow4.setLayout(null);
 
@@ -243,7 +250,8 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		JPanel pnlRow5 = new JPanel();
 		pnlRow5.setLayout(null);
 		pnlRow5.setBackground(new Color(203, 239, 255));
-		pnlRow5.setBounds(0, 290, 948, 55);
+		pnlRow5.setBounds(0, top, 948, 55);
+		top += 55 + padding;
 		pnlContainer.add(pnlRow5);
 
 		txtLuong = new TextField();
@@ -268,7 +276,8 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		JPanel pnlRow6 = new JPanel();
 		pnlRow6.setLayout(null);
 		pnlRow6.setBackground(new Color(203, 239, 255));
-		pnlRow6.setBounds(0, 360, 948, 65);
+		pnlRow6.setBounds(0, top, 948, 65);
+		top += 65 + padding;
 		pnlContainer.add(pnlRow6);
 
 		JPanel pnlChucVu = new JPanel();
@@ -312,11 +321,21 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		cmbTrangThai.setBounds(4, 29, 200, 36);
 		pnlTrangThai.add(cmbTrangThai);
 
+		txtMaNhanVien.setText(nhanVien_DAO.taoMaNhanVien());
+		txtMatKhau.setText("1234Abc@");
+		cmbQuan.addItem(Quan.getQuanLabel());
+		cmbPhuong.addItem(Phuong.getPhuongLabel());
+
+		setTinhToComboBox();
+		cmbQuan.setEnabled(false);
+		cmbPhuong.setEnabled(false);
+		txtMaNhanVien.setEnabled(false);
+
 		JPanel pnlActions = new JPanel();
-		pnlActions.setBackground(Utils.secondaryColor);
-		pnlActions.setBounds(69, 447, 948, 48);
-		this.add(pnlActions);
 		pnlActions.setLayout(null);
+		pnlActions.setBackground(new Color(203, 239, 255));
+		pnlActions.setBounds(0, top, 948, 48);
+		pnlContainer.add(pnlActions);
 
 		Button btnThem = new Button("Cập nhật");
 		btnThem.setIcon(new ImageIcon("Icon\\unemployed 1.png"));
@@ -340,8 +359,8 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		btnHuy.setForeground(new Color(51, 51, 51));
 		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnHuy.setFocusable(false);
-		btnHuy.setColorOver(Utils.getOpacity(Color.WHITE, 0.8f));
-		btnHuy.setColorClick(Utils.getOpacity(Color.WHITE, 0.6f));
+		btnHuy.setColorOver(new Color(255, 255, 255, 204));
+		btnHuy.setColorClick(new Color(255, 255, 255, 153));
 		btnHuy.setColor(Color.WHITE);
 		btnHuy.setBorderColor(new Color(203, 239, 255));
 		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
