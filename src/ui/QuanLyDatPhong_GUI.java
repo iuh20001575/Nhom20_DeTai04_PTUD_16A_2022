@@ -83,6 +83,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private int soPhongTam;
 	private int soPhongTrong = 0;
 	private final int widthPhong = 131;
+	private int heightPnlContainerDanhSachPhong = Utils.getBodyHeight() - 285;
 
 	/**
 	 * Create the frame.
@@ -119,11 +120,12 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			}
 		});
 
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
+		setBackground(Utils.secondaryColor);
 		setLayout(null);
 
 		JPanel pnlContent = new JPanel();
-		pnlContent.setBounds(0, 0, 1086, 508);
+		pnlContent.setBounds(Utils.getLeft(1114), 0, 1114, Utils.getBodyHeight());
 		pnlContent.setLayout(null);
 		pnlContent.setBackground(Utils.secondaryColor);
 		add(pnlContent);
@@ -131,7 +133,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 //		Chọn loại phòng
 		JPanel pnlLoaiPhong = new JPanel();
 		pnlLoaiPhong.setBackground(Utils.secondaryColor);
-		pnlLoaiPhong.setBounds(16, 0, 1054, 58);
+		pnlLoaiPhong.setBounds(16, 0, 1082, 58);
 		pnlContent.add(pnlLoaiPhong);
 		pnlLoaiPhong.setLayout(null);
 
@@ -266,14 +268,14 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 
 //		Seperator
 		JPanel pnlSeperator = new JPanel();
-		pnlSeperator.setBounds(0, 59, Utils.width, 4);
+		pnlSeperator.setBounds(16, 59, 1082, 4);
 		pnlSeperator.setBackground(new Color(0, 0, 0, 64));
 		pnlContent.add(pnlSeperator);
 
 //		Thống kê loại phòng
 		JPanel pnlThongKeLoaiPhong = new JPanel();
 		pnlThongKeLoaiPhong.setBackground(Utils.secondaryColor);
-		pnlThongKeLoaiPhong.setBounds(924, 88, 146, 285);
+		pnlThongKeLoaiPhong.setBounds(952, 79, 146, 285);
 		pnlContent.add(pnlThongKeLoaiPhong);
 		pnlThongKeLoaiPhong.setLayout(null);
 
@@ -381,12 +383,16 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlPhongTam.add(lblSoLuongPhongTam);
 
 //		Các nút chức năng
+		JPanel pnlSeperator_2 = new JPanel();
+		pnlSeperator_2.setBackground(new Color(0, 0, 0, 64));
+		pnlSeperator_2.setBounds(16, heightPnlContainerDanhSachPhong + 150, 1082, 4);
+		pnlContent.add(pnlSeperator_2);
+
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
 		pnlContent.add(pnlActions);
 		pnlActions.setLayout(null);
-
-		int width = 190, height = 69, gapX = 20;
+		pnlActions.setBounds(16, heightPnlContainerDanhSachPhong + 170, 1082, 69);
 
 		pnlDatPhong = new PanelEvent(13) {
 			/**
@@ -564,12 +570,11 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 
 		JPanel[] btnActions = { pnlDatPhong, pnlDatPhongTruoc, pnlChuyenPhong, pnlGopPhong, pnlDichVu, pnlThanhToan };
 		int[] btnActionsWidth = { 125, 170, 160, 125, 125, 125 };
-		pnlActions.setBounds(16, 422, width * btnActions.length + gapX * btnActions.length - 1, 69);
 		for (int i = 0; i < btnActions.length; i++) {
 			int x = 0;
 			for (int j = 0; j < i; j++)
 				x += 15 + btnActionsWidth[j];
-			btnActions[i].setBounds(x, 0, btnActionsWidth[i], height);
+			btnActions[i].setBounds(x, 0, btnActionsWidth[i], 69);
 			btnActions[i].getComponent(0).setBounds(10, 13, btnActionsWidth[i] - 20, 22);
 			btnActions[i].getComponent(1).setBounds(10, 35, btnActionsWidth[i] - 20, 22);
 		}
@@ -584,7 +589,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 
 		JPanel pnlFilter = new JPanel();
 		pnlFilter.setBackground(Utils.secondaryColor);
-		pnlFilter.setBounds(16, 68, 860, 39);
+		pnlFilter.setBounds(16, 79, 860, 39);
 		pnlContent.add(pnlFilter);
 		pnlFilter.setLayout(null);
 
@@ -655,10 +660,15 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlFilter.add(cmbMaPhong);
 
 		pnlContainerDanhSachPhong = new JPanel();
-		pnlContainerDanhSachPhong.setBounds(16, 117, 900, 292);
+		pnlContainerDanhSachPhong.setBounds(16, 134, 900, heightPnlContainerDanhSachPhong);
 		pnlContainerDanhSachPhong.setBackground(Utils.secondaryColor);
 		pnlContainerDanhSachPhong.setLayout(null);
 		pnlContent.add(pnlContainerDanhSachPhong);
+
+		JPanel pnlSeperator_1 = new JPanel();
+		pnlSeperator_1.setBackground(new Color(0, 0, 0, 64));
+		pnlSeperator_1.setBounds(932, 63, 4, heightPnlContainerDanhSachPhong + 87);
+		pnlContent.add(pnlSeperator_1);
 
 //		Event window
 		if (dsPhong == null) {
@@ -842,12 +852,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		}
 
 		pnlDanhSachPhong.setPreferredSize(getSizeContainerDanhSachPhong(dsPhong.size()));
+
 		scrDanhSachPhong = new JScrollPane(pnlDanhSachPhong);
 		scrDanhSachPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
 		scrDanhSachPhong.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrDanhSachPhong.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrDanhSachPhong.setBackground(Utils.secondaryColor);
-		scrDanhSachPhong.setBounds(0, 0, 900, 292);
+		scrDanhSachPhong.setBounds(0, 0, 900, heightPnlContainerDanhSachPhong);
 		pnlContainerDanhSachPhong.removeAll();
 		pnlContainerDanhSachPhong.add(scrDanhSachPhong);
 		ScrollBarCustom scb = new ScrollBarCustom();
@@ -1080,9 +1091,9 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	 * @return
 	 */
 	private Dimension getSizeContainerDanhSachPhong(int soPhong) {
-		int row = (int) Math.ceil(soPhong / numOfRow);
+		int row = (int) Math.ceil(soPhong * 1.0 / numOfRow);
 
-		return new Dimension(890, Math.max((row - 1) * gapY + row * heightPhong, 292));
+		return new Dimension(890, Math.max((row - 1) * gapY + row * heightPhong, heightPnlContainerDanhSachPhong));
 	}
 
 	private void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {

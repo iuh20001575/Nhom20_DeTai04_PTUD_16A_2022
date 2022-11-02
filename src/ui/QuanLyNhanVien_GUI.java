@@ -355,6 +355,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 						new Notification(main, components.notification.Notification.Type.SUCCESS,
 								"Cập nhật trạng thái nhân viên thành công").showNotification();
 						tableModel.setValueAt("Nghỉ làm", row, 7);
+						btnEmployeeRemove.setEnabled(false);
 					} else
 						new Notification(main, components.notification.Notification.Type.ERROR,
 								"Cập nhật trạng thái nhân viên thất bại").showNotification();

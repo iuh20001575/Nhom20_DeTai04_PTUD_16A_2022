@@ -80,6 +80,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 	private TextField txtMatKhau;
 	private TextField txtNgaySinh;
 	private TextField txtSoDienThoai;
+	private final int widthPnlContainer = 948;
 
 	/**
 	 * Create the frame.
@@ -90,20 +91,23 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		taiKhoan_DAO = new TaiKhoan_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 		this.main = main;
+		int padding = (int) Math.floor((Utils.getBodyHeight() - 418) / 8);
+		int top = padding;
 
 		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
-		pnlContainer.setBounds(69, 7, 948, 425);
+		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
 		this.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
 		JPanel pnlRow1 = new JPanel();
 		pnlRow1.setBackground(Utils.secondaryColor);
-		pnlRow1.setBounds(0, 0, 948, 55);
+		pnlRow1.setBounds(0, top, 948, 55);
+		top += 55 + padding;
 		pnlContainer.add(pnlRow1);
 		pnlRow1.setLayout(null);
 
@@ -128,7 +132,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		JPanel pnlRow2 = new JPanel();
 		pnlRow2.setLayout(null);
 		pnlRow2.setBackground(new Color(203, 239, 255));
-		pnlRow2.setBounds(0, 70, 948, 55);
+		pnlRow2.setBounds(0, top, 948, 55);
+		top += 55 + padding;
 		pnlContainer.add(pnlRow2);
 
 		txtCCCD = new TextField();
@@ -152,7 +157,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		JPanel pnlRow3 = new JPanel();
 		pnlRow3.setLayout(null);
 		pnlRow3.setBackground(new Color(203, 239, 255));
-		pnlRow3.setBounds(0, 140, 948, 55);
+		pnlRow3.setBounds(0, top, 948, 55);
+		top += 55 + padding;
 		pnlContainer.add(pnlRow3);
 
 		txtNgaySinh = new TextField();
@@ -206,7 +212,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 
 		JPanel pnlRow4 = new JPanel();
 		pnlRow4.setBackground(Utils.secondaryColor);
-		pnlRow4.setBounds(0, 210, 948, 65);
+		pnlRow4.setBounds(0, top, 948, 65);
+		top += 65 + padding;
 		pnlContainer.add(pnlRow4);
 		pnlRow4.setLayout(null);
 
@@ -249,7 +256,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		JPanel pnlRow5 = new JPanel();
 		pnlRow5.setLayout(null);
 		pnlRow5.setBackground(new Color(203, 239, 255));
-		pnlRow5.setBounds(0, 290, 948, 55);
+		pnlRow5.setBounds(0, top, 948, 55);
+		top += 55 + padding;
 		pnlContainer.add(pnlRow5);
 
 		txtLuong = new TextField();
@@ -273,7 +281,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		JPanel pnlRow6 = new JPanel();
 		pnlRow6.setLayout(null);
 		pnlRow6.setBackground(new Color(203, 239, 255));
-		pnlRow6.setBounds(0, 360, 948, 65);
+		pnlRow6.setBounds(0, top, 948, 65);
+		top += 65 + padding;
 		pnlContainer.add(pnlRow6);
 
 		JPanel pnlChucVu = new JPanel();
@@ -289,8 +298,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlChucVu.add(lblChucVu);
 
 		cmbChucVu = new ComboBox<>();
-		cmbChucVu.setModel(new DefaultComboBoxModel<>(new String[] {
-				NhanVien.convertChucVuToString(ChucVu.QuanLy), NhanVien.convertChucVuToString(ChucVu.NhanVien) }));
+		cmbChucVu.setModel(new DefaultComboBoxModel<>(new String[] { NhanVien.convertChucVuToString(ChucVu.QuanLy),
+				NhanVien.convertChucVuToString(ChucVu.NhanVien) }));
 		cmbChucVu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbChucVu.setBackground(new Color(140, 177, 180));
 		cmbChucVu.setBounds(4, 29, 200, 36);
@@ -318,9 +327,9 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlTrangThai.add(cmbTrangThai);
 
 		JPanel pnlActions = new JPanel();
-		pnlActions.setBackground(Utils.secondaryColor);
-		pnlActions.setBounds(69, 447, 948, 48);
-		this.add(pnlActions);
+		pnlActions.setBackground(new Color(203, 239, 255));
+		pnlActions.setBounds(0, top, 948, 48);
+		pnlContainer.add(pnlActions);
 		pnlActions.setLayout(null);
 
 		btnLuu = new Button("Lưu");
