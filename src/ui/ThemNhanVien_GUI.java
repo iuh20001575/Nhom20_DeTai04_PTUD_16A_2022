@@ -85,7 +85,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		nhanVien_DAO = new NhanVien_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 		main = jFrame;
-		int padding = (int) Math.floor((Utils.getBodyHeight() - 418) / 8);
+		int padding = (int) Math.floor((Utils.getBodyHeight() - 428) / 8);
 		int top = padding;
 
 		setBackground(Utils.secondaryColor);

@@ -149,7 +149,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeView = new Button("Xem");
 		btnEmployeeView.setFocusable(false);
 		btnEmployeeView.setIcon(new ImageIcon("Icon\\user 1.png"));
-		btnEmployeeView.setBounds(0, 0, 150, 36);
+		btnEmployeeView.setBounds(-2, -2, 154, 40);
 		btnEmployeeView.setRadius(4);
 		btnEmployeeView.setForeground(Color.WHITE);
 		btnEmployeeView.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -167,7 +167,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeAdd.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
 		btnEmployeeAdd.setBorderColor(Utils.secondaryColor);
 		btnEmployeeAdd.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnEmployeeAdd.setBounds(165, 0, 150, 36);
+		btnEmployeeAdd.setBounds(163, -2, 154, 40);
 		pnlActions.add(btnEmployeeAdd);
 
 		btnEmployeeEdit = new Button("Sửa");
@@ -179,7 +179,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeEdit.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
 		btnEmployeeEdit.setBorderColor(Utils.secondaryColor);
 		btnEmployeeEdit.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnEmployeeEdit.setBounds(330, 0, 150, 36);
+		btnEmployeeEdit.setBounds(328, -2, 154, 40);
 		pnlActions.add(btnEmployeeEdit);
 
 		btnEmployeeRemove = new Button("Nghỉ việc");
@@ -192,7 +192,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeRemove.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
 		btnEmployeeRemove.setBorderColor(Utils.secondaryColor);
 		btnEmployeeRemove.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnEmployeeRemove.setBounds(495, 0, 150, 36);
+		btnEmployeeRemove.setBounds(493, -2, 154, 40);
 		pnlActions.add(btnEmployeeRemove);
 
 		cmbTrangThai = new JComboBox<String>();

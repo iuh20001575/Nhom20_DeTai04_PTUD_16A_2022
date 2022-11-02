@@ -60,18 +60,18 @@ public class QuanLyDichVu_GUI extends JPanel {
 	private Button btnXem, btnThem, btnSua, btnXoa;
 
 	public QuanLyDichVu_GUI(Main main) {
-
 		LoaiDichVu_DAO = new LoaiDichVu_DAO();
 		DichVu_DAO = new DichVu_DAO();
+		int left = Utils.getLeft(1054);
 
 		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
 
 //		Search
 		JPanel pnlSearch = new JPanel();
 		pnlSearch.setBackground(Utils.secondaryColor);
-		pnlSearch.setBounds(16, 0, 1054, 24);
+		pnlSearch.setBounds(left, 16, 1054, 24);
 		this.add(pnlSearch);
 		pnlSearch.setLayout(null);
 
@@ -89,7 +89,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 
 		JPanel pnlSearchForm = new JPanel();
 		pnlSearchForm.setBackground(Utils.secondaryColor);
-		pnlSearchForm.setBounds(16, 34, 1054, 36);
+		pnlSearchForm.setBounds(left, 56, 1054, 36);
 		this.add(pnlSearchForm);
 		pnlSearchForm.setLayout(null);
 
@@ -100,7 +100,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnSearch.setForeground(Color.WHITE);
 		btnSearch.setColor(new Color(134, 229, 138));
 		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnSearch.setBounds(904, -2, 150, 40);
+		btnSearch.setBounds(902, -4, 154, 44);
 		btnSearch.setBorderColor(Utils.secondaryColor);
 		btnSearch.setColorOver(new Color(134, 229, 138));
 		btnSearch.setColorClick(new Color(59, 238, 66));
@@ -126,7 +126,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 
 		JPanel pnlButton = new JPanel();
 		pnlButton.setBackground(Utils.secondaryColor);
-		pnlButton.setBounds(16, 87, 1060, 40);
+		pnlButton.setBounds(left, 108, 1054, 40);
 		this.add(pnlButton);
 		pnlButton.setLayout(null);
 
@@ -138,7 +138,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnXem.setForeground(Color.WHITE);
 		btnXem.setColor(new Color(134, 229, 138));
 		btnXem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnXem.setBounds(0, 0, 150, 40);
+		btnXem.setBounds(-2, -2, 154, 44);
 		btnXem.setBorderColor(Utils.secondaryColor);
 		btnXem.setColorOver(new Color(134, 229, 138));
 		btnXem.setColorClick(new Color(59, 238, 66));
@@ -153,7 +153,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnThem.setForeground(Color.WHITE);
 		btnThem.setColor(new Color(134, 229, 138));
 		btnThem.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnThem.setBounds(180, 0, 150, 40);
+		btnThem.setBounds(182, -2, 154, 44);
 		btnThem.setBorderColor(Utils.secondaryColor);
 		btnThem.setColorOver(new Color(134, 229, 138));
 		btnThem.setColorClick(new Color(59, 238, 66));
@@ -168,7 +168,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnSua.setForeground(Color.WHITE);
 		btnSua.setColor(new Color(134, 229, 138));
 		btnSua.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnSua.setBounds(360, 0, 150, 40);
+		btnSua.setBounds(364, -2, 154, 44);
 		btnSua.setBorderColor(Utils.secondaryColor);
 		btnSua.setColorOver(new Color(134, 229, 138));
 		btnSua.setColorClick(new Color(59, 238, 66));
@@ -183,7 +183,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnXoa.setForeground(Color.WHITE);
 		btnXoa.setColor(new Color(134, 229, 138));
 		btnXoa.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnXoa.setBounds(540, 0, 150, 40);
+		btnXoa.setBounds(546, -2, 154, 44);
 		btnXoa.setBorderColor(Utils.secondaryColor);
 		btnXoa.setColorOver(new Color(134, 229, 138));
 		btnXoa.setColorClick(new Color(59, 238, 66));
@@ -199,7 +199,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 
 		cmbLoaiDV.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbLoaiDV.setBackground(Utils.primaryColor);
-		cmbLoaiDV.setBounds(700, 0, 150, 36);
+		cmbLoaiDV.setBounds(728, 0, 150, 40);
 		pnlButton.add(cmbLoaiDV);
 
 		cmbSoLuong = new JComboBox<String>();
@@ -208,14 +208,15 @@ public class QuanLyDichVu_GUI extends JPanel {
 				new DefaultComboBoxModel<String>(new String[] { "Số lượng", "<50", "50-100", "100-200", ">200" }));
 		cmbSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbSoLuong.setBackground(Utils.primaryColor);
-		cmbSoLuong.setBounds(900, 0, 150, 36);
+		cmbSoLuong.setBounds(904, 0, 150, 40);
 		cmbSoLuong.setSelectedItem("Loa");
 		pnlButton.add(cmbSoLuong);
 
+		int topPnlControl = Utils.getBodyHeight() - 80;
+
 		JScrollPane scr = new JScrollPane();
-		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(16, 140, 1054, 300);
+		scr.setBounds(left, 164, 1054, topPnlControl - 180);
 		scr.setBackground(Utils.primaryColor);
 		ScrollBarCustom scp = new ScrollBarCustom();
 //		Set color scrollbar thumb
@@ -287,17 +288,13 @@ public class QuanLyDichVu_GUI extends JPanel {
 		tbl.getColumnModel().getColumn(3).setCellRenderer(dtcr);
 		tbl.getColumnModel().getColumn(5).setCellRenderer(dtcr);
 		tbl.getColumnModel().getColumn(6).setCellRenderer(dtcr);
-		pnlControl = new ControlPanel(400, 529, main);
-		pnlControl.setLocation(400, 464);
-		// pnlControl.add(contentPane);
+		pnlControl = new ControlPanel(400, topPnlControl, main);
+		pnlControl.setLocation(Utils.getLeft(pnlControl.getWidth()), topPnlControl);
 		this.add(pnlControl);
 
 		setEmptyTable();
 		List<DichVu> listDV = (List<DichVu>) DichVu_DAO.getAllDichVu();
 		addRow(listDV);
-		pnlControl.setTbl(tbl);
-		// addRow(DichVu_DAO.getAllDichVu()).forEach(dichVu ->
-		// maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
 		pnlControl.setTbl(tbl);
 
 		// Sự kiện nút tìm kiếm dịch vụ
