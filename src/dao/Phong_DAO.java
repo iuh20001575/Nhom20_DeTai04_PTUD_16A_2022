@@ -11,7 +11,7 @@ import connectDB.ConnectDB;
 import entity.Phong;
 import entity.Phong.TrangThai;
 
-public class Phong_DAO {
+public class Phong_DAO extends DAO {
 	private LoaiPhong_DAO loaiPhong_DAO = new LoaiPhong_DAO();
 
 	private Phong getPhong(ResultSet resultSet) throws SQLException {
@@ -230,19 +230,22 @@ public class Phong_DAO {
 	}
 
 	public boolean capNhatTrangThaiPhong(Phong phong, String trangThai) {
-		PreparedStatement preparedStatement;
+		PreparedStatement preparedStatement = null;
+		boolean res = false;
 		try {
 			preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("Update Phong SET trangThai = ? WHERE maPhong = ?");
-
 			preparedStatement.setString(1, trangThai);
 			preparedStatement.setString(2, phong.getMaPhong());
 
-			return preparedStatement.executeUpdate() >= 0;
+			res = preparedStatement.executeUpdate() >= 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			close(preparedStatement);
 		}
-		return false;
+
+		return res;
 	}
 
 	public List<Phong> getPhongTheoLoaiVaSoLuongKhach(String maPhong, String tenLoaiPhong, String soLuongKhach) {

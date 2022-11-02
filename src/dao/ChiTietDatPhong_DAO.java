@@ -12,8 +12,9 @@ import connectDB.ConnectDB;
 import entity.ChiTietDatPhong;
 import entity.DatPhong;
 import entity.Phong;
+import entity.Phong.TrangThai;
 
-public class ChiTietDatPhong_DAO {
+public class ChiTietDatPhong_DAO extends DAO {
 	private Phong_DAO phong_DAO;
 
 	public ChiTietDatPhong_DAO() {
@@ -142,12 +143,14 @@ public class ChiTietDatPhong_DAO {
 
 //			[Phong] - Cập nhật trạng thái phòng
 				Phong phongFull = phong_DAO.getPhong(phong.getMaPhong());
-				String trangThaiNew = Phong.convertTrangThaiToString(Phong.TrangThai.DangThue);
+				TrangThai trangThaiNew;
 
 				if (phongFull.getTrangThai().equals(entity.Phong.TrangThai.DaDat))
-					trangThaiNew = Phong.convertTrangThaiToString(entity.Phong.TrangThai.PhongTam);
+					trangThaiNew = Phong.TrangThai.PhongTam;
+				else
+					trangThaiNew = Phong.TrangThai.DangThue;
 
-				if (!phong_DAO.capNhatTrangThaiPhong(phongFull, trangThaiNew))
+				if (!phong_DAO.capNhatTrangThaiPhong(phongFull, Phong.convertTrangThaiToString(trangThaiNew)))
 					return rollback();
 			}
 
@@ -160,7 +163,8 @@ public class ChiTietDatPhong_DAO {
 	}
 
 	public boolean themChiTietDatPhong(String maDatPhong, Phong phong, Time gioVao) {
-		PreparedStatement preparedStatement;
+		PreparedStatement preparedStatement = null;
+		boolean res = false;
 		try {
 			preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("INSERT ChiTietDatPhong(datPhong, phong, gioVao) VALUES(?, ?, ?)");
@@ -168,27 +172,13 @@ public class ChiTietDatPhong_DAO {
 			preparedStatement.setString(2, phong.getMaPhong());
 			preparedStatement.setTime(3, gioVao);
 
-			return preparedStatement.executeUpdate() > 0;
+			res = preparedStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			close(preparedStatement);
 		}
 
-		return false;
-	}
-
-	private boolean commit() throws SQLException {
-		if (ConnectDB.getConnection().getAutoCommit())
-			ConnectDB.getConnection().setAutoCommit(false);
-		ConnectDB.getConnection().commit();
-		ConnectDB.getConnection().setAutoCommit(true);
-		return true;
-	}
-
-	private boolean rollback() throws SQLException {
-		if (ConnectDB.getConnection().getAutoCommit())
-			ConnectDB.getConnection().setAutoCommit(false);
-		ConnectDB.getConnection().rollback();
-		ConnectDB.getConnection().setAutoCommit(true);
-		return false;
+		return res;
 	}
 }

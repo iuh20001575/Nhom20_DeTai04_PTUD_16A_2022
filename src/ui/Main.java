@@ -58,26 +58,6 @@ public class Main extends JFrame {
 	 * Create the frame.
 	 */
 	public Main() {
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowActivated(WindowEvent e) {
-				Thread clock = new Thread() {
-					@Override
-					public void run() {
-						for (;;) {
-							try {
-								if (datPhong_DAO.huyPhongDatTre())
-									repaint();
-								sleep(1000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-				};
-				clock.start();
-			}
-		});
 		_this = this;
 		nhanVien_DAO = new NhanVien_DAO();
 		datPhong_DAO = new DatPhong_DAO();
@@ -90,10 +70,10 @@ public class Main extends JFrame {
 			}
 		});
 
-		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setBounds(0, 0, 1100, 610);
 		setLocationRelativeTo(null);
+		setResizable(false);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 
 		pnlContent = new JPanel();
 		pnlContent.setForeground(Color.GRAY);
@@ -102,15 +82,21 @@ public class Main extends JFrame {
 		pnlContent.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlContent.setLayout(null);
 
+		JPanel pnlHeaderWrapper = new JPanel();
+		pnlHeaderWrapper.setBounds(0, 0, Utils.getScreenWidth(), Utils.getHeaderHeight());
+		pnlHeaderWrapper.setBackground(Utils.primaryColor);
+		pnlContent.add(pnlHeaderWrapper);
+		pnlHeaderWrapper.setLayout(null);
+
 		JPanel pnlHeader = new JPanel();
 		pnlHeader.setBackground(Utils.primaryColor);
-		pnlHeader.setBounds(0, 0, 1086, 65);
-		pnlContent.add(pnlHeader);
+		pnlHeader.setBounds((int) Math.ceil((Utils.getScreenWidth() - 1086) / 2), 0, 1086, Utils.getHeaderHeight());
+		pnlHeaderWrapper.add(pnlHeader);
 		pnlHeader.setLayout(null);
 
 		Button btnMenu = new Button("|||");
 		btnMenu.setFocusable(false);
-		btnMenu.setBounds(23, 16, 38, 38);
+		btnMenu.setBounds(0, 16, 38, 38);
 		btnMenu.setForeground(Utils.primaryColor);
 		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
 		btnMenu.setBorder(BorderFactory.createEmptyBorder());
@@ -122,7 +108,7 @@ public class Main extends JFrame {
 
 		lblTitle = new JLabel("TRANG CHỦ");
 		lblTitle.setForeground(Color.WHITE);
-		lblTitle.setBounds(76, 17, 948, 32);
+		lblTitle.setBounds(53, 17, 948, 32);
 		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		pnlHeader.add(lblTitle);
@@ -135,13 +121,13 @@ public class Main extends JFrame {
 		btnBack.setColorClick(Utils.primaryColor);
 		btnBack.setBorderColor(Utils.primaryColor);
 		btnBack.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnBack.setBounds(954, 1, 62, 62);
+		btnBack.setBounds(1016, 1, 62, 62);
 		pnlHeader.add(btnBack);
 //		End Default Layout
 
 		pnlBody = new JPanel();
 		pnlBody.setLayout(null);
-		pnlBody.setBounds(0, 65, 1086, 508);
+		pnlBody.setBounds(0, Utils.getHeaderHeight(), Utils.getScreenWidth(), Utils.getBodyHeight());
 		pnlContent.add(pnlBody);
 
 		String maNhanVien = utils.NhanVien.getNhanVien().getMaNhanVien();
@@ -200,6 +186,28 @@ public class Main extends JFrame {
 				else {
 					backPanel();
 				}
+			}
+		});
+
+//		Sự kiện Window
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				Thread clock = new Thread() {
+					@Override
+					public void run() {
+						for (;;) {
+							try {
+								if (datPhong_DAO.huyPhongDatTre())
+									repaint();
+								sleep(1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				};
+				clock.start();
 			}
 		});
 

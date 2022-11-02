@@ -22971,6 +22971,20 @@ INSERT Phong
 VALUES ('03.01', 'L002', 20, N'Trống')
 INSERT Phong
 VALUES ('03.02', 'L001', 20, N'Trống')
+INSERT Phong
+VALUES ('04.01', 'L001', 10, N'Trống')
+INSERT Phong
+VALUES ('04.02', 'L001', 10, N'Trống')
+INSERT Phong
+VALUES ('04.03', 'L002', 10, N'Trống')
+INSERT Phong
+VALUES ('04.04', 'L002', 10, N'Trống')
+INSERT Phong
+VALUES ('05.01', 'L001', 5, N'Trống')
+INSERT Phong
+VALUES ('05.03', 'L002', 20, N'Trống')
+INSERT Phong
+VALUES ('05.02', 'L001', 20, N'Trống')
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM Phong

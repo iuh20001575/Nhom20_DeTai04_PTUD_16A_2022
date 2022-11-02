@@ -1,7 +1,9 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -55,11 +57,15 @@ public class DangNhap_GUI extends JFrame {
 		_this = this;
 		taiKhoan_DAO = new TaiKhoan_DAO();
 
+		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+		int screenHeight = (int) dimension.getHeight();
+		int screenWidth = (int) dimension.getWidth();
+
 		setAutoRequestFocus(false);
 		setTitle("Đăng nhập");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(0, 0, 1100, 610);
+		setBounds(0, 0, screenWidth, screenHeight);
 		setUndecorated(true);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.CYAN);
@@ -77,16 +83,21 @@ public class DangNhap_GUI extends JFrame {
 		});
 
 		KGradientPanel pnlContainer = new KGradientPanel();
-		pnlContainer.setBounds(0, 0, 1100, 610);
+		pnlContainer.setBounds(0, 0, screenWidth, screenHeight);
 		pnlContainer.setkEndColor(Utils.getRGBA(0, 204, 204, 1f));
 		pnlContainer.setkGradientFocus(600);
 		pnlContainer.setkStartColor(Utils.getRGBA(153, 0, 153, 0.8f));
 		contentPane.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
+		int widthPnlDangNhap = 800;
+		int heightPnlDangNhap = 400;
+		int leftPnlDangNhap = (int) Math.ceil((screenWidth - widthPnlDangNhap) / 2);
+		int topPnlDangNhap = (int) Math.ceil((screenHeight - heightPnlDangNhap) / 2);
+
 		JPanel pnlDangNhap = new JPanel();
 		pnlDangNhap.setBackground(Utils.getRGBA(0, 0, 0, 0));
-		pnlDangNhap.setBounds(150, 105, 800, 400);
+		pnlDangNhap.setBounds(leftPnlDangNhap, topPnlDangNhap, widthPnlDangNhap, heightPnlDangNhap);
 		pnlContainer.add(pnlDangNhap);
 		pnlDangNhap.setLayout(null);
 
