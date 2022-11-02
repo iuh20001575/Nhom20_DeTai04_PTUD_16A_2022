@@ -28,7 +28,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import components.button.Button;
 import components.controlPanel.ControlPanel;
@@ -260,36 +262,32 @@ public class QuanLyDichVu_GUI extends JPanel {
 
 		tableModel = new DefaultTableModel(
 				new String[] { "Mã DV", "TênDV", "Đơn vị tính", "Số lượng", "Loại", "Giá mua", "Giá bán" }, 0);
+		JTableHeader tblHeader = tbl.getTableHeader();
+		TableColumnModel tableColumnModel = tbl.getColumnModel();
 
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-//		Cam
-		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
-//		Xanh
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tbl.getColumnModel().getColumn(0).setPreferredWidth(80);
-		tbl.getColumnModel().getColumn(1).setPreferredWidth(224);
-		tbl.getColumnModel().getColumn(2).setPreferredWidth(120);
-		tbl.getColumnModel().getColumn(3).setPreferredWidth(120);
-		tbl.getColumnModel().getColumn(4).setPreferredWidth(180);
-		tbl.getColumnModel().getColumn(5).setPreferredWidth(160);
-		tbl.getColumnModel().getColumn(6).setPreferredWidth(160);
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tableColumnModel.getColumn(0).setPreferredWidth(80);
+		tableColumnModel.getColumn(1).setPreferredWidth(224);
+		tableColumnModel.getColumn(2).setPreferredWidth(120);
+		tableColumnModel.getColumn(3).setPreferredWidth(120);
+		tableColumnModel.getColumn(4).setPreferredWidth(180);
+		tableColumnModel.getColumn(5).setPreferredWidth(160);
+		tableColumnModel.getColumn(6).setPreferredWidth(160);
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
-//		tbl.setShowGrid(false);
 		scr.setViewportView(tbl);
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
-		tbl.getColumnModel().getColumn(3).setCellRenderer(dtcr);
-		tbl.getColumnModel().getColumn(5).setCellRenderer(dtcr);
-		tbl.getColumnModel().getColumn(6).setCellRenderer(dtcr);
-		pnlControl = new ControlPanel(400, topPnlControl, main);
-		pnlControl.setLocation(Utils.getLeft(pnlControl.getWidth()), topPnlControl);
+		tableColumnModel.getColumn(3).setCellRenderer(dtcr);
+		tableColumnModel.getColumn(5).setCellRenderer(dtcr);
+		tableColumnModel.getColumn(6).setCellRenderer(dtcr);
+		pnlControl = new ControlPanel(Utils.getLeft(286), topPnlControl, main);
 		this.add(pnlControl);
 
 		setEmptyTable();

@@ -28,7 +28,9 @@ import javax.swing.event.AncestorListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import components.button.Button;
 import components.controlPanel.ControlPanel;
@@ -261,28 +263,29 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 		tableModel = new DefaultTableModel(new String[] { "M\u00E3 NV", "H\u1ECD T\u00EAn", "CCCD", "S\u0110T",
 				"Ng\u00E0y sinh", "Gi\u1EDBi t\u00EDnh", "\u0110\u1ECBa ch\u1EC9", "Tr\u1EA1ng th\u00E1i" }, 0);
+		JTableHeader tblHeader = tbl.getTableHeader();
+		TableColumnModel tableColumnModel = tbl.getColumnModel();
 
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tbl.getColumnModel().getColumn(0).setPreferredWidth(61);
-		tbl.getColumnModel().getColumn(1).setPreferredWidth(180);
-		tbl.getColumnModel().getColumn(2).setPreferredWidth(120);
-		tbl.getColumnModel().getColumn(3).setPreferredWidth(105);
-		tbl.getColumnModel().getColumn(4).setPreferredWidth(100);
-		tbl.getColumnModel().getColumn(5).setPreferredWidth(90);
-		tbl.getColumnModel().getColumn(6).setPreferredWidth(288);
-		tbl.getColumnModel().getColumn(7).setPreferredWidth(100);
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tableColumnModel.getColumn(0).setPreferredWidth(61);
+		tableColumnModel.getColumn(1).setPreferredWidth(180);
+		tableColumnModel.getColumn(2).setPreferredWidth(120);
+		tableColumnModel.getColumn(3).setPreferredWidth(105);
+		tableColumnModel.getColumn(4).setPreferredWidth(100);
+		tableColumnModel.getColumn(5).setPreferredWidth(90);
+		tableColumnModel.getColumn(6).setPreferredWidth(288);
+		tableColumnModel.getColumn(7).setPreferredWidth(100);
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scr.setViewportView(tbl);
 
-		pnlControl = new ControlPanel(400, topPnlControl, main);
+		pnlControl = new ControlPanel(Utils.getLeft(286), topPnlControl, main);
 		pnlContainer.add(pnlControl);
 
 //		Sự kiện nút tìm kiếm nhân viên

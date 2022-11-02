@@ -309,8 +309,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		tbl.setRowHeight(36);
 		scr.setViewportView(tbl);
 
-		pnlControl = new ControlPanel(400, 529, main);
-		pnlControl.setLocation(400, 464);
+		pnlControl = new ControlPanel(Utils.getLeft(286), 529, main);
 		this.add(pnlControl);
 
 //		Sự kiện nút tìm kiếm phiếu đặt phòng

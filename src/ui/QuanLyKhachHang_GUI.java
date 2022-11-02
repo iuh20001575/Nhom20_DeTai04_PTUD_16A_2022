@@ -21,7 +21,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import components.button.Button;
 import components.controlPanel.ControlPanel;
@@ -57,15 +59,16 @@ public class QuanLyKhachHang_GUI extends JPanel {
 	public QuanLyKhachHang_GUI(Main main) {
 		khachHang_DAO = new KhachHang_DAO();
 		diaChi_DAO = new DiaChi_DAO();
+		int left = Utils.getLeft(1054);
 
 		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
 
 //		Search
 		JPanel pnlSearch = new JPanel();
 		pnlSearch.setBackground(Utils.secondaryColor);
-		pnlSearch.setBounds(16, 18, 1054, 24);
+		pnlSearch.setBounds(left, 16, 1054, 24);
 		this.add(pnlSearch);
 		pnlSearch.setLayout(null);
 
@@ -83,7 +86,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 		JPanel pnlSearchForm = new JPanel();
 		pnlSearchForm.setBackground(Utils.secondaryColor);
-		pnlSearchForm.setBounds(16, 52, 1054, 36);
+		pnlSearchForm.setBounds(left, 56, 1054, 36);
 		this.add(pnlSearchForm);
 		pnlSearchForm.setLayout(null);
 
@@ -124,10 +127,12 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		pnlSearchInput.add(txtSearch);
 		txtSearch.setColumns(10);
 
+		int topPnlControl = Utils.getBodyHeight() - 80;
+
 //		Actions
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
-		pnlActions.setBounds(16, 104, 1054, 36);
+		pnlActions.setBounds(left, 108, 1054, 36);
 		this.add(pnlActions);
 		pnlActions.setLayout(null);
 
@@ -141,14 +146,13 @@ public class QuanLyKhachHang_GUI extends JPanel {
 							"Vui lòng chọn khách hàng muốn xem");
 				} else {
 					String maKhachHang = (String) tbl.getValueAt(row, 0);
-					main.addPnlBody(new XemKhachHang_GUI(main, new KhachHang(maKhachHang)), "Xem khách hàng", 2,
-							0);
+					main.addPnlBody(new XemKhachHang_GUI(main, new KhachHang(maKhachHang)), "Xem khách hàng", 2, 0);
 				}
 			}
 		});
 		btnKhachHangView.setFocusable(false);
 		btnKhachHangView.setIcon(new ImageIcon("Icon\\user 1.png"));
-		btnKhachHangView.setBounds(0, 0, 150, 36);
+		btnKhachHangView.setBounds(-2, -2, 154, 40);
 		btnKhachHangView.setRadius(4);
 		btnKhachHangView.setForeground(Color.WHITE);
 		btnKhachHangView.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -170,7 +174,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnKhachHangAdd.setColor(Utils.primaryColor);
 		btnKhachHangAdd.setBorderColor(Utils.secondaryColor);
 		btnKhachHangAdd.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnKhachHangAdd.setBounds(165, 0, 150, 36);
+		btnKhachHangAdd.setBounds(163, -2, 154, 40);
 		pnlActions.add(btnKhachHangAdd);
 
 		btnKhachHangAdd.addMouseListener(new MouseAdapter() {
@@ -191,7 +195,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnKhachHangEdit.setColor(Utils.primaryColor);
 		btnKhachHangEdit.setBorderColor(Utils.secondaryColor);
 		btnKhachHangEdit.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnKhachHangEdit.setBounds(330, 0, 150, 36);
+		btnKhachHangEdit.setBounds(328, -2, 154, 40);
 		pnlActions.add(btnKhachHangEdit);
 
 		btnKhachHangEdit.addMouseListener(new MouseAdapter() {
@@ -219,7 +223,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnKhachHangRemove.setColor(Utils.primaryColor);
 		btnKhachHangRemove.setBorderColor(Utils.secondaryColor);
 		btnKhachHangRemove.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnKhachHangRemove.setBounds(495, 0, 150, 36);
+		btnKhachHangRemove.setBounds(493, -2, 154, 40);
 		pnlActions.add(btnKhachHangRemove);
 
 		btnKhachHangRemove.addMouseListener(new MouseAdapter() {
@@ -242,10 +246,10 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 //		Table danh sách khách hàng
 		JScrollPane scr = new JScrollPane();
-		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(16, 158, 1054, 300);
+		scr.setBounds(left, 160, 1054, topPnlControl - 176);
 		scr.setBackground(Utils.primaryColor);
+		scr.getViewport().setBackground(Color.WHITE);
 		ScrollBarCustom scp = new ScrollBarCustom();
 //		Set color scrollbar thumb
 		scp.setScrollbarColor(new Color(203, 203, 203));
@@ -288,29 +292,25 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-//		Cam
-		tbl.getTableHeader().setBackground(new Color(255, 195, 174));
-//		Xanh
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		JTableHeader tblHeader = tbl.getTableHeader();
+		TableColumnModel tableColumnModel = tbl.getColumnModel();
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tbl.getColumnModel().getColumn(0).setPreferredWidth(61);
-		tbl.getColumnModel().getColumn(1).setPreferredWidth(190);
-		tbl.getColumnModel().getColumn(2).setPreferredWidth(120);
-		tbl.getColumnModel().getColumn(3).setPreferredWidth(105);
-		tbl.getColumnModel().getColumn(4).setPreferredWidth(100);
-		tbl.getColumnModel().getColumn(5).setPreferredWidth(130);
-		tbl.getColumnModel().getColumn(6).setPreferredWidth(330);
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tableColumnModel.getColumn(0).setPreferredWidth(70);
+		tableColumnModel.getColumn(1).setPreferredWidth(190);
+		tableColumnModel.getColumn(2).setPreferredWidth(120);
+		tableColumnModel.getColumn(3).setPreferredWidth(105);
+		tableColumnModel.getColumn(4).setPreferredWidth(100);
+		tableColumnModel.getColumn(5).setPreferredWidth(130);
+		tableColumnModel.getColumn(6).setPreferredWidth(330);
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
-//		tbl.setShowGrid(false);
 		scr.setViewportView(tbl);
 
-		pnlControl = new ControlPanel(400, 529, main);
-		pnlControl.setLocation(400, 464);
+		pnlControl = new ControlPanel(Utils.getLeft(286), topPnlControl, main);
 		this.add(pnlControl);
 
 		tbl.addMouseListener(new MouseAdapter() {
@@ -354,7 +354,6 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 		clock.start();
 	}
-
 
 	private void filterKhachHang() {
 		String hoTen = txtSearch.getText();

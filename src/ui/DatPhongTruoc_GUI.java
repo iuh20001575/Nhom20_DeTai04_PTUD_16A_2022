@@ -36,6 +36,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 import com.raven.datechooser.DateChooser;
@@ -229,18 +230,18 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		};
 
 		tableModel = new DefaultTableModel(new String[] { "Mã phòng", "Loại phòng", "Số lượng", "Trạng Thái" }, 0);
+		JTableHeader tblHeader = tbl.getTableHeader();
 
 		tbl.setModel(tableModel);
 		tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbl.setFocusable(false);
 //		Set background cho phần header của table
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
 //		Set chiều rộng và chiều cao cho phần header của table
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scrDanhSachPhong.setViewportView(tbl);
 //		Căn phải cell 3 table

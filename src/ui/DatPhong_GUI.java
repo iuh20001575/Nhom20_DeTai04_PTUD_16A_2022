@@ -38,6 +38,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
@@ -221,16 +222,16 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		};
 
 		tableModel = new DefaultTableModel(new String[] { "Mã phòng", "Loại phòng", "Số lượng", "Trạng Thái" }, 0);
+		JTableHeader tblHeader = tbl.getTableHeader();
 
 		tbl.setModel(tableModel);
 		tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbl.setFocusable(false);
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scrDanhSachPhong.setViewportView(tbl);
 //		Căn phải column 3 table
