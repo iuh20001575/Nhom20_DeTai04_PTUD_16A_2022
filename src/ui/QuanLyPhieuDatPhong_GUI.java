@@ -28,7 +28,9 @@ import javax.swing.event.AncestorListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import components.button.Button;
 import components.controlPanel.ControlPanel;
@@ -290,22 +292,23 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		tbl.setAutoCreateRowSorter(true);
 		tableModel = new DefaultTableModel(new String[] { "Mã phiếu đặt", "SĐT khách", "Thời gian lập phiếu",
 				"Thời gian nhận phòng", "Phòng", "Trạng thái" }, 0);
+		JTableHeader tblHeader = tbl.getTableHeader();
+		TableColumnModel tableColumnModel = tbl.getColumnModel();
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
 
-		tbl.getColumnModel().getColumn(0).setPreferredWidth(150);
-		tbl.getColumnModel().getColumn(1).setPreferredWidth(150);
-		tbl.getColumnModel().getColumn(2).setPreferredWidth(200);
-		tbl.getColumnModel().getColumn(3).setPreferredWidth(200);
-		tbl.getColumnModel().getColumn(4).setPreferredWidth(218);
-		tbl.getColumnModel().getColumn(5).setPreferredWidth(125);
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tableColumnModel.getColumn(0).setPreferredWidth(150);
+		tableColumnModel.getColumn(1).setPreferredWidth(150);
+		tableColumnModel.getColumn(2).setPreferredWidth(200);
+		tableColumnModel.getColumn(3).setPreferredWidth(200);
+		tableColumnModel.getColumn(4).setPreferredWidth(218);
+		tableColumnModel.getColumn(5).setPreferredWidth(125);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scr.setViewportView(tbl);
 

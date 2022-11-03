@@ -33,7 +33,9 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import components.button.Button;
 import components.notification.Notification;
@@ -494,27 +496,29 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 		tableModel = new DefaultTableModel(
 				new String[] { "STT", "Tên dịch vụ", "Số lượng/Thời gian", "Đơn giá", "Thành tiền" }, 0);
+		JTableHeader tblHeader = tbl.getTableHeader();
+		TableColumnModel tableColumnModel = tbl.getColumnModel();
 
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tbl.getColumnModel().getColumn(0).setPreferredWidth(40);
-		tbl.getColumnModel().getColumn(1).setPreferredWidth(170);
-		tbl.getColumnModel().getColumn(2).setPreferredWidth(150);
-		tbl.getColumnModel().getColumn(3).setPreferredWidth(123);
-		tbl.getColumnModel().getColumn(4).setPreferredWidth(123);
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 24));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tableColumnModel.getColumn(0).setPreferredWidth(40);
+		tableColumnModel.getColumn(1).setPreferredWidth(170);
+		tableColumnModel.getColumn(2).setPreferredWidth(150);
+		tableColumnModel.getColumn(3).setPreferredWidth(123);
+		tableColumnModel.getColumn(4).setPreferredWidth(123);
+		tblHeader
+				.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 24));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(24);
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
-		tbl.getColumnModel().getColumn(0).setCellRenderer(dtcr);
-		tbl.getColumnModel().getColumn(2).setCellRenderer(dtcr);
-		tbl.getColumnModel().getColumn(3).setCellRenderer(dtcr);
-		tbl.getColumnModel().getColumn(4).setCellRenderer(dtcr);
+		tableColumnModel.getColumn(0).setCellRenderer(dtcr);
+		tableColumnModel.getColumn(2).setCellRenderer(dtcr);
+		tableColumnModel.getColumn(3).setCellRenderer(dtcr);
+		tableColumnModel.getColumn(4).setCellRenderer(dtcr);
 		scr.setViewportView(tbl);
 
 //		Sự kiện window

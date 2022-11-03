@@ -95,7 +95,6 @@ public class SplashScreen_GUI extends JWindow {
 							dispose();
 						}
 					} catch (Exception e) {
-						// TODO: handle exception
 					}
 				}
 			}

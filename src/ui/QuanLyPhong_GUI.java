@@ -31,10 +31,13 @@ import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import components.button.Button;
 import components.comboBox.ComboBox;
+import components.controlPanel.ControlPanel;
 import components.jDialog.Glass;
 import components.jDialog.JDialogCustom;
 import components.scrollbarCustom.ScrollBarCustom;
@@ -43,8 +46,6 @@ import dao.Phong_DAO;
 import entity.LoaiPhong;
 import entity.Phong;
 import utils.Utils;
-
-// TODO
 
 public class QuanLyPhong_GUI extends JPanel {
 
@@ -60,31 +61,33 @@ public class QuanLyPhong_GUI extends JPanel {
 	private JLabel lblThu;
 	private JLabel lblNgay;
 	private Glass glass;
-	private JFrame jFrame;
+	private Main jFrame;
 	private JFrame jFrameSub;
 	private QuanLyPhong_GUI _this;
 	private LoaiPhong_DAO LoaiPhong_DAO;
 	private Phong_DAO phong_DAO;
 	private ComboBox<String> cmbLoaiPhong, cmbSoLuongKhach;
+	private ControlPanel pnlControl;
 
 	/**
 	 * Create the panel.
 	 * 
 	 * @param _this
 	 */
-	public QuanLyPhong_GUI(JFrame jFrame) {
+	public QuanLyPhong_GUI(Main jFrame) {
 		LoaiPhong_DAO = new LoaiPhong_DAO();
 		phong_DAO = new Phong_DAO();
 
 		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
 		glass = new Glass();
 		this.jFrame = jFrame;
 		_this = this;
+		int left = Utils.getLeft(1086);
 
 		JPanel pnlHeader = new JPanel();
-		pnlHeader.setBounds(0, 6, 1086, 64);
+		pnlHeader.setBounds(left, 6, 1086, 64);
 		pnlHeader.setBackground(Utils.secondaryColor);
 		add(pnlHeader);
 		pnlHeader.setLayout(null);
@@ -155,7 +158,7 @@ public class QuanLyPhong_GUI extends JPanel {
 
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
-		pnlActions.setBounds(0, 90, 1086, 49);
+		pnlActions.setBounds(left, 90, 1086, 49);
 		add(pnlActions);
 		pnlActions.setLayout(null);
 
@@ -221,10 +224,12 @@ public class QuanLyPhong_GUI extends JPanel {
 
 		pnlActions.add(cmbSoLuongKhach);
 
+		int topPnlControl = Utils.getBodyHeight() - 84;
+
 		JScrollPane scr = new JScrollPane();
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(32, 171, 1022, 305);
+		scr.setBounds(Utils.getLeft(1022), 159, 1022, topPnlControl - 179);
 		scr.setBackground(Utils.primaryColor);
 		scr.getViewport().setBackground(Color.WHITE);
 
@@ -260,32 +265,37 @@ public class QuanLyPhong_GUI extends JPanel {
 		};
 		tbl.setForeground(Utils.getOpacity(Color.BLACK, 0.55f));
 		tbl.setAutoCreateRowSorter(true);
+		JTableHeader tblHeader = tbl.getTableHeader();
+		TableColumnModel tableColumnModel = tbl.getColumnModel();
 
 		tableModel = new DefaultTableModel(new String[] { "Mã phòng", "Loại phòng", "Giá tiền", "Số lượng khách" }, 0);
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-		tbl.getColumnModel().getColumn(0).setPreferredWidth(250);
-		tbl.getColumnModel().getColumn(1).setPreferredWidth(260);
-		tbl.getColumnModel().getColumn(2).setPreferredWidth(250);
-		tbl.getColumnModel().getColumn(3).setPreferredWidth(250);
+		tableColumnModel.getColumn(0).setPreferredWidth(250);
+		tableColumnModel.getColumn(1).setPreferredWidth(260);
+		tableColumnModel.getColumn(2).setPreferredWidth(250);
+		tableColumnModel.getColumn(3).setPreferredWidth(250);
 
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 20));
-		tbl.getTableHeader().setForeground(Utils.getOpacity(Color.BLACK, 0.55f));
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		tblHeader.setForeground(Utils.getOpacity(Color.BLACK, 0.55f));
 		tbl.setRowHeight(36);
 		scr.setViewportView(tbl);
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
-		tbl.getColumnModel().getColumn(2).setCellRenderer(dtcr);
-		tbl.getColumnModel().getColumn(3).setCellRenderer(dtcr);
+		tableColumnModel.getColumn(2).setCellRenderer(dtcr);
+		tableColumnModel.getColumn(3).setCellRenderer(dtcr);
+
+		pnlControl = new ControlPanel(Utils.getLeft(286), topPnlControl, jFrame);
+		this.add(pnlControl);
 
 		addRow(phong_DAO.getAllPhong());
+		pnlControl.setTbl(tbl);
 
 		clock = new Thread() {
 			@Override
@@ -375,6 +385,14 @@ public class QuanLyPhong_GUI extends JPanel {
 			}
 		});
 
+//		Sự kiện JTable
+		tbl.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				pnlControl.setTrangHienTai(tbl.getSelectedRow() + 1);
+			}
+		});
+
 		addAncestorListener(new AncestorListener() {
 			public void ancestorAdded(AncestorEvent event) {
 				clock.start();
@@ -445,5 +463,6 @@ public class QuanLyPhong_GUI extends JPanel {
 
 		setEmptyTable();
 		addRow(list);
+		pnlControl.setTbl(tbl);
 	}
 }
