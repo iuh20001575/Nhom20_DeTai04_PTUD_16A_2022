@@ -27,7 +27,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import components.button.Button;
 import components.comboBox.ComboBox;
@@ -247,21 +249,22 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 
 		tableModel = new DefaultTableModel(
 				new String[] { "Mã phòng", "Loại phòng", "Số người", "Giá tiền/ giờ", "Trạng thái" }, 0);
+		TableColumnModel tableColumnModel = tbl.getColumnModel();
+		JTableHeader tblHeader = tbl.getTableHeader();
 
 		tbl.setModel(tableModel);
 		tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbl.setFocusable(false);
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 24));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 24));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(24);
 
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
-		tbl.getColumnModel().getColumn(2).setCellRenderer(dtcr);
-		tbl.getColumnModel().getColumn(3).setCellRenderer(dtcr);
+		tableColumnModel.getColumn(2).setCellRenderer(dtcr);
+		tableColumnModel.getColumn(3).setCellRenderer(dtcr);
 		scr.setViewportView(tbl);
 
 //		Sự kiện window

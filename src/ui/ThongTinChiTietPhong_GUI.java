@@ -42,7 +42,7 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 	private ComboBox<String> cmbSoLuong;
 	private ThongTinChiTietPhong_GUI _this;
 	private Phong_DAO phong_DAO;
-	private JFrame main;
+	private Main main;
 	private QuanLyPhong_GUI quanLyPhong_GUI;
 
 	/**
@@ -50,11 +50,10 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 	 * 
 	 * @param quanLyPhong_GUI
 	 */
-	public ThongTinChiTietPhong_GUI(JFrame jFrame, Phong phong, boolean isCapNhat) {
+	public ThongTinChiTietPhong_GUI(Main jFrame, Phong phong, boolean isCapNhat) {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		quanLyPhong_GUI = new QuanLyPhong_GUI(jFrame);

@@ -325,7 +325,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
@@ -518,7 +517,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				if (column == 2)
 					return true;
 				return false;
@@ -565,7 +563,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		tbl3.getModel().addTableModelListener(new TableModelListener() {
 			@Override
 			public void tableChanged(TableModelEvent e) {
-				// TODO Auto-generated method stub
 				if (e.getType() == TableModelEvent.UPDATE) {
 					int row3 = tbl3.getSelectedRow();
 

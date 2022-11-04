@@ -91,7 +91,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		taiKhoan_DAO = new TaiKhoan_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 		this.main = main;
-		int padding = (int) Math.floor((Utils.getBodyHeight() - 418) / 8);
+		int padding = (int) Math.floor((Utils.getBodyHeight() - 428) / 8);
 		int top = padding;
 
 		setBackground(Utils.secondaryColor);

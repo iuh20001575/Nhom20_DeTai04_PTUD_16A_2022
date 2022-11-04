@@ -246,7 +246,6 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
 		if (e.getStateChange() != ItemEvent.SELECTED) {
 			return;
 		}
@@ -317,7 +316,6 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 								month < 10 ? "0" + month : month, year));
 						sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

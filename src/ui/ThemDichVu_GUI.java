@@ -40,7 +40,6 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 	private Main main;
 
 	public ThemDichVu_GUI(Main jFrame) {
-
 		main = jFrame;
 		dichVu_DAO = new DichVu_DAO();
 		loaiDichVu_DAO = new LoaiDichVu_DAO();
@@ -56,28 +55,28 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		pnlContainer.setLayout(null);
 
 		TextField txtMa = new TextField();
-		txtMa.setLabelText("Mã dịch vụ:");
+		txtMa.setLabelText("Mã dịch vụ");
 		txtMa.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtMa.setBackground(new Color(203, 239, 255));
 		txtMa.setBounds(44, 25, 842, 55);
 		pnlContainer.add(txtMa);
 
 		TextField txtTen = new TextField();
-		txtTen.setLabelText("Tên dịch vụ:");
+		txtTen.setLabelText("Tên dịch vụ");
 		txtTen.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTen.setBackground(new Color(203, 239, 255));
 		txtTen.setBounds(44, 105, 842, 55);
 		pnlContainer.add(txtTen);
 
 		TextField txtDonViTinh = new TextField();
-		txtDonViTinh.setLabelText("Đơn vị tính:");
+		txtDonViTinh.setLabelText("Đơn vị tính");
 		txtDonViTinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtDonViTinh.setBackground(new Color(203, 239, 255));
 		txtDonViTinh.setBounds(44, 195, 371, 55);
 		pnlContainer.add(txtDonViTinh);
 
 		TextField txtSoLuong = new TextField();
-		txtSoLuong.setLabelText("Số lượng:");
+		txtSoLuong.setLabelText("Số lượng");
 		txtSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtSoLuong.setBackground(new Color(203, 239, 255));
 		txtSoLuong.setBounds(516, 195, 371, 55);
@@ -94,7 +93,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		pnlContainer.add(cmbLoaiDichVu);
 
 		TextField txtGiaMua = new TextField();
-		txtGiaMua.setLabelText("Giá mua:");
+		txtGiaMua.setLabelText("Giá mua");
 		txtGiaMua.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtGiaMua.setBackground(new Color(203, 239, 255));
 		txtGiaMua.setBounds(516, 285, 371, 50);
@@ -201,7 +200,6 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
 		if (e.getStateChange() != ItemEvent.SELECTED) {
 			return;
 		}
@@ -241,7 +239,6 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 								month < 10 ? "0" + month : month, year));
 						sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

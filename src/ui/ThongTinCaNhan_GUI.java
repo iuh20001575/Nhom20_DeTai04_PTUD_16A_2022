@@ -84,14 +84,18 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		taiKhoan_DAO = new TaiKhoan_DAO();
 		diaChi_DAO = new DiaChi_DAO();
 		this.main = main;
+		int padding = (int) Math.floor((Utils.getBodyHeight() - 363) * 1.0 / 7);
+		int top = padding;
+		int left = Utils.getLeft(948);
 
 		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
 
 		JPanel pnlRow1 = new JPanel();
 		pnlRow1.setBackground(Utils.secondaryColor);
-		pnlRow1.setBounds(69, 20, 948, 55);
+		pnlRow1.setBounds(left, top, 948, 55);
+		top += padding + 55;
 		this.add(pnlRow1);
 		pnlRow1.setLayout(null);
 
@@ -116,7 +120,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		JPanel pnlRow2 = new JPanel();
 		pnlRow2.setLayout(null);
 		pnlRow2.setBackground(new Color(203, 239, 255));
-		pnlRow2.setBounds(69, 95, 948, 55);
+		pnlRow2.setBounds(left, top, 948, 55);
+		top += padding + 55;
 		this.add(pnlRow2);
 
 		txtCCCD = new TextField();
@@ -140,7 +145,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		JPanel pnlRow3 = new JPanel();
 		pnlRow3.setLayout(null);
 		pnlRow3.setBackground(new Color(203, 239, 255));
-		pnlRow3.setBounds(69, 170, 948, 55);
+		pnlRow3.setBounds(left, top, 948, 55);
+		top += padding + 55;
 		this.add(pnlRow3);
 
 		txtNgaySinh = new TextField();
@@ -194,7 +200,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 		JPanel pnlRow4 = new JPanel();
 		pnlRow4.setBackground(Utils.secondaryColor);
-		pnlRow4.setBounds(69, 245, 948, 65);
+		pnlRow4.setBounds(left, top, 948, 65);
+		top += padding + 65;
 		this.add(pnlRow4);
 		pnlRow4.setLayout(null);
 
@@ -228,7 +235,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		JPanel pnlRow5 = new JPanel();
 		pnlRow5.setLayout(null);
 		pnlRow5.setBackground(new Color(203, 239, 255));
-		pnlRow5.setBounds(69, 330, 948, 55);
+		pnlRow5.setBounds(left, top, 948, 55);
+		top += padding + 55;
 		this.add(pnlRow5);
 
 		txtDiaChiCT = new TextField();
@@ -251,7 +259,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
-		pnlActions.setBounds(69, 427, 948, 48);
+		pnlActions.setBounds(left, top, 948, 48);
 		this.add(pnlActions);
 		pnlActions.setLayout(null);
 

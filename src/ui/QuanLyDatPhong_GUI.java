@@ -55,7 +55,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private Glass glass;
 	private final int heightPhong = 130;
 	private JDialogCustom jDialog;
-	private JFrame jFrame;
+	private Main jFrame;
 	private JFrame jFrameSub;
 	private JLabel lblDate;
 	private JLabel lblSoLuongPhongCho;
@@ -88,10 +88,11 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	/**
 	 * Create the frame.
 	 */
-	public QuanLyDatPhong_GUI(JFrame jFrame) {
+	public QuanLyDatPhong_GUI(Main jFrame) {
 		addAncestorListener(new AncestorListener() {
 			@Override
 			public void ancestorAdded(AncestorEvent event) {
+				QuanLyDatPhong_GUI.this.jFrame.setWidthHeader(1082);
 			}
 
 			@Override
@@ -101,6 +102,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			@Override
 			@SuppressWarnings("deprecation")
 			public void ancestorRemoved(AncestorEvent event) {
+				QuanLyDatPhong_GUI.this.jFrame.setWidthHeader(1054);
 				clock.stop();
 			}
 		});

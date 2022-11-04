@@ -51,8 +51,8 @@ public class Main extends JFrame {
 	private NhanVien_DAO nhanVien_DAO;
 	private JPanel pnlBody;
 	private Menu footer;
-
 	private DatPhong_DAO datPhong_DAO;
+	private JPanel pnlHeader;
 
 	/**
 	 * Create the frame.
@@ -88,15 +88,15 @@ public class Main extends JFrame {
 		pnlContent.add(pnlHeaderWrapper);
 		pnlHeaderWrapper.setLayout(null);
 
-		JPanel pnlHeader = new JPanel();
+		pnlHeader = new JPanel();
 		pnlHeader.setBackground(Utils.primaryColor);
-		pnlHeader.setBounds((int) Math.ceil((Utils.getScreenWidth() - 1086) / 2), 0, 1086, Utils.getHeaderHeight());
+		pnlHeader.setBounds(Utils.getLeft(1054), 0, 1054, Utils.getHeaderHeight());
 		pnlHeaderWrapper.add(pnlHeader);
 		pnlHeader.setLayout(null);
 
 		Button btnMenu = new Button("|||");
 		btnMenu.setFocusable(false);
-		btnMenu.setBounds(0, 16, 38, 38);
+		btnMenu.setBounds(-2, 14, 42, 42);
 		btnMenu.setForeground(Utils.primaryColor);
 		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
 		btnMenu.setBorder(BorderFactory.createEmptyBorder());
@@ -121,7 +121,7 @@ public class Main extends JFrame {
 		btnBack.setColorClick(Utils.primaryColor);
 		btnBack.setBorderColor(Utils.primaryColor);
 		btnBack.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnBack.setBounds(1016, 1, 62, 62);
+		btnBack.setBounds(992, 1, 62, 62);
 		pnlHeader.add(btnBack);
 //		End Default Layout
 
@@ -268,6 +268,12 @@ public class Main extends JFrame {
 		}
 		addPnlBody(panelUI);
 		menu.setSelectedMenu(panelUI.getIndex(), panelUI.getIndexSubmenu());
+	}
+
+	public void setWidthHeader(int width) {
+		pnlHeader.setBounds(Utils.getLeft(width), 0, width, Utils.getHeaderHeight());
+		btnBack.setBounds(width - 62, 1, 62, 62);
+		repaint();
 	}
 
 	/**
