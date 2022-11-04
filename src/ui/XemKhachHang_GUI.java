@@ -59,31 +59,48 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		khachHang_DAO = new KhachHang_DAO();
 		DiaChi_DAO = new DiaChi_DAO();
 		this.khachHang = khachHang_DAO.getKhachHangTheoMa(khachHang.getMaKhachHang());
+		int padding = (int) Math.ceil((Utils.getBodyHeight() - 365) * 1.0 / 7);
+		int top = padding;
+		int left = Utils.getLeft(792);
 
 		setBackground(new Color(203, 239, 255));
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
+
+		JPanel pnlRow1 = new JPanel();
+		pnlRow1.setBounds(left, top, 792, 55);
+		top += padding + 55;
+		pnlRow1.setBackground(Utils.secondaryColor);
+		pnlRow1.setLayout(null);
+		add(pnlRow1);
 
 		txtMa = new TextField();
 		txtMa.setLabelText("Mã khách hàng:");
 		txtMa.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtMa.setBackground(new Color(203, 239, 255));
-		txtMa.setBounds(44, 5, 371, 55);
-		this.add(txtMa);
+		txtMa.setBounds(0, 0, 371, 55);
+		pnlRow1.add(txtMa);
 
 		txtTen = new TextField();
 		txtTen.setLabelText("Họ tên khách hàng:");
 		txtTen.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTen.setBackground(new Color(203, 239, 255));
-		txtTen.setBounds(516, 5, 371, 55);
-		this.add(txtTen);
+		txtTen.setBounds(421, 0, 371, 55);
+		pnlRow1.add(txtTen);
+
+		JPanel pnlRow2 = new JPanel();
+		pnlRow2.setBounds(left, top, 792, 55);
+		top += padding + 55;
+		pnlRow2.setBackground(Utils.secondaryColor);
+		pnlRow2.setLayout(null);
+		add(pnlRow2);
 
 		txtCCCD = new TextField();
 		txtCCCD.setLabelText("Căn cước công dân:");
 		txtCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtCCCD.setBackground(new Color(203, 239, 255));
-		txtCCCD.setBounds(44, 85, 371, 55);
-		this.add(txtCCCD);
+		txtCCCD.setBounds(0, 0, 371, 55);
+		pnlRow2.add(txtCCCD);
 
 		txtNgaySinh = new TextField();
 		txtNgaySinh.setIcon(new ImageIcon("Icon\\add-event 2.png"));
@@ -92,16 +109,23 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		txtNgaySinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtNgaySinh.setColumns(10);
 		txtNgaySinh.setBackground(new Color(203, 239, 255));
-		txtNgaySinh.setBounds(516, 85, 371, 55);
-		this.add(txtNgaySinh);
+		txtNgaySinh.setBounds(421, 0, 371, 55);
+		pnlRow2.add(txtNgaySinh);
 		dateChoose = new DateChooser();
 		dateChoose.setDateFormat("dd/MM/yyyy");
 		dateChoose.setTextRefernce(txtNgaySinh);
 
+		JPanel pnlRow3 = new JPanel();
+		pnlRow3.setBounds(left, top, 792, 55);
+		top += padding + 55;
+		pnlRow3.setBackground(Utils.secondaryColor);
+		pnlRow3.setLayout(null);
+		add(pnlRow3);
+
 		JPanel pnlGioiTinh = new JPanel();
 		pnlGioiTinh.setBackground(Utils.secondaryColor);
-		pnlGioiTinh.setBounds(44, 165, 371, 55);
-		this.add(pnlGioiTinh);
+		pnlGioiTinh.setBounds(0, 0, 371, 55);
+		pnlRow3.add(pnlGioiTinh);
 		pnlGioiTinh.setLayout(null);
 
 		JLabel lblGioiTinh = new JLabel("Giới tính:");
@@ -140,14 +164,21 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		txtSDT.setLabelText("Số điện thoại:");
 		txtSDT.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtSDT.setBackground(new Color(203, 239, 255));
-		txtSDT.setBounds(516, 165, 371, 50);
-		this.add(txtSDT);
+		txtSDT.setBounds(421, 0, 371, 55);
+		pnlRow3.add(txtSDT);
+
+		JPanel pnlRow4 = new JPanel();
+		pnlRow4.setBounds(left, top, 792, 65);
+		top += padding + 65;
+		pnlRow4.setBackground(Utils.secondaryColor);
+		pnlRow4.setLayout(null);
+		add(pnlRow4);
 
 		JLabel lblDiaChi = new JLabel("Địa chỉ:");
 		lblDiaChi.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		lblDiaChi.setBounds(44, 245, 200, 19);
+		lblDiaChi.setBounds(0, 0, 200, 19);
 		lblDiaChi.setForeground(Utils.labelTextField);
-		this.add(lblDiaChi);
+		pnlRow4.add(lblDiaChi);
 
 		cmbTinh = new ComboBox<String>();
 		ArrayList<Tinh> listTinh = (ArrayList<Tinh>) DiaChi_DAO.getTinh();
@@ -156,8 +187,8 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		}
 		cmbTinh.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbTinh.setBackground(Utils.primaryColor);
-		cmbTinh.setBounds(44, 280, 220, 36);
-		this.add(cmbTinh);
+		cmbTinh.setBounds(0, 29, 220, 36);
+		pnlRow4.add(cmbTinh);
 
 		cmbQuan = new ComboBox<String>();
 		String tinhSelected = (String) cmbTinh.getSelectedItem();
@@ -170,17 +201,22 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 
 		cmbQuan.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbQuan.setBackground(new Color(140, 177, 180));
-		cmbQuan.setBounds(324, 280, 220, 36);
-		this.add(cmbQuan);
+		cmbQuan.setBounds(250, 29, 220, 36);
+		pnlRow4.add(cmbQuan);
 
 		cmbPhuong = new ComboBox<String>();
 		cmbQuan.setModel(new DefaultComboBoxModel<String>());
-		// cmbPhuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Phong
-		// Điền" }));
 		cmbPhuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbPhuong.setBackground(new Color(140, 177, 180));
-		cmbPhuong.setBounds(604, 280, 220, 36);
-		this.add(cmbPhuong);
+		cmbPhuong.setBounds(500, 29, 220, 36);
+		pnlRow4.add(cmbPhuong);
+
+		JPanel pnlRow5 = new JPanel();
+		pnlRow5.setBounds(left, top, 792, 55);
+		top += padding + 55;
+		pnlRow5.setBackground(Utils.secondaryColor);
+		pnlRow5.setLayout(null);
+		add(pnlRow5);
 
 		txtDiaChiCT = new TextField();
 		txtDiaChiCT.setLineColor(new Color(149, 200, 248));
@@ -188,8 +224,14 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		txtDiaChiCT.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtDiaChiCT.setColumns(10);
 		txtDiaChiCT.setBackground(new Color(203, 239, 255));
-		txtDiaChiCT.setBounds(44, 341, 371, 55);
-		this.add(txtDiaChiCT);
+		txtDiaChiCT.setBounds(0, 0, 371, 55);
+		pnlRow5.add(txtDiaChiCT);
+
+		JPanel pnlActions = new JPanel();
+		pnlActions.setBounds(left, top, 792, 50);
+		pnlActions.setBackground(Utils.secondaryColor);
+		pnlActions.setLayout(null);
+		add(pnlActions);
 
 		Button btnCapNhat = new Button("Cập nhật");
 		btnCapNhat.setUI(new MetalButtonUI() {
@@ -206,8 +248,8 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		btnCapNhat.setColor(new Color(140, 177, 180));
 		btnCapNhat.setBorderColor(new Color(203, 239, 255));
 		btnCapNhat.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnCapNhat.setBounds(100, 420, 250, 50);
-		this.add(btnCapNhat);
+		btnCapNhat.setBounds(-2, -2, 254, 54);
+		pnlActions.add(btnCapNhat);
 
 		btnCapNhat.addMouseListener(new MouseAdapter() {
 			@Override
@@ -232,8 +274,8 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		btnLuu.setColor(new Color(140, 177, 180));
 		btnLuu.setBorderColor(new Color(203, 239, 255));
 		btnLuu.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnLuu.setBounds(500, 420, 250, 50);
-		this.add(btnLuu);
+		btnLuu.setBounds(268, -2, 254, 54);
+		pnlActions.add(btnLuu);
 
 		btnLuu.addMouseListener(new MouseAdapter() {
 			@Override
@@ -270,8 +312,8 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		btnHuy.setColor(new Color(140, 177, 180));
 		btnHuy.setBorderColor(new Color(203, 239, 255));
 		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnHuy.setBounds(800, 420, 250, 50);
-		this.add(btnHuy);
+		btnHuy.setBounds(540, -2, 254, 54);
+		pnlActions.add(btnHuy);
 
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
@@ -286,8 +328,6 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		cmbPhuong.addItemListener(this);
 
 		setKhachHangVaoForm(this.khachHang);
-		// txtMa.setEnabled(false);
-
 		setEnabledForm(false);
 	}
 
