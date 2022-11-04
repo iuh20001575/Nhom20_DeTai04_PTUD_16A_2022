@@ -4,28 +4,27 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
 import connectDB.ConnectDB;
+import entity.ChiTietDatPhong;
 import entity.ChiTietDichVu;
+import entity.DichVu;
+import entity.DonDatPhong;
+import entity.Phong;
 
 public class ChiTietDichVu_DAO {
-	private DatPhong_DAO datPhong_DAO;
-	private DichVu_DAO dichVu_DAO;
-
-	public ChiTietDichVu_DAO() {
-		datPhong_DAO = new DatPhong_DAO();
-		dichVu_DAO = new DichVu_DAO();
-	}
-
 	private ChiTietDichVu getChiTietDichVu(ResultSet resultSet) throws SQLException {
 		String maDV = resultSet.getString(1);
 		String maDP = resultSet.getString(2);
-		String soLuong = resultSet.getString(3);
+		String phong = resultSet.getString(3);
+		Time gioVao = resultSet.getTime(4);
+		int soLuong = resultSet.getInt(5);
 
-		return new ChiTietDichVu(dichVu_DAO.getDichVuTheoMa(maDV), datPhong_DAO.getDatPhong(maDP),
-				Integer.valueOf(soLuong));
+		return new ChiTietDichVu(new DichVu(maDV),
+				new ChiTietDatPhong(new DonDatPhong(maDP), new Phong(phong), gioVao.toLocalTime()), soLuong);
 	}
 
 	public List<ChiTietDichVu> getDichVuTheoPhieuDatPhong(String datPhong) {
@@ -113,7 +112,7 @@ public class ChiTietDichVu_DAO {
 		try {
 			preparedStatement = ConnectDB.getConnection().prepareStatement("INSERT ChiTietDichVu VALUES (?, ?, ?)");
 			preparedStatement.setString(1, chiTietDichVu.getDichVu().getMaDichVu());
-			preparedStatement.setString(2, chiTietDichVu.getDatPhong().getMaDatPhong());
+			preparedStatement.setString(2, chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getMaDonDatPhong());
 			preparedStatement.setInt(3, chiTietDichVu.getSoLuong());
 
 			res = preparedStatement.executeUpdate();

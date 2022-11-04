@@ -469,7 +469,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 				if (btnLuu.isEnabled()) {
 					if (validator()) {
 						NhanVien nhanVien = getNhanVienTuForm();
-						if (nhanVien_DAO.capNhatNhanVien(nhanVien)) {
+						if (nhanVien_DAO.capNhatNhanVien(nhanVien, new TaiKhoan(nhanVien, txtMatKhau.getText()))) {
 							new Notification(main, components.notification.Notification.Type.SUCCESS,
 									"Cập nhật thông tin nhân viên thành công").showNotification();
 							btnCapNhat.setVisible(true);
@@ -571,13 +571,11 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		String diaChiCuThe = txtDiaChiCT.getText().trim();
 		String luong = txtLuong.getText().trim();
 		double luongDouble = luong.endsWith(" ₫") ? Utils.convertStringToTienTe(luong) : Double.parseDouble(luong);
-		String matKhau = txtMatKhau.getText().trim();
-		TaiKhoan taiKhoan = new TaiKhoan(maNhanVien, matKhau);
 		boolean gioiTinh = radNam.isSelected();
 		ChucVu chucVu = NhanVien.convertStringToChucVu((String) cmbChucVu.getSelectedItem());
 		TrangThai trangThai = NhanVien.convertStringToTrangThai((String) cmbTrangThai.getSelectedItem());
 		return new NhanVien(maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, tinh, quan, phuong, diaChiCuThe,
-				chucVu, luongDouble, taiKhoan, trangThai);
+				chucVu, luongDouble, trangThai);
 	}
 
 	@Override

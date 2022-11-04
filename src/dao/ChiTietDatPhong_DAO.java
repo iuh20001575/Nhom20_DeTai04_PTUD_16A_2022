@@ -10,7 +10,7 @@ import java.util.List;
 
 import connectDB.ConnectDB;
 import entity.ChiTietDatPhong;
-import entity.DatPhong;
+import entity.DonDatPhong;
 import entity.Phong;
 import entity.Phong.TrangThai;
 
@@ -29,7 +29,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 	 * @throws SQLException
 	 */
 	private ChiTietDatPhong getChiTietDatPhong(ResultSet resultSet) throws SQLException {
-		DatPhong datPhong = new DatPhong(resultSet.getString("datPhong"));
+		DonDatPhong datPhong = new DonDatPhong(resultSet.getString("datPhong"));
 		Phong phong = new Phong(resultSet.getString("phong"));
 		LocalTime gioVao = resultSet.getTime("gioVao").toLocalTime();
 		Time time = resultSet.getTime("gioRa");
@@ -43,13 +43,13 @@ public class ChiTietDatPhong_DAO extends DAO {
 	 * @param datPhong
 	 * @return
 	 */
-	public List<ChiTietDatPhong> getAllChiTietDatPhong(DatPhong datPhong) {
+	public List<ChiTietDatPhong> getAllChiTietDatPhong(DonDatPhong datPhong) {
 		List<ChiTietDatPhong> list = new ArrayList<>();
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE datPhong = ?");
-			preparedStatement.setString(1, datPhong.getMaDatPhong());
+			preparedStatement.setString(1, datPhong.getMaDonDatPhong());
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -81,7 +81,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 				String maPhong = resultSet.getString(2);
 				LocalTime gioVao = resultSet.getTime(3).toLocalTime();
 //				Time.valueOf(gioVao);
-				return new ChiTietDatPhong(new DatPhong(datPhong), new Phong(maPhong), gioVao);
+				return new ChiTietDatPhong(new DonDatPhong(datPhong), new Phong(maPhong), gioVao);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

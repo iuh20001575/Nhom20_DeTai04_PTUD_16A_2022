@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connectDB.ConnectDB;
-import entity.DatPhong;
-import entity.DatPhong.TrangThai;
+import entity.DonDatPhong;
+import entity.DonDatPhong.TrangThai;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.Phong;
@@ -36,7 +36,7 @@ public class DatPhong_DAO extends DAO {
 	 * @return
 	 * @throws SQLException
 	 */
-	private DatPhong getDatPhong(ResultSet resultSet) throws SQLException {
+	private DonDatPhong getDatPhong(ResultSet resultSet) throws SQLException {
 		String maDatPhong = resultSet.getString("maDatPhong");
 		KhachHang khachHang = new KhachHang(resultSet.getString("khachHang"));
 		NhanVien nhanVien = new NhanVien(resultSet.getString("nhanVien"));
@@ -44,8 +44,8 @@ public class DatPhong_DAO extends DAO {
 		LocalTime gioDatPhong = resultSet.getTime("gioDatPhong").toLocalTime();
 		LocalDate ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
 		LocalTime gioNhanPhong = resultSet.getTime("gioNhanPhong").toLocalTime();
-		TrangThai trangThai = DatPhong.convertStringToTrangThai(resultSet.getString("trangThai"));
-		return new DatPhong(maDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong, gioNhanPhong,
+		TrangThai trangThai = DonDatPhong.convertStringToTrangThai(resultSet.getString("trangThai"));
+		return new DonDatPhong(maDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong, gioNhanPhong,
 				trangThai);
 	}
 
@@ -55,7 +55,7 @@ public class DatPhong_DAO extends DAO {
 	 * @param maDatPhong
 	 * @return
 	 */
-	public DatPhong getDatPhong(String maDatPhong) {
+	public DonDatPhong getDatPhong(String maDatPhong) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT * FROM DatPhong WHERE maDatPhong = ?");
@@ -155,7 +155,7 @@ public class DatPhong_DAO extends DAO {
 			preparedStatement.setTime(5, time);
 			preparedStatement.setDate(6, date);
 			preparedStatement.setTime(7, time);
-			preparedStatement.setString(8, DatPhong.convertTrangThaiToString(TrangThai.DangThue));
+			preparedStatement.setString(8, DonDatPhong.convertTrangThaiToString(TrangThai.DangThue));
 			int res = preparedStatement.executeUpdate();
 
 			if (res <= 0)
@@ -219,7 +219,7 @@ public class DatPhong_DAO extends DAO {
 			preparedStatement.setTime(5, time);
 			preparedStatement.setDate(6, Date.valueOf(ngayNhanPhong));
 			preparedStatement.setTime(7, Time.valueOf(gioNhanPhong));
-			preparedStatement.setString(8, DatPhong.convertTrangThaiToString(TrangThai.DangCho));
+			preparedStatement.setString(8, DonDatPhong.convertTrangThaiToString(TrangThai.DangCho));
 			int res = preparedStatement.executeUpdate();
 
 			if (res <= 0)
@@ -394,7 +394,7 @@ public class DatPhong_DAO extends DAO {
 	 * @param soDienThoai
 	 * @return
 	 */
-	public DatPhong getDatPhongNgayTheoSoDienThoai(String soDienThoai) {
+	public DonDatPhong getDatPhongNgayTheoSoDienThoai(String soDienThoai) {
 		String sql = "SELECT [maDatPhong], [khachHang], [nhanVien], [ngayDatPhong],"
 				+ "	[gioDatPhong], [ngayNhanPhong], [gioNhanPhong], [trangThai] FROM [dbo].[DatPhong] DP"
 				+ "	JOIN [dbo].[KhachHang] KH ON DP.[khachHang] = KH.[maKhachHang]"
@@ -418,8 +418,8 @@ public class DatPhong_DAO extends DAO {
 	 * 
 	 * @return
 	 */
-	public List<DatPhong> getAllDatPhongDangThue() {
-		List<DatPhong> list = new ArrayList<>();
+	public List<DonDatPhong> getAllDatPhongDangThue() {
+		List<DonDatPhong> list = new ArrayList<>();
 
 		String sql = "SELECT * FROM [dbo].[DatPhong] WHERE [trangThai] = N'Đang thuê'";
 		try {
@@ -561,8 +561,8 @@ public class DatPhong_DAO extends DAO {
 	 * 
 	 * @return
 	 */
-	public List<DatPhong> getPhongDatTruocTre() {
-		List<DatPhong> list = new ArrayList<>();
+	public List<DonDatPhong> getPhongDatTruocTre() {
+		List<DonDatPhong> list = new ArrayList<>();
 
 		try {
 			Statement statement = ConnectDB.getConnection().createStatement();

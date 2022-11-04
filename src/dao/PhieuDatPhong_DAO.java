@@ -3,12 +3,13 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import connectDB.ConnectDB;
 import entity.ChiTietDatPhong;
-import entity.DatPhong;
+import entity.DonDatPhong;
 import entity.Phong;
 
 public class PhieuDatPhong_DAO {
@@ -20,8 +21,10 @@ public class PhieuDatPhong_DAO {
 	 * @throws SQLException
 	 */
 	private ChiTietDatPhong getChiTietDatPhong(ResultSet resultSet) throws SQLException {
-		DatPhong datPhong = new DatPhong(resultSet.getString("datPhong"));
-		return new ChiTietDatPhong(datPhong);
+		DonDatPhong donDatPhong = new DonDatPhong(resultSet.getString("donDatPhong"));
+		Phong phong = new Phong(resultSet.getString("phong"));
+		LocalTime gioVao = resultSet.getTime("gioVao").toLocalTime();
+		return new ChiTietDatPhong(donDatPhong, phong, gioVao);
 	}
 
 	/**
@@ -30,19 +33,16 @@ public class PhieuDatPhong_DAO {
 	 * @param phong
 	 * @return
 	 */
-	public ChiTietDatPhong getChiTietDatPhongTheoMa(DatPhong datPhong) {
+	public ChiTietDatPhong getChiTietDatPhongTheoMa(DonDatPhong datPhong) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE datPhong = ? ");
-			preparedStatement.setString(1, datPhong.getMaDatPhong());
+			preparedStatement.setString(1, datPhong.getMaDonDatPhong());
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
-			if (resultSet.next()) {
-				String maDatPhong = resultSet.getString(1);
-				String maPhong = resultSet.getString(2);
-				return new ChiTietDatPhong(new DatPhong(maDatPhong), new Phong(maPhong));
-			}
+			if (resultSet.next())
+				return getChiTietDatPhong(resultSet);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

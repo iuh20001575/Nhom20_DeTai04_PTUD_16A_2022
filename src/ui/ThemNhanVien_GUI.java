@@ -38,7 +38,6 @@ import entity.NhanVien.ChucVu;
 import entity.NhanVien.TrangThai;
 import entity.Phuong;
 import entity.Quan;
-import entity.TaiKhoan;
 import entity.Tinh;
 import utils.Utils;
 
@@ -512,13 +511,11 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		String diaChiCuThe = txtDiaChiCT.getText().trim();
 		String luong = txtLuong.getText().trim();
 		double luongDouble = luong.endsWith(" ₫") ? Utils.convertStringToTienTe(luong) : Double.parseDouble(luong);
-		String matKhau = txtMatKhau.getText().trim();
-		TaiKhoan taiKhoan = new TaiKhoan(maNhanVien, matKhau);
 		boolean gioiTinh = radNam.isSelected();
 		ChucVu chucVu = NhanVien.convertStringToChucVu((String) cmbChucVu.getSelectedItem());
 		TrangThai trangThai = NhanVien.convertStringToTrangThai((String) cmbTrangThai.getSelectedItem());
 		return new NhanVien(maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, tinh, quan, phuong, diaChiCuThe,
-				chucVu, luongDouble, taiKhoan, trangThai);
+				chucVu, luongDouble, trangThai);
 	}
 
 	/**

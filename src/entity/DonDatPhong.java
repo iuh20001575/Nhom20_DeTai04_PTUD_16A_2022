@@ -4,140 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class DatPhong {
-	private String maDatPhong;
-	private KhachHang khachHang;
-	private NhanVien nhanVien;
-	private LocalDate ngayDatPhong;
-	private LocalTime gioDatPhong;
-	private LocalDate ngayNhanPhong;
-	private LocalTime gioNhanPhong;
-	private TrangThai trangThai;
-
-	public String getMaDatPhong() {
-		return maDatPhong;
-	}
-
-	public void setMaDatPhong(String maDatPhong) {
-		this.maDatPhong = maDatPhong;
-	}
-
-	public KhachHang getKhachHang() {
-		return khachHang;
-	}
-
-	public void setKhachHang(KhachHang khachHang) {
-		this.khachHang = khachHang;
-	}
-
-	public NhanVien getNhanVien() {
-		return nhanVien;
-	}
-
-	public void setNhanVien(NhanVien nhanVien) {
-		this.nhanVien = nhanVien;
-	}
-
-	public LocalDate getNgayDatPhong() {
-		return ngayDatPhong;
-	}
-
-	public void setNgayDatPhong(LocalDate ngayDatPhong) {
-		this.ngayDatPhong = ngayDatPhong;
-	}
-
-	public LocalTime getGioDatPhong() {
-		return gioDatPhong;
-	}
-
-	public void setGioDatPhong(LocalTime gioDatPhong) {
-		this.gioDatPhong = gioDatPhong;
-	}
-
-	public LocalDate getNgayNhanPhong() {
-		return ngayNhanPhong;
-	}
-
-	public void setNgayNhanPhong(LocalDate ngayNhanPhong) {
-		this.ngayNhanPhong = ngayNhanPhong;
-	}
-
-	public LocalTime getGioNhanPhong() {
-		return gioNhanPhong;
-	}
-
-	public void setGioNhanPhong(LocalTime gioNhanPhong) {
-		this.gioNhanPhong = gioNhanPhong;
-	}
-
-	public TrangThai getTrangThai() {
-		return trangThai;
-	}
-
-	public void setTrangThai(TrangThai trangThai) {
-		this.trangThai = trangThai;
-	}
-
-	public DatPhong() {
-		super();
-	}
-
-	public DatPhong(String maDatPhong) {
-		super();
-		this.maDatPhong = maDatPhong;
-	}
-
-	public DatPhong(String maDatPhong, KhachHang khachHang, NhanVien nhanVien, LocalDate ngayDatPhong,
-			LocalTime gioDatPhong, LocalDate ngayNhanPhong, LocalTime gioNhanPhong, TrangThai trangThai) {
-		super();
-		this.maDatPhong = maDatPhong;
-		this.khachHang = khachHang;
-		this.nhanVien = nhanVien;
-		this.ngayDatPhong = ngayDatPhong;
-		this.gioDatPhong = gioDatPhong;
-		this.ngayNhanPhong = ngayNhanPhong;
-		this.gioNhanPhong = gioNhanPhong;
-		this.trangThai = trangThai;
-	}
-
-	@Override
-	public String toString() {
-		return "DatPhong [maDatPhong=" + maDatPhong + ", khachHang=" + khachHang + ", nhanVien=" + nhanVien
-				+ ", ngayDatPhong=" + ngayDatPhong + ", gioDatPhong=" + gioDatPhong + ", ngayNhanPhong=" + ngayNhanPhong
-				+ ", gioNhanPhong=" + gioNhanPhong + ", trangThai=" + trangThai + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(maDatPhong);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		DatPhong other = (DatPhong) obj;
-		return Objects.equals(maDatPhong, other.maDatPhong);
-	}
-
+public class DonDatPhong {
 	/**
-	 * Chuyển trạng thái sang String
+	 * Các trạng thái đặt phòng
 	 * 
-	 * @param trangThai
-	 * @return
+	 * @author ThaoHa
+	 *
 	 */
-	public static String convertTrangThaiToString(TrangThai trangThai) {
-		if (trangThai.equals(TrangThai.DaHuy))
-			return "Đã hủy";
-		if (trangThai.equals(TrangThai.DangCho))
-			return "Đang chờ";
-		if (trangThai.equals(TrangThai.DangThue))
-			return "Đang thuê";
-		return "Đã trả";
+	public static enum TrangThai {
+		DaHuy, DangCho, DangThue, DaTra;
 	}
 
 	/**
@@ -157,12 +32,137 @@ public class DatPhong {
 	}
 
 	/**
-	 * Các trạng thái đặt phòng
+	 * Chuyển trạng thái sang String
 	 * 
-	 * @author ThaoHa
-	 *
+	 * @param trangThai
+	 * @return
 	 */
-	public static enum TrangThai {
-		DaHuy, DangCho, DangThue, DaTra;
+	public static String convertTrangThaiToString(TrangThai trangThai) {
+		if (trangThai.equals(TrangThai.DaHuy))
+			return "Đã hủy";
+		if (trangThai.equals(TrangThai.DangCho))
+			return "Đang chờ";
+		if (trangThai.equals(TrangThai.DangThue))
+			return "Đang thuê";
+		return "Đã trả";
+	}
+
+	private LocalTime gioDatPhong;
+	private LocalTime gioNhanPhong;
+	private KhachHang khachHang;
+	private String maDonDatPhong;
+	private LocalDate ngayDatPhong;
+	private LocalDate ngayNhanPhong;
+	private NhanVien nhanVien;
+	private TrangThai trangThai;
+
+	public DonDatPhong() {
+		super();
+	}
+
+	public DonDatPhong(String maDonDatPhong) {
+		super();
+		this.maDonDatPhong = maDonDatPhong;
+	}
+
+	public DonDatPhong(String maDonDatPhong, KhachHang khachHang, NhanVien nhanVien, LocalDate ngayDatPhong,
+			LocalTime gioDatPhong, LocalDate ngayNhanPhong, LocalTime gioNhanPhong, TrangThai trangThai) {
+		super();
+		this.maDonDatPhong = maDonDatPhong;
+		this.khachHang = khachHang;
+		this.nhanVien = nhanVien;
+		this.ngayDatPhong = ngayDatPhong;
+		this.gioDatPhong = gioDatPhong;
+		this.ngayNhanPhong = ngayNhanPhong;
+		this.gioNhanPhong = gioNhanPhong;
+		this.trangThai = trangThai;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DonDatPhong other = (DonDatPhong) obj;
+		return Objects.equals(maDonDatPhong, other.maDonDatPhong);
+	}
+
+	public LocalTime getGioDatPhong() {
+		return gioDatPhong;
+	}
+
+	public LocalTime getGioNhanPhong() {
+		return gioNhanPhong;
+	}
+
+	public KhachHang getKhachHang() {
+		return khachHang;
+	}
+
+	public String getMaDonDatPhong() {
+		return maDonDatPhong;
+	}
+
+	public LocalDate getNgayDatPhong() {
+		return ngayDatPhong;
+	}
+
+	public LocalDate getNgayNhanPhong() {
+		return ngayNhanPhong;
+	}
+
+	public NhanVien getNhanVien() {
+		return nhanVien;
+	}
+
+	public TrangThai getTrangThai() {
+		return trangThai;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(maDonDatPhong);
+	}
+
+	public void setGioDatPhong(LocalTime gioDatPhong) {
+		this.gioDatPhong = gioDatPhong;
+	}
+
+	public void setGioNhanPhong(LocalTime gioNhanPhong) {
+		this.gioNhanPhong = gioNhanPhong;
+	}
+
+	public void setKhachHang(KhachHang khachHang) {
+		this.khachHang = khachHang;
+	}
+
+	public void setMaDonDatPhong(String maDonDatPhong) {
+		this.maDonDatPhong = maDonDatPhong;
+	}
+
+	public void setNgayDatPhong(LocalDate ngayDatPhong) {
+		this.ngayDatPhong = ngayDatPhong;
+	}
+
+	public void setNgayNhanPhong(LocalDate ngayNhanPhong) {
+		this.ngayNhanPhong = ngayNhanPhong;
+	}
+
+	public void setNhanVien(NhanVien nhanVien) {
+		this.nhanVien = nhanVien;
+	}
+
+	public void setTrangThai(TrangThai trangThai) {
+		this.trangThai = trangThai;
+	}
+
+	@Override
+	public String toString() {
+		return "DonDatPhong [maDonDatPhong=" + maDonDatPhong + ", khachHang=" + khachHang + ", nhanVien=" + nhanVien
+				+ ", ngayDatPhong=" + ngayDatPhong + ", gioDatPhong=" + gioDatPhong + ", ngayNhanPhong=" + ngayNhanPhong
+				+ ", gioNhanPhong=" + gioNhanPhong + ", trangThai=" + trangThai + "]";
 	}
 }

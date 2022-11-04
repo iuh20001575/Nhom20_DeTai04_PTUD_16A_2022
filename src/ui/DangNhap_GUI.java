@@ -169,7 +169,7 @@ public class DangNhap_GUI extends JFrame {
 				@SuppressWarnings("deprecation")
 				String matKhau = txtMatKhau.getText();
 
-				boolean res = taiKhoan_DAO.isTaiKhoan(new TaiKhoan(maTaiKhoan, matKhau));
+				boolean res = taiKhoan_DAO.isTaiKhoan(new TaiKhoan(new entity.NhanVien(maTaiKhoan), matKhau));
 
 				if (res) {
 					NhanVien.setNhanVien(new entity.NhanVien(maTaiKhoan));

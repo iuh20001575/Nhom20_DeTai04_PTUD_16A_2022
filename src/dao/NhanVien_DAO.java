@@ -44,11 +44,10 @@ public class NhanVien_DAO {
 		String diaChiCuThe = resultSet.getString("diaChiCuThe");
 		String chucVu = resultSet.getString("chucVu");
 		double luong = resultSet.getDouble("luong");
-		String taiKhoan = resultSet.getString("taiKhoan");
 		String trangThai = resultSet.getString("trangThai");
 
 		return new NhanVien(maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, new Tinh(tinh), new Quan(quan),
-				new Phuong(phuong), diaChiCuThe, NhanVien.convertStringToChucVu(chucVu), luong, new TaiKhoan(taiKhoan),
+				new Phuong(phuong), diaChiCuThe, NhanVien.convertStringToChucVu(chucVu), luong,
 				NhanVien.convertStringToTrangThai(trangThai));
 	}
 
@@ -148,11 +147,12 @@ public class NhanVien_DAO {
 	 * Cập nhật thông tin nhân viên
 	 * 
 	 * @param nhanVien
+	 * @param taiKhoan
 	 * @return
 	 */
-	public boolean capNhatNhanVien(NhanVien nhanVien) {
+	public boolean capNhatNhanVien(NhanVien nhanVien, TaiKhoan taiKhoan) {
 		try {
-			if (!taiKhoan_DAO.capNhatMatKhau(nhanVien.getTaiKhoan()))
+			if (!taiKhoan_DAO.capNhatMatKhau(taiKhoan))
 				return rollback();
 
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(

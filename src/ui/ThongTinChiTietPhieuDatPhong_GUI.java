@@ -262,7 +262,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 	}
 
 	private void setPhieuDatPhongVaoForm(ChiTietDatPhong chiTietDatPhong) {
-		String maDatPhong = chiTietDatPhong.getDatPhong().getMaDatPhong();
+		String maDatPhong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
 		txtMaDatPhong.setText(maDatPhong);
 		txtMaKH.setText(datPhong_DAO.getDatPhong(maDatPhong).getKhachHang().getMaKhachHang());
 		txtHoTenKH.setText(datPhong_DAO.getDatPhong(maDatPhong).getKhachHang().getHoTen());

@@ -51,7 +51,7 @@ import dao.NhanVien_DAO;
 import dao.Phong_DAO;
 import entity.ChiTietDatPhong;
 import entity.ChiTietDichVu;
-import entity.DatPhong;
+import entity.DonDatPhong;
 import entity.DichVu;
 import entity.KhachHang;
 import entity.LoaiPhong;
@@ -71,7 +71,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	private ChiTietDichVu_DAO chiTietDichVu_DAO;
 	private JComboBox<String> cmbMaDatPhong;
 	private JComboBox<String> cmbSoDienThoai;
-	private DatPhong datPhong;
+	private DonDatPhong datPhong;
 	private DatPhong_DAO datPhong_DAO;
 	private DichVu_DAO dichVu_DAO;
 	private List<ChiTietDatPhong> dsChiTietDatPhong;
@@ -525,10 +525,10 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
-				List<DatPhong> list = datPhong_DAO.getAllDatPhongDangThue();
+				List<DonDatPhong> list = datPhong_DAO.getAllDatPhongDangThue();
 
 				list.forEach(datPhong -> {
-					cmbMaDatPhong.addItem(datPhong.getMaDatPhong());
+					cmbMaDatPhong.addItem(datPhong.getMaDonDatPhong());
 					KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(datPhong.getKhachHang().getMaKhachHang());
 					cmbSoDienThoai.addItem(khachHang.getSoDienThoai());
 				});
@@ -569,16 +569,16 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				if (!btnThanhToan.isEnabled())
 					return;
-				boolean res = datPhong_DAO.thanhToanDatPhong(datPhong.getMaDatPhong(), timeNow);
+				boolean res = datPhong_DAO.thanhToanDatPhong(datPhong.getMaDonDatPhong(), timeNow);
 
 				if (res) {
 					quanLyDatPhongGUI.capNhatTrangThaiPhong();
 					quanLyDatPhongGUI.closeJFrameSub();
 					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
-							String.format("Thanh toán %s thành công", datPhong.getMaDatPhong())).showNotification();
+							String.format("Thanh toán %s thành công", datPhong.getMaDonDatPhong())).showNotification();
 				} else
 					new Notification(parentFrame, components.notification.Notification.Type.ERROR,
-							String.format("Thanh toán thất bại", datPhong.getMaDatPhong())).showNotification();
+							String.format("Thanh toán thất bại", datPhong.getMaDonDatPhong())).showNotification();
 			}
 		});
 	}
@@ -647,12 +647,12 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(datPhong.getKhachHang().getMaKhachHang());
 			NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(datPhong.getNhanVien().getMaNhanVien());
 			List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO
-					.getDichVuTheoPhieuDatPhong(datPhong.getMaDatPhong());
+					.getDichVuTheoPhieuDatPhong(datPhong.getMaDonDatPhong());
 
 			if (isMaDatPhong) {
 				cmbSoDienThoai.setSelectedItem(khachHang.getSoDienThoai());
 			} else {
-				cmbMaDatPhong.setSelectedItem(datPhong.getMaDatPhong());
+				cmbMaDatPhong.setSelectedItem(datPhong.getMaDonDatPhong());
 			}
 
 			lblTenKhach.setText(khachHang.getHoTen());

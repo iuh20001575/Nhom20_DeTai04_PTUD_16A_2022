@@ -389,7 +389,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 					return;
 
 				entity.NhanVien nhanVien = getNhanVienTuForm();
-				boolean res = nhanVien_DAO.capNhatNhanVien(nhanVien);
+				boolean res = nhanVien_DAO.capNhatNhanVien(nhanVien, new TaiKhoan(nhanVien, txtMatKhau.getText()));
 
 				if (res) {
 					new Notification(main, Type.SUCCESS, "Cập nhật thông tin nhân viên thành công").showNotification();
@@ -398,9 +398,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 					btnLuu.setEnabled(false);
 					setEnabledForm(false);
 					ThongTinCaNhan_GUI.this.main.repaint();
-				} else {
+				} else
 					new Notification(main, Type.ERROR, "Cập nhật thông tin nhân viên thất bại").showNotification();
-				}
 			}
 		});
 
@@ -434,11 +433,9 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		String soDienThoai = txtSoDienThoai.getText().trim();
 		LocalDate ngaySinh = Utils.getLocalDate(txtNgaySinh.getText());
 		String diaChiCuThe = txtDiaChiCT.getText().trim();
-		String matKhau = txtMatKhau.getText().trim();
-		TaiKhoan taiKhoan = new TaiKhoan(maNhanVien, matKhau);
 		boolean gioiTinh = radNam.isSelected();
 		return new entity.NhanVien(maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, tinh, quan, phuong,
-				diaChiCuThe, nhanVien.getChucVu(), nhanVien.getLuong(), taiKhoan, nhanVien.getTrangThai());
+				diaChiCuThe, nhanVien.getChucVu(), nhanVien.getLuong(), nhanVien.getTrangThai());
 	}
 
 	@Override

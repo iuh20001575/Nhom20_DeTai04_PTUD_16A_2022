@@ -40,7 +40,7 @@ import dao.DatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.PhieuDatPhong_DAO;
 import entity.ChiTietDatPhong;
-import entity.DatPhong;
+import entity.DonDatPhong;
 import utils.Utils;
 
 public class QuanLyPhieuDatPhong_GUI extends JPanel {
@@ -336,7 +336,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				} else {
 					String maPhieuDat = (String) tableModel.getValueAt(row, 0);
 					ChiTietDatPhong phieuDatPhong = phieuDatPhong_DAO
-							.getChiTietDatPhongTheoMa(new DatPhong(maPhieuDat));
+							.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
 					ThongTinChiTietPhieuDatPhong_GUI jFrame = new ThongTinChiTietPhieuDatPhong_GUI(main, phieuDatPhong);
 					main.addPnlBody(jFrame, "Thông tin chi tiêt phiếu đặt phòng", 1, 0);
 				}
@@ -369,7 +369,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				txtSoDienThoai.setText("");
 				setEmptyTable();
 				addRow(phieuDatPhong_DAO.getAllChiTietDatPhong()).forEach(
-						chiTietDatPhong -> maPhieuDatModel.addElement(chiTietDatPhong.getDatPhong().getMaDatPhong()));
+						chiTietDatPhong -> maPhieuDatModel.addElement(chiTietDatPhong.getDonDatPhong().getMaDonDatPhong()));
 				pnlControl.setTbl(tbl);
 			}
 		});
@@ -415,7 +415,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				clockThread = clock();
 				setEmptyTable();
 				addRow(phieuDatPhong_DAO.getAllChiTietDatPhong()).forEach(
-						chiTietDatPhong -> maPhieuDatModel.addElement(chiTietDatPhong.getDatPhong().getMaDatPhong()));
+						chiTietDatPhong -> maPhieuDatModel.addElement(chiTietDatPhong.getDonDatPhong().getMaDonDatPhong()));
 				pnlControl.setTbl(tbl);
 			}
 
@@ -488,7 +488,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	}
 
 	private void addRow(ChiTietDatPhong chiTietdatPhong) {
-		String maDatPhong = chiTietdatPhong.getDatPhong().getMaDatPhong();
+		String maDatPhong = chiTietdatPhong.getDonDatPhong().getMaDonDatPhong();
 		String maKhachHang = datPhong_DAO.getDatPhong(maDatPhong).getKhachHang().getMaKhachHang();
 
 		tableModel.addRow(new String[] { maDatPhong, khachHang_DAO.getKhachHangTheoMa(maKhachHang).getSoDienThoai(),
@@ -496,7 +496,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 						datPhong_DAO.getDatPhong(maDatPhong).getNgayDatPhong()),
 				String.format("%s - %s", datPhong_DAO.getDatPhong(maDatPhong).getGioNhanPhong(),
 						datPhong_DAO.getDatPhong(maDatPhong).getNgayNhanPhong()),
-				"", DatPhong.convertTrangThaiToString(datPhong_DAO.getDatPhong(maDatPhong).getTrangThai()) });
+				"", DonDatPhong.convertTrangThaiToString(datPhong_DAO.getDatPhong(maDatPhong).getTrangThai()) });
 	}
 
 	private void setEmptyTable() {
