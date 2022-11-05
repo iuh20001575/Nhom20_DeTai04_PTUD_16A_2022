@@ -17,7 +17,7 @@ import entity.Quan;
 import entity.TaiKhoan;
 import entity.Tinh;
 
-public class NhanVien_DAO {
+public class NhanVien_DAO extends DAO {
 	private TaiKhoan_DAO taiKhoan_DAO;
 
 	public NhanVien_DAO() {
@@ -171,7 +171,9 @@ public class NhanVien_DAO {
 			preparedStatement.setString(12, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
 			preparedStatement.setString(13, nhanVien.getMaNhanVien());
 
-			return preparedStatement.executeUpdate() > 0;
+			boolean res = preparedStatement.executeUpdate() > 0;
+			
+			return res;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -180,10 +182,9 @@ public class NhanVien_DAO {
 	}
 
 	public boolean themNhanVien(NhanVien nhanVien) {
-		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		try {
-			String sql = "INSERT NhanVien VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "INSERT NhanVien VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement preparedStatement = con.prepareStatement(sql);
 			preparedStatement.setString(1, nhanVien.getMaNhanVien());
 			preparedStatement.setString(2, nhanVien.getHoTen());
@@ -197,12 +198,10 @@ public class NhanVien_DAO {
 			preparedStatement.setString(10, nhanVien.getDiaChiCuThe());
 			preparedStatement.setString(11, NhanVien.convertChucVuToString(nhanVien.getChucVu()));
 			preparedStatement.setDouble(12, nhanVien.getLuong());
-			preparedStatement.setString(13, nhanVien.getMaNhanVien());
-			preparedStatement.setString(14, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
-
-			preparedStatement.executeQuery();
+			preparedStatement.setString(13, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
+			preparedStatement.execute();
 			preparedStatement.close();
-			return true;
+			return commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -226,12 +225,13 @@ public class NhanVien_DAO {
 					maNhanVienNew = "0" + maNhanVienNew;
 
 				return "NV" + maNhanVienNew;
-			}
+			} else 
+				return "NV001";
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return "NV001";
+		return null;
 	}
 
 	public boolean isCCCDDaTonTai(String cccd) {
@@ -323,13 +323,5 @@ public class NhanVien_DAO {
 		}
 
 		return list;
-	}
-
-	private boolean rollback() throws SQLException {
-		if (ConnectDB.getConnection().getAutoCommit())
-			ConnectDB.getConnection().setAutoCommit(false);
-		ConnectDB.getConnection().rollback();
-		ConnectDB.getConnection().setAutoCommit(true);
-		return false;
 	}
 }

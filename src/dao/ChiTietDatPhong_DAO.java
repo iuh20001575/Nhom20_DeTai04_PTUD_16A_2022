@@ -29,12 +29,12 @@ public class ChiTietDatPhong_DAO extends DAO {
 	 * @throws SQLException
 	 */
 	private ChiTietDatPhong getChiTietDatPhong(ResultSet resultSet) throws SQLException {
-		DonDatPhong datPhong = new DonDatPhong(resultSet.getString("datPhong"));
+		DonDatPhong donDatPhong = new DonDatPhong(resultSet.getString("donDatPhong"));
 		Phong phong = new Phong(resultSet.getString("phong"));
 		LocalTime gioVao = resultSet.getTime("gioVao").toLocalTime();
 		Time time = resultSet.getTime("gioRa");
 		LocalTime gioRa = time == null ? null : resultSet.getTime("gioRa").toLocalTime();
-		return new ChiTietDatPhong(datPhong, phong, gioVao, gioRa);
+		return new ChiTietDatPhong(donDatPhong, phong, gioVao, gioRa);
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE datPhong = ?");
+					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE donDatPhong = ?");
 			preparedStatement.setString(1, datPhong.getMaDonDatPhong());
 
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -71,7 +71,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 	public ChiTietDatPhong getChiTietDatPhong(Phong phong) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT datPhong, phong, gioVao FROM ChiTietDatPhong WHERE phong = ? and gioRa is null");
+					"SELECT donDatPhong, phong, gioVao FROM ChiTietDatPhong WHERE phong = ? and gioRa is null");
 			preparedStatement.setString(1, phong.getMaPhong());
 
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -80,7 +80,6 @@ public class ChiTietDatPhong_DAO extends DAO {
 				String datPhong = resultSet.getString(1);
 				String maPhong = resultSet.getString(2);
 				LocalTime gioVao = resultSet.getTime(3).toLocalTime();
-//				Time.valueOf(gioVao);
 				return new ChiTietDatPhong(new DonDatPhong(datPhong), new Phong(maPhong), gioVao);
 			}
 		} catch (SQLException e) {
@@ -96,8 +95,8 @@ public class ChiTietDatPhong_DAO extends DAO {
 		int length = dsPhong.size();
 		for (int i = 1; i < length; i++)
 			q += ", ?";
-		String sql = String.format("SELECT [datPhong], [phong], [gioVao], [gioRa] FROM [dbo].[DatPhong] DP "
-				+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.maDatPhong = CTDP.datPhong "
+		String sql = String.format("SELECT [donDatPhong], [phong], [gioVao], [gioRa] FROM [dbo].[DonDatPhong] DP "
+				+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.maDonDatPhong = CTDP.donDatPhong "
 				+ "WHERE [ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
 				+ "AND [trangThai] = N'Đang chờ' AND [phong] in (%s)", q);
 		try {
@@ -120,7 +119,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 	public boolean thanhToanDatPhong(String maDatPhong, LocalTime gioRa) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE ChiTietDatPhong SET gioRa = ? WHERE datPhong = ? AND gioRa is null");
+					.prepareStatement("UPDATE ChiTietDatPhong SET gioRa = ? WHERE donDatPhong = ? AND gioRa is null");
 			preparedStatement.setTime(1, Time.valueOf(gioRa));
 			preparedStatement.setString(2, maDatPhong);
 
@@ -167,7 +166,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 		boolean res = false;
 		try {
 			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("INSERT ChiTietDatPhong(datPhong, phong, gioVao) VALUES(?, ?, ?)");
+					.prepareStatement("INSERT ChiTietDatPhong(donDatPhong, phong, gioVao) VALUES(?, ?, ?)");
 			preparedStatement.setString(1, maDatPhong);
 			preparedStatement.setString(2, phong.getMaPhong());
 			preparedStatement.setTime(3, gioVao);

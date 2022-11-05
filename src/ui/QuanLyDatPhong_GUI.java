@@ -34,7 +34,7 @@ import components.jDialog.JDialogCustom;
 import components.panelEvent.PanelEvent;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.Phong_DAO;
 import entity.Phong;
 import entity.Phong.TrangThai;
@@ -48,7 +48,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private static final long serialVersionUID = 1L;
 	private QuanLyDatPhong_GUI _this;
 	private Thread clock;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private List<Phong> dsPhong;
 	private final int gapX = 21;
 	private final int gapY = 30;
@@ -111,7 +111,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		this.jFrame = jFrame;
 		_this = this;
 		phong_DAO = new Phong_DAO();
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		jDialog = new JDialogCustom(jFrame, components.jDialog.JDialogCustom.Type.warning);
 		glass = new Glass();
 

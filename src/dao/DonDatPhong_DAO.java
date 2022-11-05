@@ -20,11 +20,11 @@ import entity.NhanVien;
 import entity.Phong;
 import utils.Utils;
 
-public class DatPhong_DAO extends DAO {
+public class DonDatPhong_DAO extends DAO {
 	private Phong_DAO phong_DAO;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
 
-	public DatPhong_DAO() {
+	public DonDatPhong_DAO() {
 		phong_DAO = new Phong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 	}
@@ -37,7 +37,7 @@ public class DatPhong_DAO extends DAO {
 	 * @throws SQLException
 	 */
 	private DonDatPhong getDatPhong(ResultSet resultSet) throws SQLException {
-		String maDatPhong = resultSet.getString("maDatPhong");
+		String maDonDatPhong = resultSet.getString("maDonDatPhong");
 		KhachHang khachHang = new KhachHang(resultSet.getString("khachHang"));
 		NhanVien nhanVien = new NhanVien(resultSet.getString("nhanVien"));
 		LocalDate ngayDatPhong = resultSet.getDate("ngayDatPhong").toLocalDate();
@@ -45,7 +45,7 @@ public class DatPhong_DAO extends DAO {
 		LocalDate ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
 		LocalTime gioNhanPhong = resultSet.getTime("gioNhanPhong").toLocalTime();
 		TrangThai trangThai = DonDatPhong.convertStringToTrangThai(resultSet.getString("trangThai"));
-		return new DonDatPhong(maDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong, gioNhanPhong,
+		return new DonDatPhong(maDonDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong, gioNhanPhong,
 				trangThai);
 	}
 
@@ -58,7 +58,7 @@ public class DatPhong_DAO extends DAO {
 	public DonDatPhong getDatPhong(String maDatPhong) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM DatPhong WHERE maDatPhong = ?");
+					.prepareStatement("SELECT * FROM DonDatPhong WHERE maDonDatPhong = ?");
 			preparedStatement.setString(1, maDatPhong);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -95,8 +95,8 @@ public class DatPhong_DAO extends DAO {
 		try {
 			String sql = "SELECT [maPhong] FROM [dbo].[Phong] P"
 					+ "	JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai WHERE maPhong NOT IN ("
-					+ "	SELECT [phong] FROM [dbo].[DatPhong] DP"
-					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong]"
+					+ "	SELECT [phong] FROM [dbo].[DonDatPhong] DP"
+					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong]"
 					+ "	WHERE ([trangThai] = N'Đang thuê' AND [gioRa] IS NULL)"
 					+ "	OR ([trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE())"
 					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) < '6:00:00')"
@@ -147,7 +147,7 @@ public class DatPhong_DAO extends DAO {
 
 //			[DatPhong] - Tạo phiếu đặt phòng
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("INSERT DatPhong VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+					.prepareStatement("INSERT DonDatPhong VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, maDatPhong);
 			preparedStatement.setString(2, khachHang.getMaKhachHang());
 			preparedStatement.setString(3, nhanVien.getMaNhanVien());
@@ -181,6 +181,7 @@ public class DatPhong_DAO extends DAO {
 
 			return commit();
 		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 
 		return false;
@@ -211,7 +212,7 @@ public class DatPhong_DAO extends DAO {
 
 //			[DatPhong] - Tạo phiếu đặt phòng
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("INSERT DatPhong VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+					.prepareStatement("INSERT DonDatPhong VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, maDatPhong);
 			preparedStatement.setString(2, khachHang.getMaKhachHang());
 			preparedStatement.setString(3, nhanVien.getMaNhanVien());
@@ -264,7 +265,8 @@ public class DatPhong_DAO extends DAO {
 		Statement statement;
 		try {
 			statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT maDatPhong FROM DatPhong ORDER BY maDatPhong DESC");
+			ResultSet resultSet = statement
+					.executeQuery("SELECT maDonDatPhong FROM DonDatPhong ORDER BY maDonDatPhong DESC");
 
 			if (!resultSet.next()) {
 				return "MDP0001";
@@ -318,7 +320,7 @@ public class DatPhong_DAO extends DAO {
 					"SELECT maPhong FROM [dbo].[Phong] P JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai "
 							+ "WHERE [maPhong] NOT IN (SELECT [maPhong] FROM [dbo].[Phong] P"
 							+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON P.maPhong = CTDP.phong"
-							+ "	JOIN [dbo].[DatPhong] DP ON DP.maDatPhong = CTDP.datPhong"
+							+ "	JOIN [dbo].[DonDatPhong] DP ON DP.maDonDatPhong = CTDP.donDatPhong"
 							+ "	WHERE (P.trangThai IN (N'Đã đặt'%s) AND [ngayNhanPhong] = ?"
 							+ "	AND [dbo].[fnSubTime](?, [gioNhanPhong]) <= CONVERT(TIME(0), '6:00:00')"
 							+ "	AND DP.trangThai = N'Đang chờ')%s) AND [maPhong] LIKE ? AND tenLoai LIKE ?",
@@ -370,8 +372,8 @@ public class DatPhong_DAO extends DAO {
 				trangThai = "Đang chờ";
 
 			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT [gioVao] FROM [dbo].[DatPhong] DP"
-							+ " JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.maDatPhong = CTDP.datPhong"
+					.prepareStatement("SELECT [gioVao] FROM [dbo].[DonDatPhong] DP"
+							+ " JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.maDonDatPhong = CTDP.donDatPhong"
 							+ " WHERE [trangThai] = ? AND [phong] = ? AND [gioRa] IS NULL"
 							+ " ORDER BY [ngayNhanPhong], [gioNhanPhong]");
 			preparedStatement.setString(1, trangThai);
@@ -395,8 +397,8 @@ public class DatPhong_DAO extends DAO {
 	 * @return
 	 */
 	public DonDatPhong getDatPhongNgayTheoSoDienThoai(String soDienThoai) {
-		String sql = "SELECT [maDatPhong], [khachHang], [nhanVien], [ngayDatPhong],"
-				+ "	[gioDatPhong], [ngayNhanPhong], [gioNhanPhong], [trangThai] FROM [dbo].[DatPhong] DP"
+		String sql = "SELECT [maDonDatPhong], [khachHang], [nhanVien], [ngayDatPhong],"
+				+ "	[gioDatPhong], [ngayNhanPhong], [gioNhanPhong], [trangThai] FROM [dbo].[DonDatPhong] DP"
 				+ "	JOIN [dbo].[KhachHang] KH ON DP.[khachHang] = KH.[maKhachHang]"
 				+ " WHERE [trangThai] = N'Đang thuê' AND soDienThoai = ?";
 		try {
@@ -421,7 +423,7 @@ public class DatPhong_DAO extends DAO {
 	public List<DonDatPhong> getAllDatPhongDangThue() {
 		List<DonDatPhong> list = new ArrayList<>();
 
-		String sql = "SELECT * FROM [dbo].[DatPhong] WHERE [trangThai] = N'Đang thuê'";
+		String sql = "SELECT * FROM [dbo].[DonDatPhong] WHERE [trangThai] = N'Đang thuê'";
 		try {
 			Statement statement = ConnectDB.getConnection().createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
@@ -443,7 +445,7 @@ public class DatPhong_DAO extends DAO {
 	public List<String> getAllMaDatPhongDangThue() {
 		List<String> list = new ArrayList<>();
 
-		String sql = "SELECT maDatPhong FROM [dbo].[DatPhong] WHERE [trangThai] = N'Đang thuê'";
+		String sql = "SELECT maDonDatPhong FROM [dbo].[DonDatPhong] WHERE [trangThai] = N'Đang thuê'";
 		try {
 			Statement statement = ConnectDB.getConnection().createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
@@ -477,8 +479,8 @@ public class DatPhong_DAO extends DAO {
 
 //			[DatPhong - ChiTietDatPhong] - Get mã đặt phòng của phòng cần chuyển
 			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT [datPhong] FROM [dbo].[DatPhong] DP "
-							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
+					.prepareStatement("SELECT [donDatPhong] FROM [dbo].[DonDatPhong] DP "
+							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong] "
 							+ "WHERE DP.[trangThai] = N'Đang thuê' AND [phong] = ?");
 			preparedStatement.setString(1, maPhongCu);
 
@@ -518,9 +520,9 @@ public class DatPhong_DAO extends DAO {
 //			[ChiTietDatPhong] - Cập nhật giờ ra của phòng cũ
 			preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("UPDATE [dbo].[ChiTietDatPhong] SET [gioRa] = ? "
-							+ "WHERE [phong] IN (SELECT [phong] FROM [dbo].[DatPhong] DP"
-							+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong]"
-							+ "	WHERE DP.[trangThai] = N'Đang thuê' AND [phong] = ? AND maDatPhong = ?) AND datPhong = ?");
+							+ "WHERE [phong] IN (SELECT [phong] FROM [dbo].[DonDatPhong] DP"
+							+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong]"
+							+ "	WHERE DP.[trangThai] = N'Đang thuê' AND [phong] = ? AND maDonDatPhong = ?) AND donDatPhong = ?");
 			preparedStatement.setTime(1, time);
 			preparedStatement.setString(2, maPhongCu);
 			preparedStatement.setString(3, datPhong);
@@ -532,7 +534,7 @@ public class DatPhong_DAO extends DAO {
 
 //			[ChiTietDatPhong] - Thêm chi tiết đặt phòng phòng mới
 			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("INSERT ChiTietDatPhong(datPhong, phong, gioVao) VALUES (?, ?, ?)");
+					.prepareStatement("INSERT ChiTietDatPhong(donDatPhong, phong, gioVao) VALUES (?, ?, ?)");
 			preparedStatement.setString(1, datPhong);
 			preparedStatement.setString(2, maPhongMoi);
 			preparedStatement.setTime(3, time);
@@ -567,7 +569,7 @@ public class DatPhong_DAO extends DAO {
 		try {
 			Statement statement = ConnectDB.getConnection().createStatement();
 
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM [dbo].[DatPhong] "
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM [dbo].[DonDatPhong] "
 					+ "WHERE [trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
 					+ "AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) >= CONVERT(TIME(0), '1:00:00')");
 
@@ -592,8 +594,8 @@ public class DatPhong_DAO extends DAO {
 
 //			Get danh sách phòng cần cập nhật
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT [phong] FROM [dbo].[DatPhong] DP "
-							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
+					.prepareStatement("SELECT [phong] FROM [dbo].[DonDatPhong] DP "
+							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong] "
 							+ "WHERE ([trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
 							+ "AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) >= CONVERT(TIME(0), '1:00:00') "
 							+ "AND [gioNhanPhong] < CONVERT(TIME(0), GETDATE())) "
@@ -602,6 +604,8 @@ public class DatPhong_DAO extends DAO {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			while (resultSet.next())
 				maPhongList.add(resultSet.getString(1));
+			if (maPhongList.size() == 0)
+				return false;
 
 //			[Phong] - Cập nhật trạng thái phòng
 			boolean res;
@@ -620,7 +624,7 @@ public class DatPhong_DAO extends DAO {
 			}
 
 //			[DatPhong] - Cập nhật trạng thái đặt phòng thành đã hủy
-			res = statement.executeUpdate("UPDATE [dbo].[DatPhong] SET [trangThai] = N'Đã hủy' WHERE ("
+			res = statement.executeUpdate("UPDATE [dbo].[DonDatPhong] SET [trangThai] = N'Đã hủy' WHERE ("
 					+ "[trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
 					+ "AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) >= CONVERT(TIME(0), '1:00:00') "
 					+ "AND [gioNhanPhong] < CONVERT(TIME(0), GETDATE())) OR ("
@@ -645,8 +649,8 @@ public class DatPhong_DAO extends DAO {
 	 * @return true nếu có phiếu đặt phòng trước hợp lệ
 	 */
 	private boolean hasDatPhongTruocHopLe(String maPhong) {
-		String sql = "SELECT * FROM [dbo].[DatPhong] DP JOIN [dbo].[ChiTietDatPhong] CTDP "
-				+ "ON DP.maDatPhong = CTDP.datPhong WHERE [trangThai] = N'Đang chờ' "
+		String sql = "SELECT * FROM [dbo].[DonDatPhong] DP JOIN [dbo].[ChiTietDatPhong] CTDP "
+				+ "ON DP.maDonDatPhong = CTDP.donDatPhong WHERE [trangThai] = N'Đang chờ' "
 				+ "AND [phong] = ? AND ([ngayNhanPhong] > CONVERT(DATE, GETDATE()) "
 				+ "OR ([ngayNhanPhong] = CONVERT(DATE, GETDATE()) AND ([gioNhanPhong] >= CONVERT(TIME(0), GETDATE()) "
 				+ "OR [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) < CONVERT(TIME(0), '1:00:00'))))";
@@ -674,8 +678,8 @@ public class DatPhong_DAO extends DAO {
 	public LocalDate getNgayNhanPhongCuaPhongDangThue(String maPhong) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT [ngayNhanPhong] FROM [dbo].[DatPhong] DP "
-							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
+					.prepareStatement("SELECT [ngayNhanPhong] FROM [dbo].[DonDatPhong] DP "
+							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong] "
 							+ "WHERE DP.[trangThai] = N'Đang thuê' AND [phong] = ?");
 			preparedStatement.setString(1, maPhong);
 
@@ -698,9 +702,9 @@ public class DatPhong_DAO extends DAO {
 	public List<Phong> getPhongDangThue(String maDatPhong) {
 		List<Phong> list = new ArrayList<>();
 
-		String sql = "SELECT maPhong FROM [dbo].[Phong] WHERE [maPhong] IN (SELECT [phong] FROM [dbo].[DatPhong] DP"
-				+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong]"
-				+ "	WHERE DP.[trangThai] = N'Đang thuê' AND [gioRa] IS NULL AND [maDatPhong] = ?)";
+		String sql = "SELECT maPhong FROM [dbo].[Phong] WHERE [maPhong] IN (SELECT [phong] FROM [dbo].[DonDatPhong] DP"
+				+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong]"
+				+ "	WHERE DP.[trangThai] = N'Đang thuê' AND [gioRa] IS NULL AND [maDonDatPhong] = ?)";
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setString(1, maDatPhong);
@@ -745,9 +749,9 @@ public class DatPhong_DAO extends DAO {
 	public boolean isGopPhong() {
 		try {
 			Statement statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) AS SOLUONGPHONG FROM [dbo].[DatPhong] DP "
-					+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDatPhong] = CTDP.[datPhong] "
-					+ "WHERE [gioRa] IS NULL AND [trangThai] = N'Đang thuê' GROUP BY [datPhong]");
+			ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) AS SOLUONGPHONG FROM [dbo].[DonDatPhong] DP "
+					+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong] "
+					+ "WHERE [gioRa] IS NULL AND [trangThai] = N'Đang thuê' GROUP BY [donDatPhong]");
 
 			while (resultSet.next()) {
 				int soLuong = Integer.parseInt(resultSet.getString(1));
@@ -778,7 +782,7 @@ public class DatPhong_DAO extends DAO {
 //			[ChiTietDatPhong] - Set giờ ra cho phòng cần gộp
 			preparedStatement = ConnectDB.getConnection()
 					.prepareStatement(String.format("UPDATE [dbo].[ChiTietDatPhong] SET [gioRa] = ? "
-							+ "WHERE [datPhong] = ? AND [phong] IN (%s) AND [gioRa] IS NULL", q));
+							+ "WHERE [donDatPhong] = ? AND [phong] IN (%s) AND [gioRa] IS NULL", q));
 			preparedStatement.setTime(1, time);
 			preparedStatement.setString(2, maDatPhong);
 			for (int i = 0; i < length; i++)
@@ -805,7 +809,7 @@ public class DatPhong_DAO extends DAO {
 			if (phongGop.getTrangThai().equals(entity.Phong.TrangThai.Trong)) {
 //				[ChiTietDatPhong] - Thêm chi tiết đặt phòng nếu là phòng trống
 				preparedStatement = ConnectDB.getConnection()
-						.prepareStatement("INSERT ChiTietDatPhong(datPhong, phong, gioVao) VALUES (?, ?, ?)");
+						.prepareStatement("INSERT ChiTietDatPhong(donDatPhong, phong, gioVao) VALUES (?, ?, ?)");
 				preparedStatement.setString(1, maDatPhong);
 				preparedStatement.setString(2, phongGop.getMaPhong());
 				preparedStatement.setTime(3, time);
@@ -839,6 +843,7 @@ public class DatPhong_DAO extends DAO {
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
+			e.printStackTrace();
 		}
 
 		return false;
@@ -846,9 +851,9 @@ public class DatPhong_DAO extends DAO {
 
 	public List<String> getMaDatPhongGop() {
 		List<String> list = new ArrayList<>();
-		String sql = "SELECT [datPhong] FROM [dbo].[ChiTietDatPhong] CTDP "
-				+ "JOIN [dbo].[DatPhong] DP ON CTDP.datPhong = DP.maDatPhong "
-				+ "WHERE [gioRa] IS NULL AND [trangThai] = N'Đang thuê' GROUP BY [datPhong] HAVING COUNT(*) > 1";
+		String sql = "SELECT [donDatPhong] FROM [dbo].[ChiTietDatPhong] CTDP "
+				+ "JOIN [dbo].[DonDatPhong] DP ON CTDP.donDatPhong = DP.maDonDatPhong "
+				+ "WHERE [gioRa] IS NULL AND [trangThai] = N'Đang thuê' GROUP BY [donDatPhong] HAVING COUNT(*) > 1";
 		try {
 			Statement statement = ConnectDB.getConnection().createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
@@ -882,7 +887,7 @@ public class DatPhong_DAO extends DAO {
 //						+ Phòng tạm -> Đã đặt
 			sql = "UPDATE [dbo].[Phong] SET [trangThai] = (CASE "
 					+ "WHEN [trangThai] = N'Đang thuê' THEN N'Trống' ELSE N'Đã đặt' END) WHERE [maPhong] IN ("
-					+ "SELECT [phong] FROM [dbo].[ChiTietDatPhong] WHERE [datPhong] = ? AND [gioRa] IS NULL)";
+					+ "SELECT [phong] FROM [dbo].[ChiTietDatPhong] WHERE [donDatPhong] = ? AND [gioRa] IS NULL)";
 			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setString(1, maDatPhong);
 
@@ -893,7 +898,7 @@ public class DatPhong_DAO extends DAO {
 
 //			[ChiTietDatPhong] - Cập nhật giờ ra
 //						+ NULL -> gioRa
-			sql = "UPDATE [dbo].[ChiTietDatPhong] SET [gioRa] = ? WHERE [datPhong] = ? AND [gioRa] IS NULL";
+			sql = "UPDATE [dbo].[ChiTietDatPhong] SET [gioRa] = ? WHERE [donDatPhong] = ? AND [gioRa] IS NULL";
 			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setTime(1, gioRaTime);
 			preparedStatement.setString(2, maDatPhong);
@@ -904,7 +909,7 @@ public class DatPhong_DAO extends DAO {
 				return rollback();
 
 //			[DatPhong] - Cập nhật trạng thái của phiếu đặt phòng thành đã trả
-			sql = "UPDATE [dbo].[DatPhong] SET [trangThai] = N'Đã trả' WHERE [maDatPhong] = ?";
+			sql = "UPDATE [dbo].[DonDatPhong] SET [trangThai] = N'Đã trả' WHERE [maDonDatPhong] = ?";
 			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setString(1, maDatPhong);
 
@@ -921,13 +926,14 @@ public class DatPhong_DAO extends DAO {
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
+			e.printStackTrace();
 		}
 
 		return false;
 	}
 
 	public String getMaDatPhongDangThue(String soDienThoai) {
-		String sql = "SELECT maDatPhong FROM [dbo].[DatPhong] DP "
+		String sql = "SELECT maDonDatPhong FROM [dbo].[DonDatPhong] DP "
 				+ "JOIN [dbo].[KhachHang] KH ON DP.khachHang = KH.maKhachHang "
 				+ "WHERE [trangThai] = N'Đang thuê' AND [soDienThoai] = ?";
 

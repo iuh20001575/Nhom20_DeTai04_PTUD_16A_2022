@@ -50,6 +50,7 @@ public class DangNhap_GUI extends JFrame {
 	public DangNhap_GUI() {
 		try {
 			new ConnectDB().connect();
+			System.out.println(ConnectDB.getConnection().getAutoCommit());
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
@@ -225,7 +226,7 @@ public class DangNhap_GUI extends JFrame {
 
 //		Default Value
 		txtMaNhanVien.setText("NV111");
-		txtMatKhau.setText("1234Abc.");
+		txtMatKhau.setText("1234Abc@");
 
 		setAlwaysOnTop(false);
 	}

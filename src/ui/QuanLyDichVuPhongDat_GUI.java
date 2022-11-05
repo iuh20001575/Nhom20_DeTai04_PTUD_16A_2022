@@ -42,7 +42,7 @@ import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
 import dao.ChiTietDichVu_DAO;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.DichVu_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiDichVu_DAO;
@@ -60,7 +60,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 	private TextField txtTenKhachHang;
 	private KhachHang_DAO khachHang_DAO;
 	private KhachHang khachHang;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private LoaiDichVu_DAO loaiDichVu_DAO;
 	private DichVu_DAO dichVu_DAO;
 	private ChiTietDichVu_DAO chiTietDichVu_DAO;
@@ -80,7 +80,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		_this = this;
 		khachHang_DAO = new KhachHang_DAO();
 		loaiDichVu_DAO = new LoaiDichVu_DAO();
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		dichVu_DAO = new DichVu_DAO();
 		chiTietDichVu_DAO = new ChiTietDichVu_DAO();
 

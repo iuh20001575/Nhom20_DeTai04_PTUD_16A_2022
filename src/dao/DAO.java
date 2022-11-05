@@ -14,6 +14,7 @@ public class DAO {
 			statement.close();
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 
@@ -22,6 +23,7 @@ public class DAO {
 			preparedStatement.close();
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 
@@ -31,6 +33,7 @@ public class DAO {
 			preparedStatement.close();
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 
@@ -40,6 +43,7 @@ public class DAO {
 			statement.close();
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 

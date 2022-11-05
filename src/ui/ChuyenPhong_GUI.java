@@ -35,7 +35,7 @@ import components.button.Button;
 import components.comboBox.ComboBox;
 import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.LoaiPhong_DAO;
 import dao.Phong_DAO;
 import entity.LoaiPhong;
@@ -52,7 +52,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 	private ComboBox<String> cmbLoaiPhong;
 	private ComboBox<String> cmbMaPhong;
 	private ComboBox<String> cmbSoKhach;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private List<LoaiPhong> dsLoaiPhong;
 	private final String labelCmbLoaiPhong = "Loại phòng";
 	private final String labelCmbMaPhong = "Mã phòng";
@@ -73,7 +73,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 		_this = this;
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		phong_DAO = new Phong_DAO();
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 
 		setType(Type.UTILITY);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

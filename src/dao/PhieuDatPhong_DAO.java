@@ -36,7 +36,7 @@ public class PhieuDatPhong_DAO {
 	public ChiTietDatPhong getChiTietDatPhongTheoMa(DonDatPhong datPhong) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE datPhong = ? ");
+					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE donDatPhong = ? ");
 			preparedStatement.setString(1, datPhong.getMaDonDatPhong());
 
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -88,9 +88,9 @@ public class PhieuDatPhong_DAO {
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT * FROM  ChiTietDatPhong INNER JOIN DatPhong ON ChiTietDatPhong.datPhong = DatPhong.maDatPhong \r\n"
-							+ "INNER JOIN KhachHang ON DatPhong.khachHang = KhachHang.maKhachHang\r\n"
-							+ "WHERE ChiTietDatPhong.datPhong LIKE ? and DatPhong.trangThai like ? and KhachHang.soDienThoai like ?");
+					"SELECT * FROM  ChiTietDatPhong INNER JOIN DonDatPhong ON ChiTietDatPhong.donDatPhong = DonDatPhong.maDonDatPhong \r\n"
+							+ "INNER JOIN KhachHang ON DonDatPhong.khachHang = KhachHang.maKhachHang\r\n"
+							+ "WHERE ChiTietDatPhong.donDatPhong LIKE ? and DonDatPhong.trangThai like ? and KhachHang.soDienThoai like ?");
 
 			preparedStatement.setString(1, "%" + maDatPhong + "%");
 			preparedStatement.setString(2, "%" + trangThai + "%");

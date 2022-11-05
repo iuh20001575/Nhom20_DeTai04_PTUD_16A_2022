@@ -43,7 +43,7 @@ import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
 import dao.ChiTietDatPhong_DAO;
 import dao.ChiTietDichVu_DAO;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.DichVu_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiPhong_DAO;
@@ -72,7 +72,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	private JComboBox<String> cmbMaDatPhong;
 	private JComboBox<String> cmbSoDienThoai;
 	private DonDatPhong datPhong;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private DichVu_DAO dichVu_DAO;
 	private List<ChiTietDatPhong> dsChiTietDatPhong;
 	private KhachHang_DAO khachHang_DAO;
@@ -103,7 +103,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 	 */
 	public ThanhToan_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
 		nhanVien_DAO = new NhanVien_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();

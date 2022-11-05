@@ -27,7 +27,7 @@ import components.jDialog.JDialogCustom;
 import components.menu.EventMenuSelected;
 import components.menu.Menu;
 import components.menu.ModelMenuItem;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.NhanVien_DAO;
 import entity.NhanVien;
 import entity.NhanVien.ChucVu;
@@ -51,7 +51,7 @@ public class Main extends JFrame {
 	private NhanVien_DAO nhanVien_DAO;
 	private JPanel pnlBody;
 	private Menu footer;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private JPanel pnlHeader;
 
 	/**
@@ -60,7 +60,7 @@ public class Main extends JFrame {
 	public Main() {
 		_this = this;
 		nhanVien_DAO = new NhanVien_DAO();
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		JDialogCustom jDialogCustom = new JDialogCustom(_this);
 
 		jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {

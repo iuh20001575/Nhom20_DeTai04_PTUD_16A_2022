@@ -51,7 +51,7 @@ import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiPhong_DAO;
 import entity.KhachHang;
@@ -75,7 +75,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private JComboBox<String> cmbPhut;
 	private ComboBox<String> cmbSoLuong;
 	private DateChooser dateChoose;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private List<Phong> dsPhongDaChon;
 	private List<Phong> dsPhongDatTruoc;
 	private KhachHang khachHang;
@@ -99,7 +99,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	 */
 	public DatPhongTruoc_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
 

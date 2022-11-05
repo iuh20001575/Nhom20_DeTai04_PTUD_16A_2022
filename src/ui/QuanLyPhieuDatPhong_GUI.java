@@ -36,7 +36,7 @@ import components.button.Button;
 import components.controlPanel.ControlPanel;
 import components.jDialog.JDialogCustom;
 import components.scrollbarCustom.ScrollBarCustom;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.PhieuDatPhong_DAO;
 import entity.ChiTietDatPhong;
@@ -58,7 +58,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	private DefaultTableModel tableModel;
 	private PhieuDatPhong_DAO phieuDatPhong_DAO;
 	private ControlPanel pnlControl;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private KhachHang_DAO khachHang_DAO;
 	private Button btnSearch;
 	private Button btnXemPhong;
@@ -72,7 +72,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	 */
 	public QuanLyPhieuDatPhong_GUI(Main main) {
 		khachHang_DAO = new KhachHang_DAO();
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		phieuDatPhong_DAO = new PhieuDatPhong_DAO();
 
 		setBackground(Utils.secondaryColor);
