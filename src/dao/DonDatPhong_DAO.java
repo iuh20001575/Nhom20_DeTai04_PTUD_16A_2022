@@ -604,8 +604,10 @@ public class DonDatPhong_DAO extends DAO {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			while (resultSet.next())
 				maPhongList.add(resultSet.getString(1));
-			if (maPhongList.size() == 0)
+			if (maPhongList.size() == 0) {
+				ConnectDB.getConnection().setAutoCommit(true);
 				return false;
+			}
 
 //			[Phong] - Cập nhật trạng thái phòng
 			boolean res;
