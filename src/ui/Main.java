@@ -191,9 +191,11 @@ public class Main extends JFrame {
 
 //		Sự kiện Window
 		addWindowListener(new WindowAdapter() {
+			private Thread clock;
+
 			@Override
 			public void windowActivated(WindowEvent e) {
-				Thread clock = new Thread() {
+				clock = new Thread() {
 					@Override
 					public void run() {
 						for (;;) {
@@ -208,6 +210,12 @@ public class Main extends JFrame {
 					}
 				};
 				clock.start();
+			}
+			
+			@SuppressWarnings("deprecation")
+			@Override
+			public void windowClosed(WindowEvent e) {
+				clock.stop();
 			}
 		});
 

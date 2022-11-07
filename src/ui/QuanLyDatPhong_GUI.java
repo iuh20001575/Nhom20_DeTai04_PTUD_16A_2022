@@ -92,6 +92,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		addAncestorListener(new AncestorListener() {
 			@Override
 			public void ancestorAdded(AncestorEvent event) {
+				clock();
 				QuanLyDatPhong_GUI.this.jFrame.setWidthHeader(1082);
 			}
 
@@ -586,8 +587,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		btnTatCa.setVisible(true);
 		btnPhongThuongUnactive.setVisible(true);
 		btnPhongVipUnactive.setVisible(true);
-
-		clock();
 
 		JPanel pnlFilter = new JPanel();
 		pnlFilter.setBackground(Utils.secondaryColor);
