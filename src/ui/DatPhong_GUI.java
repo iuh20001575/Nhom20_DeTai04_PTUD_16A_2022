@@ -478,9 +478,11 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 					quanLyDatPhongGUI.closeJFrameSub();
 					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
 							"Đặt phòng thành công").showNotification();
-				} else
+				} else {
 					new Notification(parentFrame, components.notification.Notification.Type.ERROR, "Đặt phòng thất bại")
 							.showNotification();
+					quanLyDatPhongGUI.closeJFrameSub();
+				}
 			}
 
 			@Override

@@ -58,15 +58,19 @@ public class NhanVien_DAO extends DAO {
 	 */
 	public List<NhanVien> getAllNhanVien() {
 		List<NhanVien> list = new ArrayList<NhanVien>();
+		Statement statement = null;
+		ResultSet resultSet = null;
 
 		try {
-			Statement statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery(("SELECT * FROM NhanVien"));
+			statement = ConnectDB.getConnection().createStatement();
+			resultSet = statement.executeQuery(("SELECT * FROM NhanVien"));
 
 			while (resultSet.next())
 				list.add(getNhanVien(resultSet));
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			close(statement, resultSet);
 		}
 
 		return list;
@@ -82,21 +86,25 @@ public class NhanVien_DAO extends DAO {
 	 */
 	public List<NhanVien> filterNhanVien(String hoTen, String maNhanVien, String trangThai) {
 		List<NhanVien> list = new ArrayList<>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
+			preparedStatement = ConnectDB.getConnection().prepareStatement(
 					"SELECT * FROM NhanVien WHERE hoTen LIKE ? and maNhanVien like ? and trangThai like ?");
 
 			preparedStatement.setString(1, "%" + hoTen + "%");
 			preparedStatement.setString(2, "%" + maNhanVien + "%");
 			preparedStatement.setString(3, "%" + trangThai + "%");
 
-			ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next())
 				list.add(getNhanVien(resultSet));
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			close(preparedStatement, resultSet);
 		}
 
 		return list;
@@ -109,16 +117,21 @@ public class NhanVien_DAO extends DAO {
 	 * @return
 	 */
 	public NhanVien getNhanVienTheoMa(String maNhanVien) {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
+			preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT * FROM NhanVien WHERE maNhanVien = ?");
 			preparedStatement.setString(1, maNhanVien);
-			ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 
 			if (resultSet.next())
 				return getNhanVien(resultSet);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			close(preparedStatement, resultSet);
 		}
 
 		return null;
@@ -131,15 +144,20 @@ public class NhanVien_DAO extends DAO {
 	 * @return
 	 */
 	public boolean setNghiLam(String maNhanVien) {
+		PreparedStatement preparedStatement = null;
+
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
+			preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("UPDATE NhanVien SET trangThai = N'Nghỉ làm' WHERE maNhanVien = ?");
 			preparedStatement.setString(1, maNhanVien);
 
 			return preparedStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			close(preparedStatement);
 		}
+
 		return false;
 	}
 
@@ -171,9 +189,7 @@ public class NhanVien_DAO extends DAO {
 			preparedStatement.setString(12, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
 			preparedStatement.setString(13, nhanVien.getMaNhanVien());
 
-			boolean res = preparedStatement.executeUpdate() > 0;
-			
-			return res;
+			return preparedStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -201,7 +217,7 @@ public class NhanVien_DAO extends DAO {
 			preparedStatement.setString(13, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
 			preparedStatement.execute();
 			preparedStatement.close();
-			return commit();
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -225,7 +241,7 @@ public class NhanVien_DAO extends DAO {
 					maNhanVienNew = "0" + maNhanVienNew;
 
 				return "NV" + maNhanVienNew;
-			} else 
+			} else
 				return "NV001";
 		} catch (SQLException e) {
 			e.printStackTrace();

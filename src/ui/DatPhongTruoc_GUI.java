@@ -556,7 +556,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("mouseClicked");
 				btnChonPhong.setEnabled(true);
 			}
 		});

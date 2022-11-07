@@ -50,7 +50,6 @@ public class DangNhap_GUI extends JFrame {
 	public DangNhap_GUI() {
 		try {
 			new ConnectDB().connect();
-			System.out.println(ConnectDB.getConnection().getAutoCommit());
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
