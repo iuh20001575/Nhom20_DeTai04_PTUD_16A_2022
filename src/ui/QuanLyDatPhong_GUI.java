@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -13,9 +15,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -84,6 +86,9 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private int soPhongTrong = 0;
 	private final int widthPhong = 131;
 	private int heightPnlContainerDanhSachPhong = Utils.getBodyHeight() - 285;
+	private String loaiPhong = "";
+	private String trangThai = "";
+	private ComboBox<String> cmbSoLuong;
 
 	/**
 	 * Create the frame.
@@ -94,10 +99,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			public void ancestorAdded(AncestorEvent event) {
 				clock();
 				QuanLyDatPhong_GUI.this.jFrame.setWidthHeader(1082);
-			}
-
-			@Override
-			public void ancestorMoved(AncestorEvent event) {
+				addPhong(phong_DAO.getAllPhong());
 			}
 
 			@Override
@@ -105,6 +107,12 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			public void ancestorRemoved(AncestorEvent event) {
 				QuanLyDatPhong_GUI.this.jFrame.setWidthHeader(1054);
 				clock.stop();
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+
 			}
 		});
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
@@ -270,10 +278,10 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlLoaiPhong.add(lblIconDongHo);
 
 //		Seperator
-		JPanel pnlSeperator = new JPanel();
-		pnlSeperator.setBounds(16, 59, 1082, 4);
-		pnlSeperator.setBackground(new Color(0, 0, 0, 64));
-		pnlContent.add(pnlSeperator);
+		JPanel pnlSeperatorTop = new JPanel();
+		pnlSeperatorTop.setBounds(16, 59, 1082, 4);
+		pnlSeperatorTop.setBackground(new Color(0, 0, 0, 64));
+		pnlContent.add(pnlSeperatorTop);
 
 //		Thống kê loại phòng
 		JPanel pnlThongKeLoaiPhong = new JPanel();
@@ -386,10 +394,10 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlPhongTam.add(lblSoLuongPhongTam);
 
 //		Các nút chức năng
-		JPanel pnlSeperator_2 = new JPanel();
-		pnlSeperator_2.setBackground(new Color(0, 0, 0, 64));
-		pnlSeperator_2.setBounds(16, heightPnlContainerDanhSachPhong + 150, 1082, 4);
-		pnlContent.add(pnlSeperator_2);
+		JPanel pnlSeperatorBottom = new JPanel();
+		pnlSeperatorBottom.setBackground(new Color(0, 0, 0, 64));
+		pnlSeperatorBottom.setBounds(16, heightPnlContainerDanhSachPhong + 150, 1082, 4);
+		pnlContent.add(pnlSeperatorBottom);
 
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
@@ -590,7 +598,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 
 		JPanel pnlFilter = new JPanel();
 		pnlFilter.setBackground(Utils.secondaryColor);
-		pnlFilter.setBounds(16, 79, 860, 39);
+		pnlFilter.setBounds(16, 79, 900, 39);
 		pnlContent.add(pnlFilter);
 		pnlFilter.setLayout(null);
 
@@ -636,29 +644,17 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		lblFilterPhongTrong.setBounds(0, 0, 153, 39);
 		pnlFilterPhongTrong.add(lblFilterPhongTrong);
 
-		JLabel lblPhongSo = new JLabel("Phòng số:");
-		lblPhongSo.setForeground(new Color(0, 0, 0));
-		lblPhongSo.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblPhongSo.setBounds(564, 2, 79, 34);
-		pnlFilter.add(lblPhongSo);
-
-		Button btnSearch = new Button("Tìm");
-		btnSearch.setForeground(Color.WHITE);
-		btnSearch.setRadius(9);
-		btnSearch.setFocusable(false);
-		btnSearch.setBorderColor(Utils.secondaryColor);
-		btnSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnSearch.setBackground(new Color(140, 177, 180), 0.8f, 0.6f);
-		btnSearch.setIcon(new ImageIcon("Icon\\search_34x34.png"));
-		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		btnSearch.setBounds(759, 0, 101, 39);
-		pnlFilter.add(btnSearch);
-
-		ComboBox<String> cmbMaPhong = new ComboBox<>();
-		cmbMaPhong.setBackground(Utils.primaryColor);
-		cmbMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		cmbMaPhong.setBounds(653, 2, 91, 35);
-		pnlFilter.add(cmbMaPhong);
+		cmbSoLuong = new ComboBox<>();
+		cmbSoLuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Số lượng khách", "5", "10", "20" }));
+		cmbSoLuong.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				addPhong(filterDanhSachPhong());
+			}
+		});
+		cmbSoLuong.setBackground(Utils.primaryColor);
+		cmbSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		cmbSoLuong.setBounds(750, 2, 150, 35);
+		pnlFilter.add(cmbSoLuong);
 
 		pnlContainerDanhSachPhong = new JPanel();
 		pnlContainerDanhSachPhong.setBounds(16, 134, 900, heightPnlContainerDanhSachPhong);
@@ -666,52 +662,36 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlContainerDanhSachPhong.setLayout(null);
 		pnlContent.add(pnlContainerDanhSachPhong);
 
-		JPanel pnlSeperator_1 = new JPanel();
-		pnlSeperator_1.setBackground(new Color(0, 0, 0, 64));
-		pnlSeperator_1.setBounds(932, 63, 4, heightPnlContainerDanhSachPhong + 87);
-		pnlContent.add(pnlSeperator_1);
-
-//		Event window
-		if (dsPhong == null) {
-			List<Phong> list = phong_DAO.getAllPhong();
-			addPhong(list);
-
-			cmbMaPhong.removeAllItems();
-			list.forEach(phong -> cmbMaPhong.addItem(phong.getMaPhong()));
-		} else
-			addPhong(phong_DAO.getAllPhongTheoMa(dsPhong));
+		JPanel pnlSeperatorRight = new JPanel();
+		pnlSeperatorRight.setBackground(new Color(0, 0, 0, 64));
+		pnlSeperatorRight.setBounds(932, 63, 4, heightPnlContainerDanhSachPhong + 87);
+		pnlContent.add(pnlSeperatorRight);
 
 //		Event loại phòng
 		btnTatCaUnactive.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				btnTatCa.setVisible(true);
-				btnPhongThuong.setVisible(false);
-				btnPhongVip.setVisible(false);
-
-				addPhong(phong_DAO.getAllPhong(""));
+				setVisibleLoaiPhong(btnTatCa, btnPhongThuong, btnPhongVip);
+				loaiPhong = "";
+				addPhong(filterDanhSachPhong());
 			}
 		});
 
 		btnPhongThuongUnactive.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				btnTatCa.setVisible(false);
-				btnPhongThuong.setVisible(true);
-				btnPhongVip.setVisible(false);
-
-				addPhong(phong_DAO.getAllPhong("Phòng thường"));
+				setVisibleLoaiPhong(btnPhongThuong, btnPhongVip, btnTatCa);
+				loaiPhong = "Phòng thường";
+				addPhong(filterDanhSachPhong());
 			}
 		});
 
 		btnPhongVipUnactive.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				btnTatCa.setVisible(false);
-				btnPhongThuong.setVisible(false);
-				btnPhongVip.setVisible(true);
-
-				addPhong(phong_DAO.getAllPhong("Phòng VIP"));
+				setVisibleLoaiPhong(btnPhongVip, btnTatCa, btnPhongThuong);
+				loaiPhong = "Phòng VIP";
+				addPhong(filterDanhSachPhong());
 			}
 		});
 
@@ -720,15 +700,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongTrong.isActive();
-				List<Phong> list = phong_DAO
-						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.Trong));
-				if (list.size() > 0) {
-					if (!isActive) {
-						pnlFilterPhongDangSuDung.setActive(false);
-						pnlFilterPhongCho.setActive(false);
-					}
-					pnlFilterPhongTrong.setActive(!isActive);
-				}
+				if (isActive)
+					trangThai = "";
+				else
+					trangThai = Phong.convertTrangThaiToString(TrangThai.Trong);
+				List<Phong> list = filterDanhSachPhong();
+				setActivePnlFilter(list.size(), isActive, pnlFilterPhongTrong, pnlFilterPhongCho,
+						pnlFilterPhongDangSuDung);
 				addPhong(list);
 			}
 		});
@@ -737,16 +715,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongDangSuDung.isActive();
-				List<Phong> list = phong_DAO
-						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DangThue));
-
-				if (list.size() > 0) {
-					if (!isActive) {
-						pnlFilterPhongTrong.setActive(false);
-						pnlFilterPhongCho.setActive(false);
-					}
-					pnlFilterPhongDangSuDung.setActive(!isActive);
-				}
+				if (isActive)
+					trangThai = "";
+				else
+					trangThai = Phong.convertTrangThaiToString(TrangThai.DangThue);
+				List<Phong> list = filterDanhSachPhong();
+				setActivePnlFilter(list.size(), isActive, pnlFilterPhongDangSuDung, pnlFilterPhongTrong,
+						pnlFilterPhongCho);
 				addPhong(list);
 			}
 		});
@@ -755,15 +730,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongCho.isActive();
-				List<Phong> list = phong_DAO
-						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DaDat));
-				if (list.size() > 0) {
-					if (!isActive) {
-						pnlFilterPhongTrong.setActive(false);
-						pnlFilterPhongDangSuDung.setActive(false);
-					}
-					pnlFilterPhongCho.setActive(!isActive);
-				}
+				if (isActive)
+					trangThai = "";
+				else
+					trangThai = Phong.convertTrangThaiToString(TrangThai.DaDat);
+				List<Phong> list = filterDanhSachPhong();
+				setActivePnlFilter(list.size(), isActive, pnlFilterPhongCho, pnlFilterPhongTrong,
+						pnlFilterPhongDangSuDung);
 				addPhong(list);
 			}
 		});
@@ -811,20 +784,25 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			}
 		});
 
-//		Sự kiện tìm phòng
-		btnSearch.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				String maPhong = (String) cmbMaPhong.getSelectedItem();
-				Phong phong = phong_DAO.getPhong(maPhong);
+	}
 
-				List<Phong> list = new ArrayList<>();
-				list.add(phong);
+	private void setVisibleLoaiPhong(Button btnVisible, Button... btns) {
+		for (Button btn : btns)
+			btn.setVisible(false);
+		btnVisible.setVisible(true);
+	}
 
-				addPhong(list);
-			}
-		});
+	private void setActivePnlFilter(int lengthList, boolean isActive, PanelEvent pnlActive, PanelEvent... pnls) {
+		if (lengthList > 0) {
+			if (!isActive)
+				for (PanelEvent panelEvent : pnls)
+					panelEvent.setActive(false);
+			pnlActive.setActive(!isActive);
+		}
+	}
 
+	private List<Phong> filterDanhSachPhong() {
+		return phong_DAO.getAllPhong(trangThai, loaiPhong, (String) cmbSoLuong.getSelectedItem());
 	}
 
 	/**

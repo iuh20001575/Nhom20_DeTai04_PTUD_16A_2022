@@ -459,13 +459,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 							}
 						});
 
-						jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								quanLyDatPhongGUI.closeJFrameSub();
-							}
-						});
-
 						jDialogCustom.showMessage("Warning",
 								"Khách hàng không có trong hệ thống, bạn có muốn thêm khách hàng mới không?");
 					}

@@ -10,6 +10,7 @@ import java.util.List;
 import connectDB.ConnectDB;
 import entity.Phong;
 import entity.Phong.TrangThai;
+import utils.Utils;
 
 public class Phong_DAO extends DAO {
 	private LoaiPhong_DAO loaiPhong_DAO = new LoaiPhong_DAO();
@@ -196,6 +197,42 @@ public class Phong_DAO extends DAO {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get phòng theo trạng thái, loại phòng và số lượng khách
+	 * 
+	 * @param trangThai
+	 * @param loaiPhong
+	 * @param soLuong
+	 * @return
+	 */
+	public List<Phong> getAllPhong(String trangThai, String loaiPhong, String soLuong) {
+		List<Phong> list = new ArrayList<>();
+		boolean isInteger = Utils.isInteger(soLuong);
+		String sql = "SELECT * FROM Phong JOIN LoaiPhong ON Phong.loaiPhong = LoaiPhong.maLoai "
+				+ "WHERE trangThai like ? and tenLoai like ?";
+
+		if (isInteger)
+			sql += " AND soLuongKhach = ?";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, "%" + trangThai + "%");
+			preparedStatement.setString(2, "%" + loaiPhong + "%");
+
+			if (isInteger)
+				preparedStatement.setInt(3, Integer.parseInt(soLuong));
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getPhong(resultSet));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 
 	public List<Phong> getAllPhongDangThue() {
