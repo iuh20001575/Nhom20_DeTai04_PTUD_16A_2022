@@ -11,6 +11,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,12 +51,14 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private static final long serialVersionUID = 1L;
 	private QuanLyDatPhong_GUI _this;
 	private Thread clock;
+	private ComboBox<String> cmbSoLuong;
 	private DonDatPhong_DAO datPhong_DAO;
 	private List<Phong> dsPhong;
 	private final int gapX = 21;
 	private final int gapY = 30;
 	private Glass glass;
 	private final int heightPhong = 130;
+	private int heightPnlContainerDanhSachPhong = Utils.getBodyHeight() - 285;
 	private JDialogCustom jDialog;
 	private Main jFrame;
 	private JFrame jFrameSub;
@@ -66,6 +69,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private JLabel lblSoPhongTrong;
 	private JLabel lblThu;
 	private JLabel lblTime;
+	private String loaiPhong = "";
+	private MouseListener mouseListener = new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			handleClickOutsidePnlPhong();
+		}
+	};
 	private final int numOfRow = 6;
 	private Phong_DAO phong_DAO;
 	private PanelEvent pnlChuyenPhong;
@@ -78,35 +88,38 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private PanelEvent pnlFilterPhongDangSuDung;
 	private PanelEvent pnlFilterPhongTrong;
 	private PanelEvent pnlGopPhong;
+	private JPanel pnlPhongItem = null;
 	private PanelEvent pnlThanhToan;
 	private JScrollPane scrDanhSachPhong;
 	private int soPhongCho = 0;
 	private int soPhongDangSuDung = 0;
 	private int soPhongTam;
 	private int soPhongTrong = 0;
-	private final int widthPhong = 131;
-	private int heightPnlContainerDanhSachPhong = Utils.getBodyHeight() - 285;
-	private String loaiPhong = "";
 	private String trangThai = "";
-	private ComboBox<String> cmbSoLuong;
+
+	private final int widthPhong = 131;
 
 	/**
 	 * Create the frame.
 	 */
 	public QuanLyDatPhong_GUI(Main jFrame) {
+		this.jFrame = jFrame;
+		_this = this;
+		phong_DAO = new Phong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
+		jDialog = new JDialogCustom(jFrame, components.jDialog.JDialogCustom.Type.warning);
+		glass = new Glass();
+
 		addAncestorListener(new AncestorListener() {
 			@Override
 			public void ancestorAdded(AncestorEvent event) {
 				clock();
 				QuanLyDatPhong_GUI.this.jFrame.setWidthHeader(1082);
 				addPhong(phong_DAO.getAllPhong());
-			}
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(_this);
 
-			@Override
-			@SuppressWarnings("deprecation")
-			public void ancestorRemoved(AncestorEvent event) {
-				QuanLyDatPhong_GUI.this.jFrame.setWidthHeader(1054);
-				clock.stop();
+				jFrame.addMouseListener(mouseListener);
+				addMouseListener(mouseListener);
 			}
 
 			@Override
@@ -114,15 +127,18 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 				// TODO Auto-generated method stub
 
 			}
-		});
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
 
-		this.jFrame = jFrame;
-		_this = this;
-		phong_DAO = new Phong_DAO();
-		datPhong_DAO = new DonDatPhong_DAO();
-		jDialog = new JDialogCustom(jFrame, components.jDialog.JDialogCustom.Type.warning);
-		glass = new Glass();
+			@Override
+			@SuppressWarnings("deprecation")
+			public void ancestorRemoved(AncestorEvent event) {
+				QuanLyDatPhong_GUI.this.jFrame.setWidthHeader(1054);
+				clock.stop();
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(_this);
+
+				jFrame.removeMouseListener(mouseListener);
+				removeMouseListener(mouseListener);
+			}
+		});
 
 		glass.addMouseListener(new MouseAdapter() {
 			@Override
@@ -745,6 +761,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDatPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlDatPhong, new DatPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
@@ -752,6 +769,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDatPhongTruoc.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlDatPhongTruoc, new DatPhongTruoc_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
@@ -759,6 +777,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlChuyenPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlChuyenPhong, new ChuyenPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
@@ -766,6 +785,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlGopPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlGopPhong, new GopPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
@@ -773,6 +793,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDichVu.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlDichVu, new QuanLyDichVuPhongDat_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
@@ -780,29 +801,11 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlThanhToan.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlThanhToan, new ThanhToan_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
 
-	}
-
-	private void setVisibleLoaiPhong(Button btnVisible, Button... btns) {
-		for (Button btn : btns)
-			btn.setVisible(false);
-		btnVisible.setVisible(true);
-	}
-
-	private void setActivePnlFilter(int lengthList, boolean isActive, PanelEvent pnlActive, PanelEvent... pnls) {
-		if (lengthList > 0) {
-			if (!isActive)
-				for (PanelEvent panelEvent : pnls)
-					panelEvent.setActive(false);
-			pnlActive.setActive(!isActive);
-		}
-	}
-
-	private List<Phong> filterDanhSachPhong() {
-		return phong_DAO.getAllPhong(trangThai, loaiPhong, (String) cmbSoLuong.getSelectedItem());
 	}
 
 	/**
@@ -821,12 +824,26 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		soPhongTam = 0;
 
 		pnlDanhSachPhong = new JPanel();
+		pnlDanhSachPhong.addAncestorListener(new AncestorListener() {
+			@Override
+			public void ancestorAdded(AncestorEvent event) {
+				pnlDanhSachPhong.addMouseListener(mouseListener);
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+			}
+
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+				pnlDanhSachPhong.removeMouseListener(mouseListener);
+			}
+		});
 		pnlDanhSachPhong.setBackground(Utils.secondaryColor);
 		pnlDanhSachPhong.setLayout(null);
 
 		for (int i = 0; i < dsPhong.size(); i++) {
-			JPanel phong1 = getPhong(dsPhong.get(i));
-			phong1.setBounds(getBounds(i));
+			JPanel phong1 = getPhong(dsPhong.get(i), getBounds(i));
 			pnlDanhSachPhong.add(phong1);
 		}
 
@@ -949,6 +966,10 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		return false;
 	}
 
+	private List<Phong> filterDanhSachPhong() {
+		return phong_DAO.getAllPhong(trangThai, loaiPhong, (String) cmbSoLuong.getSelectedItem());
+	}
+
 	/**
 	 * Get Bounds JPanel Item theo index
 	 *
@@ -966,12 +987,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	 * Get JPanel Item phòng
 	 *
 	 * @param phong
+	 * @param rectangle
 	 * @return JPanel Item
 	 */
-	private JPanel getPhong(Phong phong) {
+	private JPanel getPhong(Phong phong, Rectangle rectangle) {
 		JPanel pnlPhong1 = new JPanel();
 		pnlPhong1.setBackground(Utils.secondaryColor);
-		pnlPhong1.setBounds(0, 0, 131, 130);
+		pnlPhong1.setBounds(rectangle);
 		pnlPhong1.setLayout(null);
 
 		JLabel lblIcon1 = new JLabel("");
@@ -1060,6 +1082,37 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		lblSoKhach.setBounds(5, 44, 121, 18);
 		pnlChiTietPhong.add(lblSoKhach);
 
+		MouseListener mouseListener = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
+				if (trangThai.equals(TrangThai.PhongTam) || trangThai.equals(TrangThai.DangThue)) {
+					pnlPhongItem = pnlPhong1;
+					pnlDanhSachPhong.remove(pnlDanhSachPhong.getComponentAt(pnlPhong1.getLocation()));
+					pnlDanhSachPhong.add(new Popup(_this, phong, rectangle));
+					repaint();
+				}
+			}
+		};
+		pnlChiTietPhong.addAncestorListener(new AncestorListener() {
+
+			@Override
+			public void ancestorAdded(AncestorEvent event) {
+				pnlChiTietPhong.addMouseListener(mouseListener);
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+				pnlChiTietPhong.removeMouseListener(mouseListener);
+			}
+		});
+
 		return pnlPhong1;
 	}
 
@@ -1075,7 +1128,22 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		return new Dimension(890, Math.max((row - 1) * gapY + row * heightPhong, heightPnlContainerDanhSachPhong));
 	}
 
-	private void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
+	public void handleClickOutsidePnlPhong() {
+		if (pnlDanhSachPhong == null)
+			return;
+
+		if (pnlPhongItem != null) {
+			pnlDanhSachPhong.remove(pnlDanhSachPhong.getComponentAt(pnlPhongItem.getLocation()));
+			pnlDanhSachPhong.add(pnlPhongItem);
+			repaint();
+		}
+	}
+
+	public Main getjFrame() {
+		return jFrame;
+	}
+
+	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
 		if (!pnl.isEnabled())
 			return;
 		openJFrameSub(jFrame);
@@ -1087,5 +1155,20 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		glass.setAlpha(0.5f);
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
+	}
+
+	private void setActivePnlFilter(int lengthList, boolean isActive, PanelEvent pnlActive, PanelEvent... pnls) {
+		if (lengthList > 0) {
+			if (!isActive)
+				for (PanelEvent panelEvent : pnls)
+					panelEvent.setActive(false);
+			pnlActive.setActive(!isActive);
+		}
+	}
+
+	private void setVisibleLoaiPhong(Button btnVisible, Button... btns) {
+		for (Button btn : btns)
+			btn.setVisible(false);
+		btnVisible.setVisible(true);
 	}
 }

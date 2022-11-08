@@ -62,6 +62,13 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 	private JPanel pnlContent;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
+	private ComboBox<String> cmbPhongHienTai;
+	private String maPhong;
+
+	public ChuyenPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame, String maPhong) {
+		this(quanLyDatPhongGUI, parentFrame);
+		this.maPhong = maPhong;
+	}
 
 	/**
 	 * Create the frame.
@@ -115,7 +122,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 		lblPhongHienTai.setBounds(16, 10, 130, 30);
 		pnlPhongHienTai.add(lblPhongHienTai);
 
-		ComboBox<String> cmbPhongHienTai = new ComboBox<>();
+		cmbPhongHienTai = new ComboBox<>();
 		cmbPhongHienTai.setBackground(Utils.primaryColor);
 		cmbPhongHienTai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		cmbPhongHienTai.setBounds(150, 7, 90, 36);
@@ -289,6 +296,8 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 					cmbMaPhong.addItem(phong.getMaPhong());
 				});
 				dsPhongDangThue.forEach(phong -> cmbPhongHienTai.addItem(phong.getMaPhong()));
+				if (maPhong != null)
+					cmbPhongHienTai.setSelectedItem(maPhong);
 
 				cmbMaPhong.addItemListener(_this);
 				cmbLoaiPhong.addItemListener(_this);
