@@ -816,7 +816,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 				handleOpenSubFrame(pnlThanhToan, new ThanhToan_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
-
 	}
 
 	/**

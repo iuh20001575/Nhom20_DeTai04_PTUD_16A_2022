@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -224,21 +223,18 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlRow4.add(lblDiaChi);
 
 		cmbTinh = new ComboBox<>();
-		cmbTinh.setModel(new DefaultComboBoxModel<String>());
 		cmbTinh.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbTinh.setBackground(Utils.primaryColor);
 		cmbTinh.setBounds(4, 29, 200, 36);
 		pnlRow4.add(cmbTinh);
 
 		cmbQuan = new ComboBox<>();
-		cmbQuan.setModel(new DefaultComboBoxModel<String>());
 		cmbQuan.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbQuan.setBackground(new Color(140, 177, 180));
 		cmbQuan.setBounds(220, 29, 200, 36);
 		pnlRow4.add(cmbQuan);
 
 		cmbPhuong = new ComboBox<>();
-		cmbPhuong.setModel(new DefaultComboBoxModel<String>());
 		cmbPhuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbPhuong.setBackground(new Color(140, 177, 180));
 		cmbPhuong.setBounds(440, 29, 200, 36);
@@ -298,8 +294,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlChucVu.add(lblChucVu);
 
 		cmbChucVu = new ComboBox<>();
-		cmbChucVu.setModel(new DefaultComboBoxModel<>(new String[] { NhanVien.convertChucVuToString(ChucVu.QuanLy),
-				NhanVien.convertChucVuToString(ChucVu.NhanVien) }));
+		cmbChucVu.addItem(NhanVien.convertChucVuToString(ChucVu.QuanLy));
+		cmbChucVu.addItem(NhanVien.convertChucVuToString(ChucVu.NhanVien));
 		cmbChucVu.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbChucVu.setBackground(new Color(140, 177, 180));
 		cmbChucVu.setBounds(4, 29, 200, 36);
@@ -318,9 +314,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlTrangThai.add(lblTrangThai);
 
 		cmbTrangThai = new ComboBox<>();
-		cmbTrangThai.setModel(
-				new DefaultComboBoxModel<>(new String[] { NhanVien.convertTrangThaiToString(TrangThai.DangLam),
-						NhanVien.convertTrangThaiToString(TrangThai.NghiLam) }));
+		cmbTrangThai.addItem(NhanVien.convertTrangThaiToString(TrangThai.DangLam));
+		cmbTrangThai.addItem(NhanVien.convertTrangThaiToString(TrangThai.NghiLam));
 		cmbTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbTrangThai.setBackground(new Color(140, 177, 180));
 		cmbTrangThai.setBounds(4, 29, 200, 36);
@@ -345,9 +340,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		btnLuu.setForeground(Color.WHITE);
 		btnLuu.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnLuu.setFocusable(false);
-		btnLuu.setColorOver(new Color(140, 177, 180));
-		btnLuu.setColorClick(new Color(140, 177, 180, 204));
-		btnLuu.setColor(new Color(140, 177, 180));
+		btnLuu.setBackground(Utils.primaryColor, 1, 0.8f);
 		btnLuu.setBorderColor(new Color(203, 239, 255));
 		btnLuu.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnLuu.setBounds(349, 0, 250, 48);
@@ -359,9 +352,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		btnCapNhat.setRadius(8);
 		btnCapNhat.setBorderColor(Utils.secondaryColor);
 		btnCapNhat.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnCapNhat.setColor(Utils.primaryColor);
-		btnCapNhat.setColorOver(Utils.primaryColor);
-		btnCapNhat.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
+		btnCapNhat.setBackground(Utils.primaryColor, 1, 0.8f);
 		btnCapNhat.setForeground(Color.WHITE);
 		btnCapNhat.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnCapNhat.setBounds(49, 0, 250, 48);
@@ -373,9 +364,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		btnHuy.setRadius(8);
 		btnHuy.setBorderColor(Utils.secondaryColor);
 		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnHuy.setColor(Utils.primaryColor);
-		btnHuy.setColorOver(Utils.primaryColor);
-		btnHuy.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
+		btnHuy.setBackground(Utils.primaryColor, 1, 0.8f);
 		btnHuy.setForeground(Color.WHITE);
 		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnHuy.setBounds(49, 0, 250, 48);
@@ -388,9 +377,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		btnNghiViec.setForeground(Color.WHITE);
 		btnNghiViec.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnNghiViec.setFocusable(false);
-		btnNghiViec.setColorOver(new Color(140, 177, 180));
-		btnNghiViec.setColorClick(new Color(140, 177, 180, 204));
-		btnNghiViec.setColor(new Color(140, 177, 180));
+		btnNghiViec.setBackground(Utils.primaryColor, 1, 0.8f);
 		btnNghiViec.setBorderColor(new Color(203, 239, 255));
 		btnNghiViec.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnNghiViec.setBounds(648, 0, 250, 48);

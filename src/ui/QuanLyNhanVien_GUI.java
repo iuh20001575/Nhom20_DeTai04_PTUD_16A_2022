@@ -368,24 +368,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 			}
 		});
 
-//		Sự kiện JComboBox mã nhân viên
-		cmbMaNhanVien.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterNhanVien();
-				}
-			}
-		});
-
-//		Sự kiện JComboBox trạng thái
-		cmbTrangThai.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterNhanVien();
-				}
-			}
-		});
-
 //		Sự kiện JTable
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent lse) {
@@ -415,7 +397,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 				cmbMaNhanVien.removeAllItems();
 				cmbMaNhanVien.addItem("Mã NV");
 				List<NhanVien> list = nhanVien_DAO.getAllNhanVien();
-				addRow(list);
 				list.forEach(nhanVien -> cmbMaNhanVien.addItem(nhanVien.getMaNhanVien()));
 				pnlControl.setTbl(tbl);
 			}
@@ -426,6 +407,24 @@ public class QuanLyNhanVien_GUI extends JPanel {
 			@SuppressWarnings("deprecation")
 			public void ancestorRemoved(AncestorEvent event) {
 				clockThread.stop();
+			}
+		});
+
+// 		Sự kiện JComboBox mã nhân viên
+		cmbMaNhanVien.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterNhanVien();
+				}
+			}
+		});
+
+//		Sự kiện JComboBox trạng thái
+		cmbTrangThai.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterNhanVien();
+				}
 			}
 		});
 	}

@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
@@ -87,6 +87,12 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		int padding = (int) Math.floor((Utils.getBodyHeight() - 363) * 1.0 / 7);
 		int top = padding;
 		int left = Utils.getLeft(948);
+		Color color1 = new Color(203, 239, 255);
+		Color color2 = new Color(149, 166, 248);
+		Font font16 = new Font("Segoe UI", Font.PLAIN, 16);
+		Font font20 = new Font("Segoe UI", Font.PLAIN, 20);
+		Font font32 = new Font("Segoe UI", Font.PLAIN, 32);
+		Border emptyBorder = new EmptyBorder(0, 0, 0, 0);
 
 		setBackground(Utils.secondaryColor);
 		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
@@ -102,7 +108,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		txtMaNhanVien = new TextField();
 		txtMaNhanVien.setLineColor(Utils.lineTextField);
 		txtMaNhanVien.setBackground(Utils.secondaryColor);
-		txtMaNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtMaNhanVien.setFont(font16);
 		txtMaNhanVien.setLabelText("Mã nhân viên");
 		txtMaNhanVien.setBounds(0, 0, 449, 55);
 		txtMaNhanVien.setColumns(10);
@@ -111,51 +117,51 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		txtHoTen = new TextField();
 		txtHoTen.setLineColor(Utils.lineTextField);
 		txtHoTen.setLabelText("Họ tên");
-		txtHoTen.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtHoTen.setFont(font16);
 		txtHoTen.setColumns(10);
-		txtHoTen.setBackground(new Color(203, 239, 255));
+		txtHoTen.setBackground(color1);
 		txtHoTen.setBounds(499, 0, 449, 55);
 		pnlRow1.add(txtHoTen);
 
 		JPanel pnlRow2 = new JPanel();
 		pnlRow2.setLayout(null);
-		pnlRow2.setBackground(new Color(203, 239, 255));
+		pnlRow2.setBackground(color1);
 		pnlRow2.setBounds(left, top, 948, 55);
 		top += padding + 55;
 		this.add(pnlRow2);
 
 		txtCCCD = new TextField();
-		txtCCCD.setLineColor(new Color(149, 166, 248));
+		txtCCCD.setLineColor(color2);
 		txtCCCD.setLabelText("Căn cước công dân");
-		txtCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtCCCD.setFont(font16);
 		txtCCCD.setColumns(10);
-		txtCCCD.setBackground(new Color(203, 239, 255));
+		txtCCCD.setBackground(color1);
 		txtCCCD.setBounds(0, 0, 449, 55);
 		pnlRow2.add(txtCCCD);
 
 		txtSoDienThoai = new TextField();
-		txtSoDienThoai.setLineColor(new Color(149, 166, 248));
+		txtSoDienThoai.setLineColor(color2);
 		txtSoDienThoai.setLabelText("Số điện thoại");
-		txtSoDienThoai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtSoDienThoai.setFont(font16);
 		txtSoDienThoai.setColumns(10);
-		txtSoDienThoai.setBackground(new Color(203, 239, 255));
+		txtSoDienThoai.setBackground(color1);
 		txtSoDienThoai.setBounds(499, 0, 449, 55);
 		pnlRow2.add(txtSoDienThoai);
 
 		JPanel pnlRow3 = new JPanel();
 		pnlRow3.setLayout(null);
-		pnlRow3.setBackground(new Color(203, 239, 255));
+		pnlRow3.setBackground(color1);
 		pnlRow3.setBounds(left, top, 948, 55);
 		top += padding + 55;
 		this.add(pnlRow3);
 
 		txtNgaySinh = new TextField();
 		txtNgaySinh.setIcon(new ImageIcon("Icon\\add-event 2.png"));
-		txtNgaySinh.setLineColor(new Color(149, 166, 248));
+		txtNgaySinh.setLineColor(color2);
 		txtNgaySinh.setLabelText("Ngày sinh");
-		txtNgaySinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtNgaySinh.setFont(font16);
 		txtNgaySinh.setColumns(10);
-		txtNgaySinh.setBackground(new Color(203, 239, 255));
+		txtNgaySinh.setBackground(color1);
 		txtNgaySinh.setBounds(0, 0, 449, 55);
 		pnlRow3.add(txtNgaySinh);
 		dateChoose = new DateChooser();
@@ -170,7 +176,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 
 		JLabel lblGioiTinh = new JLabel("Giới tính");
 		lblGioiTinh.setForeground(Utils.labelTextField);
-		lblGioiTinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblGioiTinh.setFont(font16);
 		lblGioiTinh.setBounds(4, 6, 60, 19);
 		pnlGioiTinh.add(lblGioiTinh);
 
@@ -183,14 +189,14 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		radNam = new RadioButtonCustom("Nam");
 		radNam.setFocusable(false);
 		radNam.setBackground(Utils.secondaryColor);
-		radNam.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		radNam.setFont(font16);
 		radNam.setBounds(0, -2, 59, 21);
 		pnlGroupGioiTinh.add(radNam);
 
 		radNu = new RadioButtonCustom("Nữ");
 		radNu.setFocusable(false);
 		radNu.setBackground(Utils.secondaryColor);
-		radNu.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		radNu.setFont(font16);
 		radNu.setBounds(79, -2, 59, 21);
 		pnlGroupGioiTinh.add(radNu);
 
@@ -206,54 +212,51 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		pnlRow4.setLayout(null);
 
 		JLabel lblDiaChi = new JLabel("Địa chỉ");
-		lblDiaChi.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		lblDiaChi.setFont(font16);
 		lblDiaChi.setBounds(4, 6, 50, 19);
 		lblDiaChi.setForeground(Utils.labelTextField);
 		pnlRow4.add(lblDiaChi);
 
 		cmbTinh = new ComboBox<>();
-		cmbTinh.setModel(new DefaultComboBoxModel<String>());
-		cmbTinh.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		cmbTinh.setFont(font20);
 		cmbTinh.setBackground(Utils.primaryColor);
 		cmbTinh.setBounds(4, 29, 200, 36);
 		pnlRow4.add(cmbTinh);
 
 		cmbQuan = new ComboBox<>();
-		cmbQuan.setModel(new DefaultComboBoxModel<String>());
-		cmbQuan.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cmbQuan.setBackground(new Color(140, 177, 180));
+		cmbQuan.setFont(font20);
+		cmbQuan.setBackground(Utils.primaryColor);
 		cmbQuan.setBounds(220, 29, 200, 36);
 		pnlRow4.add(cmbQuan);
 
 		cmbPhuong = new ComboBox<>();
-		cmbPhuong.setModel(new DefaultComboBoxModel<String>());
-		cmbPhuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cmbPhuong.setBackground(new Color(140, 177, 180));
+		cmbPhuong.setFont(font20);
+		cmbPhuong.setBackground(Utils.primaryColor);
 		cmbPhuong.setBounds(440, 29, 200, 36);
 		pnlRow4.add(cmbPhuong);
 
 		JPanel pnlRow5 = new JPanel();
 		pnlRow5.setLayout(null);
-		pnlRow5.setBackground(new Color(203, 239, 255));
+		pnlRow5.setBackground(color1);
 		pnlRow5.setBounds(left, top, 948, 55);
 		top += padding + 55;
 		this.add(pnlRow5);
 
 		txtDiaChiCT = new TextField();
-		txtDiaChiCT.setLineColor(new Color(149, 166, 248));
+		txtDiaChiCT.setLineColor(color2);
 		txtDiaChiCT.setLabelText("Địa chỉ cụ thể");
-		txtDiaChiCT.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtDiaChiCT.setFont(font16);
 		txtDiaChiCT.setColumns(10);
-		txtDiaChiCT.setBackground(new Color(203, 239, 255));
+		txtDiaChiCT.setBackground(color1);
 		txtDiaChiCT.setBounds(0, 0, 449, 55);
 		pnlRow5.add(txtDiaChiCT);
 
 		txtMatKhau = new TextField();
-		txtMatKhau.setLineColor(new Color(149, 166, 248));
+		txtMatKhau.setLineColor(color2);
 		txtMatKhau.setLabelText("Mật khẩu");
-		txtMatKhau.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtMatKhau.setFont(font16);
 		txtMatKhau.setColumns(10);
-		txtMatKhau.setBackground(new Color(203, 239, 255));
+		txtMatKhau.setBackground(color1);
 		txtMatKhau.setBounds(499, 0, 449, 55);
 		pnlRow5.add(txtMatKhau);
 
@@ -268,10 +271,10 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		btnCapNhat.setFocusable(false);
 		btnCapNhat.setRadius(8);
 		btnCapNhat.setBorderColor(Utils.secondaryColor);
-		btnCapNhat.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnCapNhat.setBorder(emptyBorder);
 		btnCapNhat.setBackground(Utils.primaryColor, 1, 0.8f);
 		btnCapNhat.setForeground(Color.WHITE);
-		btnCapNhat.setFont(new Font("Segoe UI", Font.PLAIN, 32));
+		btnCapNhat.setFont(font32);
 		btnCapNhat.setBounds(199, 0, 250, 48);
 		pnlActions.add(btnCapNhat);
 
@@ -281,10 +284,10 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		btnHuy.setFocusable(false);
 		btnHuy.setRadius(8);
 		btnHuy.setBorderColor(Utils.secondaryColor);
-		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnHuy.setBorder(emptyBorder);
 		btnHuy.setBackground(Utils.primaryColor, 1, 0.8f);
 		btnHuy.setForeground(Color.WHITE);
-		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 32));
+		btnHuy.setFont(font32);
 		btnHuy.setBounds(199, 0, 250, 48);
 		pnlActions.add(btnHuy);
 
@@ -299,11 +302,11 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		btnLuu.setIcon(new ImageIcon("Icon\\floppy-disk 1.png"));
 		btnLuu.setRadius(8);
 		btnLuu.setForeground(Color.WHITE);
-		btnLuu.setFont(new Font("Segoe UI", Font.PLAIN, 32));
+		btnLuu.setFont(font32);
 		btnLuu.setFocusable(false);
 		btnLuu.setBackground(Utils.primaryColor, 1, 0.8f);
-		btnLuu.setBorderColor(new Color(203, 239, 255));
-		btnLuu.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnLuu.setBorderColor(color1);
+		btnLuu.setBorder(emptyBorder);
 		btnLuu.setBounds(499, 0, 250, 48);
 		pnlActions.add(btnLuu);
 

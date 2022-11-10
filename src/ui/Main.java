@@ -247,7 +247,6 @@ public class Main extends JFrame {
 		pnlBody.removeAll();
 		pnlBody.add(panelUI.getjPanel());
 		pnlBody.repaint();
-		pnlBody.revalidate();
 		setTitle(panelUI.getTitle());
 	}
 
