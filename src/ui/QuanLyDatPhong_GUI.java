@@ -664,7 +664,8 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		cmbSoLuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Số lượng khách", "5", "10", "20" }));
 		cmbSoLuong.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				addPhong(filterDanhSachPhong());
+				if (e.getStateChange() == ItemEvent.SELECTED)
+					addPhong(filterDanhSachPhong());
 			}
 		});
 		cmbSoLuong.setBackground(Utils.primaryColor);
@@ -696,18 +697,28 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		btnPhongThuongUnactive.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setVisibleLoaiPhong(btnPhongThuong, btnPhongVip, btnTatCa);
-				loaiPhong = "Phòng thường";
-				addPhong(filterDanhSachPhong());
+				String loaiPhong = _this.loaiPhong;
+				_this.loaiPhong = "Phòng thường";
+				List<Phong> list = filterDanhSachPhong();
+				if (list.size() <= 0)
+					_this.loaiPhong = loaiPhong;
+				else
+					setVisibleLoaiPhong(btnPhongThuong, btnPhongVip, btnTatCa);
+				addPhong(list);
 			}
 		});
 
 		btnPhongVipUnactive.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setVisibleLoaiPhong(btnPhongVip, btnTatCa, btnPhongThuong);
-				loaiPhong = "Phòng VIP";
-				addPhong(filterDanhSachPhong());
+				String loaiPhong = _this.loaiPhong;
+				_this.loaiPhong = "Phòng VIP";
+				List<Phong> list = filterDanhSachPhong();
+				if (list.size() <= 0)
+					_this.loaiPhong = loaiPhong;
+				else
+					setVisibleLoaiPhong(btnPhongVip, btnPhongThuong, btnTatCa);
+				addPhong(list);
 			}
 		});
 
@@ -716,13 +727,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongTrong.isActive();
-				if (isActive)
-					trangThai = "";
-				else
-					trangThai = Phong.convertTrangThaiToString(TrangThai.Trong);
+				String trangThai = _this.trangThai;
+				_this.trangThai = isActive ? "" : Phong.convertTrangThaiToString(TrangThai.Trong);
 				List<Phong> list = filterDanhSachPhong();
-				setActivePnlFilter(list.size(), isActive, pnlFilterPhongTrong, pnlFilterPhongCho,
-						pnlFilterPhongDangSuDung);
+				int length = list.size();
+				setActivePnlFilter(length, isActive, pnlFilterPhongTrong, pnlFilterPhongCho, pnlFilterPhongDangSuDung);
+				if (length <= 0)
+					_this.trangThai = trangThai;
 				addPhong(list);
 			}
 		});
@@ -731,13 +742,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongDangSuDung.isActive();
-				if (isActive)
-					trangThai = "";
-				else
-					trangThai = Phong.convertTrangThaiToString(TrangThai.DangThue);
+				String trangThai = _this.trangThai;
+				_this.trangThai = isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DangThue);
 				List<Phong> list = filterDanhSachPhong();
-				setActivePnlFilter(list.size(), isActive, pnlFilterPhongDangSuDung, pnlFilterPhongTrong,
-						pnlFilterPhongCho);
+				int length = list.size();
+				setActivePnlFilter(length, isActive, pnlFilterPhongDangSuDung, pnlFilterPhongTrong, pnlFilterPhongCho);
+				if (length <= 0)
+					_this.trangThai = trangThai;
 				addPhong(list);
 			}
 		});
@@ -746,13 +757,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongCho.isActive();
-				if (isActive)
-					trangThai = "";
-				else
-					trangThai = Phong.convertTrangThaiToString(TrangThai.DaDat);
+				String trangThai = _this.trangThai;
+				_this.trangThai = isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DaDat);
 				List<Phong> list = filterDanhSachPhong();
-				setActivePnlFilter(list.size(), isActive, pnlFilterPhongCho, pnlFilterPhongTrong,
-						pnlFilterPhongDangSuDung);
+				int length = list.size();
+				setActivePnlFilter(length, isActive, pnlFilterPhongCho, pnlFilterPhongTrong, pnlFilterPhongDangSuDung);
+				if (length <= 0)
+					_this.trangThai = trangThai;
 				addPhong(list);
 			}
 		});

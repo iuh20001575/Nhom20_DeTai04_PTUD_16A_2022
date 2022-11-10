@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -272,6 +273,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableColumnModel.getColumn(0).setPreferredWidth(61);
 		tableColumnModel.getColumn(1).setPreferredWidth(180);
 		tableColumnModel.getColumn(2).setPreferredWidth(120);
@@ -410,8 +412,11 @@ public class QuanLyNhanVien_GUI extends JPanel {
 				clockThread = clock();
 
 				setEmptyTable();
-				addRow(nhanVien_DAO.getAllNhanVien())
-						.forEach(nhanVien -> maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
+				cmbMaNhanVien.removeAllItems();
+				cmbMaNhanVien.addItem("Mã NV");
+				List<NhanVien> list = nhanVien_DAO.getAllNhanVien();
+				addRow(list);
+				list.forEach(nhanVien -> cmbMaNhanVien.addItem(nhanVien.getMaNhanVien()));
 				pnlControl.setTbl(tbl);
 			}
 

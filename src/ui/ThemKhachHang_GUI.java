@@ -19,6 +19,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.plaf.metal.MetalButtonUI;
 
 import com.raven.datechooser.DateChooser;
@@ -45,7 +47,6 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 	private JComboBox<String> cmbQuan;
 	private JComboBox<String> cmbPhuong;
 	private JFrame jFrameParent = null;
-
 	private Tinh tinh;
 	private Quan quan;
 	private Phuong phuong;
@@ -62,6 +63,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		this(main);
 		setjFrameParent(jFrameParent);
 		txtSDT.setText(soDienThoai);
+		txtSDT.setEnabled(false);
 	}
 
 	private void setjFrameParent(JFrame jFrameParent) {
@@ -126,7 +128,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		txtNgaySinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtNgaySinh.setColumns(10);
 		txtNgaySinh.setBackground(new Color(203, 239, 255));
-		txtNgaySinh.setBounds(421, 85, 371, 55);
+		txtNgaySinh.setBounds(421, 0, 371, 55);
 		pnlRow2.add(txtNgaySinh);
 		dateChoose = new DateChooser();
 		dateChoose.setDateFormat("dd/MM/yyyy");
@@ -300,6 +302,28 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		cmbTinh.addItemListener(this);
 		cmbQuan.addItemListener(this);
 		cmbPhuong.addItemListener(this);
+
+		addAncestorListener(new AncestorListener() {
+
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void ancestorAdded(AncestorEvent event) {
+				// TODO Auto-generated method stub
+				dateChoose.showPopup();
+				dateChoose.hidePopup();
+			}
+		});
 
 		txtMa.setText(khachHang_DAO.getMaKhachHang());
 	}
