@@ -22,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -45,12 +46,13 @@ import utils.Utils;
 public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private ChuyenPhong_GUI _this;
 	private ComboBox<String> cmbLoaiPhong;
 	private ComboBox<String> cmbMaPhong;
+	private ComboBox<String> cmbPhongHienTai;
 	private ComboBox<String> cmbSoKhach;
 	private DonDatPhong_DAO datPhong_DAO;
 	private List<LoaiPhong> dsLoaiPhong;
@@ -58,21 +60,15 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 	private final String labelCmbMaPhong = "Mã phòng";
 	private final String labelCmbSoKhach = "Số khách";
 	private LoaiPhong_DAO loaiPhong_DAO;
+	private String maPhong;
 	private Phong_DAO phong_DAO;
 	private JPanel pnlContent;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
-	private ComboBox<String> cmbPhongHienTai;
-	private String maPhong;
-
-	public ChuyenPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame, String maPhong) {
-		this(quanLyDatPhongGUI, parentFrame);
-		this.maPhong = maPhong;
-	}
 
 	/**
 	 * Create the frame.
-	 * 
+	 *
 	 * @param quanLyDatPhongGUI
 	 * @param glass
 	 */
@@ -83,7 +79,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 		datPhong_DAO = new DonDatPhong_DAO();
 
 		setType(Type.UTILITY);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 400);
 		pnlContent = new JPanel();
 		pnlContent.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -144,23 +140,23 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 		pnlContainer.add(pnlFilter);
 		pnlFilter.setLayout(null);
 
-		cmbMaPhong = new ComboBox<String>();
+		cmbMaPhong = new ComboBox<>();
 		cmbMaPhong.setBackground(Utils.primaryColor);
-		cmbMaPhong.setModel(new DefaultComboBoxModel<String>(new String[] { labelCmbMaPhong }));
+		cmbMaPhong.setModel(new DefaultComboBoxModel<>(new String[] { labelCmbMaPhong }));
 		cmbMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		cmbMaPhong.setBounds(16, 0, 127, 30);
 		pnlFilter.add(cmbMaPhong);
 
-		cmbLoaiPhong = new ComboBox<String>();
+		cmbLoaiPhong = new ComboBox<>();
 		cmbLoaiPhong.setBackground(Utils.primaryColor);
-		cmbLoaiPhong.setModel(new DefaultComboBoxModel<String>(new String[] { labelCmbLoaiPhong }));
+		cmbLoaiPhong.setModel(new DefaultComboBoxModel<>(new String[] { labelCmbLoaiPhong }));
 		cmbLoaiPhong.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		cmbLoaiPhong.setBounds(163, 0, 147, 30);
 		pnlFilter.add(cmbLoaiPhong);
 
-		cmbSoKhach = new ComboBox<String>();
+		cmbSoKhach = new ComboBox<>();
 		cmbSoKhach.setBackground(Utils.primaryColor);
-		cmbSoKhach.setModel(new DefaultComboBoxModel<String>(new String[] { labelCmbSoKhach, "5", "10", "20" }));
+		cmbSoKhach.setModel(new DefaultComboBoxModel<>(new String[] { labelCmbSoKhach, "5", "10", "20" }));
 		cmbSoKhach.setFont(new Font("Segoe UI", Font.PLAIN, 18));
 		cmbSoKhach.setBounds(330, 0, 127, 30);
 		pnlFilter.add(cmbSoKhach);
@@ -224,7 +220,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 		pnlContainer.add(scr);
 		tbl = new JTable() {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -343,6 +339,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 		});
 
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
 					int row = tbl.getSelectedRow();
@@ -384,6 +381,11 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 				}
 			}
 		});
+	}
+
+	public ChuyenPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame, String maPhong) {
+		this(quanLyDatPhongGUI, parentFrame);
+		this.maPhong = maPhong;
 	}
 
 	private void addRow(List<Phong> list) {

@@ -74,6 +74,10 @@ public class Utils {
 		return (int) Math.ceil((Utils.getScreenWidth() - width - 14) / 2);
 	}
 
+	public static int getLeft(int widthParent, int width) {
+		return (int) Math.ceil((widthParent - width) / 2);
+	}
+
 	public static void setMain(JFrame main) {
 		Utils.main = main;
 	}

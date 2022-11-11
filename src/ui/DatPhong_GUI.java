@@ -57,8 +57,6 @@ import entity.LoaiPhong;
 import entity.Phong;
 import utils.Utils;
 
-// FIXME Select row table not enabled btnChonPhong
-
 public class DatPhong_GUI extends JFrame implements ItemListener {
 
 	/**

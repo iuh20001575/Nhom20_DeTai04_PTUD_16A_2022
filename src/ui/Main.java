@@ -3,6 +3,7 @@ package ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -44,14 +45,14 @@ public class Main extends JFrame {
 
 	private Main _this;
 	private Button btnBack;
-	private JPanel pnlContent;
+	private DonDatPhong_DAO datPhong_DAO;
 	private DrawerController drawer;
+	private Menu footer;
 	private JLabel lblTitle;
 	private Menu menu;
 	private NhanVien_DAO nhanVien_DAO;
 	private JPanel pnlBody;
-	private Menu footer;
-	private DonDatPhong_DAO datPhong_DAO;
+	private JPanel pnlContent;
 	private JPanel pnlHeader;
 
 	/**
@@ -73,7 +74,7 @@ public class Main extends JFrame {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setResizable(false);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setExtendedState(Frame.MAXIMIZED_BOTH);
 
 		pnlContent = new JPanel();
 		pnlContent.setForeground(Color.GRAY);
@@ -211,7 +212,7 @@ public class Main extends JFrame {
 				};
 				clock.start();
 			}
-			
+
 			@SuppressWarnings("deprecation")
 			@Override
 			public void windowClosed(WindowEvent e) {
@@ -250,21 +251,6 @@ public class Main extends JFrame {
 		setTitle(panelUI.getTitle());
 	}
 
-	public void repaint() {
-		pnlBody.repaint();
-		pnlBody.revalidate();
-	}
-
-	public Menu getMenu() {
-		return menu;
-	}
-
-	@Override
-	public void setTitle(String title) {
-		super.setTitle(title);
-		lblTitle.setText(title.toUpperCase());
-	}
-
 	public void backPanel() {
 		StackPanel.pop();
 		PanelUI panelUI = StackPanel.peek();
@@ -275,6 +261,22 @@ public class Main extends JFrame {
 		}
 		addPnlBody(panelUI);
 		menu.setSelectedMenu(panelUI.getIndex(), panelUI.getIndexSubmenu());
+	}
+
+	public Menu getMenu() {
+		return menu;
+	}
+
+	@Override
+	public void repaint() {
+		pnlBody.repaint();
+		pnlBody.revalidate();
+	}
+
+	@Override
+	public void setTitle(String title) {
+		super.setTitle(title);
+		lblTitle.setText(title.toUpperCase());
 	}
 
 	public void setWidthHeader(int width) {

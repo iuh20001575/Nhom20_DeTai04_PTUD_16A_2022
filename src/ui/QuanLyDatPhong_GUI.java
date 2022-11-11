@@ -661,8 +661,9 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlFilterPhongTrong.add(lblFilterPhongTrong);
 
 		cmbSoLuong = new ComboBox<>();
-		cmbSoLuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Số lượng khách", "5", "10", "20" }));
+		cmbSoLuong.setModel(new DefaultComboBoxModel<>(new String[] { "Số lượng khách", "5", "10", "20" }));
 		cmbSoLuong.addItemListener(new ItemListener() {
+			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED)
 					addPhong(filterDanhSachPhong());
@@ -993,6 +994,10 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 				heightPhong);
 	}
 
+	public Main getjFrame() {
+		return jFrame;
+	}
+
 	/**
 	 * Get JPanel Item phòng
 	 *
@@ -1147,10 +1152,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			pnlDanhSachPhong.add(pnlPhongItem);
 			repaint();
 		}
-	}
-
-	public Main getjFrame() {
-		return jFrame;
 	}
 
 	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {

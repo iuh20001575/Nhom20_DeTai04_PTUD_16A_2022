@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import components.button.Button;
@@ -34,10 +35,9 @@ import utils.Utils;
 public class DangNhap_GUI extends JFrame {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-
 	private DangNhap_GUI _this;
 	private JPanel contentPane;
 	private TaiKhoan_DAO taiKhoan_DAO;
@@ -64,7 +64,7 @@ public class DangNhap_GUI extends JFrame {
 		setAutoRequestFocus(false);
 		setTitle("Đăng nhập");
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(0, 0, screenWidth, screenHeight);
 		setUndecorated(true);
 		contentPane = new JPanel();

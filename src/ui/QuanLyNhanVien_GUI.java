@@ -51,7 +51,7 @@ import utils.Utils;
 public class QuanLyNhanVien_GUI extends JPanel {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private Button btnEmployeeAdd;
@@ -198,15 +198,15 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeRemove.setBounds(493, -2, 154, 40);
 		pnlActions.add(btnEmployeeRemove);
 
-		cmbTrangThai = new JComboBox<String>();
-		cmbTrangThai.setModel(new DefaultComboBoxModel<String>(new String[] { "Trạng thái", "Đang làm", "Nghỉ làm" }));
+		cmbTrangThai = new JComboBox<>();
+		cmbTrangThai.setModel(new DefaultComboBoxModel<>(new String[] { "Trạng thái", "Đang làm", "Nghỉ làm" }));
 		cmbTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbTrangThai.setBackground(Utils.primaryColor);
 		cmbTrangThai.setBounds(904, 0, 150, 36);
 		pnlActions.add(cmbTrangThai);
 
-		cmbMaNhanVien = new JComboBox<String>();
-		maNhanVienModel = new DefaultComboBoxModel<String>(new String[] { "Mã NV" });
+		cmbMaNhanVien = new JComboBox<>();
+		maNhanVienModel = new DefaultComboBoxModel<>(new String[] { "Mã NV" });
 		cmbMaNhanVien.setModel(maNhanVienModel);
 		cmbMaNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbMaNhanVien.setBackground(Utils.primaryColor);
@@ -231,7 +231,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlContainer.add(scr);
 		tbl = new JTable() {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -287,7 +287,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		tbl.setRowHeight(36);
 		scr.setViewportView(tbl);
 
-		pnlControl = new ControlPanel(Utils.getLeft(286), topPnlControl, main);
+		pnlControl = new ControlPanel(Utils.getLeft(widthPnlContainer, 286), topPnlControl, main);
 		pnlContainer.add(pnlControl);
 
 //		Sự kiện nút tìm kiếm nhân viên
@@ -319,9 +319,10 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 //		Sự kiện nút thêm nhân viên
 		btnEmployeeAdd.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				main.addPnlBody(new ThemNhanVien_GUI(main), "Thêm nhân viên", 1, 0);
-			};
+			}
 		});
 
 //		Sự kiện nút sửa thông tin nhân viên
@@ -370,6 +371,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 //		Sự kiện JTable
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
 					setEnabledBtnActions();
@@ -390,6 +392,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		addAncestorListener(new AncestorListener() {
 			Thread clockThread;
 
+			@Override
 			public void ancestorAdded(AncestorEvent event) {
 				clockThread = clock();
 
@@ -401,9 +404,11 @@ public class QuanLyNhanVien_GUI extends JPanel {
 				pnlControl.setTbl(tbl);
 			}
 
+			@Override
 			public void ancestorMoved(AncestorEvent event) {
 			}
 
+			@Override
 			@SuppressWarnings("deprecation")
 			public void ancestorRemoved(AncestorEvent event) {
 				clockThread.stop();
@@ -412,6 +417,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 // 		Sự kiện JComboBox mã nhân viên
 		cmbMaNhanVien.addItemListener(new ItemListener() {
+			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					filterNhanVien();
@@ -421,6 +427,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 //		Sự kiện JComboBox trạng thái
 		cmbTrangThai.addItemListener(new ItemListener() {
+			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					filterNhanVien();
