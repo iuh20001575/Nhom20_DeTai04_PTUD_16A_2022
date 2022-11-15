@@ -101,7 +101,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		JPanel pnlRow1 = new JPanel();
 		pnlRow1.setBackground(Utils.secondaryColor);
 		pnlRow1.setBounds(left, top, 948, 55);
-		top += padding + 55;
+		top += padding;
+		top += 55;
 		this.add(pnlRow1);
 		pnlRow1.setLayout(null);
 
@@ -207,7 +208,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		JPanel pnlRow4 = new JPanel();
 		pnlRow4.setBackground(Utils.secondaryColor);
 		pnlRow4.setBounds(left, top, 948, 65);
-		top += padding + 65;
+		top += padding;
+		top += 65;
 		this.add(pnlRow4);
 		pnlRow4.setLayout(null);
 
@@ -239,7 +241,8 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		pnlRow5.setLayout(null);
 		pnlRow5.setBackground(color1);
 		pnlRow5.setBounds(left, top, 948, 55);
-		top += padding + 55;
+		top += padding;
+		top += 55;
 		this.add(pnlRow5);
 
 		txtDiaChiCT = new TextField();
@@ -497,7 +500,6 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 			if (phuongSelect.equals(Phuong.getPhuongLabel())) {
 				phuong = null;
 			} else
-
 				this.phuong = diaChi_DAO.getPhuong(quan, phuongSelect);
 		}
 
@@ -588,7 +590,6 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 				return o1.getPhuong().compareToIgnoreCase(o2.getPhuong());
 			}
 		});
-
 		phuongs.forEach(phuong -> {
 			int index = phuongs.indexOf(phuong);
 			cmbPhuong.addItem(phuong.getPhuong());

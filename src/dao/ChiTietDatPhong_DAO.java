@@ -115,7 +115,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 
-		for (int i = 1; i < length; i++)
+		for (int i = 1; i < length; ++i)
 			q += ", ?";
 
 		String sql = String.format("SELECT [donDatPhong], [phong], [gioVao], [gioRa] FROM [dbo].[DonDatPhong] DP "
@@ -125,7 +125,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 
 		try {
 			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			for (int i = 0; i < length; i++)
+			for (int i = 0; i < length; ++i)
 				preparedStatement.setString(i + 1, dsPhong.get(i).getMaPhong());
 
 			resultSet = preparedStatement.executeQuery();

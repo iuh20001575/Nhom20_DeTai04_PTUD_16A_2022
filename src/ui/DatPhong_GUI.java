@@ -82,6 +82,15 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	private JTable tbl;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
+	private PanelRound pnlContainerItem;
+	private JLabel lblMaPhong;
+	private JLabel lblIconClose;
+	private JScrollPane scrPhongDaChon;
+	private JPanel pnlPhongDaChon;
+	private int countItem;
+	private final int heightItem = 36;
+	private final int gapY = 8;
+	private final int top = 11;
 
 	/**
 	 * Create the frame.
@@ -318,9 +327,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 				emptyComboBox(cmbLoaiPhong, "Loại phòng");
 
 				addRow(dsPhongDatNgay);
-				dsPhongDatNgay.forEach(phong -> {
-					cmbMaPhong.addItem(phong.getMaPhong());
-				});
+				dsPhongDatNgay.forEach(phong -> cmbMaPhong.addItem(phong.getMaPhong()));
 				loaiPhongs.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));
 
 				String soDienThoai = txtSoDienThoai.getText().trim();
@@ -534,9 +541,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	private void addRow(List<Phong> list) {
 		emptyTable();
 
-		list.forEach(phong -> {
-			addRow(phong);
-		});
+		list.forEach(phong -> addRow(phong));
 	}
 
 	/**
@@ -623,17 +628,17 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * @return panel
 	 */
 	private PanelRound getPanelPhongDaChonItem(int top, Phong phong) {
-		PanelRound pnlContainerItem = new PanelRound(8);
+		pnlContainerItem = new PanelRound(8);
 		pnlContainerItem.setBackground(Utils.primaryColor);
 		pnlContainerItem.setBounds(11, top, 118, 36);
 		pnlContainerItem.setLayout(null);
 
-		JLabel lblMaPhong = new JLabel(phong.getMaPhong());
+		lblMaPhong = new JLabel(phong.getMaPhong());
 		lblMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblMaPhong.setBounds(4, 0, 94, 36);
 		pnlContainerItem.add(lblMaPhong);
 
-		JLabel lblIconClose = new JLabel("");
+		lblIconClose = new JLabel("");
 		lblIconClose.setIcon(new ImageIcon("Icon\\close_16x16.png"));
 		lblIconClose.setBounds(94, 10, 16, 16);
 		pnlContainerItem.add(lblIconClose);
@@ -675,7 +680,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * Hiển thị các phòng đã chọn vào mục phòng đã chọn
 	 */
 	private void showDanhSachPhongDaChon() {
-		JScrollPane scrPhongDaChon = new JScrollPane();
+		scrPhongDaChon = new JScrollPane();
 		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrPhongDaChon.setBackground(Color.WHITE);
@@ -693,7 +698,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
 		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
 
-		JPanel pnlPhongDaChon = new JPanel();
+		pnlPhongDaChon = new JPanel();
 		pnlPhongDaChon.setBackground(Color.WHITE);
 		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 		pnlPhongDaChon.setLayout(null);
@@ -701,11 +706,8 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		if (dsPhongDaChon == null)
 			return;
 
-		int heightItem = 36;
-		int gapY = 8;
-		int top = 11;
-		int countItem = dsPhongDaChon.size();
-		for (int i = 0; i < countItem; i++) {
+		countItem = dsPhongDaChon.size();
+		for (int i = 0; i < countItem; ++i) {
 			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
 		}
 

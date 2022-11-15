@@ -64,9 +64,11 @@ public class PhieuDatPhong_DAO {
 					.prepareStatement("SELECT * FROM ChiTietDatPhong");
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getChiTietDatPhong(resultSet));
+			ChiTietDatPhong chiTietDatPhong;
+			while (resultSet.next()) {
+				chiTietDatPhong = getChiTietDatPhong(resultSet);
+				list.add(chiTietDatPhong);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -97,9 +99,11 @@ public class PhieuDatPhong_DAO {
 			preparedStatement.setString(3, soDienThoai);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getChiTietDatPhong(resultSet));
+			ChiTietDatPhong chiTietDatPhong;
+			while (resultSet.next()) {
+				chiTietDatPhong = getChiTietDatPhong(resultSet);
+				list.add(chiTietDatPhong);
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

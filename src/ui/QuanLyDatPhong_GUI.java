@@ -437,18 +437,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDatPhong.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlDatPhong);
 		pnlDatPhong.setLayout(null);
-
 		JLabel lblDatPhong = new JLabel("Đặt phòng");
 		lblDatPhong.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDatPhong.setForeground(Color.WHITE);
 		lblDatPhong.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhong.add(lblDatPhong);
-
 		JLabel lblDatPhongF = new JLabel("F1");
 		lblDatPhongF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDatPhongF.setForeground(Color.WHITE);
 		lblDatPhongF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhong.add(lblDatPhongF);
+		pnlDatPhong.setBounds(0, 0, 125, 69);
+		lblDatPhong.setBounds(10, 13, 105, 22);
+		lblDatPhongF.setBounds(10, 35, 105, 22);
 
 		pnlDatPhongTruoc = new PanelEvent(13) {
 			/**
@@ -466,18 +467,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDatPhongTruoc.setLayout(null);
 		pnlDatPhongTruoc.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlDatPhongTruoc);
-
 		JLabel lblDatPhongTruoc = new JLabel("Đặt phòng trước");
 		lblDatPhongTruoc.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDatPhongTruoc.setForeground(Color.WHITE);
 		lblDatPhongTruoc.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhongTruoc.add(lblDatPhongTruoc);
-
 		JLabel lblDatPhongTruocF = new JLabel("F2");
 		lblDatPhongTruocF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDatPhongTruocF.setForeground(Color.WHITE);
 		lblDatPhongTruocF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhongTruoc.add(lblDatPhongTruocF);
+		pnlDatPhongTruoc.setBounds(140, 0, 170, 69);
+		lblDatPhongTruoc.setBounds(10, 13, 150, 22);
+		lblDatPhongTruocF.setBounds(10, 35, 150, 22);
 
 		pnlChuyenPhong = new PanelEvent(13) {
 			/**
@@ -495,18 +497,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlChuyenPhong.setLayout(null);
 		pnlChuyenPhong.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlChuyenPhong);
-
 		JLabel lblChuyenPhong = new JLabel("Chuyển phòng");
 		lblChuyenPhong.setHorizontalAlignment(SwingConstants.CENTER);
 		lblChuyenPhong.setForeground(Color.WHITE);
 		lblChuyenPhong.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlChuyenPhong.add(lblChuyenPhong);
-
 		JLabel lblChuyenPhongF = new JLabel("F3");
 		lblChuyenPhongF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblChuyenPhongF.setForeground(Color.WHITE);
 		lblChuyenPhongF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlChuyenPhong.add(lblChuyenPhongF);
+		pnlChuyenPhong.setBounds(325, 0, 160, 69);
+		lblChuyenPhong.setBounds(10, 13, 140, 22);
+		lblChuyenPhongF.setBounds(10, 35, 140, 22);
 
 		pnlGopPhong = new PanelEvent(13) {
 			/**
@@ -524,18 +527,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlGopPhong.setLayout(null);
 		pnlGopPhong.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlGopPhong);
-
 		JLabel lblGopPhong = new JLabel("Gộp phòng");
 		lblGopPhong.setHorizontalAlignment(SwingConstants.CENTER);
 		lblGopPhong.setForeground(Color.WHITE);
 		lblGopPhong.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlGopPhong.add(lblGopPhong);
-
 		JLabel lblGopPhongF = new JLabel("F4");
 		lblGopPhongF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblGopPhongF.setForeground(Color.WHITE);
 		lblGopPhongF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlGopPhong.add(lblGopPhongF);
+		pnlGopPhong.setBounds(500, 0, 125, 69);
+		lblGopPhong.setBounds(10, 13, 105, 22);
+		lblGopPhongF.setBounds(10, 35, 105, 22);
 
 		pnlDichVu = new PanelEvent(13) {
 			/**
@@ -553,18 +557,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDichVu.setLayout(null);
 		pnlDichVu.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlDichVu);
-
 		JLabel lblDichVu = new JLabel("Dịch vụ");
 		lblDichVu.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDichVu.setForeground(Color.WHITE);
 		lblDichVu.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDichVu.add(lblDichVu);
-
 		JLabel lblDichVuF = new JLabel("F5");
 		lblDichVuF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDichVuF.setForeground(Color.WHITE);
 		lblDichVuF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDichVu.add(lblDichVuF);
+		pnlDichVu.setBounds(640, 0, 125, 69);
+		lblDichVu.setBounds(10, 13, 105, 22);
+		lblDichVuF.setBounds(10, 35, 105, 22);
 
 		pnlThanhToan = new PanelEvent(13) {
 			/**
@@ -582,29 +587,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlThanhToan.setLayout(null);
 		pnlThanhToan.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlThanhToan);
-
 		JLabel lblThanhToan = new JLabel("Thanh toán");
 		lblThanhToan.setHorizontalAlignment(SwingConstants.CENTER);
 		lblThanhToan.setForeground(Color.WHITE);
 		lblThanhToan.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlThanhToan.add(lblThanhToan);
-
 		JLabel lblThanhToanF = new JLabel("F6");
 		lblThanhToanF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblThanhToanF.setForeground(Color.WHITE);
 		lblThanhToanF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlThanhToan.add(lblThanhToanF);
-
-		JPanel[] btnActions = { pnlDatPhong, pnlDatPhongTruoc, pnlChuyenPhong, pnlGopPhong, pnlDichVu, pnlThanhToan };
-		int[] btnActionsWidth = { 125, 170, 160, 125, 125, 125 };
-		for (int i = 0; i < btnActions.length; i++) {
-			int x = 0;
-			for (int j = 0; j < i; j++)
-				x += 15 + btnActionsWidth[j];
-			btnActions[i].setBounds(x, 0, btnActionsWidth[i], 69);
-			btnActions[i].getComponent(0).setBounds(10, 13, btnActionsWidth[i] - 20, 22);
-			btnActions[i].getComponent(1).setBounds(10, 35, btnActionsWidth[i] - 20, 22);
-		}
+		pnlThanhToan.setBounds(780, 0, 125, 69);
+		lblThanhToan.setBounds(10, 13, 105, 22);
+		lblThanhToanF.setBounds(10, 35, 105, 22);
 
 		btnPhongThuong.setVisible(false);
 		btnPhongVip.setVisible(false);
@@ -852,9 +847,9 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		});
 		pnlDanhSachPhong.setBackground(Utils.secondaryColor);
 		pnlDanhSachPhong.setLayout(null);
-
-		for (int i = 0; i < dsPhong.size(); i++) {
-			JPanel phong1 = getPhong(dsPhong.get(i), getBounds(i));
+		JPanel phong1;
+		for (int i = 0; i < dsPhong.size(); ++i) {
+			phong1 = getPhong(dsPhong.get(i), getBounds(i));
 			pnlDanhSachPhong.add(phong1);
 		}
 

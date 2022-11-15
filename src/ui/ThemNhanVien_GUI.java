@@ -686,6 +686,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 	private boolean showThongBaoLoi(TextField txt, String message) {
 		new Notification(main, Type.ERROR, message).showNotification();
 		txt.setError(true);
+		txt.selectAll();
 		txt.requestFocus();
 		return false;
 	}
@@ -704,6 +705,9 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		if (hoTen.length() <= 0)
 			return showThongBaoLoi(txtHoTen, "Vui lòng nhập họ tên nhân viên");
 
+		if (Pattern.matches(String.format(".*[^%s%s ].*", vietNamese, vietNameseLower), hoTen))
+			return showThongBaoLoi(txtHoTen, "Họ tên chỉ chứa các ký tự chữ cái");
+
 		if (!Pattern.matches(
 				String.format("[%s][%s]*( [%s][%s]*)+", vietNamese, vietNameseLower, vietNamese, vietNameseLower),
 				hoTen))
@@ -715,7 +719,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 			return showThongBaoLoi(txtCCCD, "Vui lòng nhập số căn cước công dân");
 
 		if (!Pattern.matches("\\d{12}", cccd))
-			return showThongBaoLoi(txtCCCD, "Số căn cước công dân phải có 12 ký tự số");
+			return showThongBaoLoi(txtCCCD, "Số căn cước công dân phải là 12 ký tự số");
 
 		if (nhanVien_DAO.isCCCDDaTonTai(cccd))
 			return showThongBaoLoi(txtCCCD, "Số căn cước công dân đã tồn tại");

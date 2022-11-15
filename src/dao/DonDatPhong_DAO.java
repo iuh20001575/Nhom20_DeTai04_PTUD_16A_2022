@@ -113,9 +113,9 @@ public class DonDatPhong_DAO extends DAO {
 				preparedStatement.setInt(3, Integer.parseInt(soLuong));
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-
+			Phong phong;
 			while (resultSet.next()) {
-				Phong phong = phong_DAO.getPhong(resultSet.getString(1));
+				phong = phong_DAO.getPhong(resultSet.getString(1));
 				list.add(phong);
 			}
 		} catch (SQLException e) {
@@ -208,9 +208,13 @@ public class DonDatPhong_DAO extends DAO {
 			if (res <= 0)
 				return rollback();
 
+			entity.Phong.TrangThai trangThai, trangThaiNew;
+			boolean result;
+			Time gioNhanPhongTime = Time.valueOf(gioNhanPhong);
 			for (Phong phong : phongs) {
 //				[ChiTietDatPhong] - Tạo chi tiết phiếu đặt phòng
-				if (!chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phong, Time.valueOf(gioNhanPhong)))
+				result = chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phong, gioNhanPhongTime);
+				if (!result)
 					return rollback();
 
 //				[Phong] - Cập nhật trạng thái phòng
@@ -218,15 +222,15 @@ public class DonDatPhong_DAO extends DAO {
 //							+ Đang thuê -> Phòng tạm
 //							+ Đã đặt -> Đã đặt
 //							+ Phòng tạm -> Phòng tạm
-				entity.Phong.TrangThai trangThai = phong_DAO.getTrangThai(phong.getMaPhong());
-				entity.Phong.TrangThai trangThaiNew;
+				trangThai = phong_DAO.getTrangThai(phong.getMaPhong());
 
 				if (trangThai.equals(entity.Phong.TrangThai.DangThue)
 						|| trangThai.equals(entity.Phong.TrangThai.PhongTam))
 					trangThaiNew = entity.Phong.TrangThai.PhongTam;
 				else
 					trangThaiNew = entity.Phong.TrangThai.DaDat;
-				if (!phong_DAO.capNhatTrangThaiPhong(phong, Phong.convertTrangThaiToString(trangThaiNew)))
+				result = phong_DAO.capNhatTrangThaiPhong(phong, Phong.convertTrangThaiToString(trangThaiNew));
+				if (!result)
 					return rollback();
 			}
 
@@ -321,9 +325,9 @@ public class DonDatPhong_DAO extends DAO {
 				preparedStatement.setInt(5, Integer.parseInt(soLuong));
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-
+			Phong phong;
 			while (resultSet.next()) {
-				Phong phong = phong_DAO.getPhong(resultSet.getString(1));
+				phong = phong_DAO.getPhong(resultSet.getString(1));
 				list.add(phong);
 			}
 		} catch (SQLException e) {
@@ -410,9 +414,11 @@ public class DonDatPhong_DAO extends DAO {
 		try {
 			Statement statement = ConnectDB.getConnection().createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
-
-			while (resultSet.next())
-				list.add(getDatPhong(resultSet));
+			DonDatPhong donDatPhong;
+			while (resultSet.next()) {
+				donDatPhong = getDatPhong(resultSet);
+				list.add(donDatPhong);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -427,14 +433,15 @@ public class DonDatPhong_DAO extends DAO {
 	 */
 	public List<String> getAllMaDatPhongDangThue() {
 		List<String> list = new ArrayList<>();
-
 		String sql = "SELECT maDonDatPhong FROM [dbo].[DonDatPhong] WHERE [trangThai] = N'Đang thuê'";
 		try {
 			Statement statement = ConnectDB.getConnection().createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
-
-			while (resultSet.next())
-				list.add(resultSet.getString(1));
+			String maDonDatPhong;
+			while (resultSet.next()) {
+				maDonDatPhong = resultSet.getString(1);
+				list.add(maDonDatPhong);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -454,6 +461,7 @@ public class DonDatPhong_DAO extends DAO {
 		Phong phongMoi = phong_DAO.getPhong(maPhongMoi);
 		Time time = Time.valueOf(LocalTime.now());
 		PreparedStatement preparedStatement;
+		boolean res;
 
 		try {
 			Connection connection = ConnectDB.getConnection();
@@ -467,7 +475,8 @@ public class DonDatPhong_DAO extends DAO {
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
-			if (!resultSet.next())
+			res = resultSet.next();
+			if (!res)
 				return rollback();
 
 			String datPhong = resultSet.getString(1);
@@ -478,20 +487,24 @@ public class DonDatPhong_DAO extends DAO {
 					phongMoi.getTrangThai().equals(entity.Phong.TrangThai.Trong) ? entity.Phong.TrangThai.DangThue
 							: entity.Phong.TrangThai.PhongTam);
 
-//			[Phong] - Cập nhật trạng thái phòng của phòng cũ	
-			if (!phong_DAO.capNhatTrangThaiPhong(phongCu, trangThaiMoiPhongCu))
+//			[Phong] - Cập nhật trạng thái phòng của phòng cũ
+			res = phong_DAO.capNhatTrangThaiPhong(phongCu, trangThaiMoiPhongCu);
+			if (!res)
 				return rollback();
 
 //			[Phong] - Cập nhật trạng thái phòng của phòng mới
-			if (!phong_DAO.capNhatTrangThaiPhong(phongMoi, trangThaiMoiPhongMoi))
+			res = phong_DAO.capNhatTrangThaiPhong(phongMoi, trangThaiMoiPhongMoi);
+			if (!res)
 				return rollback();
 
 //			[ChiTietDatPhong] - Cập nhật giờ ra của phòng cũ
-			if (!chiTietDatPhong_DAO.setGioRa(datPhong, maPhongCu, time))
+			res = chiTietDatPhong_DAO.setGioRa(datPhong, maPhongCu, time);
+			if (!res)
 				return rollback();
 
 //			[ChiTietDatPhong] - Thêm chi tiết đặt phòng phòng mới
-			if (!chiTietDatPhong_DAO.themChiTietDatPhong(datPhong, phongMoi, time))
+			res = chiTietDatPhong_DAO.themChiTietDatPhong(datPhong, phongMoi, time);
+			if (!res)
 				return rollback();
 
 			return commit();
@@ -516,9 +529,11 @@ public class DonDatPhong_DAO extends DAO {
 			ResultSet resultSet = statement.executeQuery("SELECT * FROM [dbo].[DonDatPhong] "
 					+ "WHERE [trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
 					+ "AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) >= CONVERT(TIME(0), '1:00:00')");
-
-			while (resultSet.next())
-				list.add(getDatPhong(resultSet));
+			DonDatPhong donDatPhong;
+			while (resultSet.next()) {
+				donDatPhong = getDatPhong(resultSet);
+				list.add(donDatPhong);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -548,9 +563,11 @@ public class DonDatPhong_DAO extends DAO {
 
 			List<String> maPhongList = new ArrayList<>();
 			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				maPhongList.add(resultSet.getString(1));
+			String maPhong;
+			while (resultSet.next()) {
+				maPhong = resultSet.getString(1);
+				maPhongList.add(maPhong);
+			}
 
 			if (maPhongList.size() == 0) {
 				connection.setAutoCommit(true);
@@ -559,10 +576,11 @@ public class DonDatPhong_DAO extends DAO {
 
 //			[Phong] - Cập nhật trạng thái phòng
 			boolean res;
+			boolean isDatPhongTruoc;
 			for (String string : maPhongList) {
 				preparedStatement = connection.prepareStatement("UPDATE [dbo].[Phong] SET [trangThai] = ("
 						+ "	CASE WHEN [trangThai] = N'Đã đặt' THEN ? ELSE ? END) WHERE [maPhong] = ?");
-				boolean isDatPhongTruoc = hasDatPhongTruocHopLe(string);
+				isDatPhongTruoc = hasDatPhongTruocHopLe(string);
 				preparedStatement.setString(1, isDatPhongTruoc ? "Đã đặt" : "Trống");
 				preparedStatement.setString(2, isDatPhongTruoc ? "Phòng tạm" : "Đang thuê");
 				preparedStatement.setString(3, string);
@@ -659,9 +677,9 @@ public class DonDatPhong_DAO extends DAO {
 			preparedStatement.setString(1, maDatPhong);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-
+			Phong phong;
 			while (resultSet.next()) {
-				Phong phong = phong_DAO.getPhong(resultSet.getString(1));
+				phong = phong_DAO.getPhong(resultSet.getString(1));
 				list.add(phong);
 			}
 		} catch (SQLException e) {
@@ -682,11 +700,9 @@ public class DonDatPhong_DAO extends DAO {
 		List<Phong> list = getPhongDangThue(maDatPhong);
 		list.addAll(getPhongDatNgay());
 
-		if (dsPhongDaChon != null) {
-			for (Phong phong : dsPhongDaChon) {
+		if (dsPhongDaChon != null)
+			for (Phong phong : dsPhongDaChon)
 				list.remove(phong);
-			}
-		}
 		return list;
 	}
 
@@ -701,9 +717,9 @@ public class DonDatPhong_DAO extends DAO {
 			ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) AS SOLUONGPHONG FROM [dbo].[DonDatPhong] DP "
 					+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong] "
 					+ "WHERE [gioRa] IS NULL AND [trangThai] = N'Đang thuê' GROUP BY [donDatPhong]");
-
+			int soLuong;
 			while (resultSet.next()) {
-				int soLuong = Integer.parseInt(resultSet.getString(1));
+				soLuong = Integer.parseInt(resultSet.getString(1));
 
 				if (soLuong >= 2)
 					return true;
@@ -722,7 +738,7 @@ public class DonDatPhong_DAO extends DAO {
 		int length = dsPhongCanGop.size();
 		PreparedStatement preparedStatement;
 
-		for (int i = 1; i < length; i++)
+		for (int i = 1; i < length; ++i)
 			q += ", ?";
 
 		try {
@@ -735,7 +751,7 @@ public class DonDatPhong_DAO extends DAO {
 							+ "WHERE [donDatPhong] = ? AND [phong] IN (%s) AND [gioRa] IS NULL", q));
 			preparedStatement.setTime(1, time);
 			preparedStatement.setString(2, maDatPhong);
-			for (int i = 0; i < length; i++)
+			for (int i = 0; i < length; ++i)
 				preparedStatement.setString(i + 3, dsPhongCanGop.get(i).getMaPhong());
 			res = preparedStatement.executeUpdate() > 0;
 
@@ -748,7 +764,7 @@ public class DonDatPhong_DAO extends DAO {
 			preparedStatement = connection.prepareStatement(String.format("UPDATE [dbo].[Phong] SET [trangThai] = (CASE"
 					+ "	WHEN [trangThai] = N'Đang thuê' THEN N'Trống' ELSE N'Đã đặt' END) " + "WHERE [maPhong] IN (%s)",
 					q));
-			for (int i = 0; i < length; i++)
+			for (int i = 0; i < length; ++i)
 				preparedStatement.setString(i + 1, dsPhongCanGop.get(i).getMaPhong());
 			res = preparedStatement.executeUpdate() > 0;
 
@@ -790,9 +806,11 @@ public class DonDatPhong_DAO extends DAO {
 		try {
 			Statement statement = ConnectDB.getConnection().createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
-
-			while (resultSet.next())
-				list.add(resultSet.getString(1));
+			String maPhong;
+			while (resultSet.next()) {
+				maPhong = resultSet.getString(1);
+				list.add(maPhong);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -831,7 +849,8 @@ public class DonDatPhong_DAO extends DAO {
 
 //			[ChiTietDatPhong] - Cập nhật giờ ra
 //						+ NULL -> gioRa
-			if (!chiTietDatPhong_DAO.thanhToanDatPhong(maDatPhong, gioRa))
+			res = chiTietDatPhong_DAO.thanhToanDatPhong(maDatPhong, gioRa);
+			if (!res)
 				return rollback();
 
 //			[DatPhong] - Cập nhật trạng thái của phiếu đặt phòng thành đã trả

@@ -132,7 +132,7 @@ public class Utils {
 
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(date.contains("/") ? "dd/MM/yyyy" : "dd-MM-yyyy");
 		String dates[] = date.split(date.contains("/") ? "/" : "-");
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 2; ++i)
 			if (dates[i].length() == 1)
 				dates[i] = '0' + dates[i];
 		if (dates[2].length() == 2)

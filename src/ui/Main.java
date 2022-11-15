@@ -184,9 +184,8 @@ public class Main extends JFrame {
 
 				if (isEmpty)
 					jDialogCustom.showMessage("Đóng ứng dụng", "Bạn có muốn đóng ứng dụng không?");
-				else {
+				else 
 					backPanel();
-				}
 			}
 		});
 
@@ -303,7 +302,7 @@ public class Main extends JFrame {
 					title = "Quản lý nhân viên";
 					pnl = new QuanLyNhanVien_GUI(_this);
 				} else if (titleMenu.equals(Utils.themNhanVienMenuItem)) {
-					title = "Thên nhân viên";
+					title = "Thêm nhân viên";
 					pnl = new ThemNhanVien_GUI(_this);
 				} else if (titleMenu.equals(Utils.quanLyKhachHangMenuItem)) {
 					title = "Quản lý khách hàng";

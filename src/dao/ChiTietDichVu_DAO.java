@@ -39,7 +39,6 @@ public class ChiTietDichVu_DAO {
 			while (resultSet.next())
 				list.add(getChiTietDichVu(resultSet));
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -68,8 +67,8 @@ public class ChiTietDichVu_DAO {
 
 	public List<ChiTietDichVu> getAllChiTietDichVu() {
 		List<ChiTietDichVu> list = new ArrayList<>();
-
 		Statement statement;
+		
 		try {
 			statement = ConnectDB.getConnection().createStatement();
 			ResultSet resultSet = statement.executeQuery("SELECT * FROM ChiTietDichVu");
@@ -78,7 +77,6 @@ public class ChiTietDichVu_DAO {
 			resultSet.close();
 			statement.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return list;
@@ -86,6 +84,7 @@ public class ChiTietDichVu_DAO {
 
 	public List<ChiTietDichVu> getAllChiTietDichVuTheoMaDatPhong(String maDP) {
 		List<ChiTietDichVu> list = new ArrayList<>();
+		
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT * " + "FROM   ChiTietDichVu INNER JOIN DonDatPhong ON  "
@@ -99,7 +98,6 @@ public class ChiTietDichVu_DAO {
 				list.add(getChiTietDichVu(resultSet));
 			resultSet.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return list;
@@ -117,7 +115,6 @@ public class ChiTietDichVu_DAO {
 			res = preparedStatement.executeUpdate();
 			preparedStatement.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return res > 0;
@@ -135,7 +132,6 @@ public class ChiTietDichVu_DAO {
 			res = preparedStatement.executeUpdate() > 0;
 			preparedStatement.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return res;
@@ -154,7 +150,6 @@ public class ChiTietDichVu_DAO {
 			res = preparedStatement.executeUpdate();
 			preparedStatement.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return res > 0;

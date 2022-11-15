@@ -72,7 +72,7 @@ public class SplashScreen_GUI extends JWindow {
 		Thread thread = new Thread() {
 			@Override
 			public void run() {
-				for (int i = 0; i <= 10; i++) {
+				for (int i = 0; i <= 10; ++i) {
 					try {
 						prg.setValue(i * 10);
 						lblPhanTram.setText(i * 10 + "%");

@@ -90,6 +90,15 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private TextField txtNgayNhanPhong;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
+	private PanelRound pnlContainerItem;
+	private JLabel lblMaPhong;
+	private JLabel lblIconClose;
+	private final int gioMoCua = 7;
+	private final int gioDongCua = 24;
+	private final int heightItem = 36;
+	private final int gapY = 8;
+	private final int top = 11;
+	private int countItem;
 
 	/**
 	 * Create the frame.
@@ -630,9 +639,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private void addRow(List<Phong> list) {
 		emptyTable();
 
-		list.forEach(phong -> {
-			addRow(phong);
-		});
+		list.forEach(phong -> addRow(phong));
 	}
 
 	private void addRow(Phong phong) {
@@ -687,17 +694,17 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	}
 
 	private PanelRound getPanelphongDaChonItem(int top, Phong phong) {
-		PanelRound pnlContainerItem = new PanelRound(8);
+		pnlContainerItem = new PanelRound(8);
 		pnlContainerItem.setBackground(Utils.primaryColor);
 		pnlContainerItem.setBounds(11, top, 118, 36);
 		pnlContainerItem.setLayout(null);
 
-		JLabel lblMaPhong = new JLabel(phong.getMaPhong());
+		lblMaPhong = new JLabel(phong.getMaPhong());
 		lblMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblMaPhong.setBounds(4, 0, 94, 36);
 		pnlContainerItem.add(lblMaPhong);
 
-		JLabel lblIconClose = new JLabel("");
+		lblIconClose = new JLabel("");
 		lblIconClose.setIcon(new ImageIcon("Icon\\close_16x16.png"));
 		lblIconClose.setBounds(94, 10, 16, 16);
 		pnlContainerItem.add(lblIconClose);
@@ -772,9 +779,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		cmbGio.removeAllItems();
 		cmbPhut.removeAllItems();
 
-		final int gioMoCua = 7;
-		final int gioDongCua = 24;
-
 		LocalTime timeNow = LocalTime.now();
 		LocalDate dateSelect = Utils.getLocalDate(txtNgayNhanPhong.getText());
 		int gio = timeNow.getHour(), phut = timeNow.getMinute();
@@ -786,7 +790,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		setEnabledTimeComboBox(true);
 
 		if (dateSelect.isEqual(LocalDate.now())) {
-			for (int i = gio; i < gioDongCua; i++)
+			for (int i = gio; i < gioDongCua; ++i)
 				cmbGio.addItem(i + "");
 			if (gio == gioSelect || gioSelect == -1) {
 				if (phut > 30) {
@@ -802,7 +806,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				for (int j = 0; j < 60; j += 5)
 					cmbPhut.addItem(j + "");
 		} else {
-			for (int i = gioMoCua; i < gioDongCua; i++)
+			for (int i = gioMoCua; i < gioDongCua; ++i)
 				cmbGio.addItem(i + "");
 			for (int j = 0; j < 60; j += 5)
 				cmbPhut.addItem(j + "");
@@ -821,11 +825,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlPhongDaChon.removeAll();
 
 		if (dsPhongDaChon != null) {
-			int heightItem = 36;
-			int gapY = 8;
-			int top = 11;
-			int countItem = dsPhongDaChon.size();
-			for (int i = 0; i < countItem; i++)
+			countItem = dsPhongDaChon.size();
+			for (int i = 0; i < countItem; ++i)
 				pnlPhongDaChon.add(getPanelphongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
 			pnlPhongDaChon.setPreferredSize(
 					new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));

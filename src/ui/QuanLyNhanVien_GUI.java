@@ -215,7 +215,8 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlActions.add(cmbMaNhanVien);
 
 //		Table danh sách nhân viên
-		int topPnlControl = Utils.getBodyHeight() - 80;
+		int topPnlControl = Utils.getBodyHeight();
+		topPnlControl -= 80;
 
 		JScrollPane scr = new JScrollPane();
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);

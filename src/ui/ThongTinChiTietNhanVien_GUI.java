@@ -106,7 +106,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		JPanel pnlRow1 = new JPanel();
 		pnlRow1.setBackground(Utils.secondaryColor);
 		pnlRow1.setBounds(0, top, 948, 55);
-		top += 55 + padding;
+		top += padding;
+		top += 55;
 		pnlContainer.add(pnlRow1);
 		pnlRow1.setLayout(null);
 
@@ -132,7 +133,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlRow2.setLayout(null);
 		pnlRow2.setBackground(new Color(203, 239, 255));
 		pnlRow2.setBounds(0, top, 948, 55);
-		top += 55 + padding;
+		top += padding;
+		top += 55;
 		pnlContainer.add(pnlRow2);
 
 		txtCCCD = new TextField();
@@ -157,7 +159,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlRow3.setLayout(null);
 		pnlRow3.setBackground(new Color(203, 239, 255));
 		pnlRow3.setBounds(0, top, 948, 55);
-		top += 55 + padding;
+		top += padding;
+		top += 55;
 		pnlContainer.add(pnlRow3);
 
 		txtNgaySinh = new TextField();
@@ -212,7 +215,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		JPanel pnlRow4 = new JPanel();
 		pnlRow4.setBackground(Utils.secondaryColor);
 		pnlRow4.setBounds(0, top, 948, 65);
-		top += 65 + padding;
+		top += padding;
+		top += 65;
 		pnlContainer.add(pnlRow4);
 		pnlRow4.setLayout(null);
 
@@ -253,7 +257,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlRow5.setLayout(null);
 		pnlRow5.setBackground(new Color(203, 239, 255));
 		pnlRow5.setBounds(0, top, 948, 55);
-		top += 55 + padding;
+		top += padding;
+		top += 55;
 		pnlContainer.add(pnlRow5);
 
 		txtLuong = new TextField();
@@ -278,7 +283,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlRow6.setLayout(null);
 		pnlRow6.setBackground(new Color(203, 239, 255));
 		pnlRow6.setBounds(0, top, 948, 65);
-		top += 65 + padding;
+		top += padding;
+		top += 65;
 		pnlContainer.add(pnlRow6);
 
 		JPanel pnlChucVu = new JPanel();
@@ -694,11 +700,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 
 	private void setPhuongToComboBox(Quan quan) {
 		isEnabledEventPhuong = false;
-
 		resizeComboBox(cmbPhuong, Phuong.getPhuongLabel());
-
 		List<Phuong> phuongs = diaChi_DAO.getPhuong(quan);
-
 		phuongs.sort(new Comparator<Phuong>() {
 
 			@Override

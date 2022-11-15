@@ -64,9 +64,11 @@ public class NhanVien_DAO extends DAO {
 		try {
 			statement = ConnectDB.getConnection().createStatement();
 			resultSet = statement.executeQuery(("SELECT * FROM NhanVien"));
-
-			while (resultSet.next())
-				list.add(getNhanVien(resultSet));
+			NhanVien nhanVien;
+			while (resultSet.next()) {
+				nhanVien = getNhanVien(resultSet);
+				list.add(nhanVien);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -98,9 +100,11 @@ public class NhanVien_DAO extends DAO {
 			preparedStatement.setString(3, "%" + trangThai + "%");
 
 			resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getNhanVien(resultSet));
+			NhanVien nhanVien;
+			while (resultSet.next()) {
+				nhanVien = getNhanVien(resultSet);
+				list.add(nhanVien);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -331,9 +335,11 @@ public class NhanVien_DAO extends DAO {
 			preparedStatement.setString(1, trangThai);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getNhanVien(resultSet));
+			NhanVien nhanVien;
+			while (resultSet.next()) {
+				nhanVien = getNhanVien(resultSet);
+				list.add(nhanVien);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
