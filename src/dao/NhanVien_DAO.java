@@ -17,7 +17,7 @@ import entity.Quan;
 import entity.TaiKhoan;
 import entity.Tinh;
 
-public class NhanVien_DAO {
+public class NhanVien_DAO extends DAO {
 	private TaiKhoan_DAO taiKhoan_DAO;
 
 	public NhanVien_DAO() {
@@ -44,11 +44,10 @@ public class NhanVien_DAO {
 		String diaChiCuThe = resultSet.getString("diaChiCuThe");
 		String chucVu = resultSet.getString("chucVu");
 		double luong = resultSet.getDouble("luong");
-		String taiKhoan = resultSet.getString("taiKhoan");
 		String trangThai = resultSet.getString("trangThai");
 
 		return new NhanVien(maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, new Tinh(tinh), new Quan(quan),
-				new Phuong(phuong), diaChiCuThe, NhanVien.convertStringToChucVu(chucVu), luong, new TaiKhoan(taiKhoan),
+				new Phuong(phuong), diaChiCuThe, NhanVien.convertStringToChucVu(chucVu), luong,
 				NhanVien.convertStringToTrangThai(trangThai));
 	}
 
@@ -59,15 +58,21 @@ public class NhanVien_DAO {
 	 */
 	public List<NhanVien> getAllNhanVien() {
 		List<NhanVien> list = new ArrayList<NhanVien>();
+		Statement statement = null;
+		ResultSet resultSet = null;
 
 		try {
-			Statement statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery(("SELECT * FROM NhanVien"));
-
-			while (resultSet.next())
-				list.add(getNhanVien(resultSet));
+			statement = ConnectDB.getConnection().createStatement();
+			resultSet = statement.executeQuery(("SELECT * FROM NhanVien"));
+			NhanVien nhanVien;
+			while (resultSet.next()) {
+				nhanVien = getNhanVien(resultSet);
+				list.add(nhanVien);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			close(statement, resultSet);
 		}
 
 		return list;
@@ -83,21 +88,27 @@ public class NhanVien_DAO {
 	 */
 	public List<NhanVien> filterNhanVien(String hoTen, String maNhanVien, String trangThai) {
 		List<NhanVien> list = new ArrayList<>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
+			preparedStatement = ConnectDB.getConnection().prepareStatement(
 					"SELECT * FROM NhanVien WHERE hoTen LIKE ? and maNhanVien like ? and trangThai like ?");
 
 			preparedStatement.setString(1, "%" + hoTen + "%");
 			preparedStatement.setString(2, "%" + maNhanVien + "%");
 			preparedStatement.setString(3, "%" + trangThai + "%");
 
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getNhanVien(resultSet));
+			resultSet = preparedStatement.executeQuery();
+			NhanVien nhanVien;
+			while (resultSet.next()) {
+				nhanVien = getNhanVien(resultSet);
+				list.add(nhanVien);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			close(preparedStatement, resultSet);
 		}
 
 		return list;
@@ -110,16 +121,21 @@ public class NhanVien_DAO {
 	 * @return
 	 */
 	public NhanVien getNhanVienTheoMa(String maNhanVien) {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
+			preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT * FROM NhanVien WHERE maNhanVien = ?");
 			preparedStatement.setString(1, maNhanVien);
-			ResultSet resultSet = preparedStatement.executeQuery();
+			resultSet = preparedStatement.executeQuery();
 
 			if (resultSet.next())
 				return getNhanVien(resultSet);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			close(preparedStatement, resultSet);
 		}
 
 		return null;
@@ -132,15 +148,20 @@ public class NhanVien_DAO {
 	 * @return
 	 */
 	public boolean setNghiLam(String maNhanVien) {
+		PreparedStatement preparedStatement = null;
+
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
+			preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("UPDATE NhanVien SET trangThai = N'Nghỉ làm' WHERE maNhanVien = ?");
 			preparedStatement.setString(1, maNhanVien);
 
 			return preparedStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			close(preparedStatement);
 		}
+
 		return false;
 	}
 
@@ -148,11 +169,12 @@ public class NhanVien_DAO {
 	 * Cập nhật thông tin nhân viên
 	 * 
 	 * @param nhanVien
+	 * @param taiKhoan
 	 * @return
 	 */
-	public boolean capNhatNhanVien(NhanVien nhanVien) {
+	public boolean capNhatNhanVien(NhanVien nhanVien, TaiKhoan taiKhoan) {
 		try {
-			if (!taiKhoan_DAO.capNhatMatKhau(nhanVien.getTaiKhoan()))
+			if (!taiKhoan_DAO.capNhatMatKhau(taiKhoan))
 				return rollback();
 
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
@@ -180,10 +202,9 @@ public class NhanVien_DAO {
 	}
 
 	public boolean themNhanVien(NhanVien nhanVien) {
-		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		try {
-			String sql = "INSERT NhanVien VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "INSERT NhanVien VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement preparedStatement = con.prepareStatement(sql);
 			preparedStatement.setString(1, nhanVien.getMaNhanVien());
 			preparedStatement.setString(2, nhanVien.getHoTen());
@@ -197,10 +218,8 @@ public class NhanVien_DAO {
 			preparedStatement.setString(10, nhanVien.getDiaChiCuThe());
 			preparedStatement.setString(11, NhanVien.convertChucVuToString(nhanVien.getChucVu()));
 			preparedStatement.setDouble(12, nhanVien.getLuong());
-			preparedStatement.setString(13, nhanVien.getMaNhanVien());
-			preparedStatement.setString(14, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
-
-			preparedStatement.executeQuery();
+			preparedStatement.setString(13, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
+			preparedStatement.execute();
 			preparedStatement.close();
 			return true;
 		} catch (SQLException e) {
@@ -226,12 +245,13 @@ public class NhanVien_DAO {
 					maNhanVienNew = "0" + maNhanVienNew;
 
 				return "NV" + maNhanVienNew;
-			}
+			} else
+				return "NV001";
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return "NV001";
+		return null;
 	}
 
 	public boolean isCCCDDaTonTai(String cccd) {
@@ -315,21 +335,15 @@ public class NhanVien_DAO {
 			preparedStatement.setString(1, trangThai);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getNhanVien(resultSet));
+			NhanVien nhanVien;
+			while (resultSet.next()) {
+				nhanVien = getNhanVien(resultSet);
+				list.add(nhanVien);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		return list;
-	}
-
-	private boolean rollback() throws SQLException {
-		if (ConnectDB.getConnection().getAutoCommit())
-			ConnectDB.getConnection().setAutoCommit(false);
-		ConnectDB.getConnection().rollback();
-		ConnectDB.getConnection().setAutoCommit(true);
-		return false;
 	}
 }

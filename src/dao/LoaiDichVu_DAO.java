@@ -55,13 +55,15 @@ public class LoaiDichVu_DAO {
 
 	public List<LoaiDichVu> getAllLoaiDichVu() {
 		List<LoaiDichVu> list = new ArrayList<>();
-
 		Statement statement;
 		try {
 			statement = ConnectDB.getConnection().createStatement();
 			ResultSet resultSet = statement.executeQuery("SELECT * FROM LoaiDichVu");
-			while (resultSet.next())
-				list.add(getLoaiDichVu(resultSet));
+			LoaiDichVu loaiDichVu;
+			while (resultSet.next()) {
+				loaiDichVu = getLoaiDichVu(resultSet);
+				list.add(loaiDichVu);
+			}
 			resultSet.close();
 			statement.close();
 		} catch (SQLException e) {

@@ -3,6 +3,7 @@ package ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -27,7 +28,7 @@ import components.jDialog.JDialogCustom;
 import components.menu.EventMenuSelected;
 import components.menu.Menu;
 import components.menu.ModelMenuItem;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.NhanVien_DAO;
 import entity.NhanVien;
 import entity.NhanVien.ChucVu;
@@ -44,15 +45,15 @@ public class Main extends JFrame {
 
 	private Main _this;
 	private Button btnBack;
-	private JPanel pnlContent;
+	private DonDatPhong_DAO datPhong_DAO;
 	private DrawerController drawer;
+	private Menu footer;
 	private JLabel lblTitle;
 	private Menu menu;
 	private NhanVien_DAO nhanVien_DAO;
 	private JPanel pnlBody;
-	private Menu footer;
-
-	private DatPhong_DAO datPhong_DAO;
+	private JPanel pnlContent;
+	private JPanel pnlHeader;
 
 	/**
 	 * Create the frame.
@@ -60,7 +61,7 @@ public class Main extends JFrame {
 	public Main() {
 		_this = this;
 		nhanVien_DAO = new NhanVien_DAO();
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		JDialogCustom jDialogCustom = new JDialogCustom(_this);
 
 		jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
@@ -73,7 +74,7 @@ public class Main extends JFrame {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setResizable(false);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setExtendedState(Frame.MAXIMIZED_BOTH);
 
 		pnlContent = new JPanel();
 		pnlContent.setForeground(Color.GRAY);
@@ -88,15 +89,15 @@ public class Main extends JFrame {
 		pnlContent.add(pnlHeaderWrapper);
 		pnlHeaderWrapper.setLayout(null);
 
-		JPanel pnlHeader = new JPanel();
+		pnlHeader = new JPanel();
 		pnlHeader.setBackground(Utils.primaryColor);
-		pnlHeader.setBounds((int) Math.ceil((Utils.getScreenWidth() - 1030) / 2), 0, 1030, Utils.getHeaderHeight());
+		pnlHeader.setBounds(Utils.getLeft(1054), 0, 1054, Utils.getHeaderHeight());
 		pnlHeaderWrapper.add(pnlHeader);
 		pnlHeader.setLayout(null);
 
 		Button btnMenu = new Button("|||");
 		btnMenu.setFocusable(false);
-		btnMenu.setBounds(23, 16, 38, 38);
+		btnMenu.setBounds(-2, 14, 42, 42);
 		btnMenu.setForeground(Utils.primaryColor);
 		btnMenu.setFont(new Font("Segoe UI", Font.PLAIN, 24));
 		btnMenu.setBorder(BorderFactory.createEmptyBorder());
@@ -108,7 +109,7 @@ public class Main extends JFrame {
 
 		lblTitle = new JLabel("TRANG CHỦ");
 		lblTitle.setForeground(Color.WHITE);
-		lblTitle.setBounds(76, 17, 948, 32);
+		lblTitle.setBounds(53, 17, 948, 32);
 		lblTitle.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		pnlHeader.add(lblTitle);
@@ -121,7 +122,7 @@ public class Main extends JFrame {
 		btnBack.setColorClick(Utils.primaryColor);
 		btnBack.setBorderColor(Utils.primaryColor);
 		btnBack.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnBack.setBounds(954, 1, 62, 62);
+		btnBack.setBounds(992, 1, 62, 62);
 		pnlHeader.add(btnBack);
 //		End Default Layout
 
@@ -183,17 +184,18 @@ public class Main extends JFrame {
 
 				if (isEmpty)
 					jDialogCustom.showMessage("Đóng ứng dụng", "Bạn có muốn đóng ứng dụng không?");
-				else {
+				else 
 					backPanel();
-				}
 			}
 		});
 
 //		Sự kiện Window
 		addWindowListener(new WindowAdapter() {
+			private Thread clock;
+
 			@Override
 			public void windowActivated(WindowEvent e) {
-				Thread clock = new Thread() {
+				clock = new Thread() {
 					@Override
 					public void run() {
 						for (;;) {
@@ -208,6 +210,12 @@ public class Main extends JFrame {
 					}
 				};
 				clock.start();
+			}
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void windowClosed(WindowEvent e) {
+				clock.stop();
 			}
 		});
 
@@ -239,23 +247,7 @@ public class Main extends JFrame {
 		pnlBody.removeAll();
 		pnlBody.add(panelUI.getjPanel());
 		pnlBody.repaint();
-		pnlBody.revalidate();
 		setTitle(panelUI.getTitle());
-	}
-
-	public void repaint() {
-		pnlBody.repaint();
-		pnlBody.revalidate();
-	}
-
-	public Menu getMenu() {
-		return menu;
-	}
-
-	@Override
-	public void setTitle(String title) {
-		super.setTitle(title);
-		lblTitle.setText(title.toUpperCase());
 	}
 
 	public void backPanel() {
@@ -268,6 +260,28 @@ public class Main extends JFrame {
 		}
 		addPnlBody(panelUI);
 		menu.setSelectedMenu(panelUI.getIndex(), panelUI.getIndexSubmenu());
+	}
+
+	public Menu getMenu() {
+		return menu;
+	}
+
+	@Override
+	public void repaint() {
+		pnlBody.repaint();
+		pnlBody.revalidate();
+	}
+
+	@Override
+	public void setTitle(String title) {
+		super.setTitle(title);
+		lblTitle.setText(title.toUpperCase());
+	}
+
+	public void setWidthHeader(int width) {
+		pnlHeader.setBounds(Utils.getLeft(width), 0, width, Utils.getHeaderHeight());
+		btnBack.setBounds(width - 62, 1, 62, 62);
+		repaint();
 	}
 
 	/**
@@ -288,7 +302,7 @@ public class Main extends JFrame {
 					title = "Quản lý nhân viên";
 					pnl = new QuanLyNhanVien_GUI(_this);
 				} else if (titleMenu.equals(Utils.themNhanVienMenuItem)) {
-					title = "Thên nhân viên";
+					title = "Thêm nhân viên";
 					pnl = new ThemNhanVien_GUI(_this);
 				} else if (titleMenu.equals(Utils.quanLyKhachHangMenuItem)) {
 					title = "Quản lý khách hàng";

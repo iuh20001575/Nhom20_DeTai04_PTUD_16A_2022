@@ -16,7 +16,6 @@ public class NhanVien {
 	private String diaChiCuThe;
 	private ChucVu chucVu;
 	private double luong;
-	private TaiKhoan taiKhoan;
 	private TrangThai trangThai;
 
 	public NhanVien() {
@@ -30,7 +29,7 @@ public class NhanVien {
 
 	public NhanVien(String maNhanVien, String hoTen, String cccd, String soDienThoai, LocalDate ngaySinh,
 			boolean gioiTinh, Tinh tinh, Quan quan, Phuong phuong, String diaChiCuThe, ChucVu chucVu, double luong,
-			TaiKhoan taiKhoan, TrangThai trangThai) {
+			TrangThai trangThai) {
 		super();
 		this.maNhanVien = maNhanVien;
 		this.hoTen = hoTen;
@@ -44,7 +43,6 @@ public class NhanVien {
 		this.diaChiCuThe = diaChiCuThe;
 		this.chucVu = chucVu;
 		this.luong = luong;
-		this.taiKhoan = taiKhoan;
 		this.trangThai = trangThai;
 	}
 
@@ -144,14 +142,6 @@ public class NhanVien {
 		this.luong = luong;
 	}
 
-	public TaiKhoan getTaiKhoan() {
-		return taiKhoan;
-	}
-
-	public void setTaiKhoan(TaiKhoan taiKhoan) {
-		this.taiKhoan = taiKhoan;
-	}
-
 	public TrangThai getTrangThai() {
 		return trangThai;
 	}
@@ -161,7 +151,7 @@ public class NhanVien {
 		return "NhanVien [maNhanVien=" + maNhanVien + ", hoTen=" + hoTen + ", cccd=" + cccd + ", soDienThoai="
 				+ soDienThoai + ", ngaySinh=" + ngaySinh + ", gioiTinh=" + gioiTinh + ", tinh=" + tinh + ", quan="
 				+ quan + ", phuong=" + phuong + ", diaChiCuThe=" + diaChiCuThe + ", chucVu=" + chucVu + ", luong="
-				+ luong + ", taiKhoan=" + taiKhoan + ", trangThai=" + trangThai + "]";
+				+ luong + ", trangThai=" + trangThai + "]";
 	}
 
 	@Override

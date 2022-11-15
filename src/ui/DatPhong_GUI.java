@@ -38,6 +38,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
@@ -47,7 +48,7 @@ import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
 import dao.ChiTietDatPhong_DAO;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiPhong_DAO;
 import entity.ChiTietDatPhong;
@@ -55,8 +56,6 @@ import entity.KhachHang;
 import entity.LoaiPhong;
 import entity.Phong;
 import utils.Utils;
-
-// FIXME Select row table not enabled btnChonPhong
 
 public class DatPhong_GUI extends JFrame implements ItemListener {
 
@@ -71,7 +70,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	private JComboBox<String> cmbLoaiPhong;
 	private JComboBox<String> cmbMaPhong;
 	private JComboBox<String> cmbSoLuong;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private List<Phong> dsPhongDaChon;
 	private List<Phong> dsPhongDatNgay;
 	private KhachHang khachHang;
@@ -83,6 +82,15 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	private JTable tbl;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
+	private PanelRound pnlContainerItem;
+	private JLabel lblMaPhong;
+	private JLabel lblIconClose;
+	private JScrollPane scrPhongDaChon;
+	private JPanel pnlPhongDaChon;
+	private int countItem;
+	private final int heightItem = 36;
+	private final int gapY = 8;
+	private final int top = 11;
 
 	/**
 	 * Create the frame.
@@ -93,7 +101,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	public DatPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
 		khachHang_DAO = new KhachHang_DAO();
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 
@@ -221,16 +229,16 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		};
 
 		tableModel = new DefaultTableModel(new String[] { "Mã phòng", "Loại phòng", "Số lượng", "Trạng Thái" }, 0);
+		JTableHeader tblHeader = tbl.getTableHeader();
 
 		tbl.setModel(tableModel);
 		tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbl.setFocusable(false);
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scrDanhSachPhong.setViewportView(tbl);
 //		Căn phải column 3 table
@@ -319,9 +327,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 				emptyComboBox(cmbLoaiPhong, "Loại phòng");
 
 				addRow(dsPhongDatNgay);
-				dsPhongDatNgay.forEach(phong -> {
-					cmbMaPhong.addItem(phong.getMaPhong());
-				});
+				dsPhongDatNgay.forEach(phong -> cmbMaPhong.addItem(phong.getMaPhong()));
 				loaiPhongs.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));
 
 				String soDienThoai = txtSoDienThoai.getText().trim();
@@ -477,9 +483,11 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 					quanLyDatPhongGUI.closeJFrameSub();
 					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
 							"Đặt phòng thành công").showNotification();
-				} else
+				} else {
 					new Notification(parentFrame, components.notification.Notification.Type.ERROR, "Đặt phòng thất bại")
 							.showNotification();
+					quanLyDatPhongGUI.closeJFrameSub();
+				}
 			}
 
 			@Override
@@ -533,9 +541,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	private void addRow(List<Phong> list) {
 		emptyTable();
 
-		list.forEach(phong -> {
-			addRow(phong);
-		});
+		list.forEach(phong -> addRow(phong));
 	}
 
 	/**
@@ -622,17 +628,17 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * @return panel
 	 */
 	private PanelRound getPanelPhongDaChonItem(int top, Phong phong) {
-		PanelRound pnlContainerItem = new PanelRound(8);
+		pnlContainerItem = new PanelRound(8);
 		pnlContainerItem.setBackground(Utils.primaryColor);
 		pnlContainerItem.setBounds(11, top, 118, 36);
 		pnlContainerItem.setLayout(null);
 
-		JLabel lblMaPhong = new JLabel(phong.getMaPhong());
+		lblMaPhong = new JLabel(phong.getMaPhong());
 		lblMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblMaPhong.setBounds(4, 0, 94, 36);
 		pnlContainerItem.add(lblMaPhong);
 
-		JLabel lblIconClose = new JLabel("");
+		lblIconClose = new JLabel("");
 		lblIconClose.setIcon(new ImageIcon("Icon\\close_16x16.png"));
 		lblIconClose.setBounds(94, 10, 16, 16);
 		pnlContainerItem.add(lblIconClose);
@@ -674,7 +680,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * Hiển thị các phòng đã chọn vào mục phòng đã chọn
 	 */
 	private void showDanhSachPhongDaChon() {
-		JScrollPane scrPhongDaChon = new JScrollPane();
+		scrPhongDaChon = new JScrollPane();
 		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrPhongDaChon.setBackground(Color.WHITE);
@@ -692,7 +698,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
 		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
 
-		JPanel pnlPhongDaChon = new JPanel();
+		pnlPhongDaChon = new JPanel();
 		pnlPhongDaChon.setBackground(Color.WHITE);
 		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 		pnlPhongDaChon.setLayout(null);
@@ -700,11 +706,8 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		if (dsPhongDaChon == null)
 			return;
 
-		int heightItem = 36;
-		int gapY = 8;
-		int top = 11;
-		int countItem = dsPhongDaChon.size();
-		for (int i = 0; i < countItem; i++) {
+		countItem = dsPhongDaChon.size();
+		for (int i = 0; i < countItem; ++i) {
 			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
 		}
 

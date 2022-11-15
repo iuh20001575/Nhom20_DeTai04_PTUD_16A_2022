@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.Objects;
+
 public class DichVu {
 	private String maDichVu;
 	private String tenDichVu;
@@ -55,7 +57,7 @@ public class DichVu {
 	public void setGiaMua(double giaMua) {
 		this.giaMua = giaMua;
 	}
-	
+
 	public double getGiaBan() {
 		return getGiaMua() * 1.5;
 	}
@@ -70,7 +72,7 @@ public class DichVu {
 	}
 
 	public DichVu(String maDichVu, String tenDichVu, int soLuong, String donViTinh, LoaiDichVu loaiDichVu,
-			double giaMua) {	
+			double giaMua) {
 		super();
 		this.maDichVu = maDichVu;
 		this.tenDichVu = tenDichVu;
@@ -86,4 +88,20 @@ public class DichVu {
 				+ donViTinh + ", loaiDichVu=" + loaiDichVu + ", giaMua=" + giaMua + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(maDichVu);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DichVu other = (DichVu) obj;
+		return Objects.equals(maDichVu, other.maDichVu);
+	}
 }

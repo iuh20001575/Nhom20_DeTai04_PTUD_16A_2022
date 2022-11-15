@@ -28,17 +28,19 @@ import javax.swing.event.AncestorListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import components.button.Button;
 import components.controlPanel.ControlPanel;
 import components.jDialog.JDialogCustom;
 import components.scrollbarCustom.ScrollBarCustom;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.PhieuDatPhong_DAO;
 import entity.ChiTietDatPhong;
-import entity.DatPhong;
+import entity.DonDatPhong;
 import utils.Utils;
 
 public class QuanLyPhieuDatPhong_GUI extends JPanel {
@@ -56,7 +58,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	private DefaultTableModel tableModel;
 	private PhieuDatPhong_DAO phieuDatPhong_DAO;
 	private ControlPanel pnlControl;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private KhachHang_DAO khachHang_DAO;
 	private Button btnSearch;
 	private Button btnXemPhong;
@@ -70,7 +72,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	 */
 	public QuanLyPhieuDatPhong_GUI(Main main) {
 		khachHang_DAO = new KhachHang_DAO();
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		phieuDatPhong_DAO = new PhieuDatPhong_DAO();
 
 		setBackground(Utils.secondaryColor);
@@ -290,27 +292,27 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		tbl.setAutoCreateRowSorter(true);
 		tableModel = new DefaultTableModel(new String[] { "Mã phiếu đặt", "SĐT khách", "Thời gian lập phiếu",
 				"Thời gian nhận phòng", "Phòng", "Trạng thái" }, 0);
+		JTableHeader tblHeader = tbl.getTableHeader();
+		TableColumnModel tableColumnModel = tbl.getColumnModel();
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
 
-		tbl.getColumnModel().getColumn(0).setPreferredWidth(150);
-		tbl.getColumnModel().getColumn(1).setPreferredWidth(150);
-		tbl.getColumnModel().getColumn(2).setPreferredWidth(200);
-		tbl.getColumnModel().getColumn(3).setPreferredWidth(200);
-		tbl.getColumnModel().getColumn(4).setPreferredWidth(218);
-		tbl.getColumnModel().getColumn(5).setPreferredWidth(125);
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tableColumnModel.getColumn(0).setPreferredWidth(150);
+		tableColumnModel.getColumn(1).setPreferredWidth(150);
+		tableColumnModel.getColumn(2).setPreferredWidth(200);
+		tableColumnModel.getColumn(3).setPreferredWidth(200);
+		tableColumnModel.getColumn(4).setPreferredWidth(218);
+		tableColumnModel.getColumn(5).setPreferredWidth(125);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scr.setViewportView(tbl);
 
-		pnlControl = new ControlPanel(400, 529, main);
-		pnlControl.setLocation(400, 464);
+		pnlControl = new ControlPanel(Utils.getLeft(286), 529, main);
 		this.add(pnlControl);
 
 //		Sự kiện nút tìm kiếm phiếu đặt phòng
@@ -334,7 +336,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				} else {
 					String maPhieuDat = (String) tableModel.getValueAt(row, 0);
 					ChiTietDatPhong phieuDatPhong = phieuDatPhong_DAO
-							.getChiTietDatPhongTheoMa(new DatPhong(maPhieuDat));
+							.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
 					ThongTinChiTietPhieuDatPhong_GUI jFrame = new ThongTinChiTietPhieuDatPhong_GUI(main, phieuDatPhong);
 					main.addPnlBody(jFrame, "Thông tin chi tiêt phiếu đặt phòng", 1, 0);
 				}
@@ -367,7 +369,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				txtSoDienThoai.setText("");
 				setEmptyTable();
 				addRow(phieuDatPhong_DAO.getAllChiTietDatPhong()).forEach(
-						chiTietDatPhong -> maPhieuDatModel.addElement(chiTietDatPhong.getDatPhong().getMaDatPhong()));
+						chiTietDatPhong -> maPhieuDatModel.addElement(chiTietDatPhong.getDonDatPhong().getMaDonDatPhong()));
 				pnlControl.setTbl(tbl);
 			}
 		});
@@ -413,7 +415,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				clockThread = clock();
 				setEmptyTable();
 				addRow(phieuDatPhong_DAO.getAllChiTietDatPhong()).forEach(
-						chiTietDatPhong -> maPhieuDatModel.addElement(chiTietDatPhong.getDatPhong().getMaDatPhong()));
+						chiTietDatPhong -> maPhieuDatModel.addElement(chiTietDatPhong.getDonDatPhong().getMaDonDatPhong()));
 				pnlControl.setTbl(tbl);
 			}
 
@@ -486,7 +488,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	}
 
 	private void addRow(ChiTietDatPhong chiTietdatPhong) {
-		String maDatPhong = chiTietdatPhong.getDatPhong().getMaDatPhong();
+		String maDatPhong = chiTietdatPhong.getDonDatPhong().getMaDonDatPhong();
 		String maKhachHang = datPhong_DAO.getDatPhong(maDatPhong).getKhachHang().getMaKhachHang();
 
 		tableModel.addRow(new String[] { maDatPhong, khachHang_DAO.getKhachHangTheoMa(maKhachHang).getSoDienThoai(),
@@ -494,7 +496,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 						datPhong_DAO.getDatPhong(maDatPhong).getNgayDatPhong()),
 				String.format("%s - %s", datPhong_DAO.getDatPhong(maDatPhong).getGioNhanPhong(),
 						datPhong_DAO.getDatPhong(maDatPhong).getNgayNhanPhong()),
-				"", DatPhong.convertTrangThaiToString(datPhong_DAO.getDatPhong(maDatPhong).getTrangThai()) });
+				"", DonDatPhong.convertTrangThaiToString(datPhong_DAO.getDatPhong(maDatPhong).getTrangThai()) });
 	}
 
 	private void setEmptyTable() {

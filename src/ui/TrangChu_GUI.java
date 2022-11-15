@@ -21,7 +21,7 @@ public class TrangChu_GUI extends JPanel {
 		setLayout(null);
 
 		JLabel lblBackground = new JLabel("");
-		lblBackground.setIcon(new ImageIcon("D:\\R.jpg"));
+		lblBackground.setIcon(new ImageIcon("Hinh\\Rectangle 1.png"));
 		lblBackground.setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		this.add(lblBackground);
 	}

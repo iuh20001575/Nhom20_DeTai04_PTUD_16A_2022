@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -28,7 +29,9 @@ import javax.swing.event.AncestorListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import components.button.Button;
 import components.controlPanel.ControlPanel;
@@ -48,7 +51,7 @@ import utils.Utils;
 public class QuanLyNhanVien_GUI extends JPanel {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private Button btnEmployeeAdd;
@@ -66,6 +69,8 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private DefaultTableModel tableModel;
 	private JTable tbl;
 	private JTextField txtSearch;
+	private final int widthPnlContainer = 1086;
+
 	/**
 	 * Create the frame.
 	 */
@@ -75,14 +80,20 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		diaChi_DAO = new DiaChi_DAO();
 
 		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
+
+		JPanel pnlContainer = new JPanel();
+		pnlContainer.setBackground(Utils.secondaryColor);
+		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
+		pnlContainer.setLayout(null);
+		this.add(pnlContainer);
 
 //		Search
 		JPanel pnlSearch = new JPanel();
 		pnlSearch.setBackground(Utils.secondaryColor);
 		pnlSearch.setBounds(16, 18, 1054, 24);
-		this.add(pnlSearch);
+		pnlContainer.add(pnlSearch);
 		pnlSearch.setLayout(null);
 
 		JLabel lblSearch = new JLabel("TÌM KIẾM NHÂN VIÊN THEO TÊN:");
@@ -100,7 +111,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlSearchForm.setBackground(Utils.secondaryColor);
 		pnlSearchForm.setBounds(16, 52, 1054, 36);
 		pnlSearchForm.setLayout(null);
-		this.add(pnlSearchForm);
+		pnlContainer.add(pnlSearchForm);
 
 		Button btnSearch = new Button("Tìm");
 		btnSearch.setFocusable(false);
@@ -118,7 +129,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlSearchInput.setRounded(4);
 		pnlSearchInput.setBackground(Utils.secondaryColor);
 		pnlSearchInput.setBounds(0, 0, 894, 36);
-		pnlSearchInput.setBorder(new LineBorder(Color.BLACK));
+		pnlSearchInput.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		pnlSearchInput.setRounded(4);
 		pnlSearchForm.add(pnlSearchInput);
 		pnlSearchInput.setLayout(null);
@@ -135,13 +146,13 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
 		pnlActions.setBounds(16, 104, 1054, 36);
-		this.add(pnlActions);
+		pnlContainer.add(pnlActions);
 		pnlActions.setLayout(null);
 
 		btnEmployeeView = new Button("Xem");
 		btnEmployeeView.setFocusable(false);
 		btnEmployeeView.setIcon(new ImageIcon("Icon\\user 1.png"));
-		btnEmployeeView.setBounds(0, 0, 150, 36);
+		btnEmployeeView.setBounds(-2, -2, 154, 40);
 		btnEmployeeView.setRadius(4);
 		btnEmployeeView.setForeground(Color.WHITE);
 		btnEmployeeView.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -159,7 +170,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeAdd.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
 		btnEmployeeAdd.setBorderColor(Utils.secondaryColor);
 		btnEmployeeAdd.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnEmployeeAdd.setBounds(165, 0, 150, 36);
+		btnEmployeeAdd.setBounds(163, -2, 154, 40);
 		pnlActions.add(btnEmployeeAdd);
 
 		btnEmployeeEdit = new Button("Sửa");
@@ -171,7 +182,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeEdit.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
 		btnEmployeeEdit.setBorderColor(Utils.secondaryColor);
 		btnEmployeeEdit.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnEmployeeEdit.setBounds(330, 0, 150, 36);
+		btnEmployeeEdit.setBounds(328, -2, 154, 40);
 		pnlActions.add(btnEmployeeEdit);
 
 		btnEmployeeRemove = new Button("Nghỉ việc");
@@ -184,18 +195,18 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeRemove.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
 		btnEmployeeRemove.setBorderColor(Utils.secondaryColor);
 		btnEmployeeRemove.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnEmployeeRemove.setBounds(495, 0, 150, 36);
+		btnEmployeeRemove.setBounds(493, -2, 154, 40);
 		pnlActions.add(btnEmployeeRemove);
 
-		cmbTrangThai = new JComboBox<String>();
-		cmbTrangThai.setModel(new DefaultComboBoxModel<String>(new String[] { "Trạng thái", "Đang làm", "Nghỉ làm" }));
+		cmbTrangThai = new JComboBox<>();
+		cmbTrangThai.setModel(new DefaultComboBoxModel<>(new String[] { "Trạng thái", "Đang làm", "Nghỉ làm" }));
 		cmbTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbTrangThai.setBackground(Utils.primaryColor);
 		cmbTrangThai.setBounds(904, 0, 150, 36);
 		pnlActions.add(cmbTrangThai);
 
-		cmbMaNhanVien = new JComboBox<String>();
-		maNhanVienModel = new DefaultComboBoxModel<String>(new String[] { "Mã NV" });
+		cmbMaNhanVien = new JComboBox<>();
+		maNhanVienModel = new DefaultComboBoxModel<>(new String[] { "Mã NV" });
 		cmbMaNhanVien.setModel(maNhanVienModel);
 		cmbMaNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbMaNhanVien.setBackground(Utils.primaryColor);
@@ -204,10 +215,13 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		pnlActions.add(cmbMaNhanVien);
 
 //		Table danh sách nhân viên
+		int topPnlControl = Utils.getBodyHeight();
+		topPnlControl -= 80;
+
 		JScrollPane scr = new JScrollPane();
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(16, 158, 1054, 300);
+		scr.setBounds(16, 158, 1054, topPnlControl - 174);
 		scr.setBackground(Utils.primaryColor);
 		scr.getViewport().setBackground(Color.WHITE);
 
@@ -215,10 +229,10 @@ public class QuanLyNhanVien_GUI extends JPanel {
 //		Set color scrollbar thumb
 		scp.setScrollbarColor(new Color(203, 203, 203));
 		scr.setVerticalScrollBar(scp);
-		this.add(scr);
+		pnlContainer.add(scr);
 		tbl = new JTable() {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -251,30 +265,31 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 		tableModel = new DefaultTableModel(new String[] { "M\u00E3 NV", "H\u1ECD T\u00EAn", "CCCD", "S\u0110T",
 				"Ng\u00E0y sinh", "Gi\u1EDBi t\u00EDnh", "\u0110\u1ECBa ch\u1EC9", "Tr\u1EA1ng th\u00E1i" }, 0);
+		JTableHeader tblHeader = tbl.getTableHeader();
+		TableColumnModel tableColumnModel = tbl.getColumnModel();
 
 		tbl.setModel(tableModel);
 		tbl.setFocusable(false);
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
 		tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tbl.getColumnModel().getColumn(0).setPreferredWidth(61);
-		tbl.getColumnModel().getColumn(1).setPreferredWidth(180);
-		tbl.getColumnModel().getColumn(2).setPreferredWidth(120);
-		tbl.getColumnModel().getColumn(3).setPreferredWidth(105);
-		tbl.getColumnModel().getColumn(4).setPreferredWidth(100);
-		tbl.getColumnModel().getColumn(5).setPreferredWidth(90);
-		tbl.getColumnModel().getColumn(6).setPreferredWidth(288);
-		tbl.getColumnModel().getColumn(7).setPreferredWidth(100);
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tableColumnModel.getColumn(0).setPreferredWidth(61);
+		tableColumnModel.getColumn(1).setPreferredWidth(180);
+		tableColumnModel.getColumn(2).setPreferredWidth(120);
+		tableColumnModel.getColumn(3).setPreferredWidth(105);
+		tableColumnModel.getColumn(4).setPreferredWidth(100);
+		tableColumnModel.getColumn(5).setPreferredWidth(90);
+		tableColumnModel.getColumn(6).setPreferredWidth(288);
+		tableColumnModel.getColumn(7).setPreferredWidth(100);
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scr.setViewportView(tbl);
 
-		pnlControl = new ControlPanel(400, 529, main);
-		pnlControl.setLocation(400, 464);
-		this.add(pnlControl);
+		pnlControl = new ControlPanel(Utils.getLeft(widthPnlContainer, 286), topPnlControl, main);
+		pnlContainer.add(pnlControl);
 
 //		Sự kiện nút tìm kiếm nhân viên
 		btnSearch.addMouseListener(new MouseAdapter() {
@@ -305,9 +320,10 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 //		Sự kiện nút thêm nhân viên
 		btnEmployeeAdd.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				main.addPnlBody(new ThemNhanVien_GUI(main), "Thêm nhân viên", 1, 0);
-			};
+			}
 		});
 
 //		Sự kiện nút sửa thông tin nhân viên
@@ -346,6 +362,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 						new Notification(main, components.notification.Notification.Type.SUCCESS,
 								"Cập nhật trạng thái nhân viên thành công").showNotification();
 						tableModel.setValueAt("Nghỉ làm", row, 7);
+						btnEmployeeRemove.setEnabled(false);
 					} else
 						new Notification(main, components.notification.Notification.Type.ERROR,
 								"Cập nhật trạng thái nhân viên thất bại").showNotification();
@@ -353,26 +370,9 @@ public class QuanLyNhanVien_GUI extends JPanel {
 			}
 		});
 
-//		Sự kiện JComboBox mã nhân viên
-		cmbMaNhanVien.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterNhanVien();
-				}
-			}
-		});
-
-//		Sự kiện JComboBox trạng thái
-		cmbTrangThai.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterNhanVien();
-				}
-			}
-		});
-
 //		Sự kiện JTable
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
 					setEnabledBtnActions();
@@ -393,21 +393,46 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		addAncestorListener(new AncestorListener() {
 			Thread clockThread;
 
+			@Override
 			public void ancestorAdded(AncestorEvent event) {
 				clockThread = clock();
 
 				setEmptyTable();
-				addRow(nhanVien_DAO.getAllNhanVien())
-						.forEach(nhanVien -> maNhanVienModel.addElement(nhanVien.getMaNhanVien()));
+				cmbMaNhanVien.removeAllItems();
+				cmbMaNhanVien.addItem("Mã NV");
+				List<NhanVien> list = nhanVien_DAO.getAllNhanVien();
+				list.forEach(nhanVien -> cmbMaNhanVien.addItem(nhanVien.getMaNhanVien()));
 				pnlControl.setTbl(tbl);
 			}
 
+			@Override
 			public void ancestorMoved(AncestorEvent event) {
 			}
 
+			@Override
 			@SuppressWarnings("deprecation")
 			public void ancestorRemoved(AncestorEvent event) {
 				clockThread.stop();
+			}
+		});
+
+// 		Sự kiện JComboBox mã nhân viên
+		cmbMaNhanVien.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterNhanVien();
+				}
+			}
+		});
+
+//		Sự kiện JComboBox trạng thái
+		cmbTrangThai.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterNhanVien();
+				}
 			}
 		});
 	}

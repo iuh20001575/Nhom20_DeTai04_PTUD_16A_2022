@@ -1,19 +1,20 @@
 package entity;
 
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class ChiTietDatPhong {
-	private DatPhong datPhong;
+	private DonDatPhong donDatPhong;
 	private Phong phong;
 	private LocalTime gioVao;
 	private LocalTime gioRa;
 
-	public DatPhong getDatPhong() {
-		return datPhong;
+	public DonDatPhong getDonDatPhong() {
+		return donDatPhong;
 	}
 
-	public void setDatPhong(DatPhong datPhong) {
-		this.datPhong = datPhong;
+	public void setDonDatPhong(DonDatPhong donDatPhong) {
+		this.donDatPhong = donDatPhong;
 	}
 
 	public Phong getPhong() {
@@ -40,40 +41,47 @@ public class ChiTietDatPhong {
 		this.gioRa = gioRa;
 	}
 
-	public ChiTietDatPhong() {
-		super();
-	}
-	
-	public ChiTietDatPhong(DatPhong datPhong) {
-		super();
-		this.datPhong = datPhong;
-	}
-	
-	public ChiTietDatPhong(DatPhong datPhong, Phong phong) {
-		super();
-		this.datPhong = datPhong;
-		this.phong = phong;
-	}
-	
-	public ChiTietDatPhong(DatPhong datPhong, Phong phong, LocalTime gioVao) {
-		super();
-		this.datPhong = datPhong;
-		this.phong = phong;
-		this.gioVao = gioVao;
+	@Override
+	public int hashCode() {
+		return Objects.hash(donDatPhong, gioVao, phong);
 	}
 
-	public ChiTietDatPhong(DatPhong datPhong, Phong phong, LocalTime gioVao, LocalTime gioRa) {
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ChiTietDatPhong other = (ChiTietDatPhong) obj;
+		return Objects.equals(donDatPhong, other.donDatPhong) && Objects.equals(gioVao, other.gioVao)
+				&& Objects.equals(phong, other.phong);
+	}
+
+	@Override
+	public String toString() {
+		return "ChiTietDatPhong [donDatPhong=" + donDatPhong + ", phong=" + phong + ", gioVao=" + gioVao + ", gioRa="
+				+ gioRa + "]";
+	}
+
+	public ChiTietDatPhong(DonDatPhong donDatPhong, Phong phong, LocalTime gioVao, LocalTime gioRa) {
 		super();
-		this.datPhong = datPhong;
+		this.donDatPhong = donDatPhong;
 		this.phong = phong;
 		this.gioVao = gioVao;
 		this.gioRa = gioRa;
 	}
 
-	@Override
-	public String toString() {
-		return "ChiTietDatPhong [datPhong=" + datPhong + ", phong=" + phong + ", gioVao=" + gioVao + ", gioRa=" + gioRa
-				+ "]";
+	public ChiTietDatPhong(DonDatPhong donDatPhong, Phong phong, LocalTime gioVao) {
+		super();
+		this.donDatPhong = donDatPhong;
+		this.phong = phong;
+		this.gioVao = gioVao;
+	}
+
+	public ChiTietDatPhong() {
+		super();
 	}
 
 }

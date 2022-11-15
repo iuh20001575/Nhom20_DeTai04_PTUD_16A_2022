@@ -9,7 +9,7 @@ GO
 USE PTUD_QuanLyKaraokeNice
 GO
 
--- Địa Chỉ Việt Nam - APT Shopee
+-- Địa Chỉ Việt Nam - API Shopee
 BEGIN
 	CREATE TABLE Tinh (
 		id NVARCHAR(15) PRIMARY KEY,
@@ -22777,18 +22777,6 @@ GO
 
 GO
 
--- THÊM DỮ LIỆU VÀO BẢNG
-/*INSERT TaiKhoan
-VALUES ('NV111', '11a1@11A')
-INSERT TaiKhoan
-VALUES ('NV112', '11a1@11A')*/
-
--- TRUY VẤN DỮ LIỆU
---SELECT * FROM TaiKhoan
-
--- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
--- DELETE TaiKhoan
-
 -- BẢNG NHÂN VIÊN
 -- TẠO BẢNG VÀ RÀNG BUỘC
 go
@@ -22805,8 +22793,6 @@ CREATE TABLE NhanVien (
 	diaChiCuThe NVARCHAR(55) NOT NULL,
 	chucVu NVARCHAR(15) NOT NULL,
 	luong FLOAT NOT NULL,
-	taiKhoan CHAR(5) ,
-	--taiKhoan CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL UNIQUE,
 	trangThai NVARCHAR(20) NOT NULL,
 	CONSTRAINT CHK_NhanVien_maNhanVien_ThoaMau CHECK (maNhanVien LIKE 'NV[0-9][0-9][0-9]'), -- Kiểm tra mã nhân viên có dạng: NVxxx
 	CONSTRAINT CHK_NhanVien_cccd_Chua12ChuSo CHECK (cccd like '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), -- Kiểm tra căn cước công dân phải là 12 ký tự số
@@ -22816,8 +22802,6 @@ CREATE TABLE NhanVien (
 	CONSTRAINT CHK_NhanVien_chucVu CHECK (chucVu = N'Quản lý' or chucVu = N'Nhân viên'), -- Kiểm tra chức vụ nhân viên phải là Quản lý hoặc Nhân viên
 	CONSTRAINT CHK_NhanVien_luong_LonHon0 CHECK (luong > 0), -- Kiểm tra lương nhân viên phải > 0
 	CONSTRAINT CHK_NhanVien_trangThai CHECK (trangThai = N'Đang làm' or trangThai = N'Nghỉ làm'), -- Kiểm tra trạng thái phải là Đang làm hoặc Nghỉ làm
---	CONSTRAINT CHK_NhanVien_maTaiKhoan CHECK (taiKhoan = maNhanVien), -- Kiểm tra mã tài khoản phải là mã nhân viên
-	--CONSTRAINT FK_NhanVien_TaiKhoan FOREIGN KEY (taiKhoan) REFERENCES TaiKhoan(maTaiKhoan),
 	CONSTRAINT FK_NhanVien_Tinh FOREIGN KEY (tinh) REFERENCES Tinh(id),
 	CONSTRAINT FK_NhanVien_Quan FOREIGN KEY (quan) REFERENCES Quan(id),
 	CONSTRAINT FK_NhanVien_Phuong FOREIGN KEY (phuong) REFERENCES Phuong(id)
@@ -22826,9 +22810,9 @@ CREATE TABLE NhanVien (
 -- TẠO BẢNG VÀ RÀNG BUỘC
 go
 CREATE TABLE TaiKhoan (
-	maTaiKhoan CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
+	nhanVien CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
 	matKhau VARCHAR(255) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
-	CONSTRAINT CHK_TaiKhoan_maTaiKhoan_ThoaMau CHECK (maTaiKhoan LIKE 'NV[0-9][0-9][0-9]'), -- Kiểm tra mã tài khoảng phải có dạng NVXXX
+	CONSTRAINT CHK_TaiKhoan_maTaiKhoan_ThoaMau CHECK (nhanVien LIKE 'NV[0-9][0-9][0-9]'), -- Kiểm tra mã tài khoảng phải có dạng NVXXX
 	CONSTRAINT CHK_TaiKhoan_matKhau_ItNhat8KyTu CHECK (matKhau LIKE '________%'), -- Kiểm tra mật khẩu phải có ít nhất 8 ký tự
 	CONSTRAINT CHK_TaiKhoan_matKhau_ChuaKyTuHoa CHECK (matKhau LIKE '%[A-Z]%'), -- Kiểm tra mật khẩu phải chứ ký tự hoa
 	CONSTRAINT CHK_TaiKhoan_matKhau_ChuaKyTuThuong CHECK (matKhau LIKE '%[a-z]%'), -- Kiểm tra mật khẩu phải chứ ký tự thường
@@ -22836,7 +22820,7 @@ CREATE TABLE TaiKhoan (
 	CONSTRAINT CHK_TaiKhoan_matKhau_ChuaKyTuDacBiet CHECK (matKhau LIKE '%[^A-Za-z0-9]%') -- Kiểm tra mật khẩu phải chứ ký tự đặc biệt
 )
 go
-ALTER TABLE dbo.TaiKhoan ADD CONSTRAINT FK_TaiKhoan  FOREIGN KEY (maTaiKhoan) REFERENCES dbo.NhanVien(maNhanVien) on delete cascade
+ALTER TABLE dbo.TaiKhoan ADD CONSTRAINT FK_TaiKhoan_NhanVien  FOREIGN KEY (nhanVien) REFERENCES dbo.NhanVien(maNhanVien) on delete cascade
 -- Tạo trigger ràng buộc khi nhân viên được thêm thì Tài khoản cũng sẽ được thêm
 go
 create trigger trg_NhanVien_TaiKhoan
@@ -22850,26 +22834,26 @@ begin
 			select @manv = maNhanVien from inserted
 			
 			select * from TaiKhoan
-			INSERT dbo.TaiKhoan (maTaiKhoan, matKhau)
+			INSERT dbo.TaiKhoan (nhanVien, matKhau)
 			 values (@manv, '1234Abc@')
 		 end
 	if exists (select * from deleted)
 		 begin
 			select @manv = maNhanVien from deleted
 
-			delete from TaiKhoan where maTaiKhoan = @manv
+			delete from TaiKhoan where nhanVien = @manv
 		 end
 end
 go
 -- THÊM DỮ LIỆU VÀO BẢNG
 INSERT NhanVien
-VALUES ('NV111', 'Nguyen Thanh Trung', '111111111111', '0111111111', '2004-9-24', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, 'NV111', N'Đang làm')
+VALUES ('NV111', 'Nguyen Thanh Trung', '111111111111', '0111111111', '2004-9-24', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, N'Đang làm')
 
 INSERT NhanVien
-VALUES ('NV112', N'Trần Huỳnh Như', '111111111112', '0111111112', '2004-9-20', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, 'NV112', N'Đang làm')
+VALUES ('NV112', N'Trần Huỳnh Như', '111111111112', '0111111112', '2004-9-20', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, N'Đang làm')
 
 INSERT NhanVien
-VALUES ('NV113', N'Đặng Ngọc Hoài Thương','111111111113', '0111111113', '2002-4-25', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, 'NV112', N'Đang làm')
+VALUES ('NV113', N'Đặng Ngọc Hoài Thương','111111111113', '0111111113', '2002-4-25', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, N'Đang làm')
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM NhanVien
@@ -22971,6 +22955,20 @@ INSERT Phong
 VALUES ('03.01', 'L002', 20, N'Trống')
 INSERT Phong
 VALUES ('03.02', 'L001', 20, N'Trống')
+INSERT Phong
+VALUES ('04.01', 'L001', 10, N'Trống')
+INSERT Phong
+VALUES ('04.02', 'L001', 10, N'Trống')
+INSERT Phong
+VALUES ('04.03', 'L002', 10, N'Trống')
+INSERT Phong
+VALUES ('04.04', 'L002', 10, N'Trống')
+INSERT Phong
+VALUES ('05.01', 'L001', 5, N'Trống')
+INSERT Phong
+VALUES ('05.03', 'L002', 20, N'Trống')
+INSERT Phong
+VALUES ('05.02', 'L001', 20, N'Trống')
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM Phong
@@ -23040,8 +23038,8 @@ SELECT * FROM DichVu
 -- BẢNG ĐẶT PHÒNG
 -- TẠO BẢNG VÀ RÀNG BUỘC
 go
-CREATE TABLE DatPhong (
-	maDatPhong CHAR(7) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
+CREATE TABLE DonDatPhong (
+	maDonDatPhong CHAR(7) COLLATE SQL_Latin1_General_CP1_CS_AS PRIMARY KEY,
 	khachHang CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
 	nhanVien CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
 	ngayDatPhong DATE NOT NULL DEFAULT GETDATE(),
@@ -23049,13 +23047,11 @@ CREATE TABLE DatPhong (
 	ngayNhanPhong DATE NOT NULL,
 	gioNhanPhong TIME(0) NOT NULL,
 	trangThai NVARCHAR(15) NOT NULL,
-	CONSTRAINT CHK_DatPhong_maDatPhong_ThoaMau CHECK (maDatPhong LIKE 'MDP[0-9][0-9][0-9][0-9]'), -- Kiểm tra mã đặt phòng theo mẫu: MDPXXXX
+	CONSTRAINT CHK_DatPhong_maDatPhong_ThoaMau CHECK (maDonDatPhong LIKE 'MDP[0-9][0-9][0-9][0-9]'), -- Kiểm tra mã đặt phòng theo mẫu: MDPXXXX
 	CONSTRAINT CHK_DatPhong_khachHang_TheoMau CHECK (khachHang LIKE 'KH[0-9][0-9][0-9]'), -- Kiểm tra khách hàng theo mẫu: KHXXX
 	CONSTRAINT CHK_DatPhong_nhanVien_TheoMau CHECK (nhanVien Like 'NV[0-9][0-9][0-9]'), -- Kiểm tra nhân viên theo mẫu: NVXXX
 	CONSTRAINT CHK_DatPhong_ngayNhanPhong_KhongTruocHienTai CHECK (ngayNhanPhong >= CONVERT(DATE, GETDATE())), -- Kiểm tra ngày nhận phòng phải >= ngày hiện tại
 	CONSTRAINT CHK_DatPhong_gioNhanPhong_TrongGioHoatDong CHECK (gioNhanPhong >= '7:0:0' AND gioNhanPhong <= '23:0:0'), -- Kiểm tra giờ nhận phòng phải trong giờ hoạt động và trước giờ đóng cửa (7h-23h)
-	--CONSTRAINT CHK_DatPhong_gioNhanPhong_LonHonBangHienTai CHECK (gioNhanPhong >= CONVERT(TIME(0), GETDATE())), -- Kiểm tra giờ nhận phòng >= giờ hiện tại
-	--CONSTRAINT CHK_DatPhong_gioNhanPhong_LonHonBangGioDatPhong CHECK (gioNhanPhong >= gioDatPhong), -- Kiểm tra giờ nhận phòng >= giờ đặt phòng
 	CONSTRAINT CHK_DatPhong_trangThai CHECK (trangThai IN (N'Đã hủy', N'Đang chờ', N'Đang thuê', N'Đã trả')), -- Kiểm tra trạng thái đặt phòng phải là: Đã hủy đặt phòng, đang chờ, đang thuê phòng, đã trả phòng
 	CONSTRAINT FK_DatPhong_KhachHang FOREIGN KEY (khachHang) REFERENCES KhachHang(maKhachHang),
 	CONSTRAINT FK_DatPhong_NhanVien FOREIGN KEY (nhanVien) REFERENCES NhanVien(maNhanVien)
@@ -23069,37 +23065,10 @@ go
 
 
 -- TRUY VẤN DỮ LIỆU
-SELECT * FROM DatPhong
+SELECT * FROM DonDatPhong
 
 -- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
 -- DELETE DatPhong
-
--- BẢNG CHI TIẾT DỊCH VỤ
--- TẠO BẢNG VÀ RÀNG BUỘC
-go
-CREATE TABLE ChiTietDichVu (
-	dichVu CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
-	datPhong CHAR(7) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
-	soLuong INT NOT NULL,
-	PRIMARY KEY(dichVu, datPhong),
-	CONSTRAINT CHK_DatPhong_dichVu_ThoaMau CHECK (dichVu LIKE 'DV[0-9][0-9][0-9]'), -- Kiểm tra dịch vụ phải theo mẫu: MDPXXXX
-	CONSTRAINT CHK_DatPhong_datPhong_TheoMau CHECK (datPhong LIKE 'MDP[0-9][0-9][0-9][0-9]'), -- Kiểm tra đặt phòng theo mẫu: MDPXXXX
-	CONSTRAINT CHK_DatPhong_soLuong_LonHon0 CHECK (soLuong > 0), -- Kiểm tra số lượng > 0
-	CONSTRAINT FK_ChiTietDichVu_DichVu FOREIGN KEY (dichVu) REFERENCES DichVu(maDichVu),
-	CONSTRAINT FK_ChiTietDichVu_DatPhong FOREIGN KEY (datPhong) REFERENCES DatPhong(maDatPhong)
-)
-
--- THÊM DỮ LIỆU VÀO BẢNG
---delete ChiTietDichVu where datPhong = 'MDP1111'
-go
---INSERT ChiTietDichVu
---VALUES ('DV001', 'MDP1111', 12)
-
--- TRUY VẤN DỮ LIỆU
-SELECT * FROM ChiTietDichVu
-
--- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
--- DELETE ChiTietDichVu
 
 -- TẠO FUNCTION LẤY GIỜ NHẬN PHÒNG THEO MÃ ĐẶT PHÒNG
 GO
@@ -23107,27 +23076,27 @@ CREATE FUNCTION fnGetGioNhanPhongTheoMaDatPhong(@maDatPhong CHAR(7))
 	RETURNS TIME(0)
 	AS
 		BEGIN
-			RETURN (SELECT [gioNhanPhong] FROM [dbo].[DatPhong] WHERE [maDatPhong] = @maDatPhong)
+			RETURN (SELECT [gioNhanPhong] FROM [dbo].[DonDatPhong] WHERE [maDonDatPhong] = @maDatPhong)
 		END;
 GO
 
 -- BẢNG Chi tiết đặt phòng
 -- TẠO BẢNG VÀ RÀNG BUỘC
 CREATE TABLE ChiTietDatPhong (
-	datPhong CHAR(7) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
+	donDatPhong CHAR(7) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
 	phong CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
 	gioVao TIME(0) NOT NULL,
 	gioRa TIME(0),
-	PRIMARY KEY(datPhong, phong, gioVao),
-	CONSTRAINT CHK_ChiTietDatPhong_datPhong_TheoMau CHECK (datPhong LIKE 'MDP[0-9][0-9][0-9][0-9]'), -- Kiểm tra đặt phòng theo mẫu: DVXXX
+	PRIMARY KEY(donDatPhong, phong, gioVao),
+	CONSTRAINT CHK_ChiTietDatPhong_datPhong_TheoMau CHECK (donDatPhong LIKE 'MDP[0-9][0-9][0-9][0-9]'), -- Kiểm tra đặt phòng theo mẫu: DVXXX
 	CONSTRAINT CHK_ChiTietDatPhong_phong_ThoaMau CHECK (phong LIKE '[0-9][0-9].[0-9][0-9]'), -- Kiểm tra phòng theo mẫu: XX.YY
-	CONSTRAINT CHK_ChiTietDatPhong_gioVao_LonHonBangGioNhanPhong CHECK (gioVao >= [dbo].[fnGetGioNhanPhongTheoMaDatPhong](datPhong)), -- Kiểm tra giờ vào >= giờ nhận phòng
+	CONSTRAINT CHK_ChiTietDatPhong_gioVao_LonHonBangGioNhanPhong CHECK (gioVao >= [dbo].[fnGetGioNhanPhongTheoMaDatPhong](donDatPhong)), -- Kiểm tra giờ vào >= giờ nhận phòng
 	--CONSTRAINT CHK_ChiTietDatPhong_gioVao_BeHonBangHienTai CHECK (gioVao <= convert(time(0), getdate())), -- Kiểm tra giờ vào <= giờ hiện tại
 	CONSTRAINT CHK_ChiTietDatPhong_gioVao_LonHonBangGioMoCua CHECK (gioVao >= '7:0:0'), -- Kiểm tra giờ vào >= giờ mở cửa
 	CONSTRAINT CHK_ChiTietDatPhong_gioVao_BeHonBang23h CHECK (gioVao <= '23:0:0'), -- Kiểm tra giờ vào <= 23h
 	CONSTRAINT CHK_ChiTietDatPhong_gioRa_LonHonGioVao CHECK (gioRa > gioVao), -- Kiểm tra giờ ra > giờ vào
 	CONSTRAINT CHK_ChiTietDatPhong_gioRa_BeHon24h CHECK (gioRa <= '23:59:59'), -- Kiểm tra giờ ra < 24h
-	CONSTRAINT FK_ChiTietDatPhong_DatPhong FOREIGN KEY (datPhong) REFERENCES DatPhong(maDatPhong),
+	CONSTRAINT FK_ChiTietDatPhong_DatPhong FOREIGN KEY (donDatPhong) REFERENCES DonDatPhong(maDonDatPhong),
 	CONSTRAINT FK_ChiTietDatPhong_Phong FOREIGN KEY (phong) REFERENCES Phong(maPhong)
 )
 
@@ -23142,6 +23111,35 @@ SELECT * FROM ChiTietDatPhong
 
 -- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
 -- DELETE ChiTietDatPhong
+
+-- BẢNG CHI TIẾT DỊCH VỤ
+-- TẠO BẢNG VÀ RÀNG BUỘC
+go
+CREATE TABLE ChiTietDichVu (
+	dichVu CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
+	donDatPhong CHAR(7) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
+	phong CHAR(5) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
+	gioVao TIME(0) NOT NULL,
+	soLuong INT NOT NULL,
+	PRIMARY KEY(dichVu, donDatPhong, phong, gioVao),
+	CONSTRAINT CHK_DatPhong_dichVu_ThoaMau CHECK (dichVu LIKE 'DV[0-9][0-9][0-9]'), -- Kiểm tra dịch vụ phải theo mẫu: MDPXXXX
+	CONSTRAINT CHK_DatPhong_datPhong_TheoMau CHECK (donDatPhong LIKE 'MDP[0-9][0-9][0-9][0-9]'), -- Kiểm tra đặt phòng theo mẫu: MDPXXXX
+	CONSTRAINT CHK_DatPhong_soLuong_LonHon0 CHECK (soLuong > 0), -- Kiểm tra số lượng > 0
+	CONSTRAINT FK_ChiTietDichVu_DichVu FOREIGN KEY (dichVu) REFERENCES DichVu(maDichVu),
+	CONSTRAINT FK_ChiTietDichVu_ChiTietDatPhong FOREIGN KEY (donDatPhong, phong, gioVao) REFERENCES ChiTietDatPhong(donDatPhong, phong, gioVao)
+)
+
+-- THÊM DỮ LIỆU VÀO BẢNG
+--delete ChiTietDichVu where datPhong = 'MDP1111'
+go
+--INSERT ChiTietDichVu
+--VALUES ('DV001', 'MDP1111', 12)
+
+-- TRUY VẤN DỮ LIỆU
+SELECT * FROM ChiTietDichVu
+
+-- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
+-- DELETE ChiTietDichVu
 select * from NhanVien
 select * from TaiKhoan
 select * from KhachHang

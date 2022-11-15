@@ -6,16 +6,19 @@ import java.awt.Font;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,7 +37,7 @@ import components.jDialog.JDialogCustom;
 import components.panelEvent.PanelEvent;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.Phong_DAO;
 import entity.Phong;
 import entity.Phong.TrangThai;
@@ -48,14 +51,16 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private static final long serialVersionUID = 1L;
 	private QuanLyDatPhong_GUI _this;
 	private Thread clock;
-	private DatPhong_DAO datPhong_DAO;
+	private ComboBox<String> cmbSoLuong;
+	private DonDatPhong_DAO datPhong_DAO;
 	private List<Phong> dsPhong;
 	private final int gapX = 21;
 	private final int gapY = 30;
 	private Glass glass;
 	private final int heightPhong = 130;
+	private int heightPnlContainerDanhSachPhong = Utils.getBodyHeight() - 285;
 	private JDialogCustom jDialog;
-	private JFrame jFrame;
+	private Main jFrame;
 	private JFrame jFrameSub;
 	private JLabel lblDate;
 	private JLabel lblSoLuongPhongCho;
@@ -64,6 +69,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private JLabel lblSoPhongTrong;
 	private JLabel lblThu;
 	private JLabel lblTime;
+	private String loaiPhong = "";
+	private MouseListener mouseListener = new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			handleClickOutsidePnlPhong();
+		}
+	};
 	private final int numOfRow = 6;
 	private Phong_DAO phong_DAO;
 	private PanelEvent pnlChuyenPhong;
@@ -76,41 +88,57 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private PanelEvent pnlFilterPhongDangSuDung;
 	private PanelEvent pnlFilterPhongTrong;
 	private PanelEvent pnlGopPhong;
+	private JPanel pnlPhongItem = null;
 	private PanelEvent pnlThanhToan;
 	private JScrollPane scrDanhSachPhong;
 	private int soPhongCho = 0;
 	private int soPhongDangSuDung = 0;
 	private int soPhongTam;
 	private int soPhongTrong = 0;
+	private String trangThai = "";
+
 	private final int widthPhong = 131;
 
 	/**
 	 * Create the frame.
 	 */
-	public QuanLyDatPhong_GUI(JFrame jFrame) {
+	public QuanLyDatPhong_GUI(Main jFrame) {
+		this.jFrame = jFrame;
+		_this = this;
+		phong_DAO = new Phong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
+		jDialog = new JDialogCustom(jFrame, components.jDialog.JDialogCustom.Type.warning);
+		glass = new Glass();
+
 		addAncestorListener(new AncestorListener() {
 			@Override
 			public void ancestorAdded(AncestorEvent event) {
+				clock();
+				QuanLyDatPhong_GUI.this.jFrame.setWidthHeader(1082);
+				addPhong(phong_DAO.getAllPhong());
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(_this);
+
+				jFrame.addMouseListener(mouseListener);
+				addMouseListener(mouseListener);
 			}
 
 			@Override
 			public void ancestorMoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+
 			}
 
 			@Override
 			@SuppressWarnings("deprecation")
 			public void ancestorRemoved(AncestorEvent event) {
+				QuanLyDatPhong_GUI.this.jFrame.setWidthHeader(1054);
 				clock.stop();
+				KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(_this);
+
+				jFrame.removeMouseListener(mouseListener);
+				removeMouseListener(mouseListener);
 			}
 		});
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
-
-		this.jFrame = jFrame;
-		_this = this;
-		phong_DAO = new Phong_DAO();
-		datPhong_DAO = new DatPhong_DAO();
-		jDialog = new JDialogCustom(jFrame, components.jDialog.JDialogCustom.Type.warning);
-		glass = new Glass();
 
 		glass.addMouseListener(new MouseAdapter() {
 			@Override
@@ -119,11 +147,12 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			}
 		});
 
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
+		setBackground(Utils.secondaryColor);
 		setLayout(null);
 
 		JPanel pnlContent = new JPanel();
-		pnlContent.setBounds(0, 0, 1086, 508);
+		pnlContent.setBounds(Utils.getLeft(1114), 0, 1114, Utils.getBodyHeight());
 		pnlContent.setLayout(null);
 		pnlContent.setBackground(Utils.secondaryColor);
 		add(pnlContent);
@@ -131,7 +160,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 //		Chọn loại phòng
 		JPanel pnlLoaiPhong = new JPanel();
 		pnlLoaiPhong.setBackground(Utils.secondaryColor);
-		pnlLoaiPhong.setBounds(16, 0, 1054, 58);
+		pnlLoaiPhong.setBounds(16, 0, 1082, 58);
 		pnlContent.add(pnlLoaiPhong);
 		pnlLoaiPhong.setLayout(null);
 
@@ -265,15 +294,15 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlLoaiPhong.add(lblIconDongHo);
 
 //		Seperator
-		JPanel pnlSeperator = new JPanel();
-		pnlSeperator.setBounds(0, 59, Utils.width, 4);
-		pnlSeperator.setBackground(new Color(0, 0, 0, 64));
-		pnlContent.add(pnlSeperator);
+		JPanel pnlSeperatorTop = new JPanel();
+		pnlSeperatorTop.setBounds(16, 59, 1082, 4);
+		pnlSeperatorTop.setBackground(new Color(0, 0, 0, 64));
+		pnlContent.add(pnlSeperatorTop);
 
 //		Thống kê loại phòng
 		JPanel pnlThongKeLoaiPhong = new JPanel();
 		pnlThongKeLoaiPhong.setBackground(Utils.secondaryColor);
-		pnlThongKeLoaiPhong.setBounds(924, 88, 146, 285);
+		pnlThongKeLoaiPhong.setBounds(952, 79, 146, 285);
 		pnlContent.add(pnlThongKeLoaiPhong);
 		pnlThongKeLoaiPhong.setLayout(null);
 
@@ -381,12 +410,16 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlPhongTam.add(lblSoLuongPhongTam);
 
 //		Các nút chức năng
+		JPanel pnlSeperatorBottom = new JPanel();
+		pnlSeperatorBottom.setBackground(new Color(0, 0, 0, 64));
+		pnlSeperatorBottom.setBounds(16, heightPnlContainerDanhSachPhong + 150, 1082, 4);
+		pnlContent.add(pnlSeperatorBottom);
+
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
 		pnlContent.add(pnlActions);
 		pnlActions.setLayout(null);
-
-		int width = 190, height = 69, gapX = 20;
+		pnlActions.setBounds(16, heightPnlContainerDanhSachPhong + 170, 1082, 69);
 
 		pnlDatPhong = new PanelEvent(13) {
 			/**
@@ -404,18 +437,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDatPhong.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlDatPhong);
 		pnlDatPhong.setLayout(null);
-
 		JLabel lblDatPhong = new JLabel("Đặt phòng");
 		lblDatPhong.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDatPhong.setForeground(Color.WHITE);
 		lblDatPhong.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhong.add(lblDatPhong);
-
 		JLabel lblDatPhongF = new JLabel("F1");
 		lblDatPhongF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDatPhongF.setForeground(Color.WHITE);
 		lblDatPhongF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhong.add(lblDatPhongF);
+		pnlDatPhong.setBounds(0, 0, 125, 69);
+		lblDatPhong.setBounds(10, 13, 105, 22);
+		lblDatPhongF.setBounds(10, 35, 105, 22);
 
 		pnlDatPhongTruoc = new PanelEvent(13) {
 			/**
@@ -433,18 +467,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDatPhongTruoc.setLayout(null);
 		pnlDatPhongTruoc.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlDatPhongTruoc);
-
 		JLabel lblDatPhongTruoc = new JLabel("Đặt phòng trước");
 		lblDatPhongTruoc.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDatPhongTruoc.setForeground(Color.WHITE);
 		lblDatPhongTruoc.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhongTruoc.add(lblDatPhongTruoc);
-
 		JLabel lblDatPhongTruocF = new JLabel("F2");
 		lblDatPhongTruocF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDatPhongTruocF.setForeground(Color.WHITE);
 		lblDatPhongTruocF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDatPhongTruoc.add(lblDatPhongTruocF);
+		pnlDatPhongTruoc.setBounds(140, 0, 170, 69);
+		lblDatPhongTruoc.setBounds(10, 13, 150, 22);
+		lblDatPhongTruocF.setBounds(10, 35, 150, 22);
 
 		pnlChuyenPhong = new PanelEvent(13) {
 			/**
@@ -462,18 +497,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlChuyenPhong.setLayout(null);
 		pnlChuyenPhong.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlChuyenPhong);
-
 		JLabel lblChuyenPhong = new JLabel("Chuyển phòng");
 		lblChuyenPhong.setHorizontalAlignment(SwingConstants.CENTER);
 		lblChuyenPhong.setForeground(Color.WHITE);
 		lblChuyenPhong.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlChuyenPhong.add(lblChuyenPhong);
-
 		JLabel lblChuyenPhongF = new JLabel("F3");
 		lblChuyenPhongF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblChuyenPhongF.setForeground(Color.WHITE);
 		lblChuyenPhongF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlChuyenPhong.add(lblChuyenPhongF);
+		pnlChuyenPhong.setBounds(325, 0, 160, 69);
+		lblChuyenPhong.setBounds(10, 13, 140, 22);
+		lblChuyenPhongF.setBounds(10, 35, 140, 22);
 
 		pnlGopPhong = new PanelEvent(13) {
 			/**
@@ -491,18 +527,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlGopPhong.setLayout(null);
 		pnlGopPhong.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlGopPhong);
-
 		JLabel lblGopPhong = new JLabel("Gộp phòng");
 		lblGopPhong.setHorizontalAlignment(SwingConstants.CENTER);
 		lblGopPhong.setForeground(Color.WHITE);
 		lblGopPhong.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlGopPhong.add(lblGopPhong);
-
 		JLabel lblGopPhongF = new JLabel("F4");
 		lblGopPhongF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblGopPhongF.setForeground(Color.WHITE);
 		lblGopPhongF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlGopPhong.add(lblGopPhongF);
+		pnlGopPhong.setBounds(500, 0, 125, 69);
+		lblGopPhong.setBounds(10, 13, 105, 22);
+		lblGopPhongF.setBounds(10, 35, 105, 22);
 
 		pnlDichVu = new PanelEvent(13) {
 			/**
@@ -520,18 +557,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDichVu.setLayout(null);
 		pnlDichVu.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlDichVu);
-
 		JLabel lblDichVu = new JLabel("Dịch vụ");
 		lblDichVu.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDichVu.setForeground(Color.WHITE);
 		lblDichVu.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDichVu.add(lblDichVu);
-
 		JLabel lblDichVuF = new JLabel("F5");
 		lblDichVuF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDichVuF.setForeground(Color.WHITE);
 		lblDichVuF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlDichVu.add(lblDichVuF);
+		pnlDichVu.setBounds(640, 0, 125, 69);
+		lblDichVu.setBounds(10, 13, 105, 22);
+		lblDichVuF.setBounds(10, 35, 105, 22);
 
 		pnlThanhToan = new PanelEvent(13) {
 			/**
@@ -549,30 +587,19 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlThanhToan.setLayout(null);
 		pnlThanhToan.setBackgroundColor(new Color(255, 154, 97));
 		pnlActions.add(pnlThanhToan);
-
 		JLabel lblThanhToan = new JLabel("Thanh toán");
 		lblThanhToan.setHorizontalAlignment(SwingConstants.CENTER);
 		lblThanhToan.setForeground(Color.WHITE);
 		lblThanhToan.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlThanhToan.add(lblThanhToan);
-
 		JLabel lblThanhToanF = new JLabel("F6");
 		lblThanhToanF.setHorizontalAlignment(SwingConstants.CENTER);
 		lblThanhToanF.setForeground(Color.WHITE);
 		lblThanhToanF.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		pnlThanhToan.add(lblThanhToanF);
-
-		JPanel[] btnActions = { pnlDatPhong, pnlDatPhongTruoc, pnlChuyenPhong, pnlGopPhong, pnlDichVu, pnlThanhToan };
-		int[] btnActionsWidth = { 125, 170, 160, 125, 125, 125 };
-		pnlActions.setBounds(16, 422, width * btnActions.length + gapX * btnActions.length - 1, 69);
-		for (int i = 0; i < btnActions.length; i++) {
-			int x = 0;
-			for (int j = 0; j < i; j++)
-				x += 15 + btnActionsWidth[j];
-			btnActions[i].setBounds(x, 0, btnActionsWidth[i], height);
-			btnActions[i].getComponent(0).setBounds(10, 13, btnActionsWidth[i] - 20, 22);
-			btnActions[i].getComponent(1).setBounds(10, 35, btnActionsWidth[i] - 20, 22);
-		}
+		pnlThanhToan.setBounds(780, 0, 125, 69);
+		lblThanhToan.setBounds(10, 13, 105, 22);
+		lblThanhToanF.setBounds(10, 35, 105, 22);
 
 		btnPhongThuong.setVisible(false);
 		btnPhongVip.setVisible(false);
@@ -580,11 +607,9 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		btnPhongThuongUnactive.setVisible(true);
 		btnPhongVipUnactive.setVisible(true);
 
-		clock();
-
 		JPanel pnlFilter = new JPanel();
 		pnlFilter.setBackground(Utils.secondaryColor);
-		pnlFilter.setBounds(16, 68, 860, 39);
+		pnlFilter.setBounds(16, 79, 900, 39);
 		pnlContent.add(pnlFilter);
 		pnlFilter.setLayout(null);
 
@@ -630,77 +655,66 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		lblFilterPhongTrong.setBounds(0, 0, 153, 39);
 		pnlFilterPhongTrong.add(lblFilterPhongTrong);
 
-		JLabel lblPhongSo = new JLabel("Phòng số:");
-		lblPhongSo.setForeground(new Color(0, 0, 0));
-		lblPhongSo.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblPhongSo.setBounds(564, 2, 79, 34);
-		pnlFilter.add(lblPhongSo);
-
-		Button btnSearch = new Button("Tìm");
-		btnSearch.setForeground(Color.WHITE);
-		btnSearch.setRadius(9);
-		btnSearch.setFocusable(false);
-		btnSearch.setBorderColor(Utils.secondaryColor);
-		btnSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnSearch.setBackground(new Color(140, 177, 180), 0.8f, 0.6f);
-		btnSearch.setIcon(new ImageIcon("Icon\\search_34x34.png"));
-		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		btnSearch.setBounds(759, 0, 101, 39);
-		pnlFilter.add(btnSearch);
-
-		ComboBox<String> cmbMaPhong = new ComboBox<>();
-		cmbMaPhong.setBackground(Utils.primaryColor);
-		cmbMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		cmbMaPhong.setBounds(653, 2, 91, 35);
-		pnlFilter.add(cmbMaPhong);
+		cmbSoLuong = new ComboBox<>();
+		cmbSoLuong.setModel(new DefaultComboBoxModel<>(new String[] { "Số lượng khách", "5", "10", "20" }));
+		cmbSoLuong.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED)
+					addPhong(filterDanhSachPhong());
+			}
+		});
+		cmbSoLuong.setBackground(Utils.primaryColor);
+		cmbSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		cmbSoLuong.setBounds(750, 2, 150, 35);
+		pnlFilter.add(cmbSoLuong);
 
 		pnlContainerDanhSachPhong = new JPanel();
-		pnlContainerDanhSachPhong.setBounds(16, 117, 900, 292);
+		pnlContainerDanhSachPhong.setBounds(16, 134, 900, heightPnlContainerDanhSachPhong);
 		pnlContainerDanhSachPhong.setBackground(Utils.secondaryColor);
 		pnlContainerDanhSachPhong.setLayout(null);
 		pnlContent.add(pnlContainerDanhSachPhong);
 
-//		Event window
-		if (dsPhong == null) {
-			List<Phong> list = phong_DAO.getAllPhong();
-			addPhong(list);
-
-			cmbMaPhong.removeAllItems();
-			list.forEach(phong -> cmbMaPhong.addItem(phong.getMaPhong()));
-		} else
-			addPhong(phong_DAO.getAllPhongTheoMa(dsPhong));
+		JPanel pnlSeperatorRight = new JPanel();
+		pnlSeperatorRight.setBackground(new Color(0, 0, 0, 64));
+		pnlSeperatorRight.setBounds(932, 63, 4, heightPnlContainerDanhSachPhong + 87);
+		pnlContent.add(pnlSeperatorRight);
 
 //		Event loại phòng
 		btnTatCaUnactive.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				btnTatCa.setVisible(true);
-				btnPhongThuong.setVisible(false);
-				btnPhongVip.setVisible(false);
-
-				addPhong(phong_DAO.getAllPhong(""));
+				setVisibleLoaiPhong(btnTatCa, btnPhongThuong, btnPhongVip);
+				loaiPhong = "";
+				addPhong(filterDanhSachPhong());
 			}
 		});
 
 		btnPhongThuongUnactive.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				btnTatCa.setVisible(false);
-				btnPhongThuong.setVisible(true);
-				btnPhongVip.setVisible(false);
-
-				addPhong(phong_DAO.getAllPhong("Phòng thường"));
+				String loaiPhong = _this.loaiPhong;
+				_this.loaiPhong = "Phòng thường";
+				List<Phong> list = filterDanhSachPhong();
+				if (list.size() <= 0)
+					_this.loaiPhong = loaiPhong;
+				else
+					setVisibleLoaiPhong(btnPhongThuong, btnPhongVip, btnTatCa);
+				addPhong(list);
 			}
 		});
 
 		btnPhongVipUnactive.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				btnTatCa.setVisible(false);
-				btnPhongThuong.setVisible(false);
-				btnPhongVip.setVisible(true);
-
-				addPhong(phong_DAO.getAllPhong("Phòng VIP"));
+				String loaiPhong = _this.loaiPhong;
+				_this.loaiPhong = "Phòng VIP";
+				List<Phong> list = filterDanhSachPhong();
+				if (list.size() <= 0)
+					_this.loaiPhong = loaiPhong;
+				else
+					setVisibleLoaiPhong(btnPhongVip, btnPhongThuong, btnTatCa);
+				addPhong(list);
 			}
 		});
 
@@ -709,15 +723,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongTrong.isActive();
-				List<Phong> list = phong_DAO
-						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.Trong));
-				if (list.size() > 0) {
-					if (!isActive) {
-						pnlFilterPhongDangSuDung.setActive(false);
-						pnlFilterPhongCho.setActive(false);
-					}
-					pnlFilterPhongTrong.setActive(!isActive);
-				}
+				String trangThai = _this.trangThai;
+				_this.trangThai = isActive ? "" : Phong.convertTrangThaiToString(TrangThai.Trong);
+				List<Phong> list = filterDanhSachPhong();
+				int length = list.size();
+				setActivePnlFilter(length, isActive, pnlFilterPhongTrong, pnlFilterPhongCho, pnlFilterPhongDangSuDung);
+				if (length <= 0)
+					_this.trangThai = trangThai;
 				addPhong(list);
 			}
 		});
@@ -726,16 +738,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongDangSuDung.isActive();
-				List<Phong> list = phong_DAO
-						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DangThue));
-
-				if (list.size() > 0) {
-					if (!isActive) {
-						pnlFilterPhongTrong.setActive(false);
-						pnlFilterPhongCho.setActive(false);
-					}
-					pnlFilterPhongDangSuDung.setActive(!isActive);
-				}
+				String trangThai = _this.trangThai;
+				_this.trangThai = isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DangThue);
+				List<Phong> list = filterDanhSachPhong();
+				int length = list.size();
+				setActivePnlFilter(length, isActive, pnlFilterPhongDangSuDung, pnlFilterPhongTrong, pnlFilterPhongCho);
+				if (length <= 0)
+					_this.trangThai = trangThai;
 				addPhong(list);
 			}
 		});
@@ -744,15 +753,13 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean isActive = pnlFilterPhongCho.isActive();
-				List<Phong> list = phong_DAO
-						.getAllPhongTheoTrangThai(isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DaDat));
-				if (list.size() > 0) {
-					if (!isActive) {
-						pnlFilterPhongTrong.setActive(false);
-						pnlFilterPhongDangSuDung.setActive(false);
-					}
-					pnlFilterPhongCho.setActive(!isActive);
-				}
+				String trangThai = _this.trangThai;
+				_this.trangThai = isActive ? "" : Phong.convertTrangThaiToString(TrangThai.DaDat);
+				List<Phong> list = filterDanhSachPhong();
+				int length = list.size();
+				setActivePnlFilter(length, isActive, pnlFilterPhongCho, pnlFilterPhongTrong, pnlFilterPhongDangSuDung);
+				if (length <= 0)
+					_this.trangThai = trangThai;
 				addPhong(list);
 			}
 		});
@@ -761,6 +768,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDatPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlDatPhong, new DatPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
@@ -768,6 +776,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDatPhongTruoc.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlDatPhongTruoc, new DatPhongTruoc_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
@@ -775,6 +784,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlChuyenPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlChuyenPhong, new ChuyenPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
@@ -782,6 +792,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlGopPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlGopPhong, new GopPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
@@ -789,6 +800,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDichVu.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlDichVu, new QuanLyDichVuPhongDat_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
@@ -796,24 +808,10 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlThanhToan.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlThanhToan, new ThanhToan_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
 		});
-
-//		Sự kiện tìm phòng
-		btnSearch.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				String maPhong = (String) cmbMaPhong.getSelectedItem();
-				Phong phong = phong_DAO.getPhong(maPhong);
-
-				List<Phong> list = new ArrayList<>();
-				list.add(phong);
-
-				addPhong(list);
-			}
-		});
-
 	}
 
 	/**
@@ -832,22 +830,37 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		soPhongTam = 0;
 
 		pnlDanhSachPhong = new JPanel();
+		pnlDanhSachPhong.addAncestorListener(new AncestorListener() {
+			@Override
+			public void ancestorAdded(AncestorEvent event) {
+				pnlDanhSachPhong.addMouseListener(mouseListener);
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+			}
+
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+				pnlDanhSachPhong.removeMouseListener(mouseListener);
+			}
+		});
 		pnlDanhSachPhong.setBackground(Utils.secondaryColor);
 		pnlDanhSachPhong.setLayout(null);
-
-		for (int i = 0; i < dsPhong.size(); i++) {
-			JPanel phong1 = getPhong(dsPhong.get(i));
-			phong1.setBounds(getBounds(i));
+		JPanel phong1;
+		for (int i = 0; i < dsPhong.size(); ++i) {
+			phong1 = getPhong(dsPhong.get(i), getBounds(i));
 			pnlDanhSachPhong.add(phong1);
 		}
 
 		pnlDanhSachPhong.setPreferredSize(getSizeContainerDanhSachPhong(dsPhong.size()));
+
 		scrDanhSachPhong = new JScrollPane(pnlDanhSachPhong);
 		scrDanhSachPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
 		scrDanhSachPhong.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrDanhSachPhong.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrDanhSachPhong.setBackground(Utils.secondaryColor);
-		scrDanhSachPhong.setBounds(0, 0, 900, 292);
+		scrDanhSachPhong.setBounds(0, 0, 900, heightPnlContainerDanhSachPhong);
 		pnlContainerDanhSachPhong.removeAll();
 		pnlContainerDanhSachPhong.add(scrDanhSachPhong);
 		ScrollBarCustom scb = new ScrollBarCustom();
@@ -959,6 +972,10 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		return false;
 	}
 
+	private List<Phong> filterDanhSachPhong() {
+		return phong_DAO.getAllPhong(trangThai, loaiPhong, (String) cmbSoLuong.getSelectedItem());
+	}
+
 	/**
 	 * Get Bounds JPanel Item theo index
 	 *
@@ -972,16 +989,21 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 				heightPhong);
 	}
 
+	public Main getjFrame() {
+		return jFrame;
+	}
+
 	/**
 	 * Get JPanel Item phòng
 	 *
 	 * @param phong
+	 * @param rectangle
 	 * @return JPanel Item
 	 */
-	private JPanel getPhong(Phong phong) {
+	private JPanel getPhong(Phong phong, Rectangle rectangle) {
 		JPanel pnlPhong1 = new JPanel();
 		pnlPhong1.setBackground(Utils.secondaryColor);
-		pnlPhong1.setBounds(0, 0, 131, 130);
+		pnlPhong1.setBounds(rectangle);
 		pnlPhong1.setLayout(null);
 
 		JLabel lblIcon1 = new JLabel("");
@@ -1070,6 +1092,37 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		lblSoKhach.setBounds(5, 44, 121, 18);
 		pnlChiTietPhong.add(lblSoKhach);
 
+		MouseListener mouseListener = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				handleClickOutsidePnlPhong();
+				if (trangThai.equals(TrangThai.PhongTam) || trangThai.equals(TrangThai.DangThue)) {
+					pnlPhongItem = pnlPhong1;
+					pnlDanhSachPhong.remove(pnlDanhSachPhong.getComponentAt(pnlPhong1.getLocation()));
+					pnlDanhSachPhong.add(new Popup(_this, phong, rectangle));
+					repaint();
+				}
+			}
+		};
+		pnlChiTietPhong.addAncestorListener(new AncestorListener() {
+
+			@Override
+			public void ancestorAdded(AncestorEvent event) {
+				pnlChiTietPhong.addMouseListener(mouseListener);
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+				pnlChiTietPhong.removeMouseListener(mouseListener);
+			}
+		});
+
 		return pnlPhong1;
 	}
 
@@ -1080,12 +1133,23 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	 * @return
 	 */
 	private Dimension getSizeContainerDanhSachPhong(int soPhong) {
-		int row = (int) Math.ceil(soPhong / numOfRow);
+		int row = (int) Math.ceil(soPhong * 1.0 / numOfRow);
 
-		return new Dimension(890, Math.max((row - 1) * gapY + row * heightPhong, 292));
+		return new Dimension(890, Math.max((row - 1) * gapY + row * heightPhong, heightPnlContainerDanhSachPhong));
 	}
 
-	private void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
+	public void handleClickOutsidePnlPhong() {
+		if (pnlDanhSachPhong == null)
+			return;
+
+		if (pnlPhongItem != null) {
+			pnlDanhSachPhong.remove(pnlDanhSachPhong.getComponentAt(pnlPhongItem.getLocation()));
+			pnlDanhSachPhong.add(pnlPhongItem);
+			repaint();
+		}
+	}
+
+	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
 		if (!pnl.isEnabled())
 			return;
 		openJFrameSub(jFrame);
@@ -1097,5 +1161,20 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		glass.setAlpha(0.5f);
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
+	}
+
+	private void setActivePnlFilter(int lengthList, boolean isActive, PanelEvent pnlActive, PanelEvent... pnls) {
+		if (lengthList > 0) {
+			if (!isActive)
+				for (PanelEvent panelEvent : pnls)
+					panelEvent.setActive(false);
+			pnlActive.setActive(!isActive);
+		}
+	}
+
+	private void setVisibleLoaiPhong(Button btnVisible, Button... btns) {
+		for (Button btn : btns)
+			btn.setVisible(false);
+		btnVisible.setVisible(true);
 	}
 }

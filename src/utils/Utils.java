@@ -70,10 +70,18 @@ public class Utils {
 		return getScreenHeight() - getHeaderHeight();
 	}
 
+	public static int getLeft(int width) {
+		return (int) Math.ceil((Utils.getScreenWidth() - width - 14) / 2);
+	}
+
+	public static int getLeft(int widthParent, int width) {
+		return (int) Math.ceil((widthParent - width) / 2);
+	}
+
 	public static void setMain(JFrame main) {
 		Utils.main = main;
 	}
-
+	
 	/**
 	 * Get màu RGBA
 	 * 
@@ -124,7 +132,7 @@ public class Utils {
 
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(date.contains("/") ? "dd/MM/yyyy" : "dd-MM-yyyy");
 		String dates[] = date.split(date.contains("/") ? "/" : "-");
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 2; ++i)
 			if (dates[i].length() == 1)
 				dates[i] = '0' + dates[i];
 		if (dates[2].length() == 2)

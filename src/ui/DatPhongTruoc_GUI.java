@@ -36,6 +36,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 import com.raven.datechooser.DateChooser;
@@ -50,7 +51,7 @@ import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiPhong_DAO;
 import entity.KhachHang;
@@ -74,7 +75,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private JComboBox<String> cmbPhut;
 	private ComboBox<String> cmbSoLuong;
 	private DateChooser dateChoose;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private List<Phong> dsPhongDaChon;
 	private List<Phong> dsPhongDatTruoc;
 	private KhachHang khachHang;
@@ -89,6 +90,15 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private TextField txtNgayNhanPhong;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
+	private PanelRound pnlContainerItem;
+	private JLabel lblMaPhong;
+	private JLabel lblIconClose;
+	private final int gioMoCua = 7;
+	private final int gioDongCua = 24;
+	private final int heightItem = 36;
+	private final int gapY = 8;
+	private final int top = 11;
+	private int countItem;
 
 	/**
 	 * Create the frame.
@@ -98,7 +108,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	 */
 	public DatPhongTruoc_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
 
@@ -229,18 +239,18 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		};
 
 		tableModel = new DefaultTableModel(new String[] { "Mã phòng", "Loại phòng", "Số lượng", "Trạng Thái" }, 0);
+		JTableHeader tblHeader = tbl.getTableHeader();
 
 		tbl.setModel(tableModel);
 		tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbl.setFocusable(false);
 //		Set background cho phần header của table
-		tbl.getTableHeader().setBackground(Utils.primaryColor);
+		tblHeader.setBackground(Utils.primaryColor);
 		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setBackground(Color.WHITE);
 //		Set chiều rộng và chiều cao cho phần header của table
-		tbl.getTableHeader()
-				.setPreferredSize(new Dimension((int) tbl.getTableHeader().getPreferredSize().getWidth(), 36));
-		tbl.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scrDanhSachPhong.setViewportView(tbl);
 //		Căn phải cell 3 table
@@ -458,13 +468,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 							}
 						});
 
-						jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								quanLyDatPhongGUI.closeJFrameSub();
-							}
-						});
-
 						jDialogCustom.showMessage("Warning",
 								"Khách hàng không có trong hệ thống, bạn có muốn thêm khách hàng mới không?");
 					}
@@ -555,7 +558,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("mouseClicked");
 				btnChonPhong.setEnabled(true);
 			}
 		});
@@ -637,9 +639,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private void addRow(List<Phong> list) {
 		emptyTable();
 
-		list.forEach(phong -> {
-			addRow(phong);
-		});
+		list.forEach(phong -> addRow(phong));
 	}
 
 	private void addRow(Phong phong) {
@@ -694,17 +694,17 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	}
 
 	private PanelRound getPanelphongDaChonItem(int top, Phong phong) {
-		PanelRound pnlContainerItem = new PanelRound(8);
+		pnlContainerItem = new PanelRound(8);
 		pnlContainerItem.setBackground(Utils.primaryColor);
 		pnlContainerItem.setBounds(11, top, 118, 36);
 		pnlContainerItem.setLayout(null);
 
-		JLabel lblMaPhong = new JLabel(phong.getMaPhong());
+		lblMaPhong = new JLabel(phong.getMaPhong());
 		lblMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblMaPhong.setBounds(4, 0, 94, 36);
 		pnlContainerItem.add(lblMaPhong);
 
-		JLabel lblIconClose = new JLabel("");
+		lblIconClose = new JLabel("");
 		lblIconClose.setIcon(new ImageIcon("Icon\\close_16x16.png"));
 		lblIconClose.setBounds(94, 10, 16, 16);
 		pnlContainerItem.add(lblIconClose);
@@ -779,9 +779,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		cmbGio.removeAllItems();
 		cmbPhut.removeAllItems();
 
-		final int gioMoCua = 7;
-		final int gioDongCua = 24;
-
 		LocalTime timeNow = LocalTime.now();
 		LocalDate dateSelect = Utils.getLocalDate(txtNgayNhanPhong.getText());
 		int gio = timeNow.getHour(), phut = timeNow.getMinute();
@@ -793,7 +790,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		setEnabledTimeComboBox(true);
 
 		if (dateSelect.isEqual(LocalDate.now())) {
-			for (int i = gio; i < gioDongCua; i++)
+			for (int i = gio; i < gioDongCua; ++i)
 				cmbGio.addItem(i + "");
 			if (gio == gioSelect || gioSelect == -1) {
 				if (phut > 30) {
@@ -809,7 +806,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				for (int j = 0; j < 60; j += 5)
 					cmbPhut.addItem(j + "");
 		} else {
-			for (int i = gioMoCua; i < gioDongCua; i++)
+			for (int i = gioMoCua; i < gioDongCua; ++i)
 				cmbGio.addItem(i + "");
 			for (int j = 0; j < 60; j += 5)
 				cmbPhut.addItem(j + "");
@@ -828,11 +825,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlPhongDaChon.removeAll();
 
 		if (dsPhongDaChon != null) {
-			int heightItem = 36;
-			int gapY = 8;
-			int top = 11;
-			int countItem = dsPhongDaChon.size();
-			for (int i = 0; i < countItem; i++)
+			countItem = dsPhongDaChon.size();
+			for (int i = 0; i < countItem; ++i)
 				pnlPhongDaChon.add(getPanelphongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
 			pnlPhongDaChon.setPreferredSize(
 					new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));

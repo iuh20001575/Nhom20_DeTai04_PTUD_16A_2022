@@ -42,13 +42,13 @@ import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
 import components.textField.TextField;
 import dao.ChiTietDichVu_DAO;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.DichVu_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiDichVu_DAO;
 import entity.ChiTietDichVu;
-import entity.DatPhong;
 import entity.DichVu;
+import entity.DonDatPhong;
 import entity.KhachHang;
 import entity.LoaiDichVu;
 import utils.Utils;
@@ -60,7 +60,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 	private TextField txtTenKhachHang;
 	private KhachHang_DAO khachHang_DAO;
 	private KhachHang khachHang;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private LoaiDichVu_DAO loaiDichVu_DAO;
 	private DichVu_DAO dichVu_DAO;
 	private ChiTietDichVu_DAO chiTietDichVu_DAO;
@@ -80,7 +80,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		_this = this;
 		khachHang_DAO = new KhachHang_DAO();
 		loaiDichVu_DAO = new LoaiDichVu_DAO();
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		dichVu_DAO = new DichVu_DAO();
 		chiTietDichVu_DAO = new ChiTietDichVu_DAO();
 
@@ -137,11 +137,11 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 					if (khachHang != null) {
 						txtTenKhachHang.setText(khachHang.getHoTen());
-						List<DatPhong> listDatPhongDangThue = datPhong_DAO.getAllDatPhongDangThue();
+						List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDatPhongDangThue();
 						emptyComboBox(cmbDatPhong, "Mã đặt phòng");
-						for (DatPhong datPhong : listDatPhongDangThue) {
+						for (DonDatPhong datPhong : listDatPhongDangThue) {
 							if (datPhong.getKhachHang().getMaKhachHang().equals(khachHang.getMaKhachHang())) {
-								cmbDatPhong.addItem(datPhong.getMaDatPhong());
+								cmbDatPhong.addItem(datPhong.getMaDonDatPhong());
 							}
 						}
 					} else {
@@ -167,10 +167,10 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 					txtSoDienThoai.setError(true);
 				}
 				if (txtTenKhachHang.getText().equals("") || txtTenKhachHang == null) {
-					List<DatPhong> listDatPhongDangThue = datPhong_DAO.getAllDatPhongDangThue();
+					List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDatPhongDangThue();
 					emptyComboBox(cmbDatPhong, "Mã đặt phòng");
-					for (DatPhong datPhong : listDatPhongDangThue) {
-						cmbDatPhong.addItem(datPhong.getMaDatPhong());
+					for (DonDatPhong datPhong : listDatPhongDangThue) {
+						cmbDatPhong.addItem(datPhong.getMaDonDatPhong());
 					}
 				}
 			}
@@ -236,19 +236,20 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 					DichVu DichVuChon = new DichVu((String) tableModel2.getValueAt(row2, 0));
 
 					if (!dsDVDaChon.contains(DichVuChon)) {
-						DichVuChon = dichVu_DAO.getDichVuTheoMa(DichVuChon.getMaDichVu());
-						DichVuChon.setSoLuong(1);
-						dsDVDaChon.add(DichVuChon);
-						dichVu_DAO.capNhatSoLuongDichVuGiam(DichVuChon.getMaDichVu(), DichVuChon.getSoLuong());
-						chiTietDichVu_DAO.themChiTietDichVu(new ChiTietDichVu(DichVuChon,
-								datPhong_DAO.getDatPhong(maDatPhongChon), DichVuChon.getSoLuong()));
-						new Notification(_this, components.notification.Notification.Type.SUCCESS,
-								"Thêm dịch vụ thành công").showNotification();
-						emptyTable(tbl3, tableModel3);
-						List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
-						addRow2(listDV);
-						loadTable3();
-						capNhatThanhTien();
+//						DichVuChon = dichVu_DAO.getDichVuTheoMa(DichVuChon.getMaDichVu());
+//						DichVuChon.setSoLuong(1);
+//						dsDVDaChon.add(DichVuChon);
+//						dichVu_DAO.capNhatSoLuongDichVuGiam(DichVuChon.getMaDichVu(), DichVuChon.getSoLuong());
+//						chiTietDichVu_DAO.themChiTietDichVu(new ChiTietDichVu(DichVuChon,
+//								datPhong_DAO.getDatPhong(maDatPhongChon), DichVuChon.getSoLuong()));
+//						new ChiTietDichVu(DichVuChon, null, DichVuChon.getSoLuong());
+//						new Notification(_this, components.notification.Notification.Type.SUCCESS,
+//								"Thêm dịch vụ thành công").showNotification();
+//						emptyTable(tbl3, tableModel3);
+//						List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
+//						addRow2(listDV);
+//						loadTable3();
+//						capNhatThanhTien();
 					} else {
 						return;
 					}
@@ -325,7 +326,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
@@ -404,9 +404,9 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 		cmbDatPhong = new JComboBox<>();
 		cmbDatPhong.addItem("Mã đặt phòng");
-		List<DatPhong> listDatPhongDangThue = datPhong_DAO.getAllDatPhongDangThue();
-		for (DatPhong datPhong : listDatPhongDangThue) {
-			cmbDatPhong.addItem(datPhong.getMaDatPhong());
+		List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDatPhongDangThue();
+		for (DonDatPhong datPhong : listDatPhongDangThue) {
+			cmbDatPhong.addItem(datPhong.getMaDonDatPhong());
 		}
 		cmbDatPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbDatPhong.setBackground(Utils.primaryColor);
@@ -518,7 +518,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// TODO Auto-generated method stub
 				if (column == 2)
 					return true;
 				return false;
@@ -565,7 +564,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		tbl3.getModel().addTableModelListener(new TableModelListener() {
 			@Override
 			public void tableChanged(TableModelEvent e) {
-				// TODO Auto-generated method stub
 				if (e.getType() == TableModelEvent.UPDATE) {
 					int row3 = tbl3.getSelectedRow();
 
@@ -663,7 +661,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 				ListChiTietDV = chiTietDichVu_DAO.getAllChiTietDichVu();
 				// lấy danh sách chi tiết của phòng được chọn
 				for (ChiTietDichVu chiTietDichVu : ListChiTietDV) {
-					if (maDatPhongChon.equals(chiTietDichVu.getDatPhong().getMaDatPhong())) {
+					if (maDatPhongChon.equals(chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getMaDonDatPhong())) {
 						if (dsDVDaChon.contains(chiTietDichVu.getDichVu()))
 							return;
 

@@ -39,7 +39,7 @@ import components.comboBox.ComboBox;
 import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.LoaiPhong_DAO;
 import entity.LoaiPhong;
 import entity.Phong;
@@ -56,7 +56,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	private Button btnChonPhong;
 	private Button btnChuyen;
 	private ComboBox<String> cmbMaDatPhong;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private List<Phong> dsPhongCanGop;
 	private List<Phong> dsPhongDaChon;
 	private final String labelCmbMaDatPhong = "Mã đặt phòng";
@@ -67,6 +67,9 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	private DefaultTableModel tableModelPhongGop;
 	private JTable tblPhongCanGop;
 	private JTable tblPhongGop;
+	private PanelRound pnlContainerItem;
+	private JLabel lblMaPhong;
+	private JLabel lblIconClose;
 
 	/**
 	 * Create the frame.
@@ -76,7 +79,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	 */
 	public GopPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
 
 		setType(Type.UTILITY);
@@ -456,17 +459,17 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	 * @return pnlContainer
 	 */
 	private PanelRound getPanelPhongDaChonItem(int top, Phong phong) {
-		PanelRound pnlContainerItem = new PanelRound(8);
+		pnlContainerItem = new PanelRound(8);
 		pnlContainerItem.setBackground(Utils.primaryColor);
 		pnlContainerItem.setBounds(11, top, 118, 36);
 		pnlContainerItem.setLayout(null);
 
-		JLabel lblMaPhong = new JLabel(phong.getMaPhong());
+		lblMaPhong = new JLabel(phong.getMaPhong());
 		lblMaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		lblMaPhong.setBounds(4, 0, 94, 36);
 		pnlContainerItem.add(lblMaPhong);
 
-		JLabel lblIconClose = new JLabel("");
+		lblIconClose = new JLabel("");
 		lblIconClose.setIcon(new ImageIcon("Icon\\close_16x16.png"));
 		lblIconClose.setBounds(94, 10, 16, 16);
 		pnlContainerItem.add(lblIconClose);
@@ -579,7 +582,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		int gapY = 8;
 		int top = 4;
 		int countItem = dsPhongDaChon.size();
-		for (int i = 0; i < countItem; i++) {
+		for (int i = 0; i < countItem; ++i) {
 			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
 		}
 

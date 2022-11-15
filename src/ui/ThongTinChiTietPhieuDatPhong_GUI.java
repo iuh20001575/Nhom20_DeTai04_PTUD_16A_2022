@@ -15,7 +15,7 @@ import javax.swing.border.EmptyBorder;
 import components.button.Button;
 import components.comboBox.ComboBox;
 import components.textField.TextField;
-import dao.DatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.PhieuDatPhong_DAO;
 import entity.ChiTietDatPhong;
 import utils.Utils;
@@ -37,7 +37,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 	private TextField txtDichVu;
 	private TextField txtTGLP;
 	private TextField txtTGNP;
-	private DatPhong_DAO datPhong_DAO;
+	private DonDatPhong_DAO datPhong_DAO;
 	private Button btnNhanPhong;
 	private Button btnCapNhat;
 	private Button btnHuyPhong;
@@ -47,7 +47,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 	 */
 	public ThongTinChiTietPhieuDatPhong_GUI(Main main, ChiTietDatPhong chiTietDatPhong) {
 		new PhieuDatPhong_DAO();
-		datPhong_DAO = new DatPhong_DAO();
+		datPhong_DAO = new DonDatPhong_DAO();
 		this.chiTietDatPhong = chiTietDatPhong;
 
 		setBackground(Utils.secondaryColor);
@@ -262,7 +262,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 	}
 
 	private void setPhieuDatPhongVaoForm(ChiTietDatPhong chiTietDatPhong) {
-		String maDatPhong = chiTietDatPhong.getDatPhong().getMaDatPhong();
+		String maDatPhong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
 		txtMaDatPhong.setText(maDatPhong);
 		txtMaKH.setText(datPhong_DAO.getDatPhong(maDatPhong).getKhachHang().getMaKhachHang());
 		txtHoTenKH.setText(datPhong_DAO.getDatPhong(maDatPhong).getKhachHang().getHoTen());
