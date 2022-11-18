@@ -619,16 +619,11 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 				Utils.formatTienTe(donGia), Utils.formatTienTe(thanhTien) });
 	}
 
-	private void emptyTable() {
-		while (tbl.getRowCount() > 0)
-			tableModel.removeRow(0);
-	}
-
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED)
 			return;
-		emptyTable();
+		Utils.emptyTable(tbl);
 		Object o = e.getSource();
 		boolean isMaDatPhong = true;
 		cmbMaDatPhong.removeItemListener(_this);
@@ -644,7 +639,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			if (((String) cmbSoDienThoai.getSelectedItem()).equals("Số điện thoại")) {
 				datPhong = null;
 				cmbMaDatPhong.setSelectedIndex(0);
-			} else 
+			} else
 				datPhong = datPhong_DAO.getDatPhongNgayTheoSoDienThoai((String) cmbSoDienThoai.getSelectedItem());
 		}
 		if (datPhong != null) {
@@ -706,7 +701,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			lblTienDichVu.setText("");
 			dsChiTietDatPhong = null;
 			btnThanhToan.setEnabled(false);
-			emptyTable();
+			Utils.emptyTable(tbl);
 		}
 		cmbMaDatPhong.addItemListener(_this);
 		cmbSoDienThoai.addItemListener(_this);

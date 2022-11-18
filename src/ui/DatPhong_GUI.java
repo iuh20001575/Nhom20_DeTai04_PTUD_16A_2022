@@ -322,7 +322,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 				cmbMaPhong.removeItemListener(_this);
 
-				emptyTable();
+				Utils.emptyTable(tbl);
 				emptyComboBox(cmbMaPhong, "Mã phòng");
 				emptyComboBox(cmbLoaiPhong, "Loại phòng");
 
@@ -369,7 +369,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				setEventFilterComboBox(false);
 
-				emptyTable();
+				Utils.emptyTable(tbl);
 				dsPhongDatNgay = datPhong_DAO.getPhongDatNgay();
 				addRow(dsPhongDatNgay);
 				cmbLoaiPhong.setSelectedIndex(0);
@@ -539,7 +539,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * @param list danh sách các phòng cần thêm
 	 */
 	private void addRow(List<Phong> list) {
-		emptyTable();
+		Utils.emptyTable(tbl);
 
 		list.forEach(phong -> addRow(phong));
 	}
@@ -559,7 +559,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		if (dsPhongDatNgay == null || dsPhongDaChon == null)
 			return;
 
-		emptyTable();
+		Utils.emptyTable(tbl);
 		btnChonPhong.setEnabled(false);
 
 		for (Phong phong : dsPhongDatNgay) {
@@ -594,14 +594,6 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	}
 
 	/**
-	 * Xóa tất các các row trong table
-	 */
-	private void emptyTable() {
-		while (tbl.getRowCount() > 0)
-			tableModel.removeRow(0);
-	}
-
-	/**
 	 * Lọc danh sách các phòng theo mã phòng, loại phòng và số lượng
 	 */
 	private void filterPhong() {
@@ -615,7 +607,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			loaiPhong = "";
 
 		dsPhongDatNgay = datPhong_DAO.getPhongDatNgay(maPhong, loaiPhong, soLuong);
-		emptyTable();
+		Utils.emptyTable(tbl);
 		addRow(dsPhongDatNgay);
 		capNhatDanhSachPhongDatNgay();
 	}

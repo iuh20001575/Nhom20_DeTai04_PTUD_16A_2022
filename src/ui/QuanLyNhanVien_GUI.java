@@ -397,7 +397,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 			public void ancestorAdded(AncestorEvent event) {
 				clockThread = clock();
 
-				setEmptyTable();
+				Utils.emptyTable(tbl);
 				cmbMaNhanVien.removeAllItems();
 				cmbMaNhanVien.addItem("Mã NV");
 				List<NhanVien> list = nhanVien_DAO.getAllNhanVien();
@@ -493,7 +493,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 			trangThai = "";
 
 		List<NhanVien> list = nhanVien_DAO.filterNhanVien(hoTen, maNhanVien, trangThai);
-		setEmptyTable();
+		Utils.emptyTable(tbl);
 		addRow(list);
 		pnlControl.setTbl(tbl);
 
@@ -501,11 +501,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 			JDialogCustom jDialogCustom = new JDialogCustom(main, Type.warning);
 			jDialogCustom.showMessage("Thông báo", "Không có nhân viên cần tìm");
 		}
-	}
-
-	private void setEmptyTable() {
-		while (tbl.getRowCount() > 0)
-			tableModel.removeRow(0);
 	}
 
 	private void setEnabledBtnActions() {

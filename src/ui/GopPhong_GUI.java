@@ -431,24 +431,13 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		if (dsPhongCanGop == null || dsPhongDaChon == null)
 			return;
 
-		emptyTable(tblPhongCanGop, tableModelPhongCanGop);
+		Utils.emptyTable(tblPhongCanGop);
 		btnChonPhong.setEnabled(false);
 
 		for (Phong phong : dsPhongCanGop) {
 			if (!dsPhongDaChon.contains(phong))
 				addRowTableCanGop(phong);
 		}
-	}
-
-	/**
-	 * Xóa tất cả các row trong table
-	 *
-	 * @param jTable
-	 * @param tableModel
-	 */
-	private void emptyTable(JTable jTable, DefaultTableModel tableModel) {
-		while (jTable.getRowCount() > 0)
-			tableModel.removeRow(0);
 	}
 
 	/**
@@ -514,8 +503,8 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		String maDatPhong = (String) cmbMaDatPhong.getSelectedItem();
 		dsPhongDaChon = null;
 		showDanhSachPhongDaChon();
-		emptyTable(tblPhongGop, tableModelPhongGop);
-		emptyTable(tblPhongCanGop, tableModelPhongCanGop);
+		Utils.emptyTable(tblPhongGop);
+		Utils.emptyTable(tblPhongCanGop);
 
 		if (!maDatPhong.equals(labelCmbMaDatPhong)) {
 			dsPhongCanGop = datPhong_DAO.getPhongDangThue(maDatPhong);
@@ -599,7 +588,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		if (maDatPhong.equals(labelCmbMaDatPhong))
 			return;
 
-		emptyTable(tblPhongGop, tableModelPhongGop);
+		Utils.emptyTable(tblPhongGop);
 
 		List<LoaiPhong> dsLoaiPhong = loaiPhong_DAO.getAllLoaiPhong();
 		List<Phong> dsPhongGop = datPhong_DAO.getPhongCoTheGop(maDatPhong, dsPhongDaChon);

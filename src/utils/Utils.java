@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class Utils {
 	public static final String trangChuMenuItem = "Trang chủ";
@@ -218,6 +219,11 @@ public class Utils {
 		return "ẮẰẲẴẶĂẤẦẨẪẬÂÁÀÃẢẠĐẾỀỂỄỆÊÉÈẺẼẸÍÌỈĨỊỐỒỔỖỘÔỚỜỞỠỢƠÓÒÕỎỌỨỪỬỮỰƯÚÙỦŨỤÝỲỶỸỴ";
 	}
 
+	public static void emptyTable(JTable tbl) {
+		DefaultTableModel dm = (DefaultTableModel) tbl.getModel();
+		dm.getDataVector().removeAllElements();
+	}
+	
 	public static String getVietnameseDiacriticCharactersLower() {
 		return getVietnameseDiacriticCharacters().toLowerCase();
 	}

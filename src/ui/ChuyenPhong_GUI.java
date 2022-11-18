@@ -278,7 +278,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 				List<Phong> dsPhong = datPhong_DAO.getPhongDatNgay();
 				List<Phong> dsPhongDangThue = phong_DAO.getAllPhongDangThue();
 
-				emptyTable();
+				Utils.emptyTable(tbl);
 				cmbPhongHienTai.removeAllItems();
 				cmbMaPhong.removeAllItems();
 				cmbLoaiPhong.removeAllItems();
@@ -408,11 +408,6 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 				Utils.formatTienTe(phong.getGiaTien()), Phong.convertTrangThaiToString(phong.getTrangThai()) });
 	}
 
-	private void emptyTable() {
-		while (tbl.getRowCount() > 0)
-			tableModel.removeRow(0);
-	}
-
 	private void filterDanhSachPhong() {
 		String maPhong = (String) cmbMaPhong.getSelectedItem();
 		String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
@@ -424,7 +419,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 			loaiPhong = "";
 
 		List<Phong> dsPhong = datPhong_DAO.getPhongDatNgay(maPhong, loaiPhong, soKhach);
-		emptyTable();
+		Utils.emptyTable(tbl);
 		addRow(dsPhong);
 	}
 

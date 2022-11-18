@@ -543,7 +543,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 				setEventFilterComboBox(false);
 
-				emptyTable();
+				btnChonPhong.setEnabled(false);
+				Utils.emptyTable(tbl);
 				addRow(datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong));
 				cmbLoaiPhong.setSelectedIndex(0);
 				cmbMaPhong.setSelectedIndex(0);
@@ -637,7 +638,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	}
 
 	private void addRow(List<Phong> list) {
-		emptyTable();
+		btnChonPhong.setEnabled(false);
+		Utils.emptyTable(tbl);
 
 		list.forEach(phong -> addRow(phong));
 	}
@@ -652,7 +654,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		if (dsPhongDatTruoc == null || dsPhongDaChon == null)
 			return;
 
-		emptyTable();
+		btnChonPhong.setEnabled(false);
+		Utils.emptyTable(tbl);
 		btnChonPhong.setEnabled(false);
 
 		for (Phong phong : dsPhongDatTruoc) {
@@ -664,12 +667,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			tbl.setRowSelectionInterval(0, 0);
 			btnChonPhong.setEnabled(true);
 		}
-	}
-
-	private void emptyTable() {
-		btnChonPhong.setEnabled(false);
-		while (tbl.getRowCount() > 0)
-			tableModel.removeRow(0);
 	}
 
 	private void filterPhongDatTruoc() {
@@ -687,7 +684,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		LocalTime gioNhanPhong = LocalTime.of(gio, phut);
 		LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
 		dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
-		emptyTable();
+		btnChonPhong.setEnabled(false);
+		Utils.emptyTable(tbl);
 		addRow(dsPhongDatTruoc);
 		capNhatDanhSachPhongDatTruoc();
 		Utils.scrollToVisiable(tbl, 0, 0);
@@ -726,7 +724,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnLamMoi.setEnabled(false);
 		dsPhongDaChon = null;
 		dsPhongDatTruoc = null;
-		emptyTable();
+		btnChonPhong.setEnabled(false);
+		Utils.emptyTable(tbl);
 		showDanhSachPhongDaChon();
 	}
 
