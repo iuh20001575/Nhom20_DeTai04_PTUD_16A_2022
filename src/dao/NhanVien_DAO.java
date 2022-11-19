@@ -141,6 +141,34 @@ public class NhanVien_DAO extends DAO {
 		return null;
 	}
 
+	public List<NhanVien> getNhanVien(List<String> dsMaNhanVien) {
+		List<NhanVien> list = new ArrayList<>();
+
+		try {
+			int length = dsMaNhanVien.size();
+			if (length == 0)
+				return getAllNhanVien();
+			String q = "?";
+			for (int i = 0; i < length - 1; i++)
+				q += ", ?";
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement(String.format("SELECT * FROM NhanVien WHERE maNhanVien IN (%s)", q));
+
+			for (int i = 0; i < length; i++) {
+				preparedStatement.setString(i + 1, dsMaNhanVien.get(i));
+			}
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while (resultSet.next())
+				list.add(getNhanVien(resultSet));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 	/**
 	 * Chuyển trạng thái của nhân viên có mã maNhanVien sang nghỉ làm
 	 * 
@@ -202,8 +230,8 @@ public class NhanVien_DAO extends DAO {
 	}
 
 	public boolean themNhanVien(NhanVien nhanVien) {
-		Connection con = ConnectDB.getConnection();
 		try {
+			Connection con = ConnectDB.getConnection();
 			String sql = "INSERT NhanVien VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement preparedStatement = con.prepareStatement(sql);
 			preparedStatement.setString(1, nhanVien.getMaNhanVien());
@@ -227,6 +255,37 @@ public class NhanVien_DAO extends DAO {
 		}
 
 		return false;
+	}
+
+	public void importNhanVien(List<NhanVien> list) {
+		Connection con = ConnectDB.getConnection();
+		String sql = "INSERT NhanVien VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = con.prepareStatement(sql);
+			for (NhanVien nhanVien : list) {
+				try {
+					preparedStatement.setString(1, nhanVien.getMaNhanVien());
+					preparedStatement.setString(2, nhanVien.getHoTen());
+					preparedStatement.setString(3, nhanVien.getCccd());
+					preparedStatement.setString(4, nhanVien.getSoDienThoai());
+					preparedStatement.setDate(5, Date.valueOf(nhanVien.getNgaySinh()));
+					preparedStatement.setBoolean(6, nhanVien.isGioiTinh());
+					preparedStatement.setString(7, nhanVien.getTinh().getId());
+					preparedStatement.setString(8, nhanVien.getQuan().getId());
+					preparedStatement.setString(9, nhanVien.getPhuong().getId());
+					preparedStatement.setString(10, nhanVien.getDiaChiCuThe());
+					preparedStatement.setString(11, NhanVien.convertChucVuToString(nhanVien.getChucVu()));
+					preparedStatement.setDouble(12, nhanVien.getLuong());
+					preparedStatement.setString(13, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()));
+					preparedStatement.execute();
+				} catch (Exception e) {
+				}
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 
 	public String taoMaNhanVien() {

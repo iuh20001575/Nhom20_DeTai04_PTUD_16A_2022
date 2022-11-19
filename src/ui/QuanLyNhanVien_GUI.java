@@ -8,8 +8,12 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -46,6 +50,20 @@ import entity.NhanVien;
 import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
+import jnafilechooser.api.JnaFileChooser;
+import jxl.CellView;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.format.Alignment;
+import jxl.format.Border;
+import jxl.format.BorderLineStyle;
+import jxl.read.biff.BiffException;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+import jxl.write.biff.RowsExceededException;
 import utils.Utils;
 
 public class QuanLyNhanVien_GUI extends JPanel {
@@ -70,6 +88,10 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private JTable tbl;
 	private JTextField txtSearch;
 	private final int widthPnlContainer = 1086;
+	private Button btnImport;
+	private Button btnExport;
+	private final String[] header = { "Mã nhân viên", "Họ tên", "Căn cước công dân", "Số điện thoại", "Ngày sinh",
+			"Giới tính", "Địa chỉ", "Chức vụ", "Lương", "Trạng thái" };
 
 	/**
 	 * Create the frame.
@@ -119,7 +141,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnSearch.setRadius(4);
 		btnSearch.setForeground(Color.WHITE);
 		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnSearch.setBounds(904, -2, 150, 40);
+		btnSearch.setBounds(561, -2, 150, 40);
 		btnSearch.setBorderColor(Utils.secondaryColor);
 		btnSearch.setBackground(new Color(134, 229, 138), new Color(134, 229, 138), new Color(59, 238, 66));
 		btnSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -128,7 +150,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		PanelRound pnlSearchInput = new PanelRound();
 		pnlSearchInput.setRounded(4);
 		pnlSearchInput.setBackground(Utils.secondaryColor);
-		pnlSearchInput.setBounds(0, 0, 894, 36);
+		pnlSearchInput.setBounds(0, 0, 551, 36);
 		pnlSearchInput.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		pnlSearchInput.setRounded(4);
 		pnlSearchForm.add(pnlSearchInput);
@@ -138,9 +160,33 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		txtSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		txtSearch.setBackground(Utils.secondaryColor);
 		txtSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
-		txtSearch.setBounds(9, 1, 876, 34);
+		txtSearch.setBounds(9, 1, 533, 34);
 		pnlSearchInput.add(txtSearch);
 		txtSearch.setColumns(10);
+
+		btnImport = new Button("Nhập");
+		btnImport.setFocusable(false);
+		btnImport.setIcon(new ImageIcon("Icon\\ImportExcelIcon.png"));
+		btnImport.setBounds(739, -2, 154, 40);
+		btnImport.setRadius(4);
+		btnImport.setForeground(Color.WHITE);
+		btnImport.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnImport.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
+		btnImport.setBorderColor(Utils.secondaryColor);
+		btnImport.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnlSearchForm.add(btnImport);
+
+		btnExport = new Button("Xuất");
+		btnExport.setFocusable(false);
+		btnExport.setIcon(new ImageIcon("Icon\\ExportExcelIcon.png"));
+		btnExport.setBounds(904, -2, 154, 40);
+		btnExport.setRadius(4);
+		btnExport.setForeground(Color.WHITE);
+		btnExport.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnExport.setBackground(Utils.primaryColor, Utils.primaryColor, new Color(161, 184, 186));
+		btnExport.setBorderColor(Utils.secondaryColor);
+		btnExport.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnlSearchForm.add(btnExport);
 
 //		Actions
 		JPanel pnlActions = new JPanel();
@@ -290,12 +336,52 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 		pnlControl = new ControlPanel(Utils.getLeft(widthPnlContainer, 286), topPnlControl, main);
 		pnlContainer.add(pnlControl);
+		JnaFileChooser jnaCh = new JnaFileChooser("D://");
+		jnaCh.addFilter("XLS", "XLS");
+		jnaCh.setMode(JnaFileChooser.Mode.Files);
 
 //		Sự kiện nút tìm kiếm nhân viên
 		btnSearch.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				filterNhanVien();
+			}
+		});
+
+//		Sự kiện nút nhập danh sách nhân viên từ Excel
+		btnImport.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				boolean open = jnaCh.showOpenDialog(null);
+				if (open) {
+					File file = jnaCh.getSelectedFile();
+					String pathname = file.getPath();
+					if (Pattern.matches(".*\\.xls", pathname)) {
+						List<NhanVien> list = readFile(pathname);
+						nhanVien_DAO.importNhanVien(list);
+						filterNhanVien();
+						new Notification(main, components.notification.Notification.Type.SUCCESS, "Đọc file thành công")
+								.showNotification();
+					} else
+						new Notification(main, components.notification.Notification.Type.ERROR,
+								"File được chọn không hợp lệ").showNotification();
+				}
+			}
+		});
+
+//		Sự kiện nút xuất danh sách nhân viên sang Excel
+		btnExport.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				jnaCh.setTitle("Tạo");
+				boolean save = jnaCh.showSaveDialog(null);
+				if (save) {
+					File file = jnaCh.getSelectedFile();
+					String pathname = file.getPath();
+					if (!Pattern.matches(".*\\.xls", pathname))
+						pathname += ".xls";
+					writeFile(pathname);
+				}
 			}
 		});
 
@@ -435,6 +521,124 @@ public class QuanLyNhanVien_GUI extends JPanel {
 				}
 			}
 		});
+	}
+
+	public void writeFile(String filename) {
+		try {
+			WritableWorkbook workbook = Workbook.createWorkbook(new File(filename));
+			WritableSheet sheet = workbook.createSheet("sheet", 0);
+			try {
+				WritableCellFormat cellFormat = new WritableCellFormat();
+				cellFormat.setBorder(Border.ALL, BorderLineStyle.THIN);
+				WritableCellFormat cellFormatRight = new WritableCellFormat();
+				cellFormatRight.setBorder(Border.ALL, BorderLineStyle.THIN);
+				cellFormatRight.setAlignment(Alignment.RIGHT);
+
+				List<String> dsMaNhanvien = new ArrayList<>();
+				int rowTable = tbl.getRowCount();
+				for (int i = 0; i < rowTable; i++)
+					dsMaNhanvien.add((String) tbl.getValueAt(i, 0));
+
+				List<NhanVien> list = nhanVien_DAO.getNhanVien(dsMaNhanvien);
+				int lengthList = list.size();
+				for (int i = 0; i < lengthList; i++) {
+					NhanVien nhanVien = list.get(i);
+					Tinh tinh = diaChi_DAO.getTinh(nhanVien.getTinh());
+					Quan quan = diaChi_DAO.getQuan(tinh, nhanVien.getQuan());
+					Phuong phuong = diaChi_DAO.getPhuong(quan, nhanVien.getPhuong());
+					sheet.addCell(new Label(0, i + 1, nhanVien.getMaNhanVien(), cellFormat));
+					sheet.addCell(new Label(1, i + 1, nhanVien.getHoTen(), cellFormat));
+					sheet.addCell(new Label(2, i + 1, nhanVien.getCccd(), cellFormat));
+					sheet.addCell(new Label(3, i + 1, nhanVien.getSoDienThoai(), cellFormat));
+					sheet.addCell(new Label(4, i + 1, Utils.formatDate(nhanVien.getNgaySinh()), cellFormat));
+					sheet.addCell(new Label(5, i + 1, nhanVien.isGioiTinh() ? "Nam" : "Nữ", cellFormat));
+
+					String diaChi = String.format("%s, %s, %s, %s", nhanVien.getDiaChiCuThe(), phuong.getPhuong(),
+							quan.getQuan(), tinh.getTinh());
+					sheet.addCell(new Label(6, i + 1, diaChi, cellFormat));
+					sheet.addCell(
+							new Label(7, i + 1, NhanVien.convertChucVuToString(nhanVien.getChucVu()), cellFormat));
+//					sheet.addCell(new Number(8, i + 1, (Double) nhanVien.getLuong(), cellFormat));
+					sheet.addCell(new Label(8, i + 1, Double.toString(nhanVien.getLuong()), cellFormatRight));
+					sheet.addCell(new Label(9, i + 1, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()),
+							cellFormat));
+				}
+
+				int length = header.length;
+				CellView cellView = new CellView();
+				cellView.setAutosize(true);
+				Label label;
+				for (int i = 0; i < length; i++) {
+					label = new Label(i, 0, header[i], cellFormat);
+					sheet.addCell(label);
+					sheet.setColumnView(i, cellView);
+				}
+
+				workbook.write();
+				workbook.close();
+				new Notification(main, components.notification.Notification.Type.SUCCESS, "Xuát nhân viên thành cồng")
+						.showNotification();
+				return;
+			} catch (RowsExceededException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (WriteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} // add a String to cell A1
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		new Notification(main, components.notification.Notification.Type.ERROR, "Xuát nhân viên thất bại")
+				.showNotification();
+	}
+
+	public List<NhanVien> readFile(String filename) {
+		List<NhanVien> list = new ArrayList<>();
+		try {
+			Workbook workbook = Workbook.getWorkbook(new File(filename));
+			Sheet sheet = workbook.getSheet(0);
+			int rows = sheet.getRows(), diaChiLength;
+			NhanVien nhanVien;
+			String[] diaChis;
+			Tinh tinh;
+			Quan quan;
+			Phuong phuong;
+			String maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, diaChi, chucVu, luong, trangThai,
+					diaChiChiTiet;
+			for (int row = 1; row < rows; ++row) {
+				maNhanVien = sheet.getCell(0, row).getContents();
+				hoTen = sheet.getCell(1, row).getContents();
+				cccd = sheet.getCell(2, row).getContents();
+				soDienThoai = sheet.getCell(3, row).getContents();
+				ngaySinh = sheet.getCell(4, row).getContents();
+				gioiTinh = sheet.getCell(5, row).getContents();
+				diaChi = sheet.getCell(6, row).getContents();
+				chucVu = sheet.getCell(7, row).getContents();
+				luong = sheet.getCell(8, row).getContents();
+				trangThai = sheet.getCell(9, row).getContents();
+
+				diaChis = diaChi.split(", ");
+				diaChiLength = diaChis.length;
+				tinh = diaChi_DAO.getTinh(diaChis[--diaChiLength]);
+				quan = diaChi_DAO.getQuan(tinh, diaChis[--diaChiLength]);
+				phuong = diaChi_DAO.getPhuong(quan, diaChis[--diaChiLength]);
+				diaChiChiTiet = diaChis[0];
+				for (int i = 1; i < diaChiLength; i++)
+					diaChiChiTiet += ", " + diaChis[i];
+
+				nhanVien = new NhanVien(maNhanVien, hoTen, cccd, soDienThoai, Utils.getLocalDate(ngaySinh),
+						gioiTinh.equalsIgnoreCase("nam"), tinh, quan, phuong, diaChiChiTiet,
+						NhanVien.convertStringToChucVu(chucVu), Double.parseDouble(luong),
+						NhanVien.convertStringToTrangThai(trangThai));
+				list.add(nhanVien);
+			}
+			workbook.close();
+		} catch (BiffException e) {
+		} catch (IOException e) {
+		}
+		return list;
 	}
 
 	private List<NhanVien> addRow(List<NhanVien> list) {

@@ -660,8 +660,14 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		cmbSoLuong.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED)
-					addPhong(filterDanhSachPhong());
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					List<Phong> list = filterDanhSachPhong();
+					if (list.size() <= 0) {
+						jDialog.showMessage("Thông báo", "Mục này không có phòng nào");
+						return;
+					}
+					addPhong(list);
+				}
 			}
 		});
 		cmbSoLuong.setBackground(Utils.primaryColor);
@@ -686,7 +692,12 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			public void mouseClicked(MouseEvent e) {
 				setVisibleLoaiPhong(btnTatCa, btnPhongThuong, btnPhongVip);
 				loaiPhong = "";
-				addPhong(filterDanhSachPhong());
+				List<Phong> list = filterDanhSachPhong();
+				if (list.size() <= 0) {
+					jDialog.showMessage("Thông báo", "Mục này không có phòng nào");
+					return;
+				}
+				addPhong(list);
 			}
 		});
 
@@ -696,10 +707,12 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 				String loaiPhong = _this.loaiPhong;
 				_this.loaiPhong = "Phòng thường";
 				List<Phong> list = filterDanhSachPhong();
-				if (list.size() <= 0)
+				if (list.size() <= 0) {
 					_this.loaiPhong = loaiPhong;
-				else
-					setVisibleLoaiPhong(btnPhongThuong, btnPhongVip, btnTatCa);
+					jDialog.showMessage("Thông báo", "Mục này không có phòng nào");
+					return;
+				}
+				setVisibleLoaiPhong(btnPhongThuong, btnPhongVip, btnTatCa);
 				addPhong(list);
 			}
 		});
@@ -710,10 +723,12 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 				String loaiPhong = _this.loaiPhong;
 				_this.loaiPhong = "Phòng VIP";
 				List<Phong> list = filterDanhSachPhong();
-				if (list.size() <= 0)
+				if (list.size() <= 0) {
 					_this.loaiPhong = loaiPhong;
-				else
-					setVisibleLoaiPhong(btnPhongVip, btnPhongThuong, btnTatCa);
+					jDialog.showMessage("Thông báo", "Mục này không có phòng nào");
+					return;
+				}
+				setVisibleLoaiPhong(btnPhongVip, btnPhongThuong, btnTatCa);
 				addPhong(list);
 			}
 		});
@@ -728,8 +743,11 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 				List<Phong> list = filterDanhSachPhong();
 				int length = list.size();
 				setActivePnlFilter(length, isActive, pnlFilterPhongTrong, pnlFilterPhongCho, pnlFilterPhongDangSuDung);
-				if (length <= 0)
+				if (length <= 0) {
 					_this.trangThai = trangThai;
+					jDialog.showMessage("Thông báo", "Mục này không có phòng nào");
+					return;
+				}
 				addPhong(list);
 			}
 		});
@@ -743,8 +761,11 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 				List<Phong> list = filterDanhSachPhong();
 				int length = list.size();
 				setActivePnlFilter(length, isActive, pnlFilterPhongDangSuDung, pnlFilterPhongTrong, pnlFilterPhongCho);
-				if (length <= 0)
+				if (length <= 0) {
 					_this.trangThai = trangThai;
+					jDialog.showMessage("Thông báo", "Mục này không có phòng nào");
+					return;
+				}
 				addPhong(list);
 			}
 		});
@@ -758,8 +779,11 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 				List<Phong> list = filterDanhSachPhong();
 				int length = list.size();
 				setActivePnlFilter(length, isActive, pnlFilterPhongCho, pnlFilterPhongTrong, pnlFilterPhongDangSuDung);
-				if (length <= 0)
+				if (length <= 0) {
 					_this.trangThai = trangThai;
+					jDialog.showMessage("Thông báo", "Mục này không có phòng nào");
+					return;
+				}
 				addPhong(list);
 			}
 		});
@@ -818,10 +842,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	 * Thêm danh sách các phòng vào JPanel Container
 	 */
 	private void addPhong(List<Phong> dsPhong) {
-		if (dsPhong.size() <= 0) {
-			jDialog.showMessage("Thông báo", "Mục này không có phòng nào");
-			return;
-		}
 		this.dsPhong = dsPhong;
 
 		soPhongCho = 0;

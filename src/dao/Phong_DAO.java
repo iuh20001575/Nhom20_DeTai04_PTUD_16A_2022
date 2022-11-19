@@ -103,7 +103,7 @@ public class Phong_DAO extends DAO {
 			Phong phong;
 			while (resultSet.next()) {
 				phong = getPhong(resultSet);
-				list.add(phong);
+				phongs.add(phong);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
