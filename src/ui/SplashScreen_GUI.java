@@ -3,7 +3,6 @@ package ui;
 import java.awt.Color;
 import java.awt.Font;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,6 +10,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
+import utils.Utils;
 
 public class SplashScreen_GUI extends JWindow {
 
@@ -42,7 +43,7 @@ public class SplashScreen_GUI extends JWindow {
 		setLocationRelativeTo(null);
 
 		JLabel lblIcon = new JLabel("");
-		lblIcon.setIcon(new ImageIcon("Icon\\microphone.png"));
+		lblIcon.setIcon(Utils.getImageIcon("microphone.png"));
 		lblIcon.setBounds(97, 100, 256, 256);
 		contentPane.add(lblIcon);
 
@@ -63,7 +64,7 @@ public class SplashScreen_GUI extends JWindow {
 		contentPane.add(lblPhanTram);
 
 		JLabel lblBackground = new JLabel("");
-		lblBackground.setIcon(new ImageIcon("Icon\\SplashScreen.png"));
+		lblBackground.setIcon(Utils.getImageIcon("SplashScreen.png"));
 		lblBackground.setBounds(0, 0, 450, 400);
 		contentPane.add(lblBackground);
 	}
@@ -77,16 +78,25 @@ public class SplashScreen_GUI extends JWindow {
 						prg.setValue(i * 10);
 						lblPhanTram.setText(i * 10 + "%");
 
-						if (i == 1)
+						switch (i) {
+						case 1:
 							lblLoading.setText("Turning On Modules...");
-						else if (i == 2)
+							break;
+						case 2:
 							lblLoading.setText("Loading Modules...");
-						else if (i == 5)
+							break;
+						case 5:
 							lblLoading.setText("Connecting to Database...");
-						else if (i == 7)
+							break;
+						case 7:
 							lblLoading.setText("Connection Successfull!");
-						else if (i == 8)
+							break;
+						case 8:
 							lblLoading.setText("Launching Application...");
+							break;
+						default:
+							break;
+						}
 						sleep(100);
 
 						if (i == 10) {
@@ -95,7 +105,7 @@ public class SplashScreen_GUI extends JWindow {
 							dispose();
 						}
 					} catch (Exception e) {
-			e.printStackTrace();
+						e.printStackTrace();
 					}
 				}
 			}

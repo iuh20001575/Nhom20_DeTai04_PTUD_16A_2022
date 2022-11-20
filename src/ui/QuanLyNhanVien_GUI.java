@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -137,7 +136,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 		Button btnSearch = new Button("Tìm");
 		btnSearch.setFocusable(false);
-		btnSearch.setIcon(new ImageIcon("Icon\\searching.png"));
+		btnSearch.setIcon(Utils.getImageIcon("searching.png"));
 		btnSearch.setRadius(4);
 		btnSearch.setForeground(Color.WHITE);
 		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -166,7 +165,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 		btnImport = new Button("Nhập");
 		btnImport.setFocusable(false);
-		btnImport.setIcon(new ImageIcon("Icon\\ImportExcelIcon.png"));
+		btnImport.setIcon(Utils.getImageIcon("ImportExcelIcon.png"));
 		btnImport.setBounds(739, -2, 154, 40);
 		btnImport.setRadius(4);
 		btnImport.setForeground(Color.WHITE);
@@ -178,7 +177,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 		btnExport = new Button("Xuất");
 		btnExport.setFocusable(false);
-		btnExport.setIcon(new ImageIcon("Icon\\ExportExcelIcon.png"));
+		btnExport.setIcon(Utils.getImageIcon("ExportExcelIcon.png"));
 		btnExport.setBounds(904, -2, 154, 40);
 		btnExport.setRadius(4);
 		btnExport.setForeground(Color.WHITE);
@@ -197,7 +196,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 		btnEmployeeView = new Button("Xem");
 		btnEmployeeView.setFocusable(false);
-		btnEmployeeView.setIcon(new ImageIcon("Icon\\user 1.png"));
+		btnEmployeeView.setIcon(Utils.getImageIcon("user 1.png"));
 		btnEmployeeView.setBounds(-2, -2, 154, 40);
 		btnEmployeeView.setRadius(4);
 		btnEmployeeView.setForeground(Color.WHITE);
@@ -209,7 +208,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 		btnEmployeeAdd = new Button("Thêm");
 		btnEmployeeAdd.setFocusable(false);
-		btnEmployeeAdd.setIcon(new ImageIcon("Icon\\add-user (2) 1.png"));
+		btnEmployeeAdd.setIcon(Utils.getImageIcon("add-user (2) 1.png"));
 		btnEmployeeAdd.setRadius(4);
 		btnEmployeeAdd.setForeground(Color.WHITE);
 		btnEmployeeAdd.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -221,7 +220,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 		btnEmployeeEdit = new Button("Sửa");
 		btnEmployeeEdit.setFocusable(false);
-		btnEmployeeEdit.setIcon(new ImageIcon("Icon\\edit 2.png"));
+		btnEmployeeEdit.setIcon(Utils.getImageIcon("edit 2.png"));
 		btnEmployeeEdit.setRadius(4);
 		btnEmployeeEdit.setForeground(Color.WHITE);
 		btnEmployeeEdit.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -234,7 +233,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		btnEmployeeRemove = new Button("Nghỉ việc");
 		btnEmployeeRemove.setEnabled(false);
 		btnEmployeeRemove.setFocusable(false);
-		btnEmployeeRemove.setIcon(new ImageIcon("Icon\\unemployed 1.png"));
+		btnEmployeeRemove.setIcon(Utils.getImageIcon("unemployed 1.png"));
 		btnEmployeeRemove.setRadius(4);
 		btnEmployeeRemove.setForeground(Color.WHITE);
 		btnEmployeeRemove.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -469,9 +468,8 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (tbl.isEnabled()) {
+				if (tbl.isEnabled())
 					pnlControl.setTrangHienTai(tbl.getSelectedRow() + 1);
-				}
 			}
 		});
 
@@ -691,7 +689,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 					sheet.addCell(new Label(6, i + 1, diaChi, cellFormat));
 					sheet.addCell(
 							new Label(7, i + 1, NhanVien.convertChucVuToString(nhanVien.getChucVu()), cellFormat));
-//					sheet.addCell(new Number(8, i + 1, (Double) nhanVien.getLuong(), cellFormat));
 					sheet.addCell(new Label(8, i + 1, Double.toString(nhanVien.getLuong()), cellFormatRight));
 					sheet.addCell(new Label(9, i + 1, NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()),
 							cellFormat));
@@ -713,14 +710,11 @@ public class QuanLyNhanVien_GUI extends JPanel {
 						.showNotification();
 				return;
 			} catch (RowsExceededException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (WriteException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} // add a String to cell A1
+			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		new Notification(main, components.notification.Notification.Type.ERROR, "Xuát nhân viên thất bại")

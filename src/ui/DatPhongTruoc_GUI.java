@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -162,7 +161,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnSearchSoDienThoai.setColor(Utils.primaryColor);
 		btnSearchSoDienThoai.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.9f));
 		btnSearchSoDienThoai.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
-		btnSearchSoDienThoai.setIcon(new ImageIcon("Icon\\user_searching.png"));
+		btnSearchSoDienThoai.setIcon(Utils.getImageIcon("user_searching.png"));
 		btnSearchSoDienThoai.setBounds(400, 2, 50, 50);
 		pnlBody.add(btnSearchSoDienThoai);
 
@@ -195,7 +194,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnChonPhong.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnChonPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
 		btnChonPhong.setBorderColor(Color.WHITE);
-		btnChonPhong.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
+		btnChonPhong.setIcon(Utils.getImageIcon("rightArrow_32x32.png"));
 		btnChonPhong.setBounds(0, 94, 36, 36);
 		btnChonPhong.setEnabled(false);
 		pnlActions.add(btnChonPhong);
@@ -332,7 +331,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlFilter.add(btnLamMoi);
 
 		txtNgayNhanPhong = new TextField();
-		txtNgayNhanPhong.setIcon(new ImageIcon("Icon\\add-event 2.png"));
+		txtNgayNhanPhong.setIcon(Utils.getImageIcon("add-event 2.png"));
 		txtNgayNhanPhong.setLabelText("Ngày nhận phòng");
 		txtNgayNhanPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtNgayNhanPhong.setColumns(10);
@@ -344,7 +343,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		dateChoose.setTextRefernce(txtNgayNhanPhong);
 
 		Button btnSearchPhongDatTruoc = new Button();
-		btnSearchPhongDatTruoc.setIcon(new ImageIcon("Icon\\statistics.png"));
+		btnSearchPhongDatTruoc.setIcon(Utils.getImageIcon("statistics.png"));
 		btnSearchPhongDatTruoc.setRadius(4);
 		btnSearchPhongDatTruoc.setFocusable(false);
 		btnSearchPhongDatTruoc.setColorOver(new Color(140, 177, 180, 230));
@@ -703,7 +702,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlContainerItem.add(lblMaPhong);
 
 		lblIconClose = new JLabel("");
-		lblIconClose.setIcon(new ImageIcon("Icon\\close_16x16.png"));
+		lblIconClose.setIcon(Utils.getImageIcon("close_16x16.png"));
 		lblIconClose.setBounds(94, 10, 16, 16);
 		pnlContainerItem.add(lblIconClose);
 		lblIconClose.addMouseListener(new MouseAdapter() {

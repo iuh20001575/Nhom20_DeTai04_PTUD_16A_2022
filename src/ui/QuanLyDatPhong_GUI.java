@@ -288,7 +288,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlDateTime.add(lblDate);
 
 		JLabel lblIconDongHo = new JLabel("");
-		lblIconDongHo.setIcon(new ImageIcon("Icon\\clock (1) 1.png"));
+		lblIconDongHo.setIcon(Utils.getImageIcon("clock (1) 1.png"));
 		lblIconDongHo.setBounds(885, -3, 64, 64);
 		pnlLoaiPhong.add(lblIconDongHo);
 
@@ -313,7 +313,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 
 		JLabel lblIconPhongTrong = new JLabel("");
 		lblIconPhongTrong.setForeground(Color.WHITE);
-		lblIconPhongTrong.setIcon(new ImageIcon("Icon\\karaoke (3) 1.png"));
+		lblIconPhongTrong.setIcon(Utils.getImageIcon("karaoke (3) 1.png"));
 		lblIconPhongTrong.setBounds(12, 12, 35, 35);
 		pnlPhongTrong.add(lblIconPhongTrong);
 
@@ -337,7 +337,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlThongKeLoaiPhong.add(pnlPhongDangSuDung);
 
 		JLabel lblIconPhongDSD = new JLabel("");
-		lblIconPhongDSD.setIcon(new ImageIcon("Icon\\karaoke (3) 1.png"));
+		lblIconPhongDSD.setIcon(Utils.getImageIcon("karaoke (3) 1.png"));
 		lblIconPhongDSD.setBounds(12, 12, 35, 35);
 		pnlPhongDangSuDung.add(lblIconPhongDSD);
 
@@ -367,7 +367,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlThongKeLoaiPhong.add(pnlPhongCho);
 
 		JLabel lblIconPhongCho = new JLabel("");
-		lblIconPhongCho.setIcon(new ImageIcon("Icon\\karaoke (3) 1.png"));
+		lblIconPhongCho.setIcon(Utils.getImageIcon("karaoke (3) 1.png"));
 		lblIconPhongCho.setBounds(12, 12, 35, 35);
 		pnlPhongCho.add(lblIconPhongCho);
 
@@ -391,7 +391,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlThongKeLoaiPhong.add(pnlPhongTam);
 
 		JLabel lblIconPhongTam = new JLabel("");
-		lblIconPhongTam.setIcon(new ImageIcon("Icon\\karaoke (3) 1.png"));
+		lblIconPhongTam.setIcon(Utils.getImageIcon("karaoke (3) 1.png"));
 		lblIconPhongTam.setBounds(12, 12, 35, 35);
 		pnlPhongTam.add(lblIconPhongTam);
 
@@ -929,19 +929,20 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 						int minute = currTime.getMinute();
 						lblTime.setText(Utils.convertLocalTimeToString(LocalTime.of(hour, minute)));
 						LocalDate date = LocalDate.now();
-						DayOfWeek dayNow = date.getDayOfWeek();
+						DayOfWeek dayNow = date.getDayOfWeek();						
 						String thu = "T2";
-						if (dayNow.getValue() == DayOfWeek.TUESDAY.getValue())
+						int dayValue = dayNow.getValue();
+						if (dayValue == DayOfWeek.TUESDAY.getValue())
 							thu = "T3";
-						else if (dayNow.getValue() == DayOfWeek.WEDNESDAY.getValue())
+						else if (dayValue == DayOfWeek.WEDNESDAY.getValue())
 							thu = "T4";
-						else if (dayNow.getValue() == DayOfWeek.THURSDAY.getValue())
+						else if (dayValue == DayOfWeek.THURSDAY.getValue())
 							thu = "T5";
-						else if (dayNow.getValue() == DayOfWeek.FRIDAY.getValue())
+						else if (dayValue == DayOfWeek.FRIDAY.getValue())
 							thu = "T6";
-						else if (dayNow.getValue() == DayOfWeek.SATURDAY.getValue())
+						else if (dayValue == DayOfWeek.SATURDAY.getValue())
 							thu = "T7";
-						else if (dayNow.getValue() == DayOfWeek.SUNDAY.getValue())
+						else if (dayValue == DayOfWeek.SUNDAY.getValue())
 							thu = "CN";
 						lblThu.setText(thu);
 						lblDate.setText(String.format("%s-%s-%d", day < 10 ? "0" + day : day,
@@ -975,18 +976,30 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		if (jFrameSub != null && jFrameSub.isVisible())
 			return false;
 
-		if (KeyEvent.VK_F1 == e.getKeyCode())
+		int keyCode = e.getKeyCode();
+		
+		switch (keyCode) {
+		case KeyEvent.VK_F1:
 			handleOpenSubFrame(pnlDatPhong, new DatPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
-		if (KeyEvent.VK_F2 == e.getKeyCode())
+			break;
+		case KeyEvent.VK_F2:
 			handleOpenSubFrame(pnlDatPhongTruoc, new DatPhongTruoc_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
-		if (KeyEvent.VK_F3 == e.getKeyCode())
+			break;
+		case KeyEvent.VK_F3:
 			handleOpenSubFrame(pnlChuyenPhong, new ChuyenPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
-		if (KeyEvent.VK_F4 == e.getKeyCode())
+			break;
+		case KeyEvent.VK_F4:
 			handleOpenSubFrame(pnlGopPhong, new GopPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
-		if (KeyEvent.VK_F5 == e.getKeyCode())
+			break;
+		case KeyEvent.VK_F5:
 			handleOpenSubFrame(pnlDatPhong, new QuanLyDichVuPhongDat_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
-		if (KeyEvent.VK_F6 == e.getKeyCode())
+			break;
+		case KeyEvent.VK_F6:
 			handleOpenSubFrame(pnlThanhToan, new ThanhToan_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
+			break;
+		default:
+			break;
+		}
 
 		return false;
 	}
@@ -1026,7 +1039,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlPhong1.setLayout(null);
 
 		JLabel lblIcon1 = new JLabel("");
-		lblIcon1.setIcon(new ImageIcon("Icon\\vip 1.png"));
+		lblIcon1.setIcon(Utils.getImageIcon("vip 1.png"));
 		lblIcon1.setBounds(53, 0, 25, 25);
 		if (phong.getLoaiPhong().getMaLoai().equals("L002"))
 			pnlPhong1.add(lblIcon1);
@@ -1044,9 +1057,8 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		} else if (trangThai.equals(TrangThai.PhongTam)) {
 			soPhongTam++;
 			bg = Utils.phongTam;
-		} else {
+		} else
 			soPhongDangSuDung++;
-		}
 
 		PanelRound pnlChiTietPhong = new PanelRound(10);
 		pnlChiTietPhong.setBackground(bg);

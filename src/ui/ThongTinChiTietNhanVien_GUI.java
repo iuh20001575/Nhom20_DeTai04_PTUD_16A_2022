@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -164,7 +163,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlContainer.add(pnlRow3);
 
 		txtNgaySinh = new TextField();
-		txtNgaySinh.setIcon(new ImageIcon("Icon\\add-event 2.png"));
+		txtNgaySinh.setIcon(Utils.getImageIcon("add-event 2.png"));
 		txtNgaySinh.setLineColor(new Color(149, 166, 248));
 		txtNgaySinh.setLabelText("Ngày sinh");
 		txtNgaySinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -341,7 +340,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 			}
 		});
 		btnLuu.setEnabled(false);
-		btnLuu.setIcon(new ImageIcon("Icon\\floppy-disk 1.png"));
+		btnLuu.setIcon(Utils.getImageIcon("floppy-disk 1.png"));
 		btnLuu.setRadius(8);
 		btnLuu.setForeground(Color.WHITE);
 		btnLuu.setFont(new Font("Segoe UI", Font.PLAIN, 32));
@@ -353,7 +352,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlActions.add(btnLuu);
 
 		btnCapNhat = new Button("Cập nhật");
-		btnCapNhat.setIcon(new ImageIcon("Icon\\edit 1.png"));
+		btnCapNhat.setIcon(Utils.getImageIcon("edit 1.png"));
 		btnCapNhat.setFocusable(false);
 		btnCapNhat.setRadius(8);
 		btnCapNhat.setBorderColor(Utils.secondaryColor);
@@ -365,7 +364,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlActions.add(btnCapNhat);
 
 		Button btnHuy = new Button("Hủy");
-		btnHuy.setIcon(new ImageIcon("Icon\\cancelled 1.png"));
+		btnHuy.setIcon(Utils.getImageIcon("cancelled 1.png"));
 		btnHuy.setFocusable(false);
 		btnHuy.setRadius(8);
 		btnHuy.setBorderColor(Utils.secondaryColor);
@@ -377,7 +376,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		pnlActions.add(btnHuy);
 
 		Button btnNghiViec = new Button("Cập nhật");
-		btnNghiViec.setIcon(new ImageIcon("Icon\\unemployed 1.png"));
+		btnNghiViec.setIcon(Utils.getImageIcon("unemployed 1.png"));
 		btnNghiViec.setText("Nghỉ việc");
 		btnNghiViec.setRadius(8);
 		btnNghiViec.setForeground(Color.WHITE);

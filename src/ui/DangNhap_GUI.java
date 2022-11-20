@@ -1,9 +1,7 @@
 package ui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -11,7 +9,6 @@ import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.regex.Pattern;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -57,15 +54,11 @@ public class DangNhap_GUI extends JFrame {
 		_this = this;
 		taiKhoan_DAO = new TaiKhoan_DAO();
 
-		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-		int screenHeight = (int) dimension.getHeight();
-		int screenWidth = (int) dimension.getWidth();
-
 		setAutoRequestFocus(false);
 		setTitle("Đăng nhập");
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setBounds(0, 0, screenWidth, screenHeight);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getScreenHeight());
 		setUndecorated(true);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.CYAN);
@@ -83,7 +76,7 @@ public class DangNhap_GUI extends JFrame {
 		});
 
 		KGradientPanel pnlContainer = new KGradientPanel();
-		pnlContainer.setBounds(0, 0, screenWidth, screenHeight);
+		pnlContainer.setBounds(0, 0, Utils.getScreenWidth(), Utils.getScreenHeight());
 		pnlContainer.setkEndColor(Utils.getRGBA(0, 204, 204, 1f));
 		pnlContainer.setkGradientFocus(600);
 		pnlContainer.setkStartColor(Utils.getRGBA(153, 0, 153, 0.8f));
@@ -92,8 +85,8 @@ public class DangNhap_GUI extends JFrame {
 
 		int widthPnlDangNhap = 800;
 		int heightPnlDangNhap = 400;
-		int leftPnlDangNhap = (int) Math.ceil((screenWidth - widthPnlDangNhap) / 2);
-		int topPnlDangNhap = (int) Math.ceil((screenHeight - heightPnlDangNhap) / 2);
+		int leftPnlDangNhap = (int) Math.ceil((Utils.getScreenWidth() - widthPnlDangNhap) / 2);
+		int topPnlDangNhap = (int) Math.ceil((Utils.getScreenHeight() - heightPnlDangNhap) / 2);
 
 		JPanel pnlDangNhap = new JPanel();
 		pnlDangNhap.setBackground(Utils.getRGBA(0, 0, 0, 0));
@@ -148,7 +141,7 @@ public class DangNhap_GUI extends JFrame {
 		pnlForm.add(txtMatKhau);
 
 		Button btnDangNhap = new Button("Đăng nhập");
-		btnDangNhap.setIcon(new ImageIcon("Icon\\sign-in.png"));
+		btnDangNhap.setIcon(Utils.getImageIcon("sign-in.png"));
 		btnDangNhap.setFocusable(false);
 		btnDangNhap.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		btnDangNhap.setColor(Utils.primaryColor);
@@ -190,7 +183,7 @@ public class DangNhap_GUI extends JFrame {
 				jDialogCustom.showMessage("Thoát ứng dụng", "Bạn có chắc chắn muốn thoát ứng dụng không?");
 			}
 		});
-		btnThoat.setIcon(new ImageIcon("Icon\\exit (1).png"));
+		btnThoat.setIcon(Utils.getImageIcon("exit (1).png"));
 		btnThoat.setFocusable(false);
 		btnThoat.setBorderWidth(1);
 		btnThoat.setBorderBtnColor(Utils.primaryColor);
@@ -212,7 +205,7 @@ public class DangNhap_GUI extends JFrame {
 		pnlForm.add(lblQuenMatKhau);
 
 		JLabel lblBackground = new JLabel();
-		lblBackground.setIcon(new ImageIcon("Icon\\login.png"));
+		lblBackground.setIcon(Utils.getImageIcon("login.png"));
 		lblBackground.setBounds(72, 144, 256, 256);
 		pnlDangNhap.add(lblBackground);
 

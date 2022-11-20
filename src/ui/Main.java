@@ -13,7 +13,6 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -116,7 +115,7 @@ public class Main extends JFrame {
 
 		btnBack = new Button();
 		btnBack.setFocusable(false);
-		btnBack.setIcon(new ImageIcon("Icon\\back 1.png"));
+		btnBack.setIcon(Utils.getImageIcon("back 1.png"));
 		btnBack.setColor(Utils.primaryColor);
 		btnBack.setColorOver(Utils.primaryColor);
 		btnBack.setColorClick(Utils.primaryColor);
@@ -143,25 +142,25 @@ public class Main extends JFrame {
 
 		menu.setDrawer(drawer);
 		if (nhanVien.getTrangThai().equals(NhanVien.TrangThai.DangLam)) {
-			menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\homeIcon.png"), Utils.trangChuMenuItem));
+			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("homeIcon.png"), Utils.trangChuMenuItem));
 			if (chucVu.equals(NhanVien.ChucVu.QuanLy))
-				menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\businessman.png"), Utils.nhanVienMenuItem,
+				menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("businessman.png"), Utils.nhanVienMenuItem,
 						Utils.quanLyNhanVienMenuItem, Utils.themNhanVienMenuItem));
-			menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\users-avatar.png"), Utils.quanLyKhachHangMenuItem));
-			menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\doorMenuItem.png"), Utils.quanLyDatPhongMenuItem));
+			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("users-avatar.png"), Utils.quanLyKhachHangMenuItem));
+			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("doorMenuItem.png"), Utils.quanLyDatPhongMenuItem));
 			menu.addMenuItem(
-					new ModelMenuItem(new ImageIcon("Icon\\doorMenuItem.png"), Utils.quanLyDatPhongTruocMenuItem));
-			menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\bar-graph.png"), Utils.thongKeMenuItem,
+					new ModelMenuItem(Utils.getImageIcon("doorMenuItem.png"), Utils.quanLyDatPhongTruocMenuItem));
+			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("bar-graph.png"), Utils.thongKeMenuItem,
 					Utils.thongKeDoanhThuMenuItem, Utils.thongKeHoaDonMenuItem, Utils.thongKeKhachHangMenuItem));
-			menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\user.png"), Utils.thongTinCaNhanMenuItem));
-			menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\user.png"), Utils.quanLyDichVuMenuItem));
-			menu.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\user.png"), Utils.quanLyPhongMenuItem));
+			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("user.png"), Utils.thongTinCaNhanMenuItem));
+			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("user.png"), Utils.quanLyDichVuMenuItem));
+			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("user.png"), Utils.quanLyPhongMenuItem));
 			menu.setPreferredSize(new Dimension(getPreferredSize().width, 473));
 		}
 
 		footer.setDrawer(drawer);
-		footer.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\logout.png"), Utils.dangXuatMenuItem));
-		footer.addMenuItem(new ModelMenuItem(new ImageIcon("Icon\\power.png"), Utils.thoatMenuItem));
+		footer.addMenuItem(new ModelMenuItem(Utils.getImageIcon("logout.png"), Utils.dangXuatMenuItem));
+		footer.addMenuItem(new ModelMenuItem(Utils.getImageIcon("power.png"), Utils.thoatMenuItem));
 		footer.setPreferredSize(new Dimension(getPreferredSize().width, 70));
 
 //		Show/Hide menu
@@ -301,40 +300,52 @@ public class Main extends JFrame {
 				List<String> list = menu.getMenu().get(index);
 				String titleMenu = list.get(indexSubMenu);
 
-				if (titleMenu.equals(Utils.quanLyNhanVienMenuItem)) {
+				switch (titleMenu) {
+				case Utils.quanLyNhanVienMenuItem:
 					title = "Quản lý nhân viên";
 					pnl = new QuanLyNhanVien_GUI(_this);
-				} else if (titleMenu.equals(Utils.themNhanVienMenuItem)) {
+					break;
+				case Utils.themNhanVienMenuItem:
 					title = "Thêm nhân viên";
 					pnl = new ThemNhanVien_GUI(_this);
-				} else if (titleMenu.equals(Utils.quanLyKhachHangMenuItem)) {
+					break;
+				case Utils.quanLyKhachHangMenuItem:
 					title = "Quản lý khách hàng";
 					pnl = new QuanLyKhachHang_GUI(_this);
-				} else if (titleMenu.equals(Utils.quanLyDatPhongMenuItem)) {
+					break;
+				case Utils.quanLyDatPhongMenuItem:
 					title = "Quản lý đặt phòng";
 					pnl = new QuanLyDatPhong_GUI(_this);
-				} else if (titleMenu.equals(Utils.quanLyDatPhongTruocMenuItem)) {
+					break;
+				case Utils.quanLyDatPhongTruocMenuItem:
 					title = "Quản lý đặt phòng trước";
 					pnl = new QuanLyPhieuDatPhong_GUI(_this);
-				} else if (titleMenu.equals(Utils.thongKeDoanhThuMenuItem)) {
+					break;
+				case Utils.thongKeDoanhThuMenuItem:
 					title = "Thống kê doanh thu";
 					pnl = new ThongKeDoanhThu_GUI();
-				} else if (titleMenu.equals(Utils.thongKeHoaDonMenuItem)) {
+					break;
+				case Utils.thongKeHoaDonMenuItem:
 					title = "Thống kê hóa đơn";
 					pnl = new ThongKeHoaDon_GUI();
-				} else if (titleMenu.equals(Utils.thongKeKhachHangMenuItem)) {
+					break;
+				case Utils.thongKeKhachHangMenuItem:
 					title = "Thống kê khách hàng";
 					pnl = new ThongKeKhachHang_GUI();
-				} else if (titleMenu.equals(Utils.thongTinCaNhanMenuItem)) {
+					break;
+				case Utils.thongTinCaNhanMenuItem:
 					title = "Thông tin cá nhân";
 					pnl = new ThongTinCaNhan_GUI(_this);
-				} else if (titleMenu.equals(Utils.quanLyDichVuMenuItem)) {
+					break;
+				case Utils.quanLyDichVuMenuItem:
 					title = "Quản lý dịch vụ";
 					pnl = new QuanLyDichVu_GUI(_this);
-				} else if (titleMenu.equals(Utils.quanLyPhongMenuItem)) {
+					break;
+				case Utils.quanLyPhongMenuItem:
 					title = "Quản lý phòng";
 					pnl = new QuanLyPhong_GUI(_this);
-				} else {
+					break;
+				default:
 					title = "Trang chủ";
 					pnl = new TrangChu_GUI();
 				}

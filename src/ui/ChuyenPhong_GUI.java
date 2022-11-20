@@ -13,7 +13,6 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -125,7 +124,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 		pnlPhongHienTai.add(cmbPhongHienTai);
 
 		JLabel lblIconNext = new JLabel("");
-		lblIconNext.setIcon(new ImageIcon("Icon\\next_32x32.png"));
+		lblIconNext.setIcon(Utils.getImageIcon("next_32x32.png"));
 		lblIconNext.setBounds(245, 9, 32, 32);
 		pnlPhongHienTai.add(lblIconNext);
 

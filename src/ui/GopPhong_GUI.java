@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,6 +31,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
@@ -172,16 +172,17 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		};
 
 		tableModelPhongCanGop = new DefaultTableModel(new String[] { "Mã phòng", "Loại phòng", "Số lượng" }, 0);
+		JTableHeader tblHeaderPhongCanGop = tblPhongCanGop.getTableHeader();
 
 		tblPhongCanGop.setModel(tableModelPhongCanGop);
 		tblPhongCanGop.setFocusable(false);
 		tblPhongCanGop.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tblPhongCanGop.getTableHeader().setBackground(Utils.primaryColor);
-		tblPhongCanGop.getTableHeader().setForeground(Color.WHITE);
+		tblHeaderPhongCanGop.setBackground(Utils.primaryColor);
+		tblHeaderPhongCanGop.setForeground(Color.WHITE);
 		tblPhongCanGop.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		tblPhongCanGop.getTableHeader().setPreferredSize(
-				new Dimension((int) tblPhongCanGop.getTableHeader().getPreferredSize().getWidth(), 24));
-		tblPhongCanGop.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblHeaderPhongCanGop
+				.setPreferredSize(new Dimension((int) tblHeaderPhongCanGop.getPreferredSize().getWidth(), 24));
+		tblHeaderPhongCanGop.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tblPhongCanGop.setRowHeight(24);
 		scrDanhSachPhong.setViewportView(tblPhongCanGop);
 //		Căn phải column 3 table
@@ -238,16 +239,16 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 		tableModelPhongGop = new DefaultTableModel(new String[] { "Mã phòng", "Loại phòng", "Số lượng", "Trạng thái" },
 				0);
+		JTableHeader tblHeaderPhongGop = tblPhongGop.getTableHeader();
 
 		tblPhongGop.setModel(tableModelPhongGop);
 		tblPhongGop.setFocusable(false);
 		tblPhongGop.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tblPhongGop.getTableHeader().setBackground(Utils.primaryColor);
-		tblPhongGop.getTableHeader().setForeground(Color.WHITE);
+		tblHeaderPhongGop.setBackground(Utils.primaryColor);
+		tblHeaderPhongGop.setForeground(Color.WHITE);
 		tblPhongGop.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		tblPhongGop.getTableHeader()
-				.setPreferredSize(new Dimension((int) tblPhongGop.getTableHeader().getPreferredSize().getWidth(), 24));
-		tblPhongGop.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblHeaderPhongGop.setPreferredSize(new Dimension((int) tblHeaderPhongGop.getPreferredSize().getWidth(), 24));
+		tblHeaderPhongGop.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tblPhongGop.setRowHeight(24);
 		scrDanhSachPhongGop.setViewportView(tblPhongGop);
 //		Căn phải column 3 table
@@ -294,7 +295,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		btnChonPhong.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnChonPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.6f));
 		btnChonPhong.setBorderColor(Color.WHITE);
-		btnChonPhong.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
+		btnChonPhong.setIcon(Utils.getImageIcon("rightArrow_32x32.png"));
 		btnChonPhong.setBounds(374, 57, 36, 36);
 		btnChonPhong.setEnabled(false);
 		pnlPhongGop.add(btnChonPhong);
@@ -459,7 +460,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		pnlContainerItem.add(lblMaPhong);
 
 		lblIconClose = new JLabel("");
-		lblIconClose.setIcon(new ImageIcon("Icon\\close_16x16.png"));
+		lblIconClose.setIcon(Utils.getImageIcon("close_16x16.png"));
 		lblIconClose.setBounds(94, 10, 16, 16);
 		pnlContainerItem.add(lblIconClose);
 		lblIconClose.addMouseListener(new MouseAdapter() {

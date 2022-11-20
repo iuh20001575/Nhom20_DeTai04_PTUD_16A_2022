@@ -1,6 +1,5 @@
 package ui;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -21,7 +20,7 @@ public class TrangChu_GUI extends JPanel {
 		setLayout(null);
 
 		JLabel lblBackground = new JLabel("");
-		lblBackground.setIcon(new ImageIcon("Hinh\\Rectangle 1.png"));
+		lblBackground.setIcon(Utils.getImageIcon("Rectangle 1.png"));
 		lblBackground.setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		this.add(lblBackground);
 	}

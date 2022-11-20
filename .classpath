@@ -6,6 +6,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="Hinh"/>
+	<classpathentry kind="src" path="Icon"/>
 	<classpathentry kind="lib" path="libs/sqljdbc42.jar"/>
 	<classpathentry kind="lib" path="libs/jcommon-1.0.23.jar"/>
 	<classpathentry kind="lib" path="libs/jfreechart-1.0.19.jar"/>

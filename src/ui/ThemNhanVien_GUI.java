@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -155,7 +154,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		pnlContainer.add(pnlRow3);
 
 		txtNgaySinh = new TextField();
-		txtNgaySinh.setIcon(new ImageIcon("Icon\\add-event 2.png"));
+		txtNgaySinh.setIcon(Utils.getImageIcon("add-event 2.png"));
 		txtNgaySinh.setLineColor(new Color(149, 166, 248));
 		txtNgaySinh.setLabelText("Ngày sinh");
 		txtNgaySinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -337,7 +336,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		pnlContainer.add(pnlActions);
 
 		Button btnThem = new Button("Cập nhật");
-		btnThem.setIcon(new ImageIcon("Icon\\unemployed 1.png"));
+		btnThem.setIcon(Utils.getImageIcon("unemployed 1.png"));
 		btnThem.setText("Thêm");
 		btnThem.setRadius(8);
 		btnThem.setForeground(Color.WHITE);
@@ -352,7 +351,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		pnlActions.add(btnThem);
 
 		Button btnHuy = new Button("Cập nhật");
-		btnHuy.setIcon(new ImageIcon("Icon\\cancelled 1.png"));
+		btnHuy.setIcon(Utils.getImageIcon("cancelled 1.png"));
 		btnHuy.setText("Hủy");
 		btnHuy.setRadius(8);
 		btnHuy.setForeground(new Color(51, 51, 51));
@@ -524,9 +523,8 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		Object object = e.getSource();
-		if (e.getStateChange() != ItemEvent.SELECTED) {
+		if (e.getStateChange() != ItemEvent.SELECTED)
 			return;
-		}
 		if (cmbTinh.equals(object)) {
 			if (!isEnabledEventTinh)
 				return;

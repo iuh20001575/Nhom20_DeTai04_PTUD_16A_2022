@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
@@ -114,7 +113,6 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 		setType(Type.UTILITY);
 		setResizable(false);
-		setIconImage(Toolkit.getDefaultToolkit().getImage("Icon\\room.png"));
 		setTitle("Thanh toán");
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(0, 0, 626, 513);

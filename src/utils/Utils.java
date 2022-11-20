@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -45,8 +46,7 @@ public class Utils {
 	public static final Color labelTextField = new Color(150, 150, 150);
 	public static final Rectangle boundsPnlBody = new Rectangle(0, 65, 1086, 508);
 	private final static Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	public static final int width = 1086;
-	public static final int height = 573;
+	private final static Class<?> _class = Utils.class;
 
 	private static JFrame main;
 
@@ -236,6 +236,10 @@ public class Utils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static ImageIcon getImageIcon(String iconName) {
+		return new ImageIcon(_class.getResource("/" + iconName));
 	}
 
 	public static String getVietnameseDiacriticCharactersLower() {
