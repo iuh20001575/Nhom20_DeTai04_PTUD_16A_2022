@@ -12,24 +12,6 @@ public class StackPanel {
 	private static Stack<PanelUI> stack = new Stack<>();
 
 	/**
-	 * Thêm một màn hình vào stack
-	 * 
-	 * @param jFrame
-	 */
-	public static void push(PanelUI jPanel) {
-		stack.push(jPanel);
-	}
-
-	/**
-	 * Xóa màn hình top khỏi stack
-	 * 
-	 * @return màn hình đã xóa
-	 */
-	public static PanelUI pop() {
-		return stack.pop();
-	}
-
-	/**
 	 * Kiểm tra stack có rỗng hay không?
 	 * 
 	 * @return true nếu stack rỗng
@@ -45,5 +27,23 @@ public class StackPanel {
 	 */
 	public static PanelUI peek() {
 		return stack.peek();
+	}
+
+	/**
+	 * Xóa màn hình top khỏi stack
+	 * 
+	 * @return màn hình đã xóa
+	 */
+	public static PanelUI pop() {
+		return stack.pop();
+	}
+
+	/**
+	 * Thêm một màn hình vào stack
+	 * 
+	 * @param jFrame
+	 */
+	public static void push(PanelUI jPanel) {
+		stack.push(jPanel);
 	}
 }

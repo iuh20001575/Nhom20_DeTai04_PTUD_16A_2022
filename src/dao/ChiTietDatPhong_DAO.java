@@ -25,22 +25,6 @@ public class ChiTietDatPhong_DAO extends DAO {
 	}
 
 	/**
-	 * Get chi tiết đặt phòng resultSet
-	 * 
-	 * @param resultSet
-	 * @return
-	 * @throws SQLException
-	 */
-	private ChiTietDatPhong getChiTietDatPhong(ResultSet resultSet) throws SQLException {
-		DonDatPhong donDatPhong = new DonDatPhong(resultSet.getString("donDatPhong"));
-		Phong phong = new Phong(resultSet.getString("phong"));
-		LocalTime gioVao = resultSet.getTime("gioVao").toLocalTime();
-		Time time = resultSet.getTime("gioRa");
-		LocalTime gioRa = time == null ? null : resultSet.getTime("gioRa").toLocalTime();
-		return new ChiTietDatPhong(donDatPhong, phong, gioVao, gioRa);
-	}
-
-	/**
 	 * Get tất cả các chi tiết đặt phòng theo đặt phòng
 	 * 
 	 * @param datPhong
@@ -103,6 +87,22 @@ public class ChiTietDatPhong_DAO extends DAO {
 	}
 
 	/**
+	 * Get chi tiết đặt phòng resultSet
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws SQLException
+	 */
+	private ChiTietDatPhong getChiTietDatPhong(ResultSet resultSet) throws SQLException {
+		DonDatPhong donDatPhong = new DonDatPhong(resultSet.getString("donDatPhong"));
+		Phong phong = new Phong(resultSet.getString("phong"));
+		LocalTime gioVao = resultSet.getTime("gioVao").toLocalTime();
+		Time time = resultSet.getTime("gioRa");
+		LocalTime gioRa = time == null ? null : resultSet.getTime("gioRa").toLocalTime();
+		return new ChiTietDatPhong(donDatPhong, phong, gioVao, gioRa);
+	}
+
+	/**
 	 * Get giờ vào phòng của danh sách phòng các phòng chờ
 	 * 
 	 * @param dsPhong danh sách phòng
@@ -142,33 +142,6 @@ public class ChiTietDatPhong_DAO extends DAO {
 	}
 
 	/**
-	 * Thanh toán đơn đặt phòng
-	 * 
-	 * @param maDatPhong
-	 * @param gioRa
-	 * @return
-	 */
-	public boolean thanhToanDatPhong(String maDatPhong, LocalTime gioRa) {
-		boolean res = false;
-		PreparedStatement preparedStatement = null;
-
-		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE ChiTietDatPhong SET gioRa = ? WHERE donDatPhong = ? AND gioRa is null");
-			preparedStatement.setTime(1, Time.valueOf(gioRa));
-			preparedStatement.setString(2, maDatPhong);
-
-			res = preparedStatement.executeUpdate() > 0;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close(preparedStatement);
-		}
-
-		return res;
-	}
-
-	/**
 	 * Set giờ ra của phòng
 	 * 
 	 * @param maDonDatPhong
@@ -194,6 +167,33 @@ public class ChiTietDatPhong_DAO extends DAO {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Thanh toán đơn đặt phòng
+	 * 
+	 * @param maDatPhong
+	 * @param gioRa
+	 * @return
+	 */
+	public boolean thanhToanDatPhong(String maDatPhong, LocalTime gioRa) {
+		boolean res = false;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE ChiTietDatPhong SET gioRa = ? WHERE donDatPhong = ? AND gioRa is null");
+			preparedStatement.setTime(1, Time.valueOf(gioRa));
+			preparedStatement.setString(2, maDatPhong);
+
+			res = preparedStatement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(preparedStatement);
+		}
+
+		return res;
 	}
 
 	/**

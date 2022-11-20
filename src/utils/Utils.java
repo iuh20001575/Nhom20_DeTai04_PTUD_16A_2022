@@ -1,9 +1,11 @@
 package utils;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.io.File;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,7 +35,6 @@ public class Utils {
 	public static final String quanLyPhongMenuItem = "Quản lý phòng";
 	public static final String thoatMenuItem = "Thoát";
 	public static final String dangXuatMenuItem = "Đăng xuất";
-
 	public static final Color primaryColor = new Color(140, 177, 180);
 	public static final Color secondaryColor = new Color(203, 239, 255);
 	public static final Color phongCho = getRGBA(4, 191, 173, 0.85f);
@@ -42,10 +43,8 @@ public class Utils {
 	public static final Color phongTam = new Color(115, 120, 234);
 	public static final Color lineTextField = new Color(149, 166, 248);
 	public static final Color labelTextField = new Color(150, 150, 150);
-
 	public static final Rectangle boundsPnlBody = new Rectangle(0, 65, 1086, 508);
 	private final static Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-
 	public static final int width = 1086;
 	public static final int height = 573;
 
@@ -82,7 +81,7 @@ public class Utils {
 	public static void setMain(JFrame main) {
 		Utils.main = main;
 	}
-	
+
 	/**
 	 * Get màu RGBA
 	 * 
@@ -223,7 +222,22 @@ public class Utils {
 		DefaultTableModel dm = (DefaultTableModel) tbl.getModel();
 		dm.getDataVector().removeAllElements();
 	}
-	
+
+	public static void openFile(String pathname) {
+		try {
+			File file = new File(pathname);
+			if (!Desktop.isDesktopSupported()) {
+				System.out.println("not supported");
+				return;
+			}
+			Desktop desktop = Desktop.getDesktop();
+			if (file.exists())
+				desktop.open(file);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public static String getVietnameseDiacriticCharactersLower() {
 		return getVietnameseDiacriticCharacters().toLowerCase();
 	}

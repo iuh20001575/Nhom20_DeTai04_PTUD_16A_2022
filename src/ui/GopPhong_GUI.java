@@ -60,16 +60,16 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	private List<Phong> dsPhongCanGop;
 	private List<Phong> dsPhongDaChon;
 	private final String labelCmbMaDatPhong = "Mã đặt phòng";
+	private JLabel lblIconClose;
+	private JLabel lblMaPhong;
 	private LoaiPhong_DAO loaiPhong_DAO;
+	private PanelRound pnlContainerItem;
 	private JPanel pnlContent;
 	private JPanel pnlPhongGop;
 	private DefaultTableModel tableModelPhongCanGop;
 	private DefaultTableModel tableModelPhongGop;
 	private JTable tblPhongCanGop;
 	private JTable tblPhongGop;
-	private PanelRound pnlContainerItem;
-	private JLabel lblMaPhong;
-	private JLabel lblIconClose;
 
 	/**
 	 * Create the frame.

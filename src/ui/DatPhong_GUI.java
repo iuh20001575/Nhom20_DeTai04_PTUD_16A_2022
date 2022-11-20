@@ -70,27 +70,27 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	private JComboBox<String> cmbLoaiPhong;
 	private JComboBox<String> cmbMaPhong;
 	private JComboBox<String> cmbSoLuong;
+	private int countItem;
 	private DonDatPhong_DAO datPhong_DAO;
 	private List<Phong> dsPhongDaChon;
 	private List<Phong> dsPhongDatNgay;
+	private final int gapY = 8;
+	private final int heightItem = 36;
 	private KhachHang khachHang;
 	private KhachHang_DAO khachHang_DAO;
+	private JLabel lblIconClose;
+	private JLabel lblMaPhong;
 	private LoaiPhong_DAO loaiPhong_DAO;
+	private PanelRound pnlContainerItem;
 	private JPanel pnlContent;
 	private JPanel pnlPhong;
+	private JPanel pnlPhongDaChon;
+	private JScrollPane scrPhongDaChon;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
+	private final int top = 11;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
-	private PanelRound pnlContainerItem;
-	private JLabel lblMaPhong;
-	private JLabel lblIconClose;
-	private JScrollPane scrPhongDaChon;
-	private JPanel pnlPhongDaChon;
-	private int countItem;
-	private final int heightItem = 36;
-	private final int gapY = 8;
-	private final int top = 11;
 
 	/**
 	 * Create the frame.

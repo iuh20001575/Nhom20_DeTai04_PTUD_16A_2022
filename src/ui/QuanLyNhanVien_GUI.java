@@ -76,9 +76,13 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private Button btnEmployeeEdit;
 	private Button btnEmployeeRemove;
 	private Button btnEmployeeView;
+	private Button btnExport;
+	private Button btnImport;
 	private JComboBox<String> cmbMaNhanVien;
 	private JComboBox<String> cmbTrangThai;
 	private DiaChi_DAO diaChi_DAO;
+	private final String[] header = { "Mã nhân viên", "Họ tên", "Căn cước công dân", "Số điện thoại", "Ngày sinh",
+			"Giới tính", "Địa chỉ", "Chức vụ", "Lương", "Trạng thái" };
 	private JLabel lblTime;
 	private Main main;
 	private DefaultComboBoxModel<String> maNhanVienModel;
@@ -88,10 +92,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private JTable tbl;
 	private JTextField txtSearch;
 	private final int widthPnlContainer = 1086;
-	private Button btnImport;
-	private Button btnExport;
-	private final String[] header = { "Mã nhân viên", "Họ tên", "Căn cước công dân", "Số điện thoại", "Ngày sinh",
-			"Giới tính", "Địa chỉ", "Chức vụ", "Lương", "Trạng thái" };
 
 	/**
 	 * Create the frame.
@@ -523,6 +523,139 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		});
 	}
 
+	private List<NhanVien> addRow(List<NhanVien> list) {
+		list.forEach(nhanVien -> addRow(nhanVien));
+		return list;
+	}
+
+	private void addRow(NhanVien nhanVien) {
+		Tinh tinh = diaChi_DAO.getTinh(nhanVien.getTinh());
+		Quan quan = diaChi_DAO.getQuan(nhanVien.getTinh(), nhanVien.getQuan());
+		Phuong phuong = diaChi_DAO.getPhuong(nhanVien.getQuan(), nhanVien.getPhuong());
+		tableModel.addRow(new String[] { nhanVien.getMaNhanVien(), nhanVien.getHoTen(), nhanVien.getCccd(),
+				nhanVien.getSoDienThoai(), Utils.formatDate(nhanVien.getNgaySinh()),
+				nhanVien.isGioiTinh() ? "Nam" : "Nữ", String.format("%s, %s, %s, %s", tinh.getTinh(), quan.getQuan(),
+						phuong.getPhuong(), nhanVien.getDiaChiCuThe()),
+				NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()) });
+	}
+
+	public Thread clock() {
+		Thread clock = new Thread() {
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						LocalDateTime currTime = LocalDateTime.now();
+						int day = currTime.getDayOfMonth();
+						int month = currTime.getMonthValue();
+						int year = currTime.getYear();
+						int hour = currTime.getHour();
+						int minute = currTime.getMinute();
+						int second = currTime.getSecond();
+						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
+								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
+								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+
+		clock.start();
+
+		return clock;
+	}
+
+	private void filterNhanVien() {
+		String hoTen = txtSearch.getText();
+		String maNhanVien = (String) cmbMaNhanVien.getSelectedItem();
+		String trangThai = (String) cmbTrangThai.getSelectedItem();
+
+		if (maNhanVien.equals("Mã NV"))
+			maNhanVien = "";
+		if (trangThai.equals("Trạng thái"))
+			trangThai = "";
+
+		List<NhanVien> list = nhanVien_DAO.filterNhanVien(hoTen, maNhanVien, trangThai);
+		Utils.emptyTable(tbl);
+		addRow(list);
+		pnlControl.setTbl(tbl);
+
+		if (list.size() == 0) {
+			JDialogCustom jDialogCustom = new JDialogCustom(main, Type.warning);
+			jDialogCustom.showMessage("Thông báo", "Không có nhân viên cần tìm");
+		}
+	}
+
+	public List<NhanVien> readFile(String filename) {
+		List<NhanVien> list = new ArrayList<>();
+		try {
+			Workbook workbook = Workbook.getWorkbook(new File(filename));
+			Sheet sheet = workbook.getSheet(0);
+			int rows = sheet.getRows(), diaChiLength;
+			NhanVien nhanVien;
+			String[] diaChis;
+			Tinh tinh;
+			Quan quan;
+			Phuong phuong;
+			String maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, diaChi, chucVu, luong, trangThai,
+					diaChiChiTiet;
+			for (int row = 1; row < rows; ++row) {
+				maNhanVien = sheet.getCell(0, row).getContents();
+				hoTen = sheet.getCell(1, row).getContents();
+				cccd = sheet.getCell(2, row).getContents();
+				soDienThoai = sheet.getCell(3, row).getContents();
+				ngaySinh = sheet.getCell(4, row).getContents();
+				gioiTinh = sheet.getCell(5, row).getContents();
+				diaChi = sheet.getCell(6, row).getContents();
+				chucVu = sheet.getCell(7, row).getContents();
+				luong = sheet.getCell(8, row).getContents();
+				trangThai = sheet.getCell(9, row).getContents();
+
+				diaChis = diaChi.split(", ");
+				diaChiLength = diaChis.length;
+				tinh = diaChi_DAO.getTinh(diaChis[--diaChiLength]);
+				quan = diaChi_DAO.getQuan(tinh, diaChis[--diaChiLength]);
+				phuong = diaChi_DAO.getPhuong(quan, diaChis[--diaChiLength]);
+				diaChiChiTiet = diaChis[0];
+				for (int i = 1; i < diaChiLength; i++)
+					diaChiChiTiet += ", " + diaChis[i];
+
+				nhanVien = new NhanVien(maNhanVien, hoTen, cccd, soDienThoai, Utils.getLocalDate(ngaySinh),
+						gioiTinh.equalsIgnoreCase("nam"), tinh, quan, phuong, diaChiChiTiet,
+						NhanVien.convertStringToChucVu(chucVu), Double.parseDouble(luong),
+						NhanVien.convertStringToTrangThai(trangThai));
+				list.add(nhanVien);
+			}
+			workbook.close();
+		} catch (BiffException e) {
+		} catch (IOException e) {
+		}
+		return list;
+	}
+
+	private void setEnabledBtnActions() {
+		int row = tbl.getSelectedRow();
+
+		if (row == -1) {
+			btnEmployeeView.setEnabled(false);
+			btnEmployeeEdit.setEnabled(false);
+			btnEmployeeRemove.setEnabled(false);
+		} else {
+			btnEmployeeView.setEnabled(true);
+			btnEmployeeEdit.setEnabled(true);
+
+			String trangThai = (String) tableModel.getValueAt(row, 7);
+
+			if (NhanVien.convertStringToTrangThai(trangThai).equals(NhanVien.TrangThai.DangLam))
+				btnEmployeeRemove.setEnabled(true);
+			else
+				btnEmployeeRemove.setEnabled(false);
+		}
+	}
+
 	public void writeFile(String filename) {
 		try {
 			WritableWorkbook workbook = Workbook.createWorkbook(new File(filename));
@@ -592,138 +725,5 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		}
 		new Notification(main, components.notification.Notification.Type.ERROR, "Xuát nhân viên thất bại")
 				.showNotification();
-	}
-
-	public List<NhanVien> readFile(String filename) {
-		List<NhanVien> list = new ArrayList<>();
-		try {
-			Workbook workbook = Workbook.getWorkbook(new File(filename));
-			Sheet sheet = workbook.getSheet(0);
-			int rows = sheet.getRows(), diaChiLength;
-			NhanVien nhanVien;
-			String[] diaChis;
-			Tinh tinh;
-			Quan quan;
-			Phuong phuong;
-			String maNhanVien, hoTen, cccd, soDienThoai, ngaySinh, gioiTinh, diaChi, chucVu, luong, trangThai,
-					diaChiChiTiet;
-			for (int row = 1; row < rows; ++row) {
-				maNhanVien = sheet.getCell(0, row).getContents();
-				hoTen = sheet.getCell(1, row).getContents();
-				cccd = sheet.getCell(2, row).getContents();
-				soDienThoai = sheet.getCell(3, row).getContents();
-				ngaySinh = sheet.getCell(4, row).getContents();
-				gioiTinh = sheet.getCell(5, row).getContents();
-				diaChi = sheet.getCell(6, row).getContents();
-				chucVu = sheet.getCell(7, row).getContents();
-				luong = sheet.getCell(8, row).getContents();
-				trangThai = sheet.getCell(9, row).getContents();
-
-				diaChis = diaChi.split(", ");
-				diaChiLength = diaChis.length;
-				tinh = diaChi_DAO.getTinh(diaChis[--diaChiLength]);
-				quan = diaChi_DAO.getQuan(tinh, diaChis[--diaChiLength]);
-				phuong = diaChi_DAO.getPhuong(quan, diaChis[--diaChiLength]);
-				diaChiChiTiet = diaChis[0];
-				for (int i = 1; i < diaChiLength; i++)
-					diaChiChiTiet += ", " + diaChis[i];
-
-				nhanVien = new NhanVien(maNhanVien, hoTen, cccd, soDienThoai, Utils.getLocalDate(ngaySinh),
-						gioiTinh.equalsIgnoreCase("nam"), tinh, quan, phuong, diaChiChiTiet,
-						NhanVien.convertStringToChucVu(chucVu), Double.parseDouble(luong),
-						NhanVien.convertStringToTrangThai(trangThai));
-				list.add(nhanVien);
-			}
-			workbook.close();
-		} catch (BiffException e) {
-		} catch (IOException e) {
-		}
-		return list;
-	}
-
-	private List<NhanVien> addRow(List<NhanVien> list) {
-		list.forEach(nhanVien -> addRow(nhanVien));
-		return list;
-	}
-
-	private void addRow(NhanVien nhanVien) {
-		Tinh tinh = diaChi_DAO.getTinh(nhanVien.getTinh());
-		Quan quan = diaChi_DAO.getQuan(nhanVien.getTinh(), nhanVien.getQuan());
-		Phuong phuong = diaChi_DAO.getPhuong(nhanVien.getQuan(), nhanVien.getPhuong());
-		tableModel.addRow(new String[] { nhanVien.getMaNhanVien(), nhanVien.getHoTen(), nhanVien.getCccd(),
-				nhanVien.getSoDienThoai(), Utils.formatDate(nhanVien.getNgaySinh()),
-				nhanVien.isGioiTinh() ? "Nam" : "Nữ", String.format("%s, %s, %s, %s", tinh.getTinh(), quan.getQuan(),
-						phuong.getPhuong(), nhanVien.getDiaChiCuThe()),
-				NhanVien.convertTrangThaiToString(nhanVien.getTrangThai()) });
-	}
-
-	public Thread clock() {
-		Thread clock = new Thread() {
-			@Override
-			public void run() {
-				for (;;) {
-					try {
-						LocalDateTime currTime = LocalDateTime.now();
-						int day = currTime.getDayOfMonth();
-						int month = currTime.getMonthValue();
-						int year = currTime.getYear();
-						int hour = currTime.getHour();
-						int minute = currTime.getMinute();
-						int second = currTime.getSecond();
-						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
-								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
-								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
-						sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-
-		clock.start();
-
-		return clock;
-	}
-
-	private void filterNhanVien() {
-		String hoTen = txtSearch.getText();
-		String maNhanVien = (String) cmbMaNhanVien.getSelectedItem();
-		String trangThai = (String) cmbTrangThai.getSelectedItem();
-
-		if (maNhanVien.equals("Mã NV"))
-			maNhanVien = "";
-		if (trangThai.equals("Trạng thái"))
-			trangThai = "";
-
-		List<NhanVien> list = nhanVien_DAO.filterNhanVien(hoTen, maNhanVien, trangThai);
-		Utils.emptyTable(tbl);
-		addRow(list);
-		pnlControl.setTbl(tbl);
-
-		if (list.size() == 0) {
-			JDialogCustom jDialogCustom = new JDialogCustom(main, Type.warning);
-			jDialogCustom.showMessage("Thông báo", "Không có nhân viên cần tìm");
-		}
-	}
-
-	private void setEnabledBtnActions() {
-		int row = tbl.getSelectedRow();
-
-		if (row == -1) {
-			btnEmployeeView.setEnabled(false);
-			btnEmployeeEdit.setEnabled(false);
-			btnEmployeeRemove.setEnabled(false);
-		} else {
-			btnEmployeeView.setEnabled(true);
-			btnEmployeeEdit.setEnabled(true);
-
-			String trangThai = (String) tableModel.getValueAt(row, 7);
-
-			if (NhanVien.convertStringToTrangThai(trangThai).equals(NhanVien.TrangThai.DangLam))
-				btnEmployeeRemove.setEnabled(true);
-			else
-				btnEmployeeRemove.setEnabled(false);
-		}
 	}
 }

@@ -9,13 +9,6 @@ import entity.NhanVien;
 import entity.TaiKhoan;
 
 public class TaiKhoan_DAO {
-	private TaiKhoan getTaiKhoan(ResultSet resultSet) throws SQLException {
-		String maNhanVien = resultSet.getString(1);
-		String matKhau = resultSet.getString(2);
-
-		return new TaiKhoan(new NhanVien(maNhanVien), matKhau);
-	}
-
 	public boolean capNhatMatKhau(TaiKhoan taiKhoan) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
@@ -29,6 +22,13 @@ public class TaiKhoan_DAO {
 		}
 
 		return false;
+	}
+
+	private TaiKhoan getTaiKhoan(ResultSet resultSet) throws SQLException {
+		String maNhanVien = resultSet.getString(1);
+		String matKhau = resultSet.getString(2);
+
+		return new TaiKhoan(new NhanVien(maNhanVien), matKhau);
 	}
 
 	public TaiKhoan getTaiKhoan(String maNhanVien) {

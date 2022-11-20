@@ -41,6 +41,66 @@ public class DiaChi_DAO extends DAO {
 	}
 
 	/**
+	 * Get phường
+	 * 
+	 * @param quan
+	 * @param phuong
+	 * @return
+	 */
+	public Phuong getPhuong(Quan quan, Phuong phuong) {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM Phuong WHERE id = ? and quan = ?");
+			preparedStatement.setString(1, phuong.getId());
+			preparedStatement.setString(2, quan.getId());
+
+			resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return new Phuong(phuong.getId(), resultSet.getString(2), quan);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(preparedStatement, resultSet);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get phường theo tên phường
+	 * 
+	 * @param quan
+	 * @param phuong
+	 * @return
+	 */
+	public Phuong getPhuong(Quan quan, String phuong) {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM Phuong WHERE phuong = ? and quan = ?");
+			preparedStatement.setString(1, phuong);
+			preparedStatement.setString(2, quan.getId());
+
+			resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return new Phuong(resultSet.getString(1), resultSet.getString(2), quan);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(preparedStatement, resultSet);
+		}
+
+		return null;
+	}
+
+	/**
 	 * Get quận theo tỉnh
 	 * 
 	 * @param tinh
@@ -65,85 +125,6 @@ public class DiaChi_DAO extends DAO {
 		}
 
 		return list;
-	}
-
-	/**
-	 * Get tất cả các tỉnh
-	 * 
-	 * @return
-	 */
-	public List<Tinh> getTinh() {
-		List<Tinh> list = new ArrayList<>();
-		Statement statement = null;
-		ResultSet resultSet = null;
-
-		try {
-			statement = ConnectDB.getConnection().createStatement();
-			resultSet = statement.executeQuery("SELECT * FROM Tinh");
-
-			while (resultSet.next())
-				list.add(new Tinh(resultSet.getString(1), resultSet.getString(2)));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close(statement, resultSet);
-		}
-
-		return list;
-	}
-
-	/**
-	 * Get tỉnh
-	 * 
-	 * @param tinh
-	 * @return
-	 */
-	public Tinh getTinh(Tinh tinh) {
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-
-		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM Tinh WHERE id = ?");
-			preparedStatement.setString(1, tinh.getId());
-
-			resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return new Tinh(tinh.getId(), resultSet.getString(2));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close(preparedStatement, resultSet);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Get tỉnh theo tên tỉnh
-	 * 
-	 * @param tinh
-	 * @return
-	 */
-	public Tinh getTinh(String tinh) {
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-
-		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM Tinh WHERE tinh = ?");
-			preparedStatement.setString(1, tinh);
-
-			resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return new Tinh(resultSet.getString(1), resultSet.getString(2));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close(preparedStatement, resultSet);
-		}
-
-		return null;
 	}
 
 	/**
@@ -207,26 +188,48 @@ public class DiaChi_DAO extends DAO {
 	}
 
 	/**
-	 * Get phường
+	 * Get tất cả các tỉnh
 	 * 
-	 * @param quan
-	 * @param phuong
 	 * @return
 	 */
-	public Phuong getPhuong(Quan quan, Phuong phuong) {
+	public List<Tinh> getTinh() {
+		List<Tinh> list = new ArrayList<>();
+		Statement statement = null;
+		ResultSet resultSet = null;
+
+		try {
+			statement = ConnectDB.getConnection().createStatement();
+			resultSet = statement.executeQuery("SELECT * FROM Tinh");
+
+			while (resultSet.next())
+				list.add(new Tinh(resultSet.getString(1), resultSet.getString(2)));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(statement, resultSet);
+		}
+
+		return list;
+	}
+
+	/**
+	 * Get tỉnh theo tên tỉnh
+	 * 
+	 * @param tinh
+	 * @return
+	 */
+	public Tinh getTinh(String tinh) {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 
 		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM Phuong WHERE id = ? and quan = ?");
-			preparedStatement.setString(1, phuong.getId());
-			preparedStatement.setString(2, quan.getId());
+			preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM Tinh WHERE tinh = ?");
+			preparedStatement.setString(1, tinh);
 
 			resultSet = preparedStatement.executeQuery();
 
 			if (resultSet.next())
-				return new Phuong(phuong.getId(), resultSet.getString(2), quan);
+				return new Tinh(resultSet.getString(1), resultSet.getString(2));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -237,26 +240,23 @@ public class DiaChi_DAO extends DAO {
 	}
 
 	/**
-	 * Get phường theo tên phường
+	 * Get tỉnh
 	 * 
-	 * @param quan
-	 * @param phuong
+	 * @param tinh
 	 * @return
 	 */
-	public Phuong getPhuong(Quan quan, String phuong) {
+	public Tinh getTinh(Tinh tinh) {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 
 		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM Phuong WHERE phuong = ? and quan = ?");
-			preparedStatement.setString(1, phuong);
-			preparedStatement.setString(2, quan.getId());
+			preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM Tinh WHERE id = ?");
+			preparedStatement.setString(1, tinh.getId());
 
 			resultSet = preparedStatement.executeQuery();
 
 			if (resultSet.next())
-				return new Phuong(resultSet.getString(1), resultSet.getString(2), quan);
+				return new Tinh(tinh.getId(), resultSet.getString(2));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

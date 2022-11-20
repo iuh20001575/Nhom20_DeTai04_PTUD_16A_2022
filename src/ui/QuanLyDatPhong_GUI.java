@@ -96,7 +96,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private int soPhongTam;
 	private int soPhongTrong = 0;
 	private String trangThai = "";
-
 	private final int widthPhong = 131;
 
 	/**

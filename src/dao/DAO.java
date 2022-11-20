@@ -9,14 +9,6 @@ import java.sql.Statement;
 import connectDB.ConnectDB;
 
 public class DAO {
-	protected void close(Statement statement) {
-		try {
-			statement.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	protected void close(PreparedStatement preparedStatement) {
 		try {
 			preparedStatement.close();
@@ -29,6 +21,14 @@ public class DAO {
 		try {
 			resultSet.close();
 			preparedStatement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void close(Statement statement) {
+		try {
+			statement.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
