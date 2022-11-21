@@ -127,7 +127,18 @@ public class DangNhap_GUI extends JFrame {
 		pnlForm.add(txtMaNhanVien);
 		txtMaNhanVien.setColumns(10);
 
-		txtMatKhau = new PasswordField();
+		txtMatKhau = new PasswordField() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public char getEchoChar() {
+				// TODO Auto-generated method stub
+				return '*';
+			}
+		};
 		txtMatKhau.setLabelText("Mật khẩu");
 		txtMatKhau.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtMatKhau.setColumns(10);

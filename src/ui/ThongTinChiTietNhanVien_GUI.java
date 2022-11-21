@@ -29,6 +29,7 @@ import components.comboBox.ComboBox;
 import components.jDialog.JDialogCustom;
 import components.notification.Notification;
 import components.notification.Notification.Type;
+import components.passwordField.PasswordField;
 import components.radio.RadioButtonCustom;
 import components.textField.TextField;
 import dao.DiaChi_DAO;
@@ -75,7 +76,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 	private TextField txtHoTen;
 	private TextField txtLuong;
 	private TextField txtMaNhanVien;
-	private TextField txtMatKhau;
+	private PasswordField txtMatKhau;
 	private TextField txtNgaySinh;
 	private TextField txtSoDienThoai;
 	private final int widthPnlContainer = 948;
@@ -269,7 +270,24 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		txtLuong.setBounds(0, 0, 449, 55);
 		pnlRow5.add(txtLuong);
 
-		txtMatKhau = new TextField();
+		txtMatKhau = new PasswordField() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Color getDisabledTextColor() {
+				// TODO Auto-generated method stub
+				return Color.BLACK;
+			}
+			
+			@Override
+			public char getEchoChar() {
+				// TODO Auto-generated method stub
+				return '*';
+			}
+		};
 		txtMatKhau.setLineColor(new Color(149, 166, 248));
 		txtMatKhau.setLabelText("Mật khẩu");
 		txtMatKhau.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -456,6 +474,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 
 //		Sự kiện nút lưu
 		btnLuu.addMouseListener(new MouseAdapter() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (btnLuu.isEnabled()) {
@@ -784,6 +803,13 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		return false;
 	}
 
+	private boolean showThongBaoLoi(PasswordField txt, String message) {
+		new Notification(main, Type.ERROR, message).showNotification();
+		txt.setError(true);
+		txt.requestFocus();
+		return false;
+	}
+
 	private boolean validator() {
 		String vietNamese = Utils.getVietnameseDiacriticCharacters() + "A-Z";
 		String vietNameseLower = Utils.getVietnameseDiacriticCharactersLower() + "a-z";
@@ -880,6 +906,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		if (luongNumber <= 0)
 			return showThongBaoLoi(txtLuong, "Lương phải lớn hơn 0");
 
+		@SuppressWarnings("deprecation")
 		String matKhau = txtMatKhau.getText();
 
 		if (matKhau.length() <= 0)

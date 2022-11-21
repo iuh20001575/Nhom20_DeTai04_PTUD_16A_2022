@@ -30,6 +30,7 @@ import components.button.Button;
 import components.comboBox.ComboBox;
 import components.notification.Notification;
 import components.notification.Notification.Type;
+import components.passwordField.PasswordField;
 import components.radio.RadioButtonCustom;
 import components.textField.TextField;
 import dao.DiaChi_DAO;
@@ -69,7 +70,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 	private TextField txtDiaChiCT;
 	private TextField txtHoTen;
 	private TextField txtMaNhanVien;
-	private TextField txtMatKhau;
+	private PasswordField txtMatKhau;
 	private TextField txtNgaySinh;
 	private TextField txtSoDienThoai;
 
@@ -253,7 +254,24 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		txtDiaChiCT.setBounds(0, 0, 449, 55);
 		pnlRow5.add(txtDiaChiCT);
 
-		txtMatKhau = new TextField();
+		txtMatKhau = new PasswordField() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Color getDisabledTextColor() {
+				// TODO Auto-generated method stub
+				return Color.BLACK;
+			}
+			
+			@Override
+			public char getEchoChar() {
+				// TODO Auto-generated method stub
+				return '*';
+			}
+		};
 		txtMatKhau.setLineColor(color2);
 		txtMatKhau.setLabelText("Mật khẩu");
 		txtMatKhau.setFont(font16);
@@ -394,6 +412,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 					return;
 
 				entity.NhanVien nhanVien = getNhanVienTuForm();
+				@SuppressWarnings("deprecation")
 				boolean res = nhanVien_DAO.capNhatNhanVien(nhanVien, new TaiKhoan(nhanVien, txtMatKhau.getText()));
 
 				if (res) {
@@ -672,6 +691,13 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		return false;
 	}
 
+	private boolean showThongBaoLoi(PasswordField txt, String message) {
+		new Notification(main, Type.ERROR, message).showNotification();
+		txt.setError(true);
+		txt.requestFocus();
+		return false;
+	}
+
 	/**
 	 * Kiểm tra thông tin nhân viên từ form
 	 *
@@ -760,6 +786,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		if (diaChi.length() <= 0)
 			return showThongBaoLoi(txtDiaChiCT, "Vui lòng nhập địa chỉ");
 
+		@SuppressWarnings("deprecation")
 		String matKhau = txtMatKhau.getText();
 
 		if (matKhau.length() <= 0)
