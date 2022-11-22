@@ -329,8 +329,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
 					int row = tblPhongCanGop.getSelectedRow();
-					if (row != -1)
-						btnChonPhong.setEnabled(true);
+					btnChonPhong.setEnabled(row != -1);
 				}
 			}
 		});
@@ -340,7 +339,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = tblPhongCanGop.getSelectedRow();
-				if (row != -1) {
+				if (row != -1 && row < tblPhongCanGop.getRowCount()) {
 					if (dsPhongDaChon == null)
 						dsPhongDaChon = new ArrayList<>();
 					Phong phong = new Phong((String) tableModelPhongCanGop.getValueAt(row, 0));
@@ -354,6 +353,8 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 					capNhatDanhSachPhongDatTruoc();
 					if (tblPhongCanGop.getRowCount() > 0)
 						tblPhongCanGop.setRowSelectionInterval(0, 0);
+					else
+						btnChonPhong.setEnabled(false);
 
 					if (tblPhongGop.getSelectedRow() != -1)
 						btnChuyen.setEnabled(true);
@@ -433,12 +434,11 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 			return;
 
 		Utils.emptyTable(tblPhongCanGop);
-		btnChonPhong.setEnabled(false);
 
-		for (Phong phong : dsPhongCanGop) {
+		for (Phong phong : dsPhongCanGop)
 			if (!dsPhongDaChon.contains(phong))
 				addRowTableCanGop(phong);
-		}
+		repaint();
 	}
 
 	/**
@@ -471,6 +471,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 				showDanhSachPhongDaChon();
 				setEnabledBtnChuyenPhong();
 				capNhatDanhSachPhongDatTruoc();
+				btnChonPhong.setEnabled(false);
 
 				if (dsPhongDaChon == null || dsPhongDaChon.size() <= 0)
 					btnChuyen.setEnabled(false);
@@ -550,13 +551,12 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		scrPhongDaChon.setBounds(416, 17, 150, 130);
 
-		if (pnlPhongGop.getComponentAt(416, 17) != null) {
+		if (pnlPhongGop.getComponentAt(416, 17) != null)
 			pnlPhongGop.remove(pnlPhongGop.getComponentAt(416, 17));
-		}
 
 		pnlPhongGop.add(scrPhongDaChon);
 		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
-		scbPhongDaChon.setBackgroundColor(Utils.secondaryColor);
+		scbPhongDaChon.setBackgroundColor(Color.WHITE);
 		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
 		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
 
@@ -604,6 +604,6 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 			addRowTablePhongGop(phong);
 		});
 
-		tblPhongGop.scrollRectToVisible(tblPhongGop.getCellRect(0, 0, true));
+		Utils.scrollToVisiable(tblPhongGop, 0, 0);
 	}
 }

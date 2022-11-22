@@ -416,14 +416,14 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 				boolean res = nhanVien_DAO.capNhatNhanVien(nhanVien, new TaiKhoan(nhanVien, txtMatKhau.getText()));
 
 				if (res) {
-					new Notification(main, Type.SUCCESS, "Cập nhật thông tin nhân viên thành công").showNotification();
+					new Notification(main, Type.SUCCESS, "Cập nhật thông tin thành công").showNotification();
 					btnCapNhat.setVisible(true);
 					btnHuy.setVisible(false);
 					btnLuu.setEnabled(false);
 					setEnabledForm(false);
 					ThongTinCaNhan_GUI.this.main.repaint();
 				} else
-					new Notification(main, Type.ERROR, "Cập nhật thông tin nhân viên thất bại").showNotification();
+					new Notification(main, Type.ERROR, "Cập nhật thông tin thất bại").showNotification();
 			}
 		});
 

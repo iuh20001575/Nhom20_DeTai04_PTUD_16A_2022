@@ -98,6 +98,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private TextField txtNgayNhanPhong;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
+	private JScrollPane scrPhongDaChon;
 
 	/**
 	 * Create the frame.
@@ -209,6 +210,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 //		Set color scrollbar thumb
 		scbDanhSachPhong.setScrollbarColor(new Color(203, 203, 203));
 		scrDanhSachPhong.setVerticalScrollBar(scbDanhSachPhong);
+		scrDanhSachPhong.getViewport().setBackground(Color.WHITE);
 
 		tbl = new JTable() {
 			/**
@@ -383,25 +385,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		lblPhut.setBounds(612, 95, 45, 30);
 		pnlBody.add(lblPhut);
 
-		JScrollPane scrPhongDaChon = new JScrollPane();
-		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
-				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		scrPhongDaChon.setBounds(620, 0, 150, 225);
-		pnlPhong.add(scrPhongDaChon);
-
-		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
-		scbPhongDaChon.setBackgroundColor(Utils.secondaryColor);
-		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
-		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
-
-		pnlPhongDaChon = new JPanel();
-		pnlPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setViewportView(pnlPhongDaChon);
-		pnlPhongDaChon.setLayout(null);
-
 		setEnabledFilterComboBox(false);
 
 		showDanhSachPhongDaChon();
@@ -567,7 +550,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
-				if (row != -1) {
+				if (row != -1 && row < tbl.getRowCount()) {
 					if (dsPhongDaChon == null)
 						dsPhongDaChon = new ArrayList<>();
 					Phong phong = new Phong((String) tableModel.getValueAt(row, 0));
@@ -578,6 +561,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 					showDanhSachPhongDaChon();
 					if (khachHang != null)
 						btnDatPhong.setEnabled(true);
+					repaint();
 				}
 			}
 		});
@@ -690,7 +674,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		Utils.scrollToVisiable(tbl, 0, 0);
 	}
 
-	private PanelRound getPanelphongDaChonItem(int top, Phong phong) {
+	private PanelRound getPanelPhongDaChonItem(int top, Phong phong) {
 		pnlContainerItem = new PanelRound(8);
 		pnlContainerItem.setBackground(Utils.primaryColor);
 		pnlContainerItem.setBounds(11, top, 118, 36);
@@ -820,15 +804,38 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	}
 
 	private void showDanhSachPhongDaChon() {
-		pnlPhongDaChon.removeAll();
+		scrPhongDaChon = new JScrollPane();
+		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
+				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		scrPhongDaChon.setBounds(620, 0, 150, 225);
 
-		if (dsPhongDaChon != null) {
-			countItem = dsPhongDaChon.size();
-			for (int i = 0; i < countItem; ++i)
-				pnlPhongDaChon.add(getPanelphongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
-			pnlPhongDaChon.setPreferredSize(
-					new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
+		if (pnlPhong.getComponentAt(620, 0) != null) {
+			pnlPhong.remove(pnlPhong.getComponentAt(620, 0));
 		}
-		repaint();
+
+		pnlPhong.add(scrPhongDaChon);
+		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
+		scbPhongDaChon.setBackgroundColor(Color.WHITE);
+		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
+		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
+
+		pnlPhongDaChon = new JPanel();
+		pnlPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setViewportView(pnlPhongDaChon);
+		pnlPhongDaChon.setLayout(null);
+
+		if (dsPhongDaChon == null)
+			return;
+
+		countItem = dsPhongDaChon.size();
+		for (int i = 0; i < countItem; ++i) {
+			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
+		}
+
+		pnlPhongDaChon.setPreferredSize(
+				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
 	}
 }

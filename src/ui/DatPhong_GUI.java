@@ -193,6 +193,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		scrDanhSachPhong.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrDanhSachPhong.setBackground(Utils.secondaryColor);
 		scrDanhSachPhong.setBounds(0, 0, 564, 225);
+		scrDanhSachPhong.getViewport().setBackground(Color.WHITE);
 		pnlPhong.add(scrDanhSachPhong);
 
 		ScrollBarCustom scbDanhSachPhong = new ScrollBarCustom();
@@ -441,7 +442,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
-				if (row != -1) {
+				if (row != -1 && row < tbl.getRowCount()) {
 					if (dsPhongDaChon == null)
 						dsPhongDaChon = new ArrayList<>();
 					Phong phong = new Phong((String) tableModel.getValueAt(row, 0));
@@ -453,6 +454,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 						btnDatPhong.setEnabled(true);
 					capNhatDanhSachPhongDatNgay();
 					showDanhSachPhongDaChon();
+					repaint();
 				}
 			}
 		});
@@ -685,7 +687,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 		pnlPhong.add(scrPhongDaChon);
 		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
-		scbPhongDaChon.setBackgroundColor(Utils.secondaryColor);
+		scbPhongDaChon.setBackgroundColor(Color.WHITE);
 		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
 		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
 
