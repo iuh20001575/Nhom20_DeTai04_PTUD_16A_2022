@@ -342,7 +342,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 			public void valueChanged(ListSelectionEvent lse) {
 				if (!lse.getValueIsAdjusting()) {
 					int row = tbl.getSelectedRow();
-					if (row == -1)
+					if (row == -1 || row >= tbl.getRowCount())
 						btnChuyen.setEnabled(false);
 					else {
 						String maPhong = (String) tableModel.getValueAt(row, 0);
@@ -420,6 +420,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener {
 		List<Phong> dsPhong = datPhong_DAO.getPhongDatNgay(maPhong, loaiPhong, soKhach);
 		Utils.emptyTable(tbl);
 		addRow(dsPhong);
+		repaint();
 	}
 
 	@Override

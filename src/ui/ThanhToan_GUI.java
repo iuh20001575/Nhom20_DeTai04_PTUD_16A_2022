@@ -517,6 +517,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		tableColumnModel.getColumn(3).setCellRenderer(dtcr);
 		tableColumnModel.getColumn(4).setCellRenderer(dtcr);
 		scr.setViewportView(tbl);
+		txtTienNhan.setEnabled(false);
 
 //		Sự kiện window
 		this.addWindowListener(new WindowAdapter() {
@@ -617,30 +618,47 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 				Utils.formatTienTe(donGia), Utils.formatTienTe(thanhTien) });
 	}
 
+	private void handleItemStateChangedCmbMaDatPhong() {
+		if (((String) cmbMaDatPhong.getSelectedItem()).equals("Mã đặt phòng")) {
+			datPhong = null;
+			cmbSoDienThoai.setSelectedIndex(0);
+			txtTienNhan.setEnabled(false);
+		} else
+			datPhong = datPhong_DAO.getDatPhong((String) cmbMaDatPhong.getSelectedItem());
+	}
+
+	private void handleItemStateChangedCmbSoDienThoai() {
+		if (((String) cmbSoDienThoai.getSelectedItem()).equals("Số điện thoại")) {
+			datPhong = null;
+			cmbMaDatPhong.setSelectedIndex(0);
+			txtTienNhan.setEnabled(false);
+		} else
+			datPhong = datPhong_DAO.getDatPhongNgayTheoSoDienThoai((String) cmbSoDienThoai.getSelectedItem());
+	}
+
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED)
 			return;
+		txtTienNhan.setText("");
+		txtTienThua.setText("");
+		btnThanhToan.setEnabled(false);
+		
 		Utils.emptyTable(tbl);
 		Object o = e.getSource();
 		boolean isMaDatPhong = true;
 		cmbMaDatPhong.removeItemListener(_this);
 		cmbSoDienThoai.removeItemListener(_this);
-		if (o.equals(cmbMaDatPhong)) {
-			if (((String) cmbMaDatPhong.getSelectedItem()).equals("Mã đặt phòng")) {
-				datPhong = null;
-				cmbSoDienThoai.setSelectedIndex(0);
-			} else
-				datPhong = datPhong_DAO.getDatPhong((String) cmbMaDatPhong.getSelectedItem());
-		} else if (o.equals(cmbSoDienThoai)) {
+		
+		if (o.equals(cmbMaDatPhong))
+			handleItemStateChangedCmbMaDatPhong();
+		else if (o.equals(cmbSoDienThoai)) {
 			isMaDatPhong = false;
-			if (((String) cmbSoDienThoai.getSelectedItem()).equals("Số điện thoại")) {
-				datPhong = null;
-				cmbMaDatPhong.setSelectedIndex(0);
-			} else
-				datPhong = datPhong_DAO.getDatPhongNgayTheoSoDienThoai((String) cmbSoDienThoai.getSelectedItem());
+			handleItemStateChangedCmbSoDienThoai();
 		}
+		
 		if (datPhong != null) {
+			txtTienNhan.setEnabled(true);
 			KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(datPhong.getKhachHang().getMaKhachHang());
 			NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(datPhong.getNhanVien().getMaNhanVien());
 			List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO
@@ -703,6 +721,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		}
 		cmbMaDatPhong.addItemListener(_this);
 		cmbSoDienThoai.addItemListener(_this);
+		repaint();
 	}
 
 	/**
