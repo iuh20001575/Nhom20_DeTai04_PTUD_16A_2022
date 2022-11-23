@@ -19,7 +19,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -807,6 +806,28 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		pnlChuyenPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				{
+					long avg = 0;
+					for (int i = 0; i < 10000; i++) {
+						long startTime = System.nanoTime();
+						new ChuyenPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame);
+						long endTime = System.nanoTime();
+						long totalTime = endTime - startTime;
+						avg += totalTime;
+					}
+					System.out.println("V1: " + avg*1.0 / 10000);
+				}
+				{
+					long avg = 0;
+					for (int i = 0; i < 10000; i++) {
+						long startTime = System.nanoTime();
+						new ChuyenPhongV2(_this, QuanLyDatPhong_GUI.this.jFrame);
+						long endTime = System.nanoTime();
+						long totalTime = endTime - startTime;
+						avg += totalTime;
+					}
+					System.out.println("V2: " + avg*1.0 / 10000);
+				}
 				handleClickOutsidePnlPhong();
 				handleOpenSubFrame(pnlChuyenPhong, new ChuyenPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));
 			}
@@ -929,7 +950,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 						int minute = currTime.getMinute();
 						lblTime.setText(Utils.convertLocalTimeToString(LocalTime.of(hour, minute)));
 						LocalDate date = LocalDate.now();
-						DayOfWeek dayNow = date.getDayOfWeek();						
+						DayOfWeek dayNow = date.getDayOfWeek();
 						String thu = "T2";
 						int dayValue = dayNow.getValue();
 						if (dayValue == DayOfWeek.TUESDAY.getValue())
@@ -977,7 +998,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 			return false;
 
 		int keyCode = e.getKeyCode();
-		
+
 		switch (keyCode) {
 		case KeyEvent.VK_F1:
 			handleOpenSubFrame(pnlDatPhong, new DatPhong_GUI(_this, QuanLyDatPhong_GUI.this.jFrame));

@@ -70,6 +70,12 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	private DefaultTableModel tableModelPhongGop;
 	private JTable tblPhongCanGop;
 	private JTable tblPhongGop;
+	private JScrollPane scrPhongDaChon;
+	private JPanel pnlPhongDaChon;
+	private final int heightItem = 36;
+	private final int gapY = 8;
+	private final int top = 4;
+	private int countItem;
 
 	/**
 	 * Create the frame.
@@ -301,6 +307,26 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		pnlPhongGop.add(btnChonPhong);
 
 		showDanhSachPhongDaChon();
+
+//		Danh sách phòng đã chọn
+		scrPhongDaChon = new JScrollPane();
+		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
+				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		scrPhongDaChon.setBounds(416, 17, 150, 130);
+		pnlPhongGop.add(scrPhongDaChon);
+
+		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
+		scbPhongDaChon.setBackgroundColor(Color.WHITE);
+		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
+		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
+
+		pnlPhongDaChon = new JPanel();
+		pnlPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setViewportView(pnlPhongDaChon);
+		pnlPhongDaChon.setLayout(null);
 
 //		Lắng nghe sự kiện window
 		this.addWindowListener(new WindowAdapter() {
@@ -543,41 +569,23 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	 * Hiển thị các phòng đã chọn vào mục phòng đã chọn
 	 */
 	private void showDanhSachPhongDaChon() {
-		JScrollPane scrPhongDaChon = new JScrollPane();
-		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
-				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		scrPhongDaChon.setBounds(416, 17, 150, 130);
-
-		if (pnlPhongGop.getComponentAt(416, 17) != null)
-			pnlPhongGop.remove(pnlPhongGop.getComponentAt(416, 17));
-
-		pnlPhongGop.add(scrPhongDaChon);
-		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
-		scbPhongDaChon.setBackgroundColor(Color.WHITE);
-		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
-		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
-
-		JPanel pnlPhongDaChon = new JPanel();
-		pnlPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setViewportView(pnlPhongDaChon);
-		pnlPhongDaChon.setLayout(null);
-
 		if (dsPhongDaChon == null)
 			return;
+		pnlPhongDaChon.removeAll();
+		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 
-		int heightItem = 36;
-		int gapY = 8;
-		int top = 4;
-		int countItem = dsPhongDaChon.size();
+		countItem = dsPhongDaChon.size();
+		Phong phong;
+		PanelRound pnlPhongDaChonItem;
 		for (int i = 0; i < countItem; ++i) {
-			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
+			phong = dsPhongDaChon.get(i);
+			pnlPhongDaChonItem = getPanelPhongDaChonItem(top + i * (gapY + heightItem), phong);
+			pnlPhongDaChon.add(pnlPhongDaChonItem);
 		}
 
 		pnlPhongDaChon.setPreferredSize(
-				new Dimension(140, Math.max(105, top + heightItem * countItem + gapY * (countItem - 1))));
+				new Dimension(140, Math.max(107, top + heightItem * countItem + gapY * (countItem - 1))));
+		repaint();
 	}
 
 	/**

@@ -391,6 +391,25 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		setEventFilterComboBox(true);
 		cmbPhut.addItemListener(_this);
 
+		scrPhongDaChon = new JScrollPane();
+		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
+				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		scrPhongDaChon.setBounds(620, 0, 150, 225);
+		pnlPhong.add(scrPhongDaChon);
+
+		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
+		scbPhongDaChon.setBackgroundColor(Color.WHITE);
+		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
+		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
+
+		pnlPhongDaChon = new JPanel();
+		pnlPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setViewportView(pnlPhongDaChon);
+		pnlPhongDaChon.setLayout(null);
+
 //		Sự kiện window
 		this.addWindowListener(new WindowAdapter() {
 			@Override
@@ -804,38 +823,22 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	}
 
 	private void showDanhSachPhongDaChon() {
-		scrPhongDaChon = new JScrollPane();
-		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
-				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		scrPhongDaChon.setBounds(620, 0, 150, 225);
-
-		if (pnlPhong.getComponentAt(620, 0) != null) {
-			pnlPhong.remove(pnlPhong.getComponentAt(620, 0));
-		}
-
-		pnlPhong.add(scrPhongDaChon);
-		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
-		scbPhongDaChon.setBackgroundColor(Color.WHITE);
-		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
-		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
-
-		pnlPhongDaChon = new JPanel();
-		pnlPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setViewportView(pnlPhongDaChon);
-		pnlPhongDaChon.setLayout(null);
-
 		if (dsPhongDaChon == null)
 			return;
+		pnlPhongDaChon.removeAll();
+		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 
 		countItem = dsPhongDaChon.size();
+		Phong phong;
+		PanelRound pnlPhongDaChonItem;
 		for (int i = 0; i < countItem; ++i) {
-			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
+			phong = dsPhongDaChon.get(i);
+			pnlPhongDaChonItem = getPanelPhongDaChonItem(top + i * (gapY + heightItem), phong);
+			pnlPhongDaChon.add(pnlPhongDaChonItem);
 		}
 
 		pnlPhongDaChon.setPreferredSize(
 				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
+		repaint();
 	}
 }

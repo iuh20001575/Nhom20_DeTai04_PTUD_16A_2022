@@ -43,13 +43,13 @@ import entity.LoaiPhong;
 import entity.Phong;
 import utils.Utils;
 
-public class ChuyenPhong_GUI extends JFrame implements ItemListener, MouseListener {
+public class ChuyenPhongV2 extends JFrame implements ItemListener, MouseListener {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private ChuyenPhong_GUI _this;
+	private ChuyenPhongV2 _this;
 	private ComboBox<String> cmbLoaiPhong;
 	private ComboBox<String> cmbMaPhong;
 	private ComboBox<String> cmbPhongHienTai;
@@ -78,7 +78,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener, MouseListen
 	 * @param quanLyDatPhongGUI
 	 * @param glass
 	 */
-	public ChuyenPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
+	public ChuyenPhongV2(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		phong_DAO = new Phong_DAO();
@@ -337,7 +337,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener, MouseListen
 		btnChuyen.addMouseListener(this);
 	}
 
-	public ChuyenPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame, String maPhong) {
+	public ChuyenPhongV2(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame, String maPhong) {
 		this(quanLyDatPhongGUI, parentFrame);
 		this.maPhong = maPhong;
 	}

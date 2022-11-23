@@ -74,9 +74,8 @@ public class Phong {
 
 	@Override
 	public String toString() {
-//		return "Phong [maPhong=" + maPhong + ", loaiPhong=" + loaiPhong + ", soLuongKhach=" + soLuongKhach
-//				+ ", trangThai=" + trangThai + "]";
-		return maPhong;
+		return "Phong [maPhong=" + maPhong + ", loaiPhong=" + loaiPhong + ", soLuongKhach=" + soLuongKhach
+				+ ", trangThai=" + trangThai + "]";
 	}
 
 	@Override

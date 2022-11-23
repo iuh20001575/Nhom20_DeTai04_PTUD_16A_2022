@@ -313,6 +313,25 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 		showDanhSachPhongDaChon();
 
+		scrPhongDaChon = new JScrollPane();
+		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(Color.BLACK, 1, true),
+				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
+		scrPhongDaChon.setBounds(620, 0, 150, 225);
+		pnlPhong.add(scrPhongDaChon);
+
+		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
+		scbPhongDaChon.setBackgroundColor(Color.WHITE);
+		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
+		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
+
+		pnlPhongDaChon = new JPanel();
+		pnlPhongDaChon.setBackground(Color.WHITE);
+		scrPhongDaChon.setViewportView(pnlPhongDaChon);
+		pnlPhongDaChon.setLayout(null);
+
 //		Sự kiện window
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -356,14 +375,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			}
 		});
 
-		txtSoDienThoai.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				txtSoDienThoai.setError(false);
-			}
-		});
-
-//		Sự kiện nút làm mới
+		// Sự kiện nút làm mới
 		btnLamMoi.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -405,6 +417,14 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				String soDienThoai = txtSoDienThoai.getText().trim();
 
+				if (soDienThoai.equals("")) {
+					new Notification(_this, components.notification.Notification.Type.ERROR,
+							"Vui lòng nhập số điện thoại khách").showNotification();
+					txtSoDienThoai.setError(true);
+					txtSoDienThoai.requestFocus();
+					return;
+				}
+				
 				if (Utils.isSoDienThoai(soDienThoai)) {
 					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
 
@@ -431,8 +451,10 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 					}
 				} else {
 					new Notification(_this, components.notification.Notification.Type.ERROR,
-							"Số điện thoại không hợp lệ").showNotification();
+							"Số điện thoại phải có dạng 0XXXXXXXXX").showNotification();
 					txtSoDienThoai.setError(true);
+					txtSoDienThoai.selectAll();
+					txtSoDienThoai.requestFocus();
 				}
 			}
 		});
@@ -673,39 +695,23 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * Hiển thị các phòng đã chọn vào mục phòng đã chọn
 	 */
 	private void showDanhSachPhongDaChon() {
-		scrPhongDaChon = new JScrollPane();
-		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true),
-				"Ph\u00F2ng \u0111\u00E3 ch\u1ECDn", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		scrPhongDaChon.setBounds(620, 0, 150, 225);
-
-		if (pnlPhong.getComponentAt(620, 0) != null) {
-			pnlPhong.remove(pnlPhong.getComponentAt(620, 0));
-		}
-
-		pnlPhong.add(scrPhongDaChon);
-		ScrollBarCustom scbPhongDaChon = new ScrollBarCustom();
-		scbPhongDaChon.setBackgroundColor(Color.WHITE);
-		scbPhongDaChon.setScrollbarColor(Utils.primaryColor);
-		scrPhongDaChon.setVerticalScrollBar(scbPhongDaChon);
-
-		pnlPhongDaChon = new JPanel();
-		pnlPhongDaChon.setBackground(Color.WHITE);
-		scrPhongDaChon.setViewportView(pnlPhongDaChon);
-		pnlPhongDaChon.setLayout(null);
-
 		if (dsPhongDaChon == null)
 			return;
+		pnlPhongDaChon.removeAll();
+		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 
 		countItem = dsPhongDaChon.size();
+		Phong phong;
+		PanelRound pnlPhongDaChonItem;
 		for (int i = 0; i < countItem; ++i) {
-			pnlPhongDaChon.add(getPanelPhongDaChonItem(top + i * (gapY + heightItem), dsPhongDaChon.get(i)));
+			phong = dsPhongDaChon.get(i);
+			pnlPhongDaChonItem = getPanelPhongDaChonItem(top + i * (gapY + heightItem), phong);
+			pnlPhongDaChon.add(pnlPhongDaChonItem);
 		}
 
 		pnlPhongDaChon.setPreferredSize(
 				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
+		repaint();
 	}
 
 }

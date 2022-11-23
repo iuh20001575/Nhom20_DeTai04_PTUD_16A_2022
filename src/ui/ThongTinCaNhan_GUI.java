@@ -265,7 +265,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 				// TODO Auto-generated method stub
 				return Color.BLACK;
 			}
-			
+
 			@Override
 			public char getEchoChar() {
 				// TODO Auto-generated method stub
@@ -694,6 +694,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 	private boolean showThongBaoLoi(PasswordField txt, String message) {
 		new Notification(main, Type.ERROR, message).showNotification();
 		txt.setError(true);
+		txt.selectAll();
 		txt.requestFocus();
 		return false;
 	}
@@ -710,7 +711,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		String hoTen = txtHoTen.getText().trim();
 
 		if (hoTen.length() <= 0)
-			return showThongBaoLoi(txtHoTen, "Vui lòng nhập họ tên nhân viên");
+			return showThongBaoLoi(txtHoTen, "Vui lòng nhập họ tên");
 
 		if (!Pattern.matches(
 				String.format("[%s][%s]*( [%s][%s]*)+", vietNamese, vietNameseLower, vietNamese, vietNameseLower),
@@ -723,7 +724,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 			return showThongBaoLoi(txtCCCD, "Vui lòng nhập số căn cước công dân");
 
 		if (!Pattern.matches("\\d{12}", cccd))
-			return showThongBaoLoi(txtCCCD, "Số căn cước công dân phải có 12 ký tự số");
+			return showThongBaoLoi(txtCCCD, "Số căn cước công dân phải là 12 ký tự số");
 
 		if (nhanVien_DAO.isCCCDDaTonTai(nhanVien, cccd))
 			return showThongBaoLoi(txtCCCD, "Số căn cước công dân đã tồn tại");
@@ -760,7 +761,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		String tinh = (String) cmbTinh.getSelectedItem();
 
 		if (tinh.equals(Tinh.getTinhLabel())) {
-			new Notification(main, Type.ERROR, "Vui lòng chọn tỉnh/ thành phố").showNotification();
+			new Notification(main, Type.ERROR, "Vui lòng chọn tỉnh/thành phố").showNotification();
 			cmbTinh.showPopup();
 			return false;
 		}
@@ -768,7 +769,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		String quan = (String) cmbQuan.getSelectedItem();
 
 		if (quan.equals(Quan.getQuanLabel())) {
-			new Notification(main, Type.ERROR, "Vui lòng chọn quận/ huyện").showNotification();
+			new Notification(main, Type.ERROR, "Vui lòng chọn quận/huyện").showNotification();
 			cmbQuan.showPopup();
 			return false;
 		}
@@ -776,7 +777,7 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		String phuong = (String) cmbPhuong.getSelectedItem();
 
 		if (phuong.equals(Phuong.getPhuongLabel())) {
-			new Notification(main, Type.ERROR, "Vui lòng chọn phường/ xã").showNotification();
+			new Notification(main, Type.ERROR, "Vui lòng chọn phường/xã").showNotification();
 			cmbPhuong.showPopup();
 			return false;
 		}
