@@ -3,6 +3,8 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +12,32 @@ import java.util.List;
 import connectDB.ConnectDB;
 import entity.ChiTietDatPhong;
 import entity.DonDatPhong;
+import entity.KhachHang;
+import entity.NhanVien;
 import entity.Phong;
+import entity.DonDatPhong.TrangThai;
 
 public class PhieuDatPhong_DAO {
+	/**
+	 * Get đơn đặt phòng resultSet
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws SQLException
+	 */
+	private DonDatPhong getDonDatPhong(ResultSet resultSet) throws SQLException {
+		String maDonDatPhong = resultSet.getString("maDonDatPhong");
+		KhachHang khachHang = new KhachHang(resultSet.getString("khachHang"));
+		NhanVien nhanVien = new NhanVien(resultSet.getString("nhanVien"));
+		LocalDate ngayDatPhong = resultSet.getDate("ngayDatPhong").toLocalDate();
+		LocalTime gioDatPhong = resultSet.getTime("gioDatPhong").toLocalTime();
+		LocalDate ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
+		LocalTime gioNhanPhong = resultSet.getTime("gioNhanPhong").toLocalTime();
+		TrangThai trangThai = DonDatPhong.convertStringToTrangThai(resultSet.getString("trangThai"));
+		return new DonDatPhong(maDonDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong,
+				gioNhanPhong, trangThai);
+	}
+	
 	/**
 	 * Get chi tiết đặt phòng resultSet
 	 * 
@@ -24,50 +49,54 @@ public class PhieuDatPhong_DAO {
 		DonDatPhong donDatPhong = new DonDatPhong(resultSet.getString("donDatPhong"));
 		Phong phong = new Phong(resultSet.getString("phong"));
 		LocalTime gioVao = resultSet.getTime("gioVao").toLocalTime();
-		return new ChiTietDatPhong(donDatPhong, phong, gioVao);
+		Time time = resultSet.getTime("gioRa");
+		LocalTime gioRa = time == null ? null : resultSet.getTime("gioRa").toLocalTime();
+		return new ChiTietDatPhong(donDatPhong, phong, gioVao, gioRa);
 	}
-
 	/**
-	 * Get chi tiết đặt phòng của phòng đang chờ
+	 * Get chi tiết đặt phòng theo mã 
 	 * 
-	 * @param phong
+	 * @param maPhieuDat
 	 * @return
 	 */
-	public ChiTietDatPhong getChiTietDatPhongTheoMa(DonDatPhong datPhong) {
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE donDatPhong = ? ");
-			preparedStatement.setString(1, datPhong.getMaDonDatPhong());
+	public ChiTietDatPhong getChiTietDatPhongTheoMa(String maPhieuDat) {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 
-			ResultSet resultSet = preparedStatement.executeQuery();
+		try {
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE donDatPhong = ?");
+			preparedStatement.setString(1, maPhieuDat);
+			resultSet = preparedStatement.executeQuery();
 
 			if (resultSet.next())
 				return getChiTietDatPhong(resultSet);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 		return null;
 	}
 
 	/**
-	 * Get tất cả các chi tiết đặt phòng
+	 * Get tất cả các đơn đặt phòng
 	 * 
 	 * @param resultSet
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<ChiTietDatPhong> getAllChiTietDatPhong() {
-		List<ChiTietDatPhong> list = new ArrayList<>();
+	public List<DonDatPhong> getAllDonDatPhong() {
+		List<DonDatPhong> list = new ArrayList<>();
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDatPhong");
+					.prepareStatement("SELECT DISTINCT * FROM DonDatPhong where trangThai like N'Đang chờ' or trangThai like N'Đã hủy' ");
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-			ChiTietDatPhong chiTietDatPhong;
+			DonDatPhong donDatPhong;
 			while (resultSet.next()) {
-				chiTietDatPhong = getChiTietDatPhong(resultSet);
-				list.add(chiTietDatPhong);
+				donDatPhong = getDonDatPhong(resultSet);
+				list.add(donDatPhong);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -85,24 +114,26 @@ public class PhieuDatPhong_DAO {
 	 * @param trangThai
 	 * @return
 	 */
-	public List<ChiTietDatPhong> filterPhieuDatPhong(String maDatPhong, String soDienThoai, String trangThai) {
-		List<ChiTietDatPhong> list = new ArrayList<>();
+	public List<DonDatPhong> filterPhieuDatPhong(String maDatPhong, String soDienThoai,  String trangThai) {
+		List<DonDatPhong> list = new ArrayList<>();
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT * FROM  ChiTietDatPhong INNER JOIN DonDatPhong ON ChiTietDatPhong.donDatPhong = DonDatPhong.maDonDatPhong \r\n"
+					"SELECT DISTINCT maDonDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong, gioNhanPhong, trangThai FROM  ChiTietDatPhong INNER JOIN DonDatPhong ON ChiTietDatPhong.donDatPhong = DonDatPhong.maDonDatPhong \r\n"
 							+ "INNER JOIN KhachHang ON DonDatPhong.khachHang = KhachHang.maKhachHang\r\n"
-							+ "WHERE ChiTietDatPhong.donDatPhong LIKE ? and DonDatPhong.trangThai like ? and KhachHang.soDienThoai like ?");
+							+ "WHERE ChiTietDatPhong.donDatPhong LIKE ? and DonDatPhong.trangThai like ? and KhachHang.soDienThoai like ? \r\n"
+							+ "EXCEPT SELECT * FROM DonDatPhong\r\n"
+							+ "WHERE trangThai like N'Đang thuê' or trangThai like N'Đã trả'");
 
 			preparedStatement.setString(1, "%" + maDatPhong + "%");
 			preparedStatement.setString(2, "%" + trangThai + "%");
 			preparedStatement.setString(3, soDienThoai);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-			ChiTietDatPhong chiTietDatPhong;
+			DonDatPhong donDatPhong;
 			while (resultSet.next()) {
-				chiTietDatPhong = getChiTietDatPhong(resultSet);
-				list.add(chiTietDatPhong);
+				donDatPhong = getDonDatPhong(resultSet);
+				list.add(donDatPhong);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
