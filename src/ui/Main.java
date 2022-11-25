@@ -258,7 +258,7 @@ public class Main extends JFrame {
 		if (panelUI.getTitle().equals("Trang chủ")) {
 			while (!StackPanel.empty())
 				StackPanel.pop();
-			StackPanel.push(new PanelUI(new TrangChu_GUI(), "Trang chủ", 0, 0));
+			StackPanel.push(panelUI);
 		}
 		addPnlBody(panelUI);
 		menu.setSelectedMenu(panelUI.getIndex(), panelUI.getIndexSubmenu());
