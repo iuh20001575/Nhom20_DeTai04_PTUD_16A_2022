@@ -27,6 +27,7 @@ import com.raven.datechooser.DateChooser;
 
 import components.button.Button;
 import components.notification.Notification;
+import components.notification.Notification.Type;
 import components.radio.RadioButtonCustom;
 import components.textField.TextField;
 import dao.DiaChi_DAO;
@@ -57,17 +58,13 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 	private TextField txtNgaySinh;
 	private RadioButtonCustom radNam;
 	private TextField txtDiaChiCT;
-	private JFrame main;
+	private Main main;
 
 	public ThemKhachHang_GUI(Main main, JFrame jFrameParent, String soDienThoai) {
 		this(main);
-		setjFrameParent(jFrameParent);
+		this.jFrameParent = jFrameParent;
 		txtSDT.setText(soDienThoai);
 		txtSDT.setEnabled(false);
-	}
-
-	private void setjFrameParent(JFrame jFrameParent) {
-		this.jFrameParent = jFrameParent;
 	}
 
 	/**
@@ -397,25 +394,28 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		String sSDT = txtSDT.getText();
 		String sTinh = cmbTinh.getSelectedItem().toString();
 		String sQuan = cmbQuan.getSelectedItem().toString();
-
 		String sPhuong = cmbPhuong.getSelectedItem().toString();
+		String sDCCT = txtDiaChiCT.getText();
+
 		Tinh tinhSelect = DiaChi_DAO.getTinh(sTinh);
 		quan = DiaChi_DAO.getQuan(tinhSelect, sQuan);
 		phuong = DiaChi_DAO.getPhuong(quan, sPhuong);
-		String sDCCT = txtDiaChiCT.getText();
 
 		KhachHang khachHang = new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinhSelect, quan, phuong,
 				sDCCT);
 		if (khachHang_DAO.themKhachHang(khachHang)) {
-			new Notification(main, components.notification.Notification.Type.SUCCESS,
-					"Đã thêm khách hàng mới thành công").showNotification();
+			boolean isJFrameParent = jFrameParent != null;
 
-			if (jFrameParent != null) {
-				jFrameParent.setVisible(false);
+			new Notification(isJFrameParent ? jFrameParent : main, Type.SUCCESS, "Đã thêm khách hàng mới thành công")
+					.showNotification();
+
+			if (isJFrameParent) {
+				main.backPanel();
 				jFrameParent.setVisible(true);
-				main.setVisible(false);
+				jFrameParent.setAlwaysOnTop(true);
 			}
-		}
+		} else
+			new Notification(main, Type.ERROR, "Thêm khách hàng thất bại");
 	}
 
 	@Override

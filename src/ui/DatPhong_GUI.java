@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -90,19 +88,23 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	private final int top = 11;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
+	private Main main;
+	private QuanLyDatPhong_GUI quanLyDatPhongGUI;
 
 	/**
 	 * Create the frame.
 	 *
 	 * @param quanLyDatPhongGUI
-	 * @param parentFrame
+	 * @param main
 	 */
-	public DatPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
+	public DatPhong_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, Main main) {
 		_this = this;
 		khachHang_DAO = new KhachHang_DAO();
 		datPhong_DAO = new DonDatPhong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		this.main = main;
+		this.quanLyDatPhongGUI = quanLyDatPhongGUI;
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(0, 0, 850, 466);
@@ -353,6 +355,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 				if (Utils.isSoDienThoai(soDienThoai)) {
 					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
+					quanLyDatPhongGUI.getGlass().setVisible(true);
 
 					if (khachHang != null) {
 						txtTenKhachHang.setText(khachHang.getHoTen());
@@ -417,45 +420,12 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				String soDienThoai = txtSoDienThoai.getText().trim();
 
-				if (soDienThoai.equals("")) {
-					new Notification(_this, components.notification.Notification.Type.ERROR,
-							"Vui lòng nhập số điện thoại khách").showNotification();
-					txtSoDienThoai.setError(true);
-					txtSoDienThoai.requestFocus();
-					return;
-				}
-				
-				if (Utils.isSoDienThoai(soDienThoai)) {
-					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
-
-					if (khachHang != null) {
-						txtTenKhachHang.setText(khachHang.getHoTen());
-						if (dsPhongDaChon != null && dsPhongDaChon.size() > 0)
-							btnDatPhong.setEnabled(true);
-					} else {
-						JDialogCustom jDialogCustom = new JDialogCustom(_this);
-
-						jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
-							@Override
-							public void mouseClicked(MouseEvent e) {
-								Main main = new Main();
-								main.addPnlBody(new ThemKhachHang_GUI(main, _this, soDienThoai), "Thêm khách hàng", 2,
-										0);
-								main.setVisible(true);
-								setVisible(false);
-							}
-						});
-
-						jDialogCustom.showMessage("Warning",
-								"Khách hàng không có trong hệ thống, bạn có muốn thêm khách hàng mới không?");
-					}
-				} else {
-					new Notification(_this, components.notification.Notification.Type.ERROR,
-							"Số điện thoại phải có dạng 0XXXXXXXXX").showNotification();
-					txtSoDienThoai.setError(true);
-					txtSoDienThoai.selectAll();
-					txtSoDienThoai.requestFocus();
-				}
+				if (soDienThoai.equals(""))
+					handleSoDienThoaiRong();
+				else if (Utils.isSoDienThoai(soDienThoai))
+					handleSoDienThoaiHopLe(soDienThoai);
+				else
+					handleSoDienThoaiKhongHopLe();
 			}
 		});
 
@@ -504,10 +474,10 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 				if (res) {
 					quanLyDatPhongGUI.capNhatTrangThaiPhong();
 					quanLyDatPhongGUI.closeJFrameSub();
-					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
-							"Đặt phòng thành công").showNotification();
+					new Notification(main, Type.SUCCESS, "Đặt phòng thành công")
+							.showNotification();
 				} else {
-					new Notification(parentFrame, components.notification.Notification.Type.ERROR, "Đặt phòng thất bại")
+					new Notification(main, Type.ERROR, "Đặt phòng thất bại")
 							.showNotification();
 					quanLyDatPhongGUI.closeJFrameSub();
 				}
@@ -554,6 +524,46 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 					handleDatPhong();
 			}
 		});
+	}
+
+	private void handleSoDienThoaiRong() {
+		new Notification(_this, components.notification.Notification.Type.ERROR, "Vui lòng nhập số điện thoại khách")
+				.showNotification();
+		txtSoDienThoai.setError(true);
+		txtSoDienThoai.requestFocus();
+	}
+
+	private void handleSoDienThoaiKhongHopLe() {
+		new Notification(_this, components.notification.Notification.Type.ERROR,
+				"Số điện thoại phải có dạng 0XXXXXXXXX").showNotification();
+		txtSoDienThoai.setError(true);
+		txtSoDienThoai.selectAll();
+		txtSoDienThoai.requestFocus();
+	}
+
+	private void handleSoDienThoaiHopLe(String soDienThoai) {
+		khachHang = khachHang_DAO.getKhachHang(soDienThoai);
+
+		if (khachHang != null) {
+			txtTenKhachHang.setText(khachHang.getHoTen());
+			if (dsPhongDaChon != null && dsPhongDaChon.size() > 0)
+				btnDatPhong.setEnabled(true);
+		} else {
+			JDialogCustom jDialogCustom = new JDialogCustom(_this);
+
+			jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					ThemKhachHang_GUI themKhachHangGUI = new ThemKhachHang_GUI(main, _this, soDienThoai);
+					quanLyDatPhongGUI.getGlass().setVisible(false);
+					main.addPnlBody(themKhachHangGUI, "Thêm khách hàng", 2, 0);
+					setVisible(false);
+				}
+			});
+
+			jDialogCustom.showMessage("Warning",
+					"Khách hàng không có trong hệ thống, bạn có muốn thêm khách hàng mới không?");
+		}
 	}
 
 	/**

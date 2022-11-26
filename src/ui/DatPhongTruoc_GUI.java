@@ -106,7 +106,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	 * @param quanLyDatPhongGUI
 	 * @param glass
 	 */
-	public DatPhongTruoc_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
+	public DatPhongTruoc_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, Main main) {
 		_this = this;
 		datPhong_DAO = new DonDatPhong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
@@ -418,6 +418,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 				if (Utils.isSoDienThoai(soDienThoai)) {
 					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
+					quanLyDatPhongGUI.getGlass().setVisible(true);
 
 					if (khachHang != null) {
 						txtTenKhachHang.setText(khachHang.getHoTen());
@@ -447,6 +448,14 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				String soDienThoai = txtSoDienThoai.getText().trim();
 
+				if (soDienThoai.equals("")) {
+					new Notification(_this, components.notification.Notification.Type.ERROR,
+							"Vui lòng nhập số điện thoại khách").showNotification();
+					txtSoDienThoai.setError(true);
+					txtSoDienThoai.requestFocus();
+					return;
+				}
+
 				if (Utils.isSoDienThoai(soDienThoai)) {
 					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
 
@@ -461,10 +470,9 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 						jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
-								Main main = new Main();
-								main.addPnlBody(new ThemKhachHang_GUI(main, _this, soDienThoai), "Thêm khách hàng", 2,
-										0);
-								main.setVisible(true);
+								ThemKhachHang_GUI themKhachHang_GUI = new ThemKhachHang_GUI(main, _this, soDienThoai);
+								quanLyDatPhongGUI.getGlass().setVisible(false);
+								main.addPnlBody(themKhachHang_GUI, "Thêm khách hàng", 2, 0);
 								setVisible(false);
 							}
 						});
@@ -474,8 +482,10 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 					}
 				} else {
 					new Notification(_this, components.notification.Notification.Type.ERROR,
-							"Số điện thoại không hợp lệ").showNotification();
+							"Số điện thoại phải có dạng 0XXXXXXXXX").showNotification();
 					txtSoDienThoai.setError(true);
+					txtSoDienThoai.selectAll();
+					txtSoDienThoai.requestFocus();
 				}
 			}
 		});
@@ -623,8 +633,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				if (res) {
 					quanLyDatPhongGUI.capNhatTrangThaiPhong();
 					quanLyDatPhongGUI.closeJFrameSub();
-					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
-							"Đặt phòng thành công").showNotification();
+					new Notification(main, components.notification.Notification.Type.SUCCESS, "Đặt phòng thành công")
+							.showNotification();
 				}
 			}
 		});
