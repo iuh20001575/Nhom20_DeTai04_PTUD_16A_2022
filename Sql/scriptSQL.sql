@@ -23009,7 +23009,7 @@ CREATE TABLE DichVu (
 	soLuong INT NOT NULL,
 	donViTinh NVARCHAR(15) NOT NULL,
 	loaiDichVu CHAR(6) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
-	giaMua FLOAT,
+	giaMua FLOAT NOT NULL,
 	CONSTRAINT CHK_DichVu_maDichVu_ThoaMau check (maDichVu LIKE 'DV[0-9][0-9][0-9]'), -- Kiểm tra mã dịch vụ theo mẫu: DVXXX
 	CONSTRAINT CHK_DichVu_tenDichVu_KhacRong check (tenDichVu LIKE '[^ ]%'), -- Kiểm tra tên dịch vụ khác rỗng
 	CONSTRAINT CHK_DichVu_soLuong_LonHonBang0 check (soLuong >= 0), -- Kiểm tra số lượng dịch vụ >= 0

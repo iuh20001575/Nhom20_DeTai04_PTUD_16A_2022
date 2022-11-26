@@ -143,9 +143,11 @@ public class Main extends JFrame {
 		menu.setDrawer(drawer);
 		if (nhanVien.getTrangThai().equals(NhanVien.TrangThai.DangLam)) {
 			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("homeIcon.png"), Utils.trangChuMenuItem));
-			if (chucVu.equals(NhanVien.ChucVu.QuanLy))
+			if (chucVu.equals(NhanVien.ChucVu.QuanLy)) {
 				menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("businessman.png"), Utils.nhanVienMenuItem,
 						Utils.quanLyNhanVienMenuItem, Utils.themNhanVienMenuItem));
+				menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("user.png"), Utils.quanLyPhongMenuItem));
+			}
 			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("users-avatar.png"), Utils.quanLyKhachHangMenuItem));
 			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("doorMenuItem.png"), Utils.quanLyDatPhongMenuItem));
 			menu.addMenuItem(
@@ -154,7 +156,6 @@ public class Main extends JFrame {
 					Utils.thongKeDoanhThuMenuItem, Utils.thongKeHoaDonMenuItem, Utils.thongKeKhachHangMenuItem));
 			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("user.png"), Utils.thongTinCaNhanMenuItem));
 			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("user.png"), Utils.quanLyDichVuMenuItem));
-			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("user.png"), Utils.quanLyPhongMenuItem));
 			menu.setPreferredSize(new Dimension(getPreferredSize().width, 473));
 		}
 
