@@ -16,6 +16,61 @@ import entity.DonDatPhong;
 import entity.Phong;
 
 public class ChiTietDichVu_DAO {
+	public boolean capNhatSoLuongDichVu(String maDV, String maDP, String maPhong, int soLuongMua) {
+		boolean res = false;
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ? and phong = ?");
+			preparedStatement.setInt(1, soLuongMua);
+			preparedStatement.setString(2, maDV);
+			preparedStatement.setString(3, maDP);
+			preparedStatement.setString(4, maPhong);
+			res = preparedStatement.executeUpdate() > 0;
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+	public List<ChiTietDichVu> getAllChiTietDichVu() {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		Statement statement;
+		
+		try {
+			statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM ChiTietDichVu");
+			while (resultSet.next())
+				list.add(getChiTietDichVu(resultSet));
+			resultSet.close();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public List<ChiTietDichVu> getAllChiTietDichVuTheoMaDatPhong(String maDP, String maPhong) {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * " + "FROM   ChiTietDichVu INNER JOIN DonDatPhong ON  "
+							+ "	   ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong " + "WHERE  maDonDatPhong = ? and phong = ?");
+
+			preparedStatement.setString(1, maDP);
+			preparedStatement.setString(2, maPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getChiTietDichVu(resultSet));
+			resultSet.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
 	private ChiTietDichVu getChiTietDichVu(ResultSet resultSet) throws SQLException {
 		String maDV = resultSet.getString(1);
 		String maDP = resultSet.getString(2);
@@ -25,6 +80,27 @@ public class ChiTietDichVu_DAO {
 
 		return new ChiTietDichVu(new DichVu(maDV),
 				new ChiTietDatPhong(new DonDatPhong(maDP), new Phong(phong), gioVao.toLocalTime()), soLuong);
+	}
+
+	public ChiTietDichVu getChiTietDichVuTheoMa(String maDichVu, String maDatPhong, String maPhong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM ChiTietDichVu INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu INNER JOIN "
+							+ "DonDatPhong ON ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
+							+ "WHERE maDichVu = ? and maDonDatPhong = ? and phong = ?");
+			preparedStatement.setString(1, maDichVu);
+			preparedStatement.setString(2, maDatPhong);
+			preparedStatement.setString(3, maPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getChiTietDichVu(resultSet);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	public List<ChiTietDichVu> getDichVuTheoPhieuDatPhong(String datPhong) {
@@ -45,61 +121,22 @@ public class ChiTietDichVu_DAO {
 		return list;
 	}
 
-	public ChiTietDichVu getChiTietDichVuTheoMa(String maDichVu, String maDatPhong) {
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDichVu INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu INNER JOIN "
-							+ "DonDatPhong ON ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
-							+ "WHERE maDichVu = ? and maDonDatPhong = ?");
-			preparedStatement.setString(1, maDichVu);
-			preparedStatement.setString(2, maDatPhong);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return getChiTietDichVu(resultSet);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public List<ChiTietDichVu> getAllChiTietDichVu() {
+	public List<ChiTietDichVu> getDichVuTheoPhieuDatPhongVaPhong(String datPhong, String maPhong) {
 		List<ChiTietDichVu> list = new ArrayList<>();
-		Statement statement;
-		
+		String sql = "SELECT * FROM ChiTietDichVu WHERE donDatPhong = ? and phong = ? ";
+
 		try {
-			statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM ChiTietDichVu");
-			while (resultSet.next())
-				list.add(getChiTietDichVu(resultSet));
-			resultSet.close();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-
-	public List<ChiTietDichVu> getAllChiTietDichVuTheoMaDatPhong(String maDP) {
-		List<ChiTietDichVu> list = new ArrayList<>();
-		
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * " + "FROM   ChiTietDichVu INNER JOIN DonDatPhong ON  "
-							+ "	   ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong " + "WHERE  maDonDatPhong = ?");
-
-			preparedStatement.setString(1, maDP);
-
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, datPhong);
+			preparedStatement.setString(2, maPhong);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next())
 				list.add(getChiTietDichVu(resultSet));
-			resultSet.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 		return list;
 	}
 
@@ -107,10 +144,12 @@ public class ChiTietDichVu_DAO {
 		int res = 0;
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement("INSERT ChiTietDichVu VALUES (?, ?, ?)");
+			preparedStatement = ConnectDB.getConnection().prepareStatement("INSERT ChiTietDichVu VALUES (?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, chiTietDichVu.getDichVu().getMaDichVu());
 			preparedStatement.setString(2, chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getMaDonDatPhong());
-			preparedStatement.setInt(3, chiTietDichVu.getSoLuong());
+			preparedStatement.setString(3, chiTietDichVu.getChiTietDatPhong().getPhong().getMaPhong());
+			preparedStatement.setTime(4, Time.valueOf(chiTietDichVu.getChiTietDatPhong().getGioVao()));
+			preparedStatement.setInt(5, chiTietDichVu.getSoLuong());
 
 			res = preparedStatement.executeUpdate();
 			preparedStatement.close();
@@ -120,33 +159,18 @@ public class ChiTietDichVu_DAO {
 		return res > 0;
 	}
 
-	public boolean capNhatSoLuongDichVu(String maDV, String maDP, int soLuongMua) {
-		boolean res = false;
-		PreparedStatement preparedStatement;
-		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ?");
-			preparedStatement.setInt(1, soLuongMua);
-			preparedStatement.setString(2, maDV);
-			preparedStatement.setString(3, maDP);
-			res = preparedStatement.executeUpdate() > 0;
-			preparedStatement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return res;
-	}
-
-	public boolean xoaChiTietDichVu(String maDichVu, String maDatPhong) {
+	public boolean xoaChiTietDichVu(String maDichVu, String maDatPhong, String maPhong) {
 		int res = 0;
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("DELETE ChiTietDichVu  " + "FROM   ChiTietDichVu INNER JOIN "
-							+ "       DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu INNER JOIN "
-							+ "       DonDatPhong ON ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
-							+ "WHERE maDichVu = ? and maDonDatPhong = ?");
+					.prepareStatement("DELETE ChiTietDichVu "
+							+ "FROM   ChiTietDatPhong INNER JOIN ChiTietDichVu ON ChiTietDatPhong.donDatPhong = ChiTietDichVu.donDatPhong "
+							+ "AND ChiTietDatPhong.phong = ChiTietDichVu.phong AND ChiTietDatPhong.gioVao = ChiTietDichVu.gioVao "
+							+ "INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu "
+							+ "WHERE dichVu =  ? and ChiTietDichVu.donDatPhong = ? and ChiTietDichVu.phong = ?");
 			preparedStatement.setString(1, maDichVu);
 			preparedStatement.setString(2, maDatPhong);
+			preparedStatement.setString(3, maPhong);
 			res = preparedStatement.executeUpdate();
 			preparedStatement.close();
 		} catch (SQLException e) {

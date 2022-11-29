@@ -17,6 +17,53 @@ import entity.Tinh;
 
 public class KhachHang_DAO {
 	/**
+	 * Lọc khách hàng theo họ tên
+	 * 
+	 * @param hoTen
+	 * @return
+	 */
+	public List<KhachHang> filterKhachHang(String hoTen) {
+		List<KhachHang> list = new ArrayList<>();
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM KhachHang WHERE hoTen LIKE ?");
+
+			preparedStatement.setString(1, "%" + hoTen + "%");
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getKhachHang(resultSet));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
+	 * Get danh sách tất cả các khách hàng
+	 * 
+	 * @return
+	 */
+	public List<KhachHang> getAllKhachHang() {
+		List<KhachHang> list = new ArrayList<KhachHang>();
+
+		try {
+			Statement statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery(("SELECT * FROM KhachHang"));
+
+			while (resultSet.next())
+				list.add(getKhachHang(resultSet));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
 	 * Get khách hàng từ resultSet
 	 * 
 	 * @param resultSet
@@ -37,6 +84,51 @@ public class KhachHang_DAO {
 
 		return new KhachHang(maKhachHang, hoTen, cccd, ngaySinh, gioiTinh, soDienThoai, tinh, quan, phuong,
 				diaChiCuThe);
+	}
+
+	/**
+	 * Get khách hàng theo số điện thoại
+	 * 
+	 * @param soDienThoai
+	 * @return
+	 */
+	public KhachHang getKhachHang(String soDienThoai) {
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM KhachHang WHERE soDienThoai = ?");
+			preparedStatement.setString(1, soDienThoai);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getKhachHang(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get khách hàng theo mã khách hàng
+	 * 
+	 * @param maKhachHang
+	 * @return
+	 */
+	public KhachHang getKhachHangTheoMa(String maKhachHang) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM KhachHang WHERE maKhachHang = ?");
+			preparedStatement.setString(1, maKhachHang);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getKhachHang(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	public String getMaKhachHang() {
@@ -65,100 +157,36 @@ public class KhachHang_DAO {
 		return "KH001";
 	}
 
-	/**
-	 * Get danh sách tất cả các khách hàng
-	 * 
-	 * @return
-	 */
-	public List<KhachHang> getAllKhachHang() {
-		List<KhachHang> list = new ArrayList<KhachHang>();
-
-		try {
-			Statement statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery(("SELECT * FROM KhachHang"));
-
-			while (resultSet.next())
-				list.add(getKhachHang(resultSet));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	/**
-	 * Get khách hàng theo mã khách hàng
-	 * 
-	 * @param maKhachHang
-	 * @return
-	 */
-	public KhachHang getKhachHangTheoMa(String maKhachHang) {
+	public boolean isCCCDDaTonTai(String cccd) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM KhachHang WHERE maKhachHang = ?");
-			preparedStatement.setString(1, maKhachHang);
+					.prepareStatement("SELECT * FROM [dbo].[KhachHang] WHERE [cccd] = ?");
+			preparedStatement.setString(1, cccd);
+
 			ResultSet resultSet = preparedStatement.executeQuery();
 
-			if (resultSet.next())
-				return getKhachHang(resultSet);
+			return resultSet.next();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return null;
+		return false;
 	}
 
-	/**
-	 * Get khách hàng theo số điện thoại
-	 * 
-	 * @param soDienThoai
-	 * @return
-	 */
-	public KhachHang getKhachHang(String soDienThoai) {
-
+	public boolean isSoDienThoaiDaTonTai(String soDienThoai) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM KhachHang WHERE soDienThoai = ?");
+					.prepareStatement("SELECT * FROM [dbo].[KhachHang] WHERE [soDienThoai] = ?");
 			preparedStatement.setString(1, soDienThoai);
+
 			ResultSet resultSet = preparedStatement.executeQuery();
 
-			if (resultSet.next())
-				return getKhachHang(resultSet);
+			return resultSet.next();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return null;
-	}
-
-	/**
-	 * Thêm khách hàng
-	 * 
-	 * @param khachHang
-	 * @return
-	 */
-	public boolean themKhachHang(KhachHang khachHang) {
-		int res = 0;
-		PreparedStatement preparedStatement;
-		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("INSERT KhachHang VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			preparedStatement.setString(1, khachHang.getMaKhachHang());
-			preparedStatement.setString(2, khachHang.getHoTen());
-			preparedStatement.setString(3, khachHang.getCccd());
-			preparedStatement.setDate(4, Date.valueOf(khachHang.getNgaySinh()));
-			preparedStatement.setBoolean(5, khachHang.isGioiTinh());
-			preparedStatement.setString(6, khachHang.getSoDienThoai());
-			preparedStatement.setString(7, khachHang.getTinh().getId());
-			preparedStatement.setString(8, khachHang.getQuan().getId());
-			preparedStatement.setString(9, khachHang.getPhuong().getId());
-			preparedStatement.setString(10, khachHang.getDiaChiCuThe());
-			res = preparedStatement.executeUpdate();
-			preparedStatement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return res > 0;
+		return false;
 	}
 
 	/**
@@ -190,7 +218,37 @@ public class KhachHang_DAO {
 		}
 		return res > 0;
 	}
-
+	
+	/**
+	 * Thêm khách hàng
+	 * 
+	 * @param khachHang
+	 * @return
+	 */
+	public boolean themKhachHang(KhachHang khachHang) {
+		int res = 0;
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("INSERT KhachHang VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			preparedStatement.setString(1, khachHang.getMaKhachHang());
+			preparedStatement.setString(2, khachHang.getHoTen());
+			preparedStatement.setString(3, khachHang.getCccd());
+			preparedStatement.setDate(4, Date.valueOf(khachHang.getNgaySinh()));
+			preparedStatement.setBoolean(5, khachHang.isGioiTinh());
+			preparedStatement.setString(6, khachHang.getSoDienThoai());
+			preparedStatement.setString(7, khachHang.getTinh().getId());
+			preparedStatement.setString(8, khachHang.getQuan().getId());
+			preparedStatement.setString(9, khachHang.getPhuong().getId());
+			preparedStatement.setString(10, khachHang.getDiaChiCuThe());
+			res = preparedStatement.executeUpdate();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res > 0;
+	}
+	
 	/**
 	 * Xóa khách hàng
 	 * 
@@ -209,31 +267,5 @@ public class KhachHang_DAO {
 			e.printStackTrace();
 		}
 		return res > 0;
-	}
-
-	/**
-	 * Lọc khách hàng theo họ tên
-	 * 
-	 * @param hoTen
-	 * @return
-	 */
-	public List<KhachHang> filterKhachHang(String hoTen) {
-		List<KhachHang> list = new ArrayList<>();
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM KhachHang WHERE hoTen LIKE ?");
-
-			preparedStatement.setString(1, "%" + hoTen + "%");
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getKhachHang(resultSet));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return list;
 	}
 }

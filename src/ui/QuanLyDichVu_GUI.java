@@ -46,20 +46,47 @@ import utils.Utils;
 
 public class QuanLyDichVu_GUI extends JPanel {
 
+	private static JLabel lblTime;
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static JLabel lblTime;
-	private JTextField txtSearch;
+	public static void clock() {
+		Thread clock = new Thread() {
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						LocalDateTime currTime = LocalDateTime.now();
+						int day = currTime.getDayOfMonth();
+						int month = currTime.getMonthValue();
+						int year = currTime.getYear();
+						int hour = currTime.getHour();
+						int minute = currTime.getMinute();
+						int second = currTime.getSecond();
+						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
+								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
+								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+
+		clock.start();
+	}
+	private Button btnXem, btnThem, btnSua, btnXoa;
 	private JComboBox<String> cmbLoaiDV;
 	private JComboBox<String> cmbSoLuong;
-	private LoaiDichVu_DAO LoaiDichVu_DAO;
 	private DichVu_DAO DichVu_DAO;
-	private JTable tbl;
-	private DefaultTableModel tableModel;
+	private LoaiDichVu_DAO LoaiDichVu_DAO;
 	private ControlPanel pnlControl;
-	private Button btnXem, btnThem, btnSua, btnXoa;
+	private DefaultTableModel tableModel;
+	private JTable tbl;
+
+	private JTextField txtSearch;
 
 	public QuanLyDichVu_GUI(Main main) {
 		LoaiDichVu_DAO = new LoaiDichVu_DAO();
@@ -233,6 +260,11 @@ public class QuanLyDichVu_GUI extends JPanel {
 			private static final long serialVersionUID = 1L;
 
 			@Override
+			public boolean getShowVerticalLines() {
+				return false;
+			}
+
+			@Override
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
@@ -250,11 +282,6 @@ public class QuanLyDichVu_GUI extends JPanel {
 				else
 					c.setBackground(new Color(232, 232, 232));
 				return c;
-			}
-
-			@Override
-			public boolean getShowVerticalLines() {
-				return false;
 			}
 		};
 
@@ -434,11 +461,6 @@ public class QuanLyDichVu_GUI extends JPanel {
 		return list;
 	}
 
-	private void setEmptyTable() {
-		while (tbl.getRowCount() > 0)
-			tableModel.removeRow(0);
-	}
-
 	private void filterDichVu() {
 		String tenDichVu = txtSearch.getText();
 		String tenLoaiDV = cmbLoaiDV.getSelectedItem().toString();
@@ -451,6 +473,11 @@ public class QuanLyDichVu_GUI extends JPanel {
 		List<DichVu> list = DichVu_DAO.filterDichVu(tenDichVu, tenLoaiDV, soLuong);
 		setEmptyTable();
 		addRow(list);
+	}
+
+	private void setEmptyTable() {
+		while (tbl.getRowCount() > 0)
+			tableModel.removeRow(0);
 	}
 
 	private void setEnabledBtnActions() {
@@ -467,33 +494,6 @@ public class QuanLyDichVu_GUI extends JPanel {
 			btnThem.setEnabled(true);
 			btnXoa.setEnabled(true);
 		}
-	}
-
-	public static void clock() {
-		Thread clock = new Thread() {
-			@Override
-			public void run() {
-				for (;;) {
-					try {
-						LocalDateTime currTime = LocalDateTime.now();
-						int day = currTime.getDayOfMonth();
-						int month = currTime.getMonthValue();
-						int year = currTime.getYear();
-						int hour = currTime.getHour();
-						int minute = currTime.getMinute();
-						int second = currTime.getSecond();
-						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
-								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
-								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
-						sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-
-		clock.start();
 	}
 
 }

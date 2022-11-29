@@ -12,6 +12,27 @@ import entity.LoaiPhong;
 
 public class LoaiPhong_DAO {
 	/**
+	 * Get tất cả các loại phòng
+	 * 
+	 * @return
+	 */
+	public List<LoaiPhong> getAllLoaiPhong() {
+		List<LoaiPhong> list = new ArrayList<>();
+
+		try {
+			Statement statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM LoaiPhong");
+
+			while (resultSet.next())
+				list.add(getLoaiPhong(resultSet));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
 	 * Get loại phòng từ resultSet
 	 * 
 	 * @param resultSet
@@ -61,26 +82,5 @@ public class LoaiPhong_DAO {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Get tất cả các loại phòng
-	 * 
-	 * @return
-	 */
-	public List<LoaiPhong> getAllLoaiPhong() {
-		List<LoaiPhong> list = new ArrayList<>();
-
-		try {
-			Statement statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM LoaiPhong");
-
-			while (resultSet.next())
-				list.add(getLoaiPhong(resultSet));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return list;
 	}
 }

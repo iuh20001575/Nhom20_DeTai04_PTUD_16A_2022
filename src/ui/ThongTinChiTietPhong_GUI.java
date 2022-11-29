@@ -35,15 +35,15 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel pnlContent;
-	private TextField txtMaPhong;
-	private LoaiPhong_DAO loaiPhong_DAO;
+	private ThongTinChiTietPhong_GUI _this;
 	private ComboBox<String> cmbLoaiPhong;
 	private ComboBox<String> cmbSoLuong;
-	private ThongTinChiTietPhong_GUI _this;
-	private Phong_DAO phong_DAO;
+	private LoaiPhong_DAO loaiPhong_DAO;
 	private Main main;
+	private Phong_DAO phong_DAO;
+	private JPanel pnlContent;
 	private QuanLyPhong_GUI quanLyPhong_GUI;
+	private TextField txtMaPhong;
 
 	/**
 	 * Create the frame.
@@ -263,6 +263,17 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 	}
 
 	/**
+	 * set Enabled input form
+	 * 
+	 * @param b
+	 */
+	private void setEnabledForm(boolean b) {
+		txtMaPhong.setEnabled(b);
+		cmbSoLuong.setEnabled(b);
+		cmbLoaiPhong.setEnabled(b);
+	}
+
+	/**
 	 * Set dịch vụ vào form
 	 * 
 	 * @param dichVu
@@ -322,16 +333,5 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 		}
 
 		return true;
-	}
-
-	/**
-	 * set Enabled input form
-	 * 
-	 * @param b
-	 */
-	private void setEnabledForm(boolean b) {
-		txtMaPhong.setEnabled(b);
-		cmbSoLuong.setEnabled(b);
-		cmbLoaiPhong.setEnabled(b);
 	}
 }

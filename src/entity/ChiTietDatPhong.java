@@ -5,45 +5,27 @@ import java.util.Objects;
 
 public class ChiTietDatPhong {
 	private DonDatPhong donDatPhong;
-	private Phong phong;
-	private LocalTime gioVao;
 	private LocalTime gioRa;
+	private LocalTime gioVao;
+	private Phong phong;
 
-	public DonDatPhong getDonDatPhong() {
-		return donDatPhong;
+	public ChiTietDatPhong() {
+		super();
 	}
 
-	public void setDonDatPhong(DonDatPhong donDatPhong) {
+	public ChiTietDatPhong(DonDatPhong donDatPhong, Phong phong, LocalTime gioVao) {
+		super();
 		this.donDatPhong = donDatPhong;
-	}
-
-	public Phong getPhong() {
-		return phong;
-	}
-
-	public void setPhong(Phong phong) {
 		this.phong = phong;
-	}
-
-	public LocalTime getGioVao() {
-		return gioVao;
-	}
-
-	public void setGioVao(LocalTime gioVao) {
 		this.gioVao = gioVao;
 	}
 
-	public LocalTime getGioRa() {
-		return gioRa;
-	}
-
-	public void setGioRa(LocalTime gioRa) {
+	public ChiTietDatPhong(DonDatPhong donDatPhong, Phong phong, LocalTime gioVao, LocalTime gioRa) {
+		super();
+		this.donDatPhong = donDatPhong;
+		this.phong = phong;
+		this.gioVao = gioVao;
 		this.gioRa = gioRa;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(donDatPhong, gioVao, phong);
 	}
 
 	@Override
@@ -59,29 +41,47 @@ public class ChiTietDatPhong {
 				&& Objects.equals(phong, other.phong);
 	}
 
+	public DonDatPhong getDonDatPhong() {
+		return donDatPhong;
+	}
+
+	public LocalTime getGioRa() {
+		return gioRa;
+	}
+
+	public LocalTime getGioVao() {
+		return gioVao;
+	}
+
+	public Phong getPhong() {
+		return phong;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(donDatPhong, gioVao, phong);
+	}
+
+	public void setDonDatPhong(DonDatPhong donDatPhong) {
+		this.donDatPhong = donDatPhong;
+	}
+
+	public void setGioRa(LocalTime gioRa) {
+		this.gioRa = gioRa;
+	}
+
+	public void setGioVao(LocalTime gioVao) {
+		this.gioVao = gioVao;
+	}
+
+	public void setPhong(Phong phong) {
+		this.phong = phong;
+	}
+
 	@Override
 	public String toString() {
 		return "ChiTietDatPhong [donDatPhong=" + donDatPhong + ", phong=" + phong + ", gioVao=" + gioVao + ", gioRa="
 				+ gioRa + "]";
-	}
-
-	public ChiTietDatPhong(DonDatPhong donDatPhong, Phong phong, LocalTime gioVao, LocalTime gioRa) {
-		super();
-		this.donDatPhong = donDatPhong;
-		this.phong = phong;
-		this.gioVao = gioVao;
-		this.gioRa = gioRa;
-	}
-
-	public ChiTietDatPhong(DonDatPhong donDatPhong, Phong phong, LocalTime gioVao) {
-		super();
-		this.donDatPhong = donDatPhong;
-		this.phong = phong;
-		this.gioVao = gioVao;
-	}
-
-	public ChiTietDatPhong() {
-		super();
 	}
 
 }
