@@ -328,7 +328,7 @@ public class Main extends JFrame {
 					break;
 				case Utils.thongKeHoaDonMenuItem:
 					title = "Thống kê hóa đơn";
-					pnl = new ThongKeHoaDon_GUI();
+					pnl = new ThongKeHoaDon_GUI(_this);
 					break;
 				case Utils.thongKeKhachHangMenuItem:
 					title = "Thống kê khách hàng";

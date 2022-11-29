@@ -4,170 +4,171 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextPane;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import components.button.Button;
+import components.jDialog.JDialogCustom;
+import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import utils.Utils;
 
-public class ThongKeHoaDon_GUI extends JPanel {
+public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 
 	private static final long serialVersionUID = 1L;
 	private JTable tblThongKe;
+	private DefaultTableModel tableModel;
+	private Main main;
+	private JTextField txtMaHD, txtTenKhach, txtTenNhanVien, txtNgayLap;
 
-	/**
-	 * Create the frame.
-	 */
-	public ThongKeHoaDon_GUI() {
-		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
+
+	public ThongKeHoaDon_GUI(Main jFrame) {
+		main = jFrame;
+		setBackground(new Color(242, 246, 252));
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
 
-		JPanel pnlChonNTN = new JPanel();
-		pnlChonNTN.setBorder(new LineBorder(Utils.secondaryColor));
-		pnlChonNTN.setForeground(new Color(0, 0, 0));
-		pnlChonNTN.setBounds(0, 0, 1096, 175);
-		pnlChonNTN.setBackground(Utils.secondaryColor);
-		this.add(pnlChonNTN);
-		pnlChonNTN.setLayout(null);
+		PanelRound pnlContainerAction = new PanelRound();
+		pnlContainerAction.setBackground(Color.WHITE);
+		pnlContainerAction.setBounds(90, 20, Utils.getScreenWidth()-195, 180);
+		pnlContainerAction.setRoundBottomRight(20);
+		pnlContainerAction.setRoundTopLeft(20);
+		pnlContainerAction.setRoundTopRight(20);
+		pnlContainerAction.setRoundBottomLeft(20);
+		this.add(pnlContainerAction);
+		pnlContainerAction.setLayout(null);
 
-		JTextPane lblTKTheoTime = new JTextPane();
-		lblTKTheoTime.setBounds(133, 22, 233, 33);
-		lblTKTheoTime.setText("Thống kê hoá đơn theo:");
-		lblTKTheoTime.setForeground(Color.GRAY);
-		lblTKTheoTime.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblTKTheoTime.setBackground(new Color(203, 239, 255));
-		pnlChonNTN.add(lblTKTheoTime);
+		JLabel lblTimKiemHD = new JLabel("Tìm kiếm hoá đơn theo:");
+		lblTimKiemHD.setBounds(20, 15, 299, 28);
+		lblTimKiemHD.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		lblTimKiemHD.setForeground(new Color(100, 100, 100));
+		pnlContainerAction.add(lblTimKiemHD);
 
-		Button btnNgay = new Button("Ngày");
-		btnNgay.setBounds(424, 22, 102, 39);
-		pnlChonNTN.add(btnNgay);
-		btnNgay.setForeground(Color.GRAY);
-		btnNgay.setBackground(Color.WHITE);
-		btnNgay.setRadius(8);
-		btnNgay.setColor(new Color(255, 255, 255));
-		btnNgay.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		JPanel pnlTop = new JPanel();
+		pnlTop.setBackground(Color.WHITE);
+		pnlTop.setBounds(20, 60, Utils.getScreenWidth()-90, 30);
+		pnlContainerAction.add(pnlTop);
+		pnlTop.setLayout(null);
 
-		Button btnThang = new Button("Tháng");
-		btnThang.setFocusable(false);
-		btnThang.setBounds(574, 22, 102, 39);
-		btnThang.setText("Tháng");
-		btnThang.setRadius(8);
-		btnThang.setForeground(Color.WHITE);
-		btnThang.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		btnThang.setColor(new Color(140, 177, 180));
-		btnThang.setColorOver(new Color(140, 177, 180));
-		btnThang.setColorClick(new Color(140, 177, 180));
-		btnThang.setBorderColor(new Color(140, 177, 180));
-		btnThang.setBackground(new Color(140, 177, 180));
-		pnlChonNTN.add(btnThang);
+		JLabel lblTenKhach = new JLabel("Tên khách: ");
+		lblTenKhach.setBounds(10, 1, 90, 28);
+		lblTenKhach.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		lblTenKhach.setForeground(new Color(100, 100, 100));
+		pnlTop.add(lblTenKhach);
 
-		Button btnNam = new Button("Ngày");
-		btnNam.setBounds(734, 22, 102, 39);
-		pnlChonNTN.add(btnNam);
-		btnNam.setText("Năm");
-		btnNam.setRadius(8);
-		btnNam.setForeground(Color.GRAY);
-		btnNam.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		btnNam.setColor(Color.WHITE);
-		btnNam.setBackground(Color.WHITE);
+		txtTenKhach = new JTextField("");
+		txtTenKhach.setText("");
+		txtTenKhach.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtTenKhach.setBounds(115, 0, 250, 30);
+		txtTenKhach.setBorder(new LineBorder(Utils.primaryColor,1));
+		pnlTop.add(txtTenKhach);
+		txtTenKhach.setColumns(10);
 
-		JTextPane lblNgay = new JTextPane();
-		lblNgay.setBounds(360, 80, 61, 33);
-		pnlChonNTN.add(lblNgay);
-		lblNgay.setText("Ngày:");
-		lblNgay.setForeground(Color.GRAY);
-		lblNgay.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblNgay.setBackground(new Color(203, 239, 255));
+		JLabel lblTenNhanVien = new JLabel("Tên nhân viên: ");
+		lblTenNhanVien.setBounds(410, 1, 130, 28);
+		lblTenNhanVien.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		lblTenNhanVien.setForeground(new Color(100, 100, 100));
+		pnlTop.add(lblTenNhanVien);
 
-		JComboBox<String> cboNgay = new JComboBox<String>();
-		cboNgay.setBounds(451, 80, 113, 38);
-		pnlChonNTN.add(cboNgay);
-		cboNgay.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		cboNgay.setBackground(Color.WHITE);
+		txtTenNhanVien = new JTextField("");
+		txtTenNhanVien.setText("");
+		txtTenNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtTenNhanVien.setBounds(530, 0, 280, 30);
+		txtTenNhanVien.setBorder(new LineBorder(Utils.primaryColor,1));
+		pnlTop.add(txtTenNhanVien);
+		txtTenNhanVien.setColumns(10);
 
-		JTextPane lblThang = new JTextPane();
-		lblThang.setBounds(606, 80, 71, 33);
-		pnlChonNTN.add(lblThang);
-		lblThang.setText("Tháng:");
-		lblThang.setForeground(Color.GRAY);
-		lblThang.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblThang.setBackground(new Color(203, 239, 255));
+		JPanel pnlBottom = new JPanel();
+		pnlBottom.setBackground(Color.WHITE);
+		pnlBottom.setBounds(20, 100, Utils.getScreenWidth()-90, 45);
+		pnlContainerAction.add(pnlBottom);
+		pnlBottom.setLayout(null);
 
-		JComboBox<String> cboThang = new JComboBox<String>();
-		cboThang.setBounds(706, 80, 113, 38);
-		pnlChonNTN.add(cboThang);
-		cboThang.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		JLabel lblMaHD = new JLabel("Mã hoá đơn: ");
+		lblMaHD.setBounds(10, 12, 130, 28);
+		lblMaHD.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		lblMaHD.setForeground(new Color(100, 100, 100));
+		pnlBottom.add(lblMaHD);
 
-		JTextPane lblNam = new JTextPane();
-		lblNam.setBounds(867, 80, 69, 38);
-		pnlChonNTN.add(lblNam);
-		lblNam.setText("Năm:");
-		lblNam.setForeground(Color.GRAY);
-		lblNam.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblNam.setBackground(new Color(203, 239, 255));
+		txtMaHD = new JTextField("");
+		txtMaHD.setText("");
+		txtMaHD.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtMaHD.setBounds(115, 14, 250, 30);
+		txtMaHD.setBorder(new LineBorder(Utils.primaryColor,1));
+		pnlBottom.add(txtMaHD);
+		txtMaHD.setColumns(10);
 
-		JComboBox<String> cboNam = new JComboBox<String>();
-		cboNam.setBounds(956, 80, 113, 38);
-		pnlChonNTN.add(cboNam);
-		cboNam.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		JLabel lblNgayLap = new JLabel("Ngày lập: ");
+		lblNgayLap.setBounds(410, 12, 130, 28);
+		lblNgayLap.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		lblNgayLap.setForeground(new Color(100, 100, 100));
+		pnlBottom.add(lblNgayLap);
 
-		Button btnThongKe = new Button("Ngày");
-		btnThongKe.setBounds(811, 130, 258, 39);
-		pnlChonNTN.add(btnThongKe);
-		btnThongKe.setIcon(new ImageIcon("Icon\\statistics.png"));
-		btnThongKe.setForeground(Color.WHITE);
-		btnThongKe.setText("Thống kê hoá đơn:");
-		btnThongKe.setRadius(8);
-		btnThongKe.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		btnThongKe.setColor(new Color(140, 177, 180, 127));
-		btnThongKe.setColorClick(new Color(140, 177, 180, 127));
-		btnThongKe.setColorOver(new Color(140, 177, 180, 127));
-		btnThongKe.setBorderColor(new Color(140, 177, 180));
-		btnThongKe.setBackground(new Color(140, 177, 180));
+		txtNgayLap = new JTextField();
+		txtNgayLap.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtNgayLap.setBounds(530, 14, 280, 30);
+		txtNgayLap.setBorder(new LineBorder(Utils.primaryColor,1));
+		pnlBottom.add(txtNgayLap);
+		txtNgayLap.setColumns(10);
 
-		JPanel pnlThongKe = new JPanel();
-		pnlThongKe.setBackground(Utils.secondaryColor);
-		pnlThongKe.setBorder(new LineBorder(Utils.secondaryColor));
-		pnlThongKe.setBounds(0, 172, 1096, 345);
+		Button btnTimKiem = new Button("Tìm");
+		btnTimKiem.setFocusable(false);
+		btnTimKiem.setForeground(Color.WHITE);
+		btnTimKiem.setColor(Utils.primaryColor);
+		btnTimKiem.setBorderColor(Utils.primaryColor);
+		btnTimKiem.setRadius(10);
+		btnTimKiem.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnTimKiem.setBounds(860, 0, 160, 44);
+		btnTimKiem.setColorOver(Utils.primaryColor);
+		btnTimKiem.setColorTextOver(Color.WHITE);
+		btnTimKiem.setColorTextOut(Color.WHITE);
+		btnTimKiem.setColorClick(Utils.primaryColor);
+		btnTimKiem.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnTimKiem.setIcon(new ImageIcon("Icon\\searchIcon.png"));
+		pnlBottom.add(btnTimKiem);
 
-		this.add(pnlThongKe);
-		pnlThongKe.setLayout(null);
-
-		JTextPane lblTitleTable = new JTextPane();
-		lblTitleTable.setBounds(40, 0, 221, 33);
-		pnlThongKe.add(lblTitleTable);
-		lblTitleTable.setText("Hoá đơn trong: 2/2022");
-		lblTitleTable.setForeground(Color.GRAY);
-		lblTitleTable.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblTitleTable.setBackground(new Color(203, 239, 255));
+		PanelRound pnlTable = new PanelRound();
+		pnlTable.setBackground(Color.WHITE);
+		pnlTable.setBounds(90, 210, Utils.getScreenWidth()-195, 320);
+		pnlTable.setRoundBottomRight(20);
+		pnlTable.setRoundTopLeft(20);
+		pnlTable.setRoundTopRight(20);
+		pnlTable.setRoundBottomLeft(20);
+		this.add(pnlTable);
+		pnlTable.setLayout(null);
 
 		JScrollPane scr = new JScrollPane();
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(10, 31, 650, 323);
+		scr.setBounds(10, 10, Utils.getScreenWidth()-215, 300);
 		scr.setBackground(Utils.primaryColor);
 		ScrollBarCustom scp = new ScrollBarCustom();
 		scp.setScrollbarColor(new Color(203, 203, 203));
 		scr.setVerticalScrollBar(scp);
-		pnlThongKe.add(scr);
+		pnlTable.add(scr);
 
 		tblThongKe = new JTable() {
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -178,38 +179,134 @@ public class ThongKeHoaDon_GUI extends JPanel {
 			@Override
 			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
 				Component c = super.prepareRenderer(renderer, row, column);
-				if (row % 2 == 0)
+				if (isRowSelected(row))
+					c.setBackground(Utils.getOpacity(Utils.primaryColor, 0.5f));
+				else if (row % 2 == 0)
 					c.setBackground(Color.WHITE);
 				else
 					c.setBackground(new Color(232, 232, 232));
 				return c;
 			}
 		};
-		tblThongKe.setModel(new DefaultTableModel(
-				new Object[][] { { "MKH0001", "Xem chi tiết", "MKH001", "Xem chi tiết", "12-02-2022", "400.000VNĐ" }, },
-				new String[] { "Mã hoá đơn", "Mã phòng", "Mã KH", "Dịch vụ", "Ngày thuê", "Thành tiền" }));
-		tblThongKe.getColumnModel().getColumn(0).setPreferredWidth(100);
-		tblThongKe.getColumnModel().getColumn(1).setPreferredWidth(100);
-		tblThongKe.getColumnModel().getColumn(2).setPreferredWidth(100);
-		tblThongKe.getColumnModel().getColumn(3).setPreferredWidth(100);
-		tblThongKe.getColumnModel().getColumn(4).setPreferredWidth(100);
-		tblThongKe.getColumnModel().getColumn(5).setPreferredWidth(150);
-		// Cam
-		tblThongKe.getTableHeader().setBackground(new Color(255, 195, 174));
-		// Xanh
+
+		tableModel = new DefaultTableModel(new String[] { "Mã Hoá Đơn", "Mã Phòng","Tên Khách", "Tên Nhân Viên", "Ngày Lập", "Tiền Phòng", "Tiền Dịch Vụ", "Tổng Tiền" }, 0);
+		tblThongKe.setModel(tableModel);
+		tblThongKe.getColumnModel().getColumn(0).setPreferredWidth((Utils.getScreenWidth()-215)/8);
+		tblThongKe.getColumnModel().getColumn(1).setPreferredWidth((Utils.getScreenWidth()-215)/8);
+		tblThongKe.getColumnModel().getColumn(2).setPreferredWidth((Utils.getScreenWidth()-215)/8);
+		tblThongKe.getColumnModel().getColumn(3).setPreferredWidth((Utils.getScreenWidth()-215)/8);
+		tblThongKe.getColumnModel().getColumn(4).setPreferredWidth((Utils.getScreenWidth()-215)/8);
+		tblThongKe.getColumnModel().getColumn(5).setPreferredWidth((Utils.getScreenWidth()-215)/8);
+		tblThongKe.getColumnModel().getColumn(6).setPreferredWidth((Utils.getScreenWidth()-215)/8);
+		tblThongKe.getColumnModel().getColumn(7).setPreferredWidth((Utils.getScreenWidth()-215)/8 - 8);
+
 		tblThongKe.getTableHeader().setBackground(Utils.primaryColor);
-		tblThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		tblThongKe.setBackground(Utils.secondaryColor);
+		tblThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblThongKe.getTableHeader().setForeground(Color.WHITE);
 		tblThongKe.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblThongKe.getTableHeader()
-				.setPreferredSize(new Dimension((int) tblThongKe.getTableHeader().getPreferredSize().getWidth(), 36));
-		tblThongKe.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		.setPreferredSize(new Dimension((int) tblThongKe.getTableHeader().getPreferredSize().getWidth(), 36));
+		tblThongKe.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
 		tblThongKe.setRowHeight(36);
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-
 		tblThongKe.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+		tblThongKe.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 		scr.setViewportView(tblThongKe);
+
+		addRowRandomData();
+
+		Button btnXemChiTiet = new Button("Xem chi tiết");
+		btnXemChiTiet.setFocusable(false);
+		btnXemChiTiet.setForeground(Color.WHITE);
+		btnXemChiTiet.setColor(new Color(140, 177, 180, 70));
+		btnXemChiTiet.setBorderColor(new Color(193, 214, 217));
+		btnXemChiTiet.setRadius(10);
+		btnXemChiTiet.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnXemChiTiet.setBounds(986 , 550, 160, 44);
+		btnXemChiTiet.setColorOver(new Color(140, 177, 180, 70));
+		btnXemChiTiet.setColorTextOver(Color.WHITE);
+		btnXemChiTiet.setColorTextOut(Color.WHITE);
+		btnXemChiTiet.setColorClick(new Color(140, 177, 180, 70));
+		btnXemChiTiet.setBorder(new EmptyBorder(0, 0, 0, 0));
+		this.add(btnXemChiTiet);
+
+		tblThongKe.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent lse) {
+				if (!lse.getValueIsAdjusting()) {
+					btnXemChiTiet.setEnabled(true);
+					btnXemChiTiet.setColor(Utils.primaryColor);
+					btnXemChiTiet.setBorderColor(Utils.primaryColor);
+					btnXemChiTiet.setColorOver(Utils.primaryColor);
+					btnXemChiTiet.setColorClick(Utils.primaryColor);
+
+				}
+			}
+		});
+
+		btnXemChiTiet.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!btnXemChiTiet.isEnabled())
+					return;
+				int row = tblThongKe.getSelectedRow();
+				jFrame.setVisible(true);
+				if (row == -1) {
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+							"Vui lòng chọn hoá đơn muốn xem chi tiết!");
+				} else {
+					String maHoaDon = (String) tableModel.getValueAt(row, 0);
+					String ngayLap = (String) tableModel.getValueAt(row, 4);
+					String tenKhach = (String) tableModel.getValueAt(row, 2);
+					String tenNV = (String) tableModel.getValueAt(row, 	3);
+					HoaDon_GUI jFrame = new HoaDon_GUI(maHoaDon, ngayLap, tenKhach, tenNV);
+					jFrame.setVisible(true);
+				}
+			}
+		});
+		
+		btnTimKiem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableModel);
+				tblThongKe.setRowSorter(sorter);
+				if(txtTenKhach.getText().trim().length()!=0) {
+					sorter.setRowFilter(RowFilter.regexFilter(txtTenKhach.getText()));
+				}
+				else if(txtMaHD.getText().trim().length()!=0) {
+					sorter.setRowFilter(RowFilter.regexFilter(txtMaHD.getText()));
+				}
+				else if(txtTenNhanVien.getText().trim().length()!=0) {
+					sorter.setRowFilter(RowFilter.regexFilter(txtTenNhanVien.getText()));
+				}
+				else if(txtNgayLap.getText().trim().length()!=0) {
+					sorter.setRowFilter(RowFilter.regexFilter(txtNgayLap.getText()));
+				}
+			}
+		});
+
+
+	}
+	private void addRowRandomData() {
+		for(int i =1; i<15; i++)
+		{
+			String maHD = i<10 ? "HD000" + i : "HD00" + i; 
+			String maPhong = i<10 ? "P000" + i : "P00" + i; 
+			String tenKhach[] = {"Phạm Thanh An", "Phạm Tường Vy", "Đặng Ngọc Hoài Thương"};
+			String tenKH = tenKhach[ThreadLocalRandom.current().nextInt(0, 2 + 1)];
+			String tenNhanVien[] = {"Nguyen Thanh Trung", "Trần Huỳnh Như", "Đặng Ngọc Hoài Thương"};
+			String tenNV = tenNhanVien[ThreadLocalRandom.current().nextInt(1, 2 + 1)];
+			String ngayLap = ThreadLocalRandom.current().nextInt(1, 31 + 1) + "/" + ThreadLocalRandom.current().nextInt(1, 12 + 1) + "/" + "2022";
+			long tienPhong = ThreadLocalRandom.current().nextInt(1, 15 + 1)*100000 ;
+			long tienDichVu = ThreadLocalRandom.current().nextInt(1, 7 + 1)*100000;
+
+			tableModel.addRow(new String[] {maHD, maPhong, tenKH, tenNV, ngayLap, tienPhong + " VNĐ", tienDichVu + " VNĐ", tienPhong + tienDichVu +" VNĐ" });
+		}
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
 
 	}
 }
