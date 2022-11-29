@@ -31,12 +31,12 @@ import utils.Utils;
 public class ThemDichVu_GUI extends JPanel implements ItemListener {
 	private static final long serialVersionUID = 1L;
 
-	private LoaiDichVu_DAO loaiDichVu_DAO;
-	private DichVu_DAO dichVu_DAO;
 	private JComboBox<String> cmbLoaiDichVu;
-	private JLabel lblTime;
-	private JLabel lblThu;
+	private DichVu_DAO dichVu_DAO;
 	private JLabel lblDate;
+	private JLabel lblThu;
+	private JLabel lblTime;
+	private LoaiDichVu_DAO loaiDichVu_DAO;
 	private Main main;
 
 	public ThemDichVu_GUI(Main jFrame) {
@@ -198,13 +198,6 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 
 	}
 
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		if (e.getStateChange() != ItemEvent.SELECTED) {
-			return;
-		}
-	}
-
 	public void clock() {
 		Thread clock = new Thread() {
 			@Override
@@ -246,6 +239,13 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		};
 
 		clock.start();
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getStateChange() != ItemEvent.SELECTED) {
+			return;
+		}
 	}
 
 }
