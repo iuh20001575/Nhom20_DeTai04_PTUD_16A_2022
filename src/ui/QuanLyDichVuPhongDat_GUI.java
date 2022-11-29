@@ -55,26 +55,26 @@ import utils.Utils;
 
 public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 	private static final long serialVersionUID = 1L;
-	private JPanel pnlContent;
-	private TextField txtSoDienThoai;
-	private TextField txtTenKhachHang;
-	private KhachHang_DAO khachHang_DAO;
-	private KhachHang khachHang;
-	private DonDatPhong_DAO datPhong_DAO;
-	private LoaiDichVu_DAO loaiDichVu_DAO;
-	private DichVu_DAO dichVu_DAO;
+	private QuanLyDichVuPhongDat_GUI _this;
 	private ChiTietDichVu_DAO chiTietDichVu_DAO;
+	private JComboBox<String> cmbDatPhong;
+	private JComboBox<String> cmbLoaiDV;
+	private JComboBox<String> cmbTenDV;
+	private DonDatPhong_DAO datPhong_DAO;
+	private DichVu_DAO dichVu_DAO;
+	private List<DichVu> dsDVDaChon;
+	private KhachHang khachHang;
+	private KhachHang_DAO khachHang_DAO;
+	private LoaiDichVu_DAO loaiDichVu_DAO;
+	private String maDatPhongChon;
+	private JPanel pnlContent;
+	private JPanel pnlDV;
 	private DefaultTableModel tableModel2, tableModel3;
 	private JTable tbl2, tbl3;
-	private List<DichVu> dsDVDaChon;
-	private String maDatPhongChon;
-	private JPanel pnlDV;
-	private JComboBox<String> cmbDatPhong;
-	private JComboBox<String> cmbTenDV;
-	private JComboBox<String> cmbLoaiDV;
-	private JTextField txtTongTien;
+	private TextField txtSoDienThoai;
+	private TextField txtTenKhachHang;
 
-	private QuanLyDichVuPhongDat_GUI _this;
+	private JTextField txtTongTien;
 
 	public QuanLyDichVuPhongDat_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
@@ -502,6 +502,118 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		});
 	}
 
+	/**
+	 * Thêm một DV vào table
+	 *
+	 * @param dichVu dichVu muốn thêm
+	 */
+	private void addRow2(DichVu dichVu) {
+		tableModel2.addRow(new String[] { dichVu.getMaDichVu(), dichVu.getTenDichVu(), dichVu.getSoLuong() + "",
+				Utils.formatTienTe(dichVu.getGiaBan()) });
+	}
+
+	/**
+	 * Thêm danh sách các DV vào table
+	 *
+	 * @param list danh sách các DV cần thêm
+	 */
+	private void addRow2(List<DichVu> list) {
+		emptyTable(tbl2, tableModel2);
+
+		list.forEach(dichVu -> addRow2(dichVu));
+	}
+
+	/**
+	 * Thêm một DV vào table
+	 *
+	 * @param dichVu dichVu muốn thêm
+	 */
+	private void addRow3(DichVu dichVu) {
+		tableModel3.addRow(new String[] { dichVu.getMaDichVu(), dichVu.getTenDichVu(),
+				String.valueOf(dichVu.getSoLuong()), Utils.formatTienTe(dichVu.getGiaBan() * dichVu.getSoLuong()) });
+
+	}
+
+	/**
+	 * Thêm danh sách các DV vào table
+	 *
+	 * @param list danh sách các DV cần thêm
+	 */
+	private void addRow3(List<DichVu> list) {
+		emptyTable(tbl3, tableModel3);
+		list.forEach(dichVu -> addRow3(dichVu));
+	}
+
+	private void capNhatThanhTien() {
+		if (dsDVDaChon == null)
+			txtTongTien.setText("Tổng tiền: " + Utils.formatTienTe(0));
+		double tongTien = 0;
+		for (DichVu dichVu : dsDVDaChon)
+			tongTien += dichVu.getGiaBan() * dichVu.getSoLuong();
+		txtTongTien.setText("Tổng tiền: " + Utils.formatTienTe(tongTien));
+	}
+
+	/**
+	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
+	 *
+	 * @param jComboBox
+	 */
+	private void emptyComboBox(JComboBox<String> jComboBox) {
+		jComboBox.removeAllItems();
+	}
+
+	/**
+	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
+	 *
+	 * @param jComboBox ComboBox
+	 * @param label
+	 */
+	private void emptyComboBox(JComboBox<String> jComboBox, String label) {
+		emptyComboBox(jComboBox);
+		jComboBox.addItem(label);
+	}
+
+	/**
+	 * Xóa tất các các row trong table
+	 */
+	private void emptyTable(JTable tbl, DefaultTableModel model) {
+		while (tbl.getRowCount() > 0)
+			model.removeRow(0);
+	}
+
+	/**
+	 * Lọc danh sách các phòng theo mã phòng, loại phòng và số lượng
+	 */
+	private void filterDichVu() {
+		String maDV = (String) cmbTenDV.getSelectedItem();
+		String loaiDV = (String) cmbLoaiDV.getSelectedItem();
+
+		if (maDV.equals("Tên dịch vụ"))
+			maDV = "";
+		if (loaiDV.equals("Phân loại"))
+			loaiDV = "";
+
+		List<DichVu> list = dichVu_DAO.getDichVuTheoMaVaLoai(maDV, loaiDV);
+		emptyTable(tbl2, tableModel2);
+		addRow2(list);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.DESELECTED)
+			return;
+
+		filterDichVu();
+	}
+
+	private void loadTable3() {
+		maDatPhongChon = (String) cmbDatPhong.getSelectedItem();
+
+		if (maDatPhongChon.equals("Mã đặt phòng") || maDatPhongChon.equals(null))
+			return;
+		addRow3(dsDVDaChon);
+	}
+
 	private void showDanhSachDichVuDaChon() {
 		JScrollPane scrDanhSachDichVuDuocChon = new JScrollPane();
 		scrDanhSachDichVuDuocChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -675,118 +787,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 				capNhatThanhTien();
 			}
 		});
-	}
-
-	/**
-	 * Thêm một DV vào table
-	 *
-	 * @param dichVu dichVu muốn thêm
-	 */
-	private void addRow2(DichVu dichVu) {
-		tableModel2.addRow(new String[] { dichVu.getMaDichVu(), dichVu.getTenDichVu(), dichVu.getSoLuong() + "",
-				Utils.formatTienTe(dichVu.getGiaBan()) });
-	}
-
-	/**
-	 * Thêm danh sách các DV vào table
-	 *
-	 * @param list danh sách các DV cần thêm
-	 */
-	private void addRow2(List<DichVu> list) {
-		emptyTable(tbl2, tableModel2);
-
-		list.forEach(dichVu -> addRow2(dichVu));
-	}
-
-	/**
-	 * Thêm một DV vào table
-	 *
-	 * @param dichVu dichVu muốn thêm
-	 */
-	private void addRow3(DichVu dichVu) {
-		tableModel3.addRow(new String[] { dichVu.getMaDichVu(), dichVu.getTenDichVu(),
-				String.valueOf(dichVu.getSoLuong()), Utils.formatTienTe(dichVu.getGiaBan() * dichVu.getSoLuong()) });
-
-	}
-
-	/**
-	 * Thêm danh sách các DV vào table
-	 *
-	 * @param list danh sách các DV cần thêm
-	 */
-	private void addRow3(List<DichVu> list) {
-		emptyTable(tbl3, tableModel3);
-		list.forEach(dichVu -> addRow3(dichVu));
-	}
-
-	/**
-	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
-	 *
-	 * @param jComboBox ComboBox
-	 * @param label
-	 */
-	private void emptyComboBox(JComboBox<String> jComboBox, String label) {
-		emptyComboBox(jComboBox);
-		jComboBox.addItem(label);
-	}
-
-	/**
-	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
-	 *
-	 * @param jComboBox
-	 */
-	private void emptyComboBox(JComboBox<String> jComboBox) {
-		jComboBox.removeAllItems();
-	}
-
-	/**
-	 * Xóa tất các các row trong table
-	 */
-	private void emptyTable(JTable tbl, DefaultTableModel model) {
-		while (tbl.getRowCount() > 0)
-			model.removeRow(0);
-	}
-
-	private void loadTable3() {
-		maDatPhongChon = (String) cmbDatPhong.getSelectedItem();
-
-		if (maDatPhongChon.equals("Mã đặt phòng") || maDatPhongChon.equals(null))
-			return;
-		addRow3(dsDVDaChon);
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		if (e.getStateChange() == ItemEvent.DESELECTED)
-			return;
-
-		filterDichVu();
-	}
-
-	/**
-	 * Lọc danh sách các phòng theo mã phòng, loại phòng và số lượng
-	 */
-	private void filterDichVu() {
-		String maDV = (String) cmbTenDV.getSelectedItem();
-		String loaiDV = (String) cmbLoaiDV.getSelectedItem();
-
-		if (maDV.equals("Tên dịch vụ"))
-			maDV = "";
-		if (loaiDV.equals("Phân loại"))
-			loaiDV = "";
-
-		List<DichVu> list = dichVu_DAO.getDichVuTheoMaVaLoai(maDV, loaiDV);
-		emptyTable(tbl2, tableModel2);
-		addRow2(list);
-	}
-
-	private void capNhatThanhTien() {
-		if (dsDVDaChon == null)
-			txtTongTien.setText("Tổng tiền: " + Utils.formatTienTe(0));
-		double tongTien = 0;
-		for (DichVu dichVu : dsDVDaChon)
-			tongTien += dichVu.getGiaBan() * dichVu.getSoLuong();
-		txtTongTien.setText("Tổng tiền: " + Utils.formatTienTe(tongTien));
 	}
 
 }
