@@ -20,14 +20,14 @@ import utils.Utils;
 public class ThongKeDoanhThu_GUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel pnlResult, pnlResultTitle, pnlChart;
+	private Button btnDay, btnMonth, btnYear;
 	private JComboBox<String> cboDay, cboMonth, cboYear;
 	private Chart chart;
-	private Button btnDay, btnMonth, btnYear;
+	private JLabel lblResDate, lblTongDoanhThuKQ, lblTongTienPhongKQ, lblDoanhThuPhongThuongKQ, lblDoanhThuPhongVIPKQ;
+	private JPanel pnlResult, pnlResultTitle, pnlChart;
 	private String valueDay = "";
 	private String valueMonth = "";
 	private String valueYear = "";
-	private JLabel lblResDate, lblTongDoanhThuKQ, lblTongTienPhongKQ, lblDoanhThuPhongThuongKQ, lblDoanhThuPhongVIPKQ;
 
 	public ThongKeDoanhThu_GUI() {
 		setBackground(Utils.secondaryColor);
