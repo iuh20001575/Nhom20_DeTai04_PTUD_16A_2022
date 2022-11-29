@@ -56,26 +56,26 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	private Button btnChonPhong;
 	private Button btnChuyen;
 	private ComboBox<String> cmbMaDatPhong;
+	private int countItem;
 	private DonDatPhong_DAO datPhong_DAO;
 	private List<Phong> dsPhongCanGop;
 	private List<Phong> dsPhongDaChon;
+	private final int gapY = 8;
+	private final int heightItem = 36;
 	private final String labelCmbMaDatPhong = "Mã đặt phòng";
 	private JLabel lblIconClose;
 	private JLabel lblMaPhong;
 	private LoaiPhong_DAO loaiPhong_DAO;
 	private PanelRound pnlContainerItem;
 	private JPanel pnlContent;
+	private JPanel pnlPhongDaChon;
 	private JPanel pnlPhongGop;
+	private JScrollPane scrPhongDaChon;
 	private DefaultTableModel tableModelPhongCanGop;
 	private DefaultTableModel tableModelPhongGop;
 	private JTable tblPhongCanGop;
 	private JTable tblPhongGop;
-	private JScrollPane scrPhongDaChon;
-	private JPanel pnlPhongDaChon;
-	private final int heightItem = 36;
-	private final int gapY = 8;
 	private final int top = 4;
-	private int countItem;
 
 	/**
 	 * Create the frame.
