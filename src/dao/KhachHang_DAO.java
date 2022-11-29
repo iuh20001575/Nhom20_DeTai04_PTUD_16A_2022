@@ -157,6 +157,38 @@ public class KhachHang_DAO {
 		return "KH001";
 	}
 
+	public boolean isCCCDDaTonTai(String cccd) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM [dbo].[KhachHang] WHERE [cccd] = ?");
+			preparedStatement.setString(1, cccd);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			return resultSet.next();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public boolean isSoDienThoaiDaTonTai(String soDienThoai) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM [dbo].[KhachHang] WHERE [soDienThoai] = ?");
+			preparedStatement.setString(1, soDienThoai);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			return resultSet.next();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
 	/**
 	 * Cập nhật thông tin khách hàng
 	 * 
@@ -186,7 +218,7 @@ public class KhachHang_DAO {
 		}
 		return res > 0;
 	}
-
+	
 	/**
 	 * Thêm khách hàng
 	 * 
@@ -216,7 +248,7 @@ public class KhachHang_DAO {
 		}
 		return res > 0;
 	}
-
+	
 	/**
 	 * Xóa khách hàng
 	 * 
