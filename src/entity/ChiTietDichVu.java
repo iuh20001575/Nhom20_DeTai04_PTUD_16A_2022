@@ -65,10 +65,6 @@ public class ChiTietDichVu {
 		this.soLuong = soLuong;
 	}
 
-	public double tinhThanhTien() {
-		return dichVu.getGiaBan() * soLuong;
-	}
-
 	@Override
 	public String toString() {
 		return "ChiTietDichVu [dichVu=" + dichVu + ", chiTietDatPhong=" + chiTietDatPhong + ", soLuong=" + soLuong
