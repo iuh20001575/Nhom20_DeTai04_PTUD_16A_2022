@@ -41,31 +41,24 @@ import utils.Utils;
 public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseListener {
 	private static final long serialVersionUID = 1L;
 
+	private JComboBox<String> cmbPhuong;
+	private JComboBox<String> cmbQuan;
+	private JComboBox<String> cmbTinh;
 	private DateChooser dateChoose;
 	private DiaChi_DAO DiaChi_DAO;
-	private KhachHang_DAO khachHang_DAO;
-	private JComboBox<String> cmbTinh;
-	private JComboBox<String> cmbQuan;
-	private JComboBox<String> cmbPhuong;
 	private JFrame jFrameParent = null;
-	private Tinh tinh;
-	private Quan quan;
-	private Phuong phuong;
-	private TextField txtSDT;
-	private TextField txtMa;
-	private TextField txtTen;
-	private TextField txtCCCD;
-	private TextField txtNgaySinh;
-	private RadioButtonCustom radNam;
-	private TextField txtDiaChiCT;
+	private KhachHang_DAO khachHang_DAO;
 	private Main main;
-
-	public ThemKhachHang_GUI(Main main, JFrame jFrameParent, String soDienThoai) {
-		this(main);
-		this.jFrameParent = jFrameParent;
-		txtSDT.setText(soDienThoai);
-		txtSDT.setEnabled(false);
-	}
+	private Phuong phuong;
+	private Quan quan;
+	private RadioButtonCustom radNam;
+	private Tinh tinh;
+	private TextField txtCCCD;
+	private TextField txtDiaChiCT;
+	private TextField txtMa;
+	private TextField txtNgaySinh;
+	private TextField txtSDT;
+	private TextField txtTen;
 
 	/**
 	 * @wbp.parser.constructor
@@ -303,9 +296,10 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		addAncestorListener(new AncestorListener() {
 
 			@Override
-			public void ancestorRemoved(AncestorEvent event) {
+			public void ancestorAdded(AncestorEvent event) {
 				// TODO Auto-generated method stub
-
+				dateChoose.showPopup();
+				dateChoose.hidePopup();
 			}
 
 			@Override
@@ -315,20 +309,20 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 			}
 
 			@Override
-			public void ancestorAdded(AncestorEvent event) {
+			public void ancestorRemoved(AncestorEvent event) {
 				// TODO Auto-generated method stub
-				dateChoose.showPopup();
-				dateChoose.hidePopup();
+
 			}
 		});
 
 		txtMa.setText(khachHang_DAO.getMaKhachHang());
 	}
 
-	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list) {
-		list.removeAllItems();
-		// list.addItem((E) firstLabel);
-		return list;
+	public ThemKhachHang_GUI(Main main, JFrame jFrameParent, String soDienThoai) {
+		this(main);
+		this.jFrameParent = jFrameParent;
+		txtSDT.setText(soDienThoai);
+		txtSDT.setEnabled(false);
 	}
 
 	@Override
@@ -419,6 +413,16 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 	}
 
 	@Override
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+
+	}
+
+	@Override
 	public void mousePressed(MouseEvent e) {
 
 	}
@@ -428,13 +432,9 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 	}
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-
+	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list) {
+		list.removeAllItems();
+		// list.addItem((E) firstLabel);
+		return list;
 	}
 }
