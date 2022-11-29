@@ -36,6 +36,11 @@ import utils.Utils;
 
 public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 	private static final long serialVersionUID = 1L;
+	private Button btnHuy;
+	private Button btnLuu;
+	private ComboBox<String> cmbPhuong;
+	private ComboBox<String> cmbQuan;
+	private ComboBox<String> cmbTinh;
 	private DateChooser dateChoose;
 	private DiaChi_DAO DiaChi_DAO;
 	private boolean isEnabledEventPhuong = false;
@@ -43,22 +48,17 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 	private boolean isEnabledEventTinh = false;
 	private KhachHang khachHang;
 	private KhachHang_DAO khachHang_DAO;
-	private Quan quan;
 	private Main main;
-	private Tinh tinh;
-	private TextField txtMa;
-	private TextField txtTen;
-	private TextField txtCCCD;
-	private TextField txtNgaySinh;
-	private RadioButtonCustom radNu;
+	private Quan quan;
 	private RadioButtonCustom radNam;
-	private TextField txtSDT;
-	private ComboBox<String> cmbTinh;
-	private ComboBox<String> cmbQuan;
-	private ComboBox<String> cmbPhuong;
+	private RadioButtonCustom radNu;
+	private Tinh tinh;
+	private TextField txtCCCD;
 	private TextField txtDiaChiCT;
-	private Button btnHuy;
-	private Button btnLuu;
+	private TextField txtMa;
+	private TextField txtNgaySinh;
+	private TextField txtSDT;
+	private TextField txtTen;
 
 	public CapNhatKhachHang_GUI(Main jFrame, KhachHang khachHang) {
 		main = jFrame;
