@@ -19,94 +19,6 @@ import entity.DonDatPhong.TrangThai;
 
 public class PhieuDatPhong_DAO {
 	/**
-	 * Get đơn đặt phòng resultSet
-	 * 
-	 * @param resultSet
-	 * @return
-	 * @throws SQLException
-	 */
-	private DonDatPhong getDonDatPhong(ResultSet resultSet) throws SQLException {
-		String maDonDatPhong = resultSet.getString("maDonDatPhong");
-		KhachHang khachHang = new KhachHang(resultSet.getString("khachHang"));
-		NhanVien nhanVien = new NhanVien(resultSet.getString("nhanVien"));
-		LocalDate ngayDatPhong = resultSet.getDate("ngayDatPhong").toLocalDate();
-		LocalTime gioDatPhong = resultSet.getTime("gioDatPhong").toLocalTime();
-		LocalDate ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
-		LocalTime gioNhanPhong = resultSet.getTime("gioNhanPhong").toLocalTime();
-		TrangThai trangThai = DonDatPhong.convertStringToTrangThai(resultSet.getString("trangThai"));
-		return new DonDatPhong(maDonDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong,
-				gioNhanPhong, trangThai);
-	}
-	
-	/**
-	 * Get chi tiết đặt phòng resultSet
-	 * 
-	 * @param resultSet
-	 * @return
-	 * @throws SQLException
-	 */
-	private ChiTietDatPhong getChiTietDatPhong(ResultSet resultSet) throws SQLException {
-		DonDatPhong donDatPhong = new DonDatPhong(resultSet.getString("donDatPhong"));
-		Phong phong = new Phong(resultSet.getString("phong"));
-		LocalTime gioVao = resultSet.getTime("gioVao").toLocalTime();
-		Time time = resultSet.getTime("gioRa");
-		LocalTime gioRa = time == null ? null : resultSet.getTime("gioRa").toLocalTime();
-		return new ChiTietDatPhong(donDatPhong, phong, gioVao, gioRa);
-	}
-	/**
-	 * Get chi tiết đặt phòng theo mã 
-	 * 
-	 * @param maPhieuDat
-	 * @return
-	 */
-	public ChiTietDatPhong getChiTietDatPhongTheoMa(String maPhieuDat) {
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-
-		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE donDatPhong = ?");
-			preparedStatement.setString(1, maPhieuDat);
-			resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return getChiTietDatPhong(resultSet);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Get tất cả các đơn đặt phòng
-	 * 
-	 * @param resultSet
-	 * @return
-	 * @throws SQLException
-	 */
-	public List<DonDatPhong> getAllDonDatPhong() {
-		List<DonDatPhong> list = new ArrayList<>();
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT DISTINCT * FROM DonDatPhong where trangThai like N'Đang chờ' or trangThai like N'Đã hủy' ");
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-			DonDatPhong donDatPhong;
-			while (resultSet.next()) {
-				donDatPhong = getDonDatPhong(resultSet);
-				list.add(donDatPhong);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	/**
 	 * Get chi tiết phiếu đặt phòng theo mã phiếu đặt, trạng thái và số điện thoại
 	 * 
 	 * @param maPhieuDat
@@ -141,5 +53,93 @@ public class PhieuDatPhong_DAO {
 		}
 
 		return list;
+	}
+	
+	/**
+	 * Get tất cả các đơn đặt phòng
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<DonDatPhong> getAllDonDatPhong() {
+		List<DonDatPhong> list = new ArrayList<>();
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT DISTINCT * FROM DonDatPhong where trangThai like N'Đang chờ' or trangThai like N'Đã hủy' ");
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			DonDatPhong donDatPhong;
+			while (resultSet.next()) {
+				donDatPhong = getDonDatPhong(resultSet);
+				list.add(donDatPhong);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	/**
+	 * Get chi tiết đặt phòng resultSet
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws SQLException
+	 */
+	private ChiTietDatPhong getChiTietDatPhong(ResultSet resultSet) throws SQLException {
+		DonDatPhong donDatPhong = new DonDatPhong(resultSet.getString("donDatPhong"));
+		Phong phong = new Phong(resultSet.getString("phong"));
+		LocalTime gioVao = resultSet.getTime("gioVao").toLocalTime();
+		Time time = resultSet.getTime("gioRa");
+		LocalTime gioRa = time == null ? null : resultSet.getTime("gioRa").toLocalTime();
+		return new ChiTietDatPhong(donDatPhong, phong, gioVao, gioRa);
+	}
+
+	/**
+	 * Get chi tiết đặt phòng theo mã 
+	 * 
+	 * @param maPhieuDat
+	 * @return
+	 */
+	public ChiTietDatPhong getChiTietDatPhongTheoMa(String maPhieuDat) {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE donDatPhong = ?");
+			preparedStatement.setString(1, maPhieuDat);
+			resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getChiTietDatPhong(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get đơn đặt phòng resultSet
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws SQLException
+	 */
+	private DonDatPhong getDonDatPhong(ResultSet resultSet) throws SQLException {
+		String maDonDatPhong = resultSet.getString("maDonDatPhong");
+		KhachHang khachHang = new KhachHang(resultSet.getString("khachHang"));
+		NhanVien nhanVien = new NhanVien(resultSet.getString("nhanVien"));
+		LocalDate ngayDatPhong = resultSet.getDate("ngayDatPhong").toLocalDate();
+		LocalTime gioDatPhong = resultSet.getTime("gioDatPhong").toLocalTime();
+		LocalDate ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
+		LocalTime gioNhanPhong = resultSet.getTime("gioNhanPhong").toLocalTime();
+		TrangThai trangThai = DonDatPhong.convertStringToTrangThai(resultSet.getString("trangThai"));
+		return new DonDatPhong(maDonDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong,
+				gioNhanPhong, trangThai);
 	}
 }
