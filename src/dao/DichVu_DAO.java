@@ -18,132 +18,6 @@ public class DichVu_DAO {
 		loaiDichVu_DAO = new LoaiDichVu_DAO();
 	}
 
-	private DichVu getDichVu(ResultSet resultSet) throws SQLException {
-		String maDV = resultSet.getString(1);
-		String tenDV = resultSet.getString(2);
-		String soLuong = resultSet.getString(3);
-		String donViTinh = resultSet.getString(4);
-		String loai = resultSet.getString(5);
-		String giaMua = resultSet.getString(6);
-		LoaiDichVu loaiDichVu = loaiDichVu_DAO.getLoaiDichVu(loai);
-
-		return new DichVu(maDV, tenDV, Integer.valueOf(soLuong), donViTinh, loaiDichVu, Double.valueOf(giaMua));
-	}
-
-	public List<DichVu> getAllDichVu() {
-		List<DichVu> list = new ArrayList<>();
-		Statement statement;
-
-		try {
-			statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM DichVu");
-			DichVu dichVu;
-			while (resultSet.next()) {
-				dichVu = getDichVu(resultSet);
-				list.add(dichVu);
-			}
-			resultSet.close();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-
-	public List<DichVu> getAllDichVuCoSoLuongLonHon0() {
-		List<DichVu> list = new ArrayList<>();
-
-		Statement statement;
-		try {
-			statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM DichVu  WHERE soLuong > 0 ");
-			DichVu dichVu;
-			while (resultSet.next()) {
-				dichVu = getDichVu(resultSet);
-				list.add(dichVu);
-			}
-			resultSet.close();
-			statement.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return list;
-	}
-
-	public DichVu getDichVuTheoTen(String tenDichVu) {
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM DichVu WHERE tenDichVu = ?");
-			preparedStatement.setString(1, tenDichVu);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return getDichVu(resultSet);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public DichVu getDichVuTheoMa(String maDichVu) {
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM DichVu WHERE maDichVu = ?");
-			preparedStatement.setString(1, maDichVu);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return getDichVu(resultSet);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public boolean themDichVu(DichVu dichVu) {
-		int res = 0;
-		PreparedStatement preparedStatement;
-		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement("INSERT DichVu VALUES (?, ?, ?, ?, ?, ?)");
-			preparedStatement.setString(1, dichVu.getMaDichVu());
-			preparedStatement.setString(2, dichVu.getTenDichVu());
-			preparedStatement.setInt(3, dichVu.getSoLuong());
-			preparedStatement.setString(4, dichVu.getDonViTinh());
-			preparedStatement.setString(5, dichVu.getLoaiDichVu().getMaLoaiDichVu());
-			preparedStatement.setDouble(6, dichVu.getGiaMua());
-			res = preparedStatement.executeUpdate();
-			preparedStatement.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return res > 0;
-	}
-
-	public boolean suaDichVu(DichVu dichVu) {
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"UPDATE DichVu SET tenDichVu = ?, soLuong = ?, donViTinh = ?, loaiDichVu = ?, giaMua= ? WHERE maDichVu = ?");
-			preparedStatement.setString(1, dichVu.getTenDichVu());
-			preparedStatement.setInt(2, dichVu.getSoLuong());
-			preparedStatement.setString(3, dichVu.getDonViTinh());
-			preparedStatement.setString(4, dichVu.getLoaiDichVu().getMaLoaiDichVu());
-			preparedStatement.setDouble(5, dichVu.getGiaMua());
-			preparedStatement.setString(6, dichVu.getMaDichVu());
-			return preparedStatement.executeUpdate() > 0;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
-
 	public boolean capNhatSoLuongDichVuGiam(String maDV, int soLuongMua) {
 		boolean res = false;
 		PreparedStatement preparedStatement;
@@ -176,50 +50,6 @@ public class DichVu_DAO {
 			e.printStackTrace();
 		}
 		return res;
-	}
-
-	public boolean xoaDichVu(String maDichVu) {
-		int res = 0;
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("DELETE DichVu WHERE maDichVu = ?");
-			preparedStatement.setString(1, maDichVu);
-			res = preparedStatement.executeUpdate();
-			preparedStatement.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return res > 0;
-	}
-
-	public List<DichVu> getDichVuTheoMaVaLoai(String maDichVu, String loaiDichVu) {
-		List<DichVu> list = new ArrayList<>();
-
-		try {
-
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * " + "FROM   DichVu INNER JOIN "
-							+ " LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
-							+ "WHERE tenDichVu like ? and tenLoaiDichVu like ? and soLuong > 0");
-
-			preparedStatement.setString(1, "%" + maDichVu + "%");
-			preparedStatement.setString(2, "%" + loaiDichVu + "%");
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-			DichVu dichVu;
-			while (resultSet.next()) {
-				dichVu = getDichVu(resultSet);
-				list.add(dichVu);
-			}
-
-			resultSet.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return list;
 	}
 
 	public List<DichVu> filterDichVu(String tenDichVu, String tenLoaiDichVu, String soLuong) {
@@ -280,6 +110,176 @@ public class DichVu_DAO {
 		}
 
 		return list;
+	}
+
+	public List<DichVu> getAllDichVu() {
+		List<DichVu> list = new ArrayList<>();
+		Statement statement;
+
+		try {
+			statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM DichVu");
+			DichVu dichVu;
+			while (resultSet.next()) {
+				dichVu = getDichVu(resultSet);
+				list.add(dichVu);
+			}
+			resultSet.close();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public List<DichVu> getAllDichVuCoSoLuongLonHon0() {
+		List<DichVu> list = new ArrayList<>();
+
+		Statement statement;
+		try {
+			statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM DichVu  WHERE soLuong > 0 ");
+			DichVu dichVu;
+			while (resultSet.next()) {
+				dichVu = getDichVu(resultSet);
+				list.add(dichVu);
+			}
+			resultSet.close();
+			statement.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	private DichVu getDichVu(ResultSet resultSet) throws SQLException {
+		String maDV = resultSet.getString(1);
+		String tenDV = resultSet.getString(2);
+		String soLuong = resultSet.getString(3);
+		String donViTinh = resultSet.getString(4);
+		String loai = resultSet.getString(5);
+		String giaMua = resultSet.getString(6);
+		LoaiDichVu loaiDichVu = loaiDichVu_DAO.getLoaiDichVu(loai);
+
+		return new DichVu(maDV, tenDV, Integer.valueOf(soLuong), donViTinh, loaiDichVu, Double.valueOf(giaMua));
+	}
+
+	public DichVu getDichVuTheoMa(String maDichVu) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM DichVu WHERE maDichVu = ?");
+			preparedStatement.setString(1, maDichVu);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getDichVu(resultSet);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public List<DichVu> getDichVuTheoMaVaLoai(String maDichVu, String loaiDichVu) {
+		List<DichVu> list = new ArrayList<>();
+
+		try {
+
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * " + "FROM   DichVu INNER JOIN "
+							+ " LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
+							+ "WHERE tenDichVu like ? and tenLoaiDichVu like ? and soLuong > 0");
+
+			preparedStatement.setString(1, "%" + maDichVu + "%");
+			preparedStatement.setString(2, "%" + loaiDichVu + "%");
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			DichVu dichVu;
+			while (resultSet.next()) {
+				dichVu = getDichVu(resultSet);
+				list.add(dichVu);
+			}
+
+			resultSet.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	public DichVu getDichVuTheoTen(String tenDichVu) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM DichVu WHERE tenDichVu = ?");
+			preparedStatement.setString(1, tenDichVu);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getDichVu(resultSet);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public boolean suaDichVu(DichVu dichVu) {
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
+					"UPDATE DichVu SET tenDichVu = ?, soLuong = ?, donViTinh = ?, loaiDichVu = ?, giaMua= ? WHERE maDichVu = ?");
+			preparedStatement.setString(1, dichVu.getTenDichVu());
+			preparedStatement.setInt(2, dichVu.getSoLuong());
+			preparedStatement.setString(3, dichVu.getDonViTinh());
+			preparedStatement.setString(4, dichVu.getLoaiDichVu().getMaLoaiDichVu());
+			preparedStatement.setDouble(5, dichVu.getGiaMua());
+			preparedStatement.setString(6, dichVu.getMaDichVu());
+			return preparedStatement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean themDichVu(DichVu dichVu) {
+		int res = 0;
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = ConnectDB.getConnection().prepareStatement("INSERT DichVu VALUES (?, ?, ?, ?, ?, ?)");
+			preparedStatement.setString(1, dichVu.getMaDichVu());
+			preparedStatement.setString(2, dichVu.getTenDichVu());
+			preparedStatement.setInt(3, dichVu.getSoLuong());
+			preparedStatement.setString(4, dichVu.getDonViTinh());
+			preparedStatement.setString(5, dichVu.getLoaiDichVu().getMaLoaiDichVu());
+			preparedStatement.setDouble(6, dichVu.getGiaMua());
+			res = preparedStatement.executeUpdate();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res > 0;
+	}
+
+	public boolean xoaDichVu(String maDichVu) {
+		int res = 0;
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("DELETE DichVu WHERE maDichVu = ?");
+			preparedStatement.setString(1, maDichVu);
+			res = preparedStatement.executeUpdate();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res > 0;
 	}
 
 }
