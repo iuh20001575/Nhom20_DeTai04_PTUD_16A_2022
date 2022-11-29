@@ -15,13 +15,23 @@ import utils.Utils;
 public class Phong_DAO extends DAO {
 	private LoaiPhong_DAO loaiPhong_DAO = new LoaiPhong_DAO();
 
-	private Phong getPhong(ResultSet resultSet) throws SQLException {
-		String maPhong = resultSet.getString(1);
-		String loaiPhong = resultSet.getString(2);
-		int soLuongKhach = resultSet.getInt(3);
-		String trangThai = resultSet.getString(4);
-		return new Phong(maPhong, loaiPhong_DAO.getLoaiPhong(loaiPhong), soLuongKhach,
-				Phong.convertStringToTrangThai(trangThai));
+	public boolean capNhatTrangThaiPhong(Phong phong, String trangThai) {
+		PreparedStatement preparedStatement = null;
+		boolean res = false;
+		try {
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("Update Phong SET trangThai = ? WHERE maPhong = ?");
+			preparedStatement.setString(1, trangThai);
+			preparedStatement.setString(2, phong.getMaPhong());
+
+			res = preparedStatement.executeUpdate() >= 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(preparedStatement);
+		}
+
+		return res;
 	}
 
 	/**
@@ -46,92 +56,6 @@ public class Phong_DAO extends DAO {
 		}
 
 		return list;
-	}
-
-	public boolean themPhong(Phong phong) {
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("INSERT Phong VALUES (?, ?, ?, ?)");
-			preparedStatement.setString(1, phong.getMaPhong());
-			preparedStatement.setString(2, phong.getLoaiPhong().getMaLoai());
-			preparedStatement.setInt(3, phong.getSoLuongKhach());
-			preparedStatement.setString(4, Phong.convertTrangThaiToString(Phong.TrangThai.Trong));
-
-			return preparedStatement.executeUpdate() > 0;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return false;
-	}
-
-	public boolean suaPhong(Phong phong) {
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE Phong SET loaiPhong = ?, soLuongKhach = ? WHERE maPhong = ?");
-			preparedStatement.setString(1, phong.getLoaiPhong().getMaLoai());
-			preparedStatement.setInt(2, phong.getSoLuongKhach());
-			preparedStatement.setString(3, phong.getMaPhong());
-			return preparedStatement.executeUpdate() > 0;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	public List<Phong> getAllPhongTheoMa(List<Phong> list) {
-		List<Phong> phongs = new ArrayList<>();
-
-		int length = list.size();
-		if (length <= 0)
-			return getAllPhong();
-		String q = "?";
-		for (int i = 1; i < length; ++i)
-			q += ", ?";
-
-		String sql = String.format("SELECT * FROM Phong WHERE maPhong IN (%s)", q);
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			for (int i = 0; i < length; ++i)
-				preparedStatement.setString(i + 1, list.get(i).getMaPhong());
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-			Phong phong;
-			while (resultSet.next()) {
-				phong = getPhong(resultSet);
-				phongs.add(phong);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return phongs;
-	}
-
-	/**
-	 * Get phòng theo mã phòng
-	 * 
-	 * @param maPhong
-	 * @return
-	 */
-	public Phong getPhong(String maPhong) {
-		try {
-			String sql = "SELECT * FROM Phong WHERE maPhong = ?";
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setString(1, maPhong);
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return getPhong(resultSet);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	/**
@@ -160,51 +84,6 @@ public class Phong_DAO extends DAO {
 		}
 
 		return list;
-	}
-
-	/**
-	 * Get tất cả các phòng theo trạng thái
-	 * 
-	 * @param trangThai
-	 * @return
-	 */
-	public List<Phong> getAllPhongTheoTrangThai(String trangThai) {
-		List<Phong> list = new ArrayList<>();
-
-		try {
-			String sql = "SELECT * FROM Phong WHERE trangThai LIKE ?";
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setString(1, "%" + trangThai + "%");
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-			Phong phong;
-			while (resultSet.next()) {
-				phong = getPhong(resultSet);
-				list.add(phong);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	public TrangThai getTrangThai(String maPhong) {
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT trangThai FROM Phong WHERE maPhong = ?");
-
-			preparedStatement.setString(1, maPhong);
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return Phong.convertStringToTrangThai(resultSet.getString(1));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 
 	/**
@@ -264,37 +143,92 @@ public class Phong_DAO extends DAO {
 		return list;
 	}
 
-	public boolean isMaPhongTonTai(String maPhong) {
+	public List<Phong> getAllPhongTheoMa(List<Phong> list) {
+		List<Phong> phongs = new ArrayList<>();
+
+		int length = list.size();
+		if (length <= 0)
+			return getAllPhong();
+		String q = "?";
+		for (int i = 1; i < length; ++i)
+			q += ", ?";
+
+		String sql = String.format("SELECT * FROM Phong WHERE maPhong IN (%s)", q);
+
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT maPhong FROM Phong WHERE maPhong = ?");
-			preparedStatement.setString(1, maPhong);
-			return preparedStatement.executeQuery().next();
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			for (int i = 0; i < length; ++i)
+				preparedStatement.setString(i + 1, list.get(i).getMaPhong());
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			Phong phong;
+			while (resultSet.next()) {
+				phong = getPhong(resultSet);
+				phongs.add(phong);
+			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		return false;
+		return phongs;
 	}
 
-	public boolean capNhatTrangThaiPhong(Phong phong, String trangThai) {
-		PreparedStatement preparedStatement = null;
-		boolean res = false;
-		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("Update Phong SET trangThai = ? WHERE maPhong = ?");
-			preparedStatement.setString(1, trangThai);
-			preparedStatement.setString(2, phong.getMaPhong());
+	/**
+	 * Get tất cả các phòng theo trạng thái
+	 * 
+	 * @param trangThai
+	 * @return
+	 */
+	public List<Phong> getAllPhongTheoTrangThai(String trangThai) {
+		List<Phong> list = new ArrayList<>();
 
-			res = preparedStatement.executeUpdate() >= 0;
+		try {
+			String sql = "SELECT * FROM Phong WHERE trangThai LIKE ?";
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, "%" + trangThai + "%");
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			Phong phong;
+			while (resultSet.next()) {
+				phong = getPhong(resultSet);
+				list.add(phong);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			close(preparedStatement);
 		}
 
-		return res;
+		return list;
+	}
+
+	private Phong getPhong(ResultSet resultSet) throws SQLException {
+		String maPhong = resultSet.getString(1);
+		String loaiPhong = resultSet.getString(2);
+		int soLuongKhach = resultSet.getInt(3);
+		String trangThai = resultSet.getString(4);
+		return new Phong(maPhong, loaiPhong_DAO.getLoaiPhong(loaiPhong), soLuongKhach,
+				Phong.convertStringToTrangThai(trangThai));
+	}
+
+	/**
+	 * Get phòng theo mã phòng
+	 * 
+	 * @param maPhong
+	 * @return
+	 */
+	public Phong getPhong(String maPhong) {
+		try {
+			String sql = "SELECT * FROM Phong WHERE maPhong = ?";
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, maPhong);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getPhong(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public List<Phong> getPhongTheoLoaiVaSoLuongKhach(String maPhong, String tenLoaiPhong, String soLuongKhach) {
@@ -342,5 +276,71 @@ public class Phong_DAO extends DAO {
 		}
 
 		return list;
+	}
+
+	public TrangThai getTrangThai(String maPhong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT trangThai FROM Phong WHERE maPhong = ?");
+
+			preparedStatement.setString(1, maPhong);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return Phong.convertStringToTrangThai(resultSet.getString(1));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public boolean isMaPhongTonTai(String maPhong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT maPhong FROM Phong WHERE maPhong = ?");
+			preparedStatement.setString(1, maPhong);
+			return preparedStatement.executeQuery().next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public boolean suaPhong(Phong phong) {
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE Phong SET loaiPhong = ?, soLuongKhach = ? WHERE maPhong = ?");
+			preparedStatement.setString(1, phong.getLoaiPhong().getMaLoai());
+			preparedStatement.setInt(2, phong.getSoLuongKhach());
+			preparedStatement.setString(3, phong.getMaPhong());
+			return preparedStatement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean themPhong(Phong phong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("INSERT Phong VALUES (?, ?, ?, ?)");
+			preparedStatement.setString(1, phong.getMaPhong());
+			preparedStatement.setString(2, phong.getLoaiPhong().getMaLoai());
+			preparedStatement.setInt(3, phong.getSoLuongKhach());
+			preparedStatement.setString(4, Phong.convertTrangThaiToString(Phong.TrangThai.Trong));
+
+			return preparedStatement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 }
