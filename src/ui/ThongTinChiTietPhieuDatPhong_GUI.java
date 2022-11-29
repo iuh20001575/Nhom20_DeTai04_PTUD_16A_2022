@@ -33,28 +33,28 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ChiTietDatPhong chiTietDatPhong;
-	private TextField txtMaDatPhong;
-	private TextField txtPhong;
-	private TextField txtSLPhong;
-	private TextField txtTrangThai;
-	private TextField txtNhanVien;
-	private TextField txtMaKH;
-	private TextField txtSDT;
-	private TextField txtTGLP;
-	private TextField txtTGNP;
-	private Main main;
-	private DonDatPhong_DAO donDatPhong_DAO;
-	private PhieuDatPhong_DAO phieuDatPhong_DAO;
-	private NhanVien_DAO nhanVien_DAO;
-	private KhachHang_DAO khachHang_DAO;
-	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
-	private Button btnNhanPhong;
 	private Button btnCapNhat;
 	private Button btnHuyPhong;
-	private final int widthPnlContainer = 948;
+	private Button btnNhanPhong;
 	private Button btnSuaPhong;
+	private ChiTietDatPhong chiTietDatPhong;
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private DonDatPhong_DAO donDatPhong_DAO;
+	private KhachHang_DAO khachHang_DAO;
+	private Main main;
+	private NhanVien_DAO nhanVien_DAO;
+	private PhieuDatPhong_DAO phieuDatPhong_DAO;
 	private TextField txtKhachHang;
+	private TextField txtMaDatPhong;
+	private TextField txtMaKH;
+	private TextField txtNhanVien;
+	private TextField txtPhong;
+	private TextField txtSDT;
+	private TextField txtSLPhong;
+	private TextField txtTGLP;
+	private TextField txtTGNP;
+	private TextField txtTrangThai;
+	private final int widthPnlContainer = 948;
 
 
 	/**
@@ -277,6 +277,12 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 
 	}
 
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
 	private void setPhieuDatPhongVaoForm(ChiTietDatPhong chiTietDatPhong) {
 		String maDatPhong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
 		DonDatPhong donDatPhong = donDatPhong_DAO.getDatPhong(maDatPhong);
@@ -299,11 +305,5 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 				+ Utils.formatDate(donDatPhong.getNgayDatPhong()));
 		txtTGNP.setText(Utils.convertLocalTimeToString(donDatPhong.getGioNhanPhong()) + " - "
 				+ Utils.formatDate(donDatPhong.getNgayNhanPhong()));
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 }
