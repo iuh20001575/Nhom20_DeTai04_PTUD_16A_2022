@@ -6,22 +6,6 @@ public class LoaiPhong {
 	private String maLoai;
 	private String tenLoai;
 
-	public String getMaLoai() {
-		return maLoai;
-	}
-
-	public void setMaLoai(String maLoai) {
-		this.maLoai = maLoai;
-	}
-
-	public String getTenLoai() {
-		return tenLoai;
-	}
-
-	public void setTenLoai(String tenLoai) {
-		this.tenLoai = tenLoai;
-	}
-
 	public LoaiPhong() {
 		super();
 	}
@@ -38,16 +22,6 @@ public class LoaiPhong {
 	}
 
 	@Override
-	public String toString() {
-		return "LoaiPhong [maLoai=" + maLoai + ", tenLoai=" + tenLoai + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(maLoai);
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -57,6 +31,32 @@ public class LoaiPhong {
 			return false;
 		LoaiPhong other = (LoaiPhong) obj;
 		return Objects.equals(maLoai, other.maLoai);
+	}
+
+	public String getMaLoai() {
+		return maLoai;
+	}
+
+	public String getTenLoai() {
+		return tenLoai;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(maLoai);
+	}
+
+	public void setMaLoai(String maLoai) {
+		this.maLoai = maLoai;
+	}
+
+	public void setTenLoai(String tenLoai) {
+		this.tenLoai = tenLoai;
+	}
+
+	@Override
+	public String toString() {
+		return "LoaiPhong [maLoai=" + maLoai + ", tenLoai=" + tenLoai + "]";
 	}
 
 }
