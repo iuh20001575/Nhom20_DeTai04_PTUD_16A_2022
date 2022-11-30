@@ -50,6 +50,9 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener, MouseListen
 	 */
 	private static final long serialVersionUID = 1L;
 	private ChuyenPhong_GUI _this;
+	private Button btnChuyen;
+	private Button btnLamMoi;
+	private Button btnQuayLai;
 	private ComboBox<String> cmbLoaiPhong;
 	private ComboBox<String> cmbMaPhong;
 	private ComboBox<String> cmbPhongHienTai;
@@ -59,18 +62,15 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener, MouseListen
 	private final String labelCmbLoaiPhong = "Loại phòng";
 	private final String labelCmbMaPhong = "Mã phòng";
 	private final String labelCmbSoKhach = "Số khách";
+	private JLabel lblMaPhongMoi;
 	private LoaiPhong_DAO loaiPhong_DAO;
 	private String maPhong;
+	private JFrame parentFrame;
 	private Phong_DAO phong_DAO;
 	private JPanel pnlContent;
+	private QuanLyDatPhong_GUI quanLyDatPhongGUI;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
-	private Button btnLamMoi;
-	private Button btnChuyen;
-	private JLabel lblMaPhongMoi;
-	private Button btnQuayLai;
-	private QuanLyDatPhong_GUI quanLyDatPhongGUI;
-	private JFrame parentFrame;
 
 	/**
 	 * Create the frame.
@@ -434,18 +434,6 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener, MouseListen
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
 
@@ -453,6 +441,18 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener, MouseListen
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 
 	}

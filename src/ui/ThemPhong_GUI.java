@@ -32,13 +32,13 @@ public class ThemPhong_GUI extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel pnlContent;
-	private TextField txtMaPhong;
-	private LoaiPhong_DAO loaiPhong_DAO;
+	private ThemPhong_GUI _this;
 	private ComboBox<String> cmbLoaiPhong;
 	private ComboBox<String> cmbSoLuong;
-	private ThemPhong_GUI _this;
+	private LoaiPhong_DAO loaiPhong_DAO;
 	private Phong_DAO phong_DAO;
+	private JPanel pnlContent;
+	private TextField txtMaPhong;
 
 	/**
 	 * Create the frame.

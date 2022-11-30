@@ -78,18 +78,18 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	private JLabel lblIconClose;
 	private JLabel lblMaPhong;
 	private LoaiPhong_DAO loaiPhong_DAO;
+	private Main main;
 	private PanelRound pnlContainerItem;
 	private JPanel pnlContent;
 	private JPanel pnlPhong;
 	private JPanel pnlPhongDaChon;
+	private QuanLyDatPhong_GUI quanLyDatPhongGUI;
 	private JScrollPane scrPhongDaChon;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
 	private final int top = 11;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
-	private Main main;
-	private QuanLyDatPhong_GUI quanLyDatPhongGUI;
 
 	/**
 	 * Create the frame.
@@ -526,46 +526,6 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		});
 	}
 
-	private void handleSoDienThoaiRong() {
-		new Notification(_this, components.notification.Notification.Type.ERROR, "Vui lòng nhập số điện thoại khách")
-				.showNotification();
-		txtSoDienThoai.setError(true);
-		txtSoDienThoai.requestFocus();
-	}
-
-	private void handleSoDienThoaiKhongHopLe() {
-		new Notification(_this, components.notification.Notification.Type.ERROR,
-				"Số điện thoại phải có dạng 0XXXXXXXXX").showNotification();
-		txtSoDienThoai.setError(true);
-		txtSoDienThoai.selectAll();
-		txtSoDienThoai.requestFocus();
-	}
-
-	private void handleSoDienThoaiHopLe(String soDienThoai) {
-		khachHang = khachHang_DAO.getKhachHang(soDienThoai);
-
-		if (khachHang != null) {
-			txtTenKhachHang.setText(khachHang.getHoTen());
-			if (dsPhongDaChon != null && dsPhongDaChon.size() > 0)
-				btnDatPhong.setEnabled(true);
-		} else {
-			JDialogCustom jDialogCustom = new JDialogCustom(_this);
-
-			jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					ThemKhachHang_GUI themKhachHangGUI = new ThemKhachHang_GUI(main, _this, soDienThoai);
-					quanLyDatPhongGUI.getGlass().setVisible(false);
-					main.addPnlBody(themKhachHangGUI, "Thêm khách hàng", 2, 0);
-					setVisible(false);
-				}
-			});
-
-			jDialogCustom.showMessage("Warning",
-					"Khách hàng không có trong hệ thống, bạn có muốn thêm khách hàng mới không?");
-		}
-	}
-
 	/**
 	 * Thêm danh sách các phòng vào table
 	 *
@@ -679,6 +639,46 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		});
 
 		return pnlContainerItem;
+	}
+
+	private void handleSoDienThoaiHopLe(String soDienThoai) {
+		khachHang = khachHang_DAO.getKhachHang(soDienThoai);
+
+		if (khachHang != null) {
+			txtTenKhachHang.setText(khachHang.getHoTen());
+			if (dsPhongDaChon != null && dsPhongDaChon.size() > 0)
+				btnDatPhong.setEnabled(true);
+		} else {
+			JDialogCustom jDialogCustom = new JDialogCustom(_this);
+
+			jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					ThemKhachHang_GUI themKhachHangGUI = new ThemKhachHang_GUI(main, _this, soDienThoai);
+					quanLyDatPhongGUI.getGlass().setVisible(false);
+					main.addPnlBody(themKhachHangGUI, "Thêm khách hàng", 2, 0);
+					setVisible(false);
+				}
+			});
+
+			jDialogCustom.showMessage("Warning",
+					"Khách hàng không có trong hệ thống, bạn có muốn thêm khách hàng mới không?");
+		}
+	}
+
+	private void handleSoDienThoaiKhongHopLe() {
+		new Notification(_this, components.notification.Notification.Type.ERROR,
+				"Số điện thoại phải có dạng 0XXXXXXXXX").showNotification();
+		txtSoDienThoai.setError(true);
+		txtSoDienThoai.selectAll();
+		txtSoDienThoai.requestFocus();
+	}
+
+	private void handleSoDienThoaiRong() {
+		new Notification(_this, components.notification.Notification.Type.ERROR, "Vui lòng nhập số điện thoại khách")
+				.showNotification();
+		txtSoDienThoai.setError(true);
+		txtSoDienThoai.requestFocus();
 	}
 
 	@Override

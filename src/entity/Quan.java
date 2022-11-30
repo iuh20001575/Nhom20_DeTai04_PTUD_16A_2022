@@ -3,39 +3,16 @@ package entity;
 import java.util.Objects;
 
 public class Quan {
+	public static String getQuanLabel() {
+		return "Quận/Huyện";
+	}
 	private String id;
 	private String quan;
+
 	private Tinh tinh;
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getQuan() {
-		return quan;
-	}
-
-	public void setQuan(String quan) {
-		this.quan = quan;
-	}
-
-	public Tinh getTinh() {
-		return tinh;
-	}
-
-	public void setTinh(Tinh tinh) {
-		this.tinh = tinh;
-	}
-
-	public Quan(String id, String quan, Tinh tinh) {
+	public Quan() {
 		super();
-		setId(id);
-		setQuan(quan);
-		setTinh(tinh);
 	}
 
 	public Quan(String id) {
@@ -43,18 +20,11 @@ public class Quan {
 		setId(id);
 	}
 
-	public Quan() {
+	public Quan(String id, String quan, Tinh tinh) {
 		super();
-	}
-
-	@Override
-	public String toString() {
-		return "Quan [id=" + id + ", quan=" + quan + ", tinh=" + tinh + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
+		setId(id);
+		setQuan(quan);
+		setTinh(tinh);
 	}
 
 	@Override
@@ -68,9 +38,39 @@ public class Quan {
 		Quan other = (Quan) obj;
 		return Objects.equals(id, other.id);
 	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getQuan() {
+		return quan;
+	}
+
+	public Tinh getTinh() {
+		return tinh;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setQuan(String quan) {
+		this.quan = quan;
+	}
+
+	public void setTinh(Tinh tinh) {
+		this.tinh = tinh;
+	}
 	
-	public static String getQuanLabel() {
-		return "Quận/Huyện";
+	@Override
+	public String toString() {
+		return "Quan [id=" + id + ", quan=" + quan + ", tinh=" + tinh + "]";
 	}
 
 }

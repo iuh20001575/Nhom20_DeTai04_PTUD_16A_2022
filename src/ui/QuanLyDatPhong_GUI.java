@@ -59,7 +59,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private final int heightPhong = 130;
 	private int heightPnlContainerDanhSachPhong = Utils.getBodyHeight() - 285;
 	private JDialogCustom jDialog;
-	private Main main;
 	private JFrame jFrameSub;
 	private JLabel lblDate;
 	private JLabel lblSoLuongPhongCho;
@@ -69,6 +68,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private JLabel lblThu;
 	private JLabel lblTime;
 	private String loaiPhong = "";
+	private Main main;
 	private MouseListener mouseListener = new MouseAdapter() {
 		@Override
 		public void mouseClicked(MouseEvent e) {
@@ -1020,6 +1020,10 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 				heightPhong);
 	}
 
+	public Glass getGlass() {
+		return glass;
+	}
+
 	public Main getjFrame() {
 		return main;
 	}
@@ -1154,10 +1158,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 		});
 
 		return pnlPhong1;
-	}
-
-	public Glass getGlass() {
-		return glass;
 	}
 
 	/**

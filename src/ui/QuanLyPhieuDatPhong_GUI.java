@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -27,20 +26,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
-import org.jfree.chart.util.TextUtils;
-
 import components.button.Button;
 import components.controlPanel.ControlPanel;
 import components.jDialog.JDialogCustom;
 import components.jDialog.JDialogCustom.Type;
-import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
 import dao.ChiTietDatPhong_DAO;
 import dao.KhachHang_DAO;
@@ -48,7 +42,6 @@ import dao.PhieuDatPhong_DAO;
 import dao.Phong_DAO;
 import entity.ChiTietDatPhong;
 import entity.DonDatPhong;
-import entity.Phong;
 import utils.Utils;
 
 public class QuanLyPhieuDatPhong_GUI extends JPanel {
@@ -58,26 +51,54 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private JTextField txtSoDienThoai;
-	private JTable tbl;
-	private JComboBox<String> cboTrangThai;
-	private JComboBox<String> cboMaPhieuDat;
-	private DefaultComboBoxModel<String> maPhieuDatModel;
-	private DefaultTableModel tableModel;
-	private PhieuDatPhong_DAO phieuDatPhong_DAO;
-	private ControlPanel pnlControl;
-	private KhachHang_DAO khachHang_DAO;
+	public static Thread clock() {
+		Thread clock = new Thread() {
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						LocalDateTime currTime = LocalDateTime.now();
+						int day = currTime.getDayOfMonth();
+						int month = currTime.getMonthValue();
+						int year = currTime.getYear();
+						int hour = currTime.getHour();
+						int minute = currTime.getMinute();
+						int second = currTime.getSecond();
+						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
+								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
+								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+
+		clock.start();
+
+		return clock;
+	}
+
+	private Button btnHuyPhong;
+	private Button btnLamMoi;
+	private Button btnNhanPhong;
 	private Button btnSearch;
 	private Button btnXemPhong;
-	private Button btnNhanPhong;
-	private Button btnHuyPhong;
 	private Button btnXuatPDF;
-	private Button btnLamMoi;
-	private final int widthPnlContainer = 1086;
-	private Main main;
-	private Phong_DAO phong_DAO;
+	private JComboBox<String> cboMaPhieuDat;
+	private JComboBox<String> cboTrangThai;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private KhachHang_DAO khachHang_DAO;
+	private Main main;
+	private DefaultComboBoxModel<String> maPhieuDatModel;
+	private PhieuDatPhong_DAO phieuDatPhong_DAO;
+	private ControlPanel pnlControl;
+	private DefaultTableModel tableModel;
+	private JTable tbl;
+	private JTextField txtSoDienThoai;
 
+	private final int widthPnlContainer = 1086;
 
 	/**
 	 * Create the frame.
@@ -87,12 +108,12 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		khachHang_DAO = new KhachHang_DAO();
 		phieuDatPhong_DAO = new PhieuDatPhong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
-		phong_DAO = new Phong_DAO();
+		new Phong_DAO();
 
 		setBackground(Utils.secondaryColor);
 		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
-		
+
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
 		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
@@ -269,7 +290,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 //		Table danh sách phiếu đặt phòng trước
 		int topPnlControl = Utils.getBodyHeight();
 		topPnlControl -= 80;
-		
+
 		JScrollPane scr = new JScrollPane();
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -359,7 +380,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				} else {
 					String maPhieuDat = (String) tableModel.getValueAt(row, 0);
 					ChiTietDatPhong phieuDatPhong = phieuDatPhong_DAO
-							.getChiTietDatPhongTheoMa(maPhieuDat);
+							.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
 					ThongTinChiTietPhieuDatPhong_GUI jFrame = new ThongTinChiTietPhieuDatPhong_GUI(main, phieuDatPhong);
 					main.addPnlBody(jFrame, "Thông tin chi tiêt phiếu đặt phòng", 1, 0);
 				}
@@ -368,9 +389,8 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 //		Sự kiện nút nhận phòng
 		btnNhanPhong.addMouseListener(new MouseAdapter() {
 			private void handleNhanPhong() {
-				int row = tbl.getSelectedRow();
-				String maPhieuDat = (String) tbl.getValueAt(row, 0);
-				
+//				int row = tbl.getSelectedRow();
+//				String maPhieuDat = (String) tbl.getValueAt(row, 0);
 
 			}
 
@@ -437,7 +457,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 
 			public void ancestorAdded(AncestorEvent event) {
 				clockThread = clock();
-				
+
 				Utils.emptyTable(tbl);
 				cboMaPhieuDat.removeAllItems();
 				cboMaPhieuDat.addItem("Mã phiếu đặt");
@@ -457,6 +477,25 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 
 	}
 
+	private void addRow(DonDatPhong donDatPhong) {
+		String maDatPhong = donDatPhong.getMaDonDatPhong();
+		String maKhachHang = donDatPhong.getKhachHang().getMaKhachHang();
+		List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
+		List<String> listPhong = new ArrayList<String>();
+		listChiTietDatPhong.forEach(chiTietDatPhong -> listPhong.add(chiTietDatPhong.getPhong().getMaPhong()));
+
+		tableModel.addRow(new String[] { maDatPhong, khachHang_DAO.getKhachHangTheoMa(maKhachHang).getSoDienThoai(),
+				String.format("%s - %s", donDatPhong.getGioDatPhong(), donDatPhong.getNgayDatPhong()),
+				String.format("%s - %s", donDatPhong.getGioNhanPhong(), donDatPhong.getNgayNhanPhong()),
+				String.format("%s - %s", listPhong.size(), String.join(", ", listPhong)),
+				DonDatPhong.convertTrangThaiToString(donDatPhong.getTrangThai()) });
+	}
+
+	private List<DonDatPhong> addRow(List<DonDatPhong> list) {
+		list.forEach(datPhong -> addRow(datPhong));
+		return list;
+	}
+
 	private void filterPhieuDatPhong() {
 		String maPhieuDat = (String) cboMaPhieuDat.getSelectedItem();
 		String trangThai = (String) cboTrangThai.getSelectedItem();
@@ -469,7 +508,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		if (soDienThoai.trim().equals(""))
 			soDienThoai = "%%";
 
-		List<DonDatPhong> list = phieuDatPhong_DAO.filterPhieuDatPhong(maPhieuDat, soDienThoai,  trangThai);
+		List<DonDatPhong> list = phieuDatPhong_DAO.filterDonDatPhong(maPhieuDat, soDienThoai, trangThai);
 		Utils.emptyTable(tbl);
 		addRow(list);
 		pnlControl.setTbl(tbl);
@@ -479,56 +518,6 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 			jDialogCustom.showMessage("Thông báo", "Không có phòng cần tìm");
 		}
 	}
-
-	public static Thread clock() {
-		Thread clock = new Thread() {
-			@Override
-			public void run() {
-				for (;;) {
-					try {
-						LocalDateTime currTime = LocalDateTime.now();
-						int day = currTime.getDayOfMonth();
-						int month = currTime.getMonthValue();
-						int year = currTime.getYear();
-						int hour = currTime.getHour();
-						int minute = currTime.getMinute();
-						int second = currTime.getSecond();
-						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
-								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
-								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
-						sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-
-		clock.start();
-
-		return clock;
-	}
-
-	private List<DonDatPhong> addRow(List<DonDatPhong> list) {
-		list.forEach(datPhong -> addRow(datPhong));
-		return list;
-	}
-
-	private void addRow(DonDatPhong donDatPhong) {
-		String maDatPhong = donDatPhong.getMaDonDatPhong();
-		String maKhachHang = donDatPhong.getKhachHang().getMaKhachHang();
-		List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
-		List<String> listPhong = new ArrayList<String>();
-		listChiTietDatPhong.forEach( chiTietDatPhong -> listPhong.add(chiTietDatPhong.getPhong().getMaPhong()));
-		
-		tableModel.addRow(new String[] { maDatPhong, khachHang_DAO.getKhachHangTheoMa(maKhachHang).getSoDienThoai(),
-				String.format("%s - %s", donDatPhong.getGioDatPhong(),
-						donDatPhong.getNgayDatPhong()),
-				String.format("%s - %s", donDatPhong.getGioNhanPhong(),
-						donDatPhong.getNgayNhanPhong()),
-				  String.format("%s - %s",listPhong.size(),String.join(", ", listPhong)), DonDatPhong.convertTrangThaiToString(donDatPhong.getTrangThai()) });
-	}
-
 
 //	private void setEnabledBtnActions() {
 //		int row = tbl.getSelectedRow();

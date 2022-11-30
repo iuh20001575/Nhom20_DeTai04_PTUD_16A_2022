@@ -53,21 +53,21 @@ public class QuanLyPhong_GUI extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField txtTimKiem;
-	private JTable tbl;
-	private DefaultTableModel tableModel;
+	private QuanLyPhong_GUI _this;
 	private Thread clock;
-	private JLabel lblGio;
-	private JLabel lblThu;
-	private JLabel lblNgay;
+	private ComboBox<String> cmbLoaiPhong, cmbSoLuongKhach;
 	private Glass glass;
 	private Main jFrame;
 	private JFrame jFrameSub;
-	private QuanLyPhong_GUI _this;
+	private JLabel lblGio;
+	private JLabel lblNgay;
+	private JLabel lblThu;
 	private LoaiPhong_DAO LoaiPhong_DAO;
 	private Phong_DAO phong_DAO;
-	private ComboBox<String> cmbLoaiPhong, cmbSoLuongKhach;
 	private ControlPanel pnlControl;
+	private DefaultTableModel tableModel;
+	private JTable tbl;
+	private JTextField txtTimKiem;
 
 	/**
 	 * Create the panel.
@@ -415,15 +415,14 @@ public class QuanLyPhong_GUI extends JPanel {
 		});
 	}
 
-	public void openJFrameSub(JFrame jFrame) {
-		this.jFrame.setGlassPane(glass);
-		glass.setVisible(true);
-		glass.setAlpha(0.5f);
-		jFrameSub = jFrame;
-		jFrameSub.setVisible(true);
+	private List<Phong> addRow(List<Phong> list) {
+		list.forEach(phong -> addRow(phong));
+		return list;
+	}
 
-		setEmptyTable();
-		addRow(phong_DAO.getAllPhong());
+	private void addRow(Phong phong) {
+		tableModel.addRow(new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(),
+				Utils.formatTienTe(phong.getGiaTien()), String.valueOf(phong.getSoLuongKhach()) });
 	}
 
 	public void closeJFrameSub() {
@@ -432,21 +431,6 @@ public class QuanLyPhong_GUI extends JPanel {
 		glass.setVisible(false);
 		glass.setAlpha(0f);
 		jFrameSub = null;
-	}
-
-	private void addRow(Phong phong) {
-		tableModel.addRow(new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(),
-				Utils.formatTienTe(phong.getGiaTien()), String.valueOf(phong.getSoLuongKhach()) });
-	}
-
-	private List<Phong> addRow(List<Phong> list) {
-		list.forEach(phong -> addRow(phong));
-		return list;
-	}
-
-	private void setEmptyTable() {
-		while (tbl.getRowCount() > 0)
-			tableModel.removeRow(0);
 	}
 
 	private void filterPhong() {
@@ -464,5 +448,21 @@ public class QuanLyPhong_GUI extends JPanel {
 		setEmptyTable();
 		addRow(list);
 		pnlControl.setTbl(tbl);
+	}
+
+	public void openJFrameSub(JFrame jFrame) {
+		this.jFrame.setGlassPane(glass);
+		glass.setVisible(true);
+		glass.setAlpha(0.5f);
+		jFrameSub = jFrame;
+		jFrameSub.setVisible(true);
+
+		setEmptyTable();
+		addRow(phong_DAO.getAllPhong());
+	}
+
+	private void setEmptyTable() {
+		while (tbl.getRowCount() > 0)
+			tableModel.removeRow(0);
 	}
 }

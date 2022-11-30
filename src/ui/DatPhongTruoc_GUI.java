@@ -92,13 +92,13 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	private JPanel pnlContent;
 	private JPanel pnlPhong;
 	private JPanel pnlPhongDaChon;
+	private JScrollPane scrPhongDaChon;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
 	private final int top = 11;
 	private TextField txtNgayNhanPhong;
 	private TextField txtSoDienThoai;
 	private TextField txtTenKhachHang;
-	private JScrollPane scrPhongDaChon;
 
 	/**
 	 * Create the frame.

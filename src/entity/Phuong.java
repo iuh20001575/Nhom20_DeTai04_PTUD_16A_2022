@@ -3,39 +3,16 @@ package entity;
 import java.util.Objects;
 
 public class Phuong {
+	public static String getPhuongLabel() {
+		return "Phường/Xã";
+	}
 	private String id;
 	private String phuong;
+
 	private Quan quan;
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getPhuong() {
-		return phuong;
-	}
-
-	public void setPhuong(String phuong) {
-		this.phuong = phuong;
-	}
-
-	public Quan getQuan() {
-		return quan;
-	}
-
-	public void setQuan(Quan quan) {
-		this.quan = quan;
-	}
-
-	public Phuong(String id, String phuong, Quan quan) {
+	public Phuong() {
 		super();
-		setId(id);
-		setPhuong(phuong);
-		setQuan(quan);
 	}
 
 	public Phuong(String id) {
@@ -43,18 +20,11 @@ public class Phuong {
 		setId(id);
 	}
 
-	public Phuong() {
+	public Phuong(String id, String phuong, Quan quan) {
 		super();
-	}
-
-	@Override
-	public String toString() {
-		return "Phuong [id=" + id + ", phuong=" + phuong + ", quan=" + quan + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
+		setId(id);
+		setPhuong(phuong);
+		setQuan(quan);
 	}
 
 	@Override
@@ -69,8 +39,38 @@ public class Phuong {
 		return Objects.equals(id, other.id);
 	}
 
-	public static String getPhuongLabel() {
-		return "Phường/Xã";
+	public String getId() {
+		return id;
+	}
+
+	public String getPhuong() {
+		return phuong;
+	}
+
+	public Quan getQuan() {
+		return quan;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setPhuong(String phuong) {
+		this.phuong = phuong;
+	}
+
+	public void setQuan(Quan quan) {
+		this.quan = quan;
+	}
+
+	@Override
+	public String toString() {
+		return "Phuong [id=" + id + ", phuong=" + phuong + ", quan=" + quan + "]";
 	}
 
 }

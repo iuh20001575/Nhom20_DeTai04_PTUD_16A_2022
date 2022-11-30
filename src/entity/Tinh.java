@@ -3,29 +3,15 @@ package entity;
 import java.util.Objects;
 
 public class Tinh {
+	public static String getTinhLabel() {
+		return "Tỉnh/Thành phố";
+	}
 	private String id;
+
 	private String tinh;
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getTinh() {
-		return tinh;
-	}
-
-	public void setTinh(String tinh) {
-		this.tinh = tinh;
-	}
-
-	public Tinh(String id, String tinh) {
+	public Tinh() {
 		super();
-		setId(id);
-		setTinh(tinh);
 	}
 
 	public Tinh(String id) {
@@ -33,18 +19,10 @@ public class Tinh {
 		setId(id);
 	}
 
-	public Tinh() {
+	public Tinh(String id, String tinh) {
 		super();
-	}
-
-	@Override
-	public String toString() {
-		return "Tinh [id=" + id + ", tinh=" + tinh + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
+		setId(id);
+		setTinh(tinh);
 	}
 
 	@Override
@@ -59,7 +37,29 @@ public class Tinh {
 		return Objects.equals(id, other.id);
 	}
 
-	public static String getTinhLabel() {
-		return "Tỉnh/Thành phố";
+	public String getId() {
+		return id;
+	}
+
+	public String getTinh() {
+		return tinh;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setTinh(String tinh) {
+		this.tinh = tinh;
+	}
+
+	@Override
+	public String toString() {
+		return "Tinh [id=" + id + ", tinh=" + tinh + "]";
 	}
 }

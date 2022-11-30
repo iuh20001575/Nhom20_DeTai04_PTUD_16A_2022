@@ -99,10 +99,6 @@ public class DichVu {
 		this.tenDichVu = tenDichVu;
 	}
 
-	public double tinhGiaBan() {
-		return giaMua * 1.1;
-	}
-
 	@Override
 	public String toString() {
 		return "DichVu [maDichVu=" + maDichVu + ", tenDichVu=" + tenDichVu + ", soLuong=" + soLuong + ", donViTinh="

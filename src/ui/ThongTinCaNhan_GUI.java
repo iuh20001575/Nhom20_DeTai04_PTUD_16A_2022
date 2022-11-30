@@ -677,6 +677,14 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 		isEnabledEventTinh = true;
 	}
 
+	private boolean showThongBaoLoi(PasswordField txt, String message) {
+		new Notification(main, Type.ERROR, message).showNotification();
+		txt.setError(true);
+		txt.selectAll();
+		txt.requestFocus();
+		return false;
+	}
+
 	/**
 	 * Hiển thị thông báo lỗi và focus các JTextField
 	 *
@@ -687,14 +695,6 @@ public class ThongTinCaNhan_GUI extends JPanel implements ItemListener {
 	private boolean showThongBaoLoi(TextField txt, String message) {
 		new Notification(main, Type.ERROR, message).showNotification();
 		txt.setError(true);
-		txt.requestFocus();
-		return false;
-	}
-
-	private boolean showThongBaoLoi(PasswordField txt, String message) {
-		new Notification(main, Type.ERROR, message).showNotification();
-		txt.setError(true);
-		txt.selectAll();
 		txt.requestFocus();
 		return false;
 	}

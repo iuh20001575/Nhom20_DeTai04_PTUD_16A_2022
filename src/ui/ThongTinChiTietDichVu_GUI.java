@@ -32,14 +32,14 @@ import utils.Utils;
 public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 	private static final long serialVersionUID = 1L;
 
-	private LoaiDichVu_DAO loaiDichVu_DAO;
+	private ComboBox<String> cmbLoaiDichVu;
 	@SuppressWarnings("unused")
 	private DichVu dichVu;
 	private DichVu_DAO dichVu_DAO;
-	private ComboBox<String> cmbLoaiDichVu;
-	private JLabel lblTime;
-	private JLabel lblThu;
 	private JLabel lblDate;
+	private JLabel lblThu;
+	private JLabel lblTime;
+	private LoaiDichVu_DAO loaiDichVu_DAO;
 	private Main main;
 	private TextField txtMa, txtTen, txtDonViTinh, txtSoLuong, txtGiaMua;
 
@@ -244,44 +244,6 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 
 	}
 
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		if (e.getStateChange() != ItemEvent.SELECTED) {
-			return;
-		}
-	}
-
-	/**
-	 * Get dịch vụ từ form
-	 * 
-	 * @return dịch vụ
-	 */
-	private DichVu getDichVuTuForm() {
-		String maDichVu = txtMa.getText();
-		String tenDichVu = txtTen.getText().trim();
-		String donViTinh = txtDonViTinh.getText().trim();
-		String soLuong = txtSoLuong.getText().trim();
-		String giaMua = txtGiaMua.getText().trim();
-		String tenLoaiDichVu = cmbLoaiDichVu.getSelectedItem().toString();
-		LoaiDichVu loaiDichVu = loaiDichVu_DAO.getLoaiDichVuTheoTen(tenLoaiDichVu);
-		return new DichVu(maDichVu, tenDichVu, Integer.parseInt(soLuong), donViTinh, loaiDichVu,
-				Double.parseDouble(giaMua));
-	}
-
-	/**
-	 * Set dịch vụ vào form
-	 * 
-	 * @param dichVu
-	 */
-	private void setDichVuVaoForm(DichVu dichVu) {
-		txtMa.setText(dichVu.getMaDichVu());
-		txtTen.setText(dichVu.getTenDichVu());
-		txtSoLuong.setText(String.valueOf(dichVu.getSoLuong()));
-		txtDonViTinh.setText(dichVu.getDonViTinh());
-		txtGiaMua.setText(String.valueOf(dichVu.getGiaMua()));
-		cmbLoaiDichVu.setSelectedItem(dichVu.getLoaiDichVu().getTenLoaiDichVu());
-	}
-
 	public void clock() {
 		Thread clock = new Thread() {
 			@Override
@@ -323,6 +285,44 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		};
 
 		clock.start();
+	}
+
+	/**
+	 * Get dịch vụ từ form
+	 * 
+	 * @return dịch vụ
+	 */
+	private DichVu getDichVuTuForm() {
+		String maDichVu = txtMa.getText();
+		String tenDichVu = txtTen.getText().trim();
+		String donViTinh = txtDonViTinh.getText().trim();
+		String soLuong = txtSoLuong.getText().trim();
+		String giaMua = txtGiaMua.getText().trim();
+		String tenLoaiDichVu = cmbLoaiDichVu.getSelectedItem().toString();
+		LoaiDichVu loaiDichVu = loaiDichVu_DAO.getLoaiDichVuTheoTen(tenLoaiDichVu);
+		return new DichVu(maDichVu, tenDichVu, Integer.parseInt(soLuong), donViTinh, loaiDichVu,
+				Double.parseDouble(giaMua));
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getStateChange() != ItemEvent.SELECTED) {
+			return;
+		}
+	}
+
+	/**
+	 * Set dịch vụ vào form
+	 * 
+	 * @param dichVu
+	 */
+	private void setDichVuVaoForm(DichVu dichVu) {
+		txtMa.setText(dichVu.getMaDichVu());
+		txtTen.setText(dichVu.getTenDichVu());
+		txtSoLuong.setText(String.valueOf(dichVu.getSoLuong()));
+		txtDonViTinh.setText(dichVu.getDonViTinh());
+		txtGiaMua.setText(String.valueOf(dichVu.getGiaMua()));
+		cmbLoaiDichVu.setSelectedItem(dichVu.getLoaiDichVu().getTenLoaiDichVu());
 	}
 
 	/**
