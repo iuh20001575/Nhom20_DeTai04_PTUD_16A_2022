@@ -4,18 +4,20 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import components.button.Button;
-import components.comboBox.ComboBox;
+import components.jDialog.Glass;
+import components.panelEvent.PanelEvent;
 import components.textField.TextField;
 import dao.ChiTietDatPhong_DAO;
 import dao.DonDatPhong_DAO;
@@ -33,43 +35,55 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Button btnCapNhat;
-	private Button btnHuyPhong;
-	private Button btnNhanPhong;
-	private Button btnSuaPhong;
+	private ThongTinChiTietPhieuDatPhong_GUI _this;
 	private ChiTietDatPhong chiTietDatPhong;
-	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
-	private DonDatPhong_DAO donDatPhong_DAO;
-	private KhachHang_DAO khachHang_DAO;
-	private Main main;
-	private NhanVien_DAO nhanVien_DAO;
-	private PhieuDatPhong_DAO phieuDatPhong_DAO;
-	private TextField txtKhachHang;
 	private TextField txtMaDatPhong;
-	private TextField txtMaKH;
-	private TextField txtNhanVien;
 	private TextField txtPhong;
-	private TextField txtSDT;
 	private TextField txtSLPhong;
+	private TextField txtTrangThai;
+	private TextField txtNhanVien;
+	private TextField txtSDT;
 	private TextField txtTGLP;
 	private TextField txtTGNP;
-	private TextField txtTrangThai;
+	private Main jFrame;
+	private DonDatPhong_DAO donDatPhong_DAO;
+	private PhieuDatPhong_DAO phieuDatPhong_DAO;
+	private NhanVien_DAO nhanVien_DAO;
+	private KhachHang_DAO khachHang_DAO;
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private Button btnNhanPhong;
+	private Button btnCapNhat;
+	private Button btnHuyPhong;
 	private final int widthPnlContainer = 948;
+	private Button btnSuaDSPhong;
+	private TextField txtKhachHang;
+	private Glass glass;
+	private JFrame jFrameSub;
+	private PanelEvent pnlSuaDSPhong;
 
 
 	/**
 	 * Create the frame.
 	 */
-	public ThongTinChiTietPhieuDatPhong_GUI(Main main, ChiTietDatPhong chiTietDatPhong) {
+	public ThongTinChiTietPhieuDatPhong_GUI(Main jFrame, ChiTietDatPhong chiTietDatPhong) {
 		phieuDatPhong_DAO = new PhieuDatPhong_DAO();
 		donDatPhong_DAO = new DonDatPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
 		nhanVien_DAO = new NhanVien_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		glass = new Glass();
 		this.chiTietDatPhong = chiTietDatPhong;
-		this.main = main;
+		this.jFrame = jFrame;
+		_this = this;
 		int padding = (int) Math.floor((Utils.getBodyHeight() - 428) / 5);
 		int top = padding;
+		
+		glass.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				closeJFrameSub();
+			}
+		});
 
 		setBackground(Utils.secondaryColor);
 		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
@@ -147,19 +161,34 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		pnlRow2.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
 		
-		btnSuaPhong = new Button("Sửa phòng");
-		btnSuaPhong.setIcon(new ImageIcon("Icon\\change-door.png"));
-		btnSuaPhong.setFocusable(false);
-		btnSuaPhong.setRadius(8);
-		btnSuaPhong.setBorderColor(Utils.secondaryColor);
-		btnSuaPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnSuaPhong.setColor(Utils.primaryColor);
-		btnSuaPhong.setColorOver(Utils.primaryColor);
-		btnSuaPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
-		btnSuaPhong.setForeground(Color.WHITE);
-		btnSuaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		btnSuaPhong.setBounds(780, 30, 135, 40);
-		pnlRow2.add(btnSuaPhong);
+		pnlSuaDSPhong = new PanelEvent(13) {
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Color getBackground() {
+				if (!isEnabled())
+					return Utils.getOpacity(super.getBackground(), 0.5f);
+				return super.getBackground();
+			}
+		};
+		pnlSuaDSPhong.setLayout(null);
+		pnlSuaDSPhong.setBackgroundColor(Utils.primaryColor);
+		pnlRow2.add(pnlSuaDSPhong);
+		JLabel lblSuaPhong = new JLabel("Sửa phòng");
+		lblSuaPhong.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSuaPhong.setForeground(Color.WHITE);
+		lblSuaPhong.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		JLabel lblIcon = new JLabel("");
+		lblIcon.setHorizontalAlignment(SwingConstants.CENTER);
+		lblIcon.setIcon(Utils.getImageIcon("change-door.png"));
+		pnlSuaDSPhong.add(lblSuaPhong);
+		pnlSuaDSPhong.add(lblIcon);
+		pnlSuaDSPhong.setBounds(780, 30, 160, 40);
+		lblSuaPhong.setBounds(50, 5, 90, 26);
+		lblIcon.setBounds(12, 5, 32, 32);
 
 		JPanel pnlRow3 = new JPanel();
 		pnlRow3.setBackground(Utils.secondaryColor);
@@ -224,7 +253,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		pnlActions.setLayout(null);
 
 		btnNhanPhong = new Button("Nhận phòng");
-		btnNhanPhong.setIcon(new ImageIcon("Icon\\check-in (1).png"));
+		btnNhanPhong.setIcon(Utils.getImageIcon("check-in (1).png"));
 		btnNhanPhong.setFocusable(false);
 		btnNhanPhong.setRadius(8);
 		btnNhanPhong.setBorderColor(Utils.secondaryColor);
@@ -238,7 +267,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		pnlActions.add(btnNhanPhong);
 
 		btnCapNhat = new Button("Cập nhật");
-		btnCapNhat.setIcon(new ImageIcon("Icon\\door.png"));
+		btnCapNhat.setIcon(Utils.getImageIcon("door.png"));
 		btnCapNhat.setFocusable(false);
 		btnCapNhat.setRadius(8);
 		btnCapNhat.setBorderColor(Utils.secondaryColor);
@@ -250,17 +279,9 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		btnCapNhat.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnCapNhat.setBounds(370, 0, 250, 48);
 		pnlActions.add(btnCapNhat);
-//		btnCapNhat.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				setEnabledForm(true);
-//				btnCapNhat.setVisible(false);
-//				btnLuu.setEnabled(true);
-//			}
-//		});
 
 		btnHuyPhong = new Button("Huỷ phòng");
-		btnHuyPhong.setIcon(new ImageIcon("Icon\\edit 1.png"));
+		btnHuyPhong.setIcon(Utils.getImageIcon("edit 1.png"));
 		btnHuyPhong.setFocusable(false);
 		btnHuyPhong.setRadius(8);
 		btnHuyPhong.setBorderColor(Utils.secondaryColor);
@@ -274,12 +295,14 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		pnlActions.add(btnHuyPhong);
 
 		setPhieuDatPhongVaoForm(this.chiTietDatPhong);
-
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
+		
+//		Sự kiện nút Sửa danh sách phòng
+		pnlSuaDSPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				handleOpenSubFrame(pnlSuaDSPhong, new SuaPhong_GUI(jFrame, _this, chiTietDatPhong.getDonDatPhong(),ThongTinChiTietPhieuDatPhong_GUI.this.jFrame));
+			}
+		});
 
 	}
 
@@ -305,5 +328,30 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 				+ Utils.formatDate(donDatPhong.getNgayDatPhong()));
 		txtTGNP.setText(Utils.convertLocalTimeToString(donDatPhong.getGioNhanPhong()) + " - "
 				+ Utils.formatDate(donDatPhong.getNgayNhanPhong()));
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
+		if (!pnl.isEnabled())
+			return;
+		openJFrameSub(jFrame);
+	}
+	public void closeJFrameSub() {
+		if (jFrameSub != null)
+			jFrameSub.setVisible(false);
+		glass.setVisible(false);
+		glass.setAlpha(0f);
+		jFrameSub = null;
+	}
+	public void openJFrameSub(JFrame jFrame) {
+		this.jFrame.setGlassPane(glass);
+		glass.setVisible(true);
+		glass.setAlpha(0.5f);
+		jFrameSub = jFrame;
+		jFrameSub.setVisible(true);
 	}
 }
