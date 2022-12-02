@@ -285,10 +285,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 						chiTietDichVu_DAO.capNhatSoLuongDichVuTang(DichVuChon.getMaDichVu(), maDatPhongChon,
 								maPhongChon, 1);
 
-						// DichVuChon.setSoLuong(chiTietDichVu_DAO.getChiTietDichVuTheoMa(DichVuChon.getMaDichVu(),
-						// maDatPhongChon, maPhongChon).getSoLuong());;
-						// dsDVDaChon.remove(DichVuChon);
-						// dsDVDaChon.add(DichVuChon);
 						dsDVDaChon.removeAll(dsDVDaChon);
 						List<ChiTietDichVu> ListChiTietDV = new ArrayList<>();
 						DichVu dichVuTrongChiTiet = new DichVu();
