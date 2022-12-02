@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import entity.ChiTietDatPhong;
 import entity.ChiTietDichVu;
 import entity.DichVu;
 import entity.DonDatPhong;
+import entity.LoaiDichVu;
 import entity.Phong;
 
 public class ChiTietDichVu_DAO {
@@ -20,8 +22,8 @@ public class ChiTietDichVu_DAO {
 		boolean res = false;
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ? and phong = ?");
+			preparedStatement = ConnectDB.getConnection().prepareStatement(
+					"UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ? and phong = ?");
 			preparedStatement.setInt(1, soLuongMua);
 			preparedStatement.setString(2, maDV);
 			preparedStatement.setString(3, maDP);
@@ -33,10 +35,11 @@ public class ChiTietDichVu_DAO {
 		}
 		return res;
 	}
+
 	public List<ChiTietDichVu> getAllChiTietDichVu() {
 		List<ChiTietDichVu> list = new ArrayList<>();
 		Statement statement;
-		
+
 		try {
 			statement = ConnectDB.getConnection().createStatement();
 			ResultSet resultSet = statement.executeQuery("SELECT * FROM ChiTietDichVu");
@@ -52,11 +55,12 @@ public class ChiTietDichVu_DAO {
 
 	public List<ChiTietDichVu> getAllChiTietDichVuTheoMaDatPhong(String maDP, String maPhong) {
 		List<ChiTietDichVu> list = new ArrayList<>();
-		
+
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT * " + "FROM   ChiTietDichVu INNER JOIN DonDatPhong ON  "
-							+ "	   ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong " + "WHERE  maDonDatPhong = ? and phong = ?");
+							+ "	   ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
+							+ "WHERE  maDonDatPhong = ? and phong = ?");
 
 			preparedStatement.setString(1, maDP);
 			preparedStatement.setString(2, maPhong);
@@ -84,8 +88,8 @@ public class ChiTietDichVu_DAO {
 
 	public ChiTietDichVu getChiTietDichVuTheoMa(String maDichVu, String maDatPhong, String maPhong) {
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDichVu INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu INNER JOIN "
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
+					"SELECT * FROM ChiTietDichVu INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu INNER JOIN "
 							+ "DonDatPhong ON ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
 							+ "WHERE maDichVu = ? and maDonDatPhong = ? and phong = ?");
 			preparedStatement.setString(1, maDichVu);
@@ -144,7 +148,8 @@ public class ChiTietDichVu_DAO {
 		int res = 0;
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement("INSERT ChiTietDichVu VALUES (?, ?, ?, ?, ?)");
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("INSERT ChiTietDichVu VALUES (?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, chiTietDichVu.getDichVu().getMaDichVu());
 			preparedStatement.setString(2, chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getMaDonDatPhong());
 			preparedStatement.setString(3, chiTietDichVu.getChiTietDatPhong().getPhong().getMaPhong());
@@ -159,15 +164,67 @@ public class ChiTietDichVu_DAO {
 		return res > 0;
 	}
 
+	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year) {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		String sql = "SELECT CTDV.*, DV.*, ngayNhanPhong FROM [dbo].[DonDatPhong] DDP "
+				+ "JOIN [dbo].[ChiTietDichVu] CTDV ON DDP.maDonDatPhong = CTDV.donDatPhong "
+				+ "JOIN [dbo].[DichVu] DV ON DV.maDichVu = CTDV.dichVu "
+				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả'";
+
+		if (month > 0)
+			sql += " AND MONTH([ngayNhanPhong]) = ?";
+		if (day > 0)
+			sql += " AND DAY([ngayNhanPhong]) = ?";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setInt(1, year);
+			if (month > 0)
+				preparedStatement.setInt(2, month);
+			if (day > 0)
+				preparedStatement.setInt(3, day);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			ChiTietDichVu chiTietDichVu;
+			DichVu dichVu;
+			String maDichVu, tenDichVu, donViTinh, loaiDichVu;
+			int soLuong;
+			double giaMua;
+			LocalDate ngayNhanPhong;
+			while (resultSet.next()) {
+				chiTietDichVu = getChiTietDichVu(resultSet);
+				
+				maDichVu = resultSet.getString("maDichVu");
+				tenDichVu = resultSet.getString("tenDichVu");
+				soLuong = resultSet.getInt("soLuong");
+				donViTinh = resultSet.getString("donViTinh");
+				loaiDichVu = resultSet.getString("loaiDichVu");
+				giaMua = resultSet.getDouble("giaMua");
+				dichVu = new DichVu(maDichVu, tenDichVu, soLuong, donViTinh, new LoaiDichVu(loaiDichVu), giaMua);
+				chiTietDichVu.setDichVu(dichVu);
+				
+				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
+				chiTietDichVu.getChiTietDatPhong().getDonDatPhong().setNgayNhanPhong(ngayNhanPhong);
+				
+				list.add(chiTietDichVu);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 	public boolean xoaChiTietDichVu(String maDichVu, String maDatPhong, String maPhong) {
 		int res = 0;
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("DELETE ChiTietDichVu "
-							+ "FROM   ChiTietDatPhong INNER JOIN ChiTietDichVu ON ChiTietDatPhong.donDatPhong = ChiTietDichVu.donDatPhong "
-							+ "AND ChiTietDatPhong.phong = ChiTietDichVu.phong AND ChiTietDatPhong.gioVao = ChiTietDichVu.gioVao "
-							+ "INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu "
-							+ "WHERE dichVu =  ? and ChiTietDichVu.donDatPhong = ? and ChiTietDichVu.phong = ?");
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement("DELETE ChiTietDichVu "
+					+ "FROM   ChiTietDatPhong INNER JOIN ChiTietDichVu ON ChiTietDatPhong.donDatPhong = ChiTietDichVu.donDatPhong "
+					+ "AND ChiTietDatPhong.phong = ChiTietDichVu.phong AND ChiTietDatPhong.gioVao = ChiTietDichVu.gioVao "
+					+ "INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu "
+					+ "WHERE dichVu =  ? and ChiTietDichVu.donDatPhong = ? and ChiTietDichVu.phong = ?");
 			preparedStatement.setString(1, maDichVu);
 			preparedStatement.setString(2, maDatPhong);
 			preparedStatement.setString(3, maPhong);

@@ -1,46 +1,89 @@
 package ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.ThreadLocalRandom;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 
 import components.barChart.Chart;
 import components.barChart.ModelChart;
 import components.button.Button;
 import components.panelRound.PanelRound;
+import components.scrollbarCustom.ScrollBarCustom;
+import dao.ChiTietDatPhong_DAO;
+import dao.ChiTietDichVu_DAO;
+import dao.LoaiPhong_DAO;
+import entity.ChiTietDatPhong;
+import entity.ChiTietDichVu;
+import entity.LoaiPhong;
+import entity.Phong;
 import utils.Utils;
 
 public class ThongKeDoanhThu_GUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private PanelRound pnlResultContainer, pnlChart;
-	private JComboBox<String> cboDay, cboMonth, cboYear;
+	private JComboBox<String> cmbDay, cmbMonth, cmbYear;
 	private Chart chart;
 	private Button btnDay, btnMonth, btnYear;
-	private String valueDay="";
-	private String valueMonth="";
-	private String valueYear="";
-	private JLabel lblResDate, lblTongDoanhThuKQ, lblTongTienPhongKQ, 
-	lblDoanhThuPhongThuongKQ, lblDoanhThuPhongVIPKQ, lblTongTienDVKQ, 
-	lblTongSoGHKQ, lblTongSoHDKQ, lblDoanhThuTrungBinhKQ, lblResult;
+	private JLabel lblResDate, lblTongDoanhThuKQ, lblTongTienPhongKQ, lblDoanhThuPhongThuongKQ, lblDoanhThuPhongVIPKQ,
+			lblTongTienDVKQ, lblTongSoGHKQ, lblTongSoHDKQ, lblDoanhThuTrungBinhKQ, lblResult;
+	private LoaiPhong_DAO loaiPhong_DAO;
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private List<LoaiPhong> dsLoaiPhong;
+	private ChiTietDichVu_DAO chiTietDichVu_DAO;
+	private Rectangle boundsPnlResultContainer;
+	private Rectangle boundsChart;
+	private int top;
+	private Rectangle boundsPnlChart;
+	private JTable tbl;
+	private DefaultTableModel tableModel;
+	private JScrollPane scr;
 
 	public ThongKeDoanhThu_GUI() {
+		loaiPhong_DAO = new LoaiPhong_DAO();
+		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		chiTietDichVu_DAO = new ChiTietDichVu_DAO();
+		int padding = (int) Math.floor((Utils.getBodyHeight() - 509) * 1.0 / 3);
+		top = padding;
+
 		setBackground(new Color(242, 246, 252));
 		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
 
-		// ==================  Bắt đầu phần Button Tính doanh thu
+		// ================== Bắt đầu phần Button Tính doanh thu
 
 		PanelRound pnlContainerAction = new PanelRound();
 		pnlContainerAction.setBackground(Color.WHITE);
-		pnlContainerAction.setBounds(90, 20, Utils.getScreenWidth()-195, 145);
+		pnlContainerAction.setBounds(Utils.getLeft(1052), top, 1052, 137);
+		top += 137 + padding;
 		pnlContainerAction.setRoundBottomRight(20);
 		pnlContainerAction.setRoundTopLeft(20);
 		pnlContainerAction.setRoundTopRight(20);
@@ -48,26 +91,24 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		this.add(pnlContainerAction);
 		pnlContainerAction.setLayout(null);
 
-
 		JPanel pnlRevenueCalculation = new JPanel();
 		pnlRevenueCalculation.setBackground(Color.WHITE);
-		pnlRevenueCalculation.setBounds(20, 15, Utils.getScreenWidth()-235, 46);
+		pnlRevenueCalculation.setBounds(20, 15, 1012, 46);
 		pnlContainerAction.add(pnlRevenueCalculation);
 		pnlRevenueCalculation.setLayout(null);
 
 		JLabel lblRevenueCalculation = new JLabel("Thống kê doanh thu theo:");
-		lblRevenueCalculation.setBounds(0, 5, 299, 28);
+		lblRevenueCalculation.setBounds(0, 9, 299, 28);
 		lblRevenueCalculation.setFont(new Font("Segoe UI", Font.BOLD, 18));
 		lblRevenueCalculation.setForeground(new Color(100, 100, 100));
 		pnlRevenueCalculation.add(lblRevenueCalculation);
 
 		btnDay = new Button("Ngày");
 		btnDay.setFocusable(false);
-
 		btnDay.setForeground(new Color(100, 100, 100));
 		btnDay.setColor(new Color(242, 246, 252));
 		btnDay.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		btnDay.setBounds(541, 1, 118, 44);
+		btnDay.setBounds(498, 1, 118, 44);
 		btnDay.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnDay.setBorderColor(new Color(242, 246, 252));
 		btnDay.setColorOver(new Color(242, 246, 252));
@@ -78,7 +119,7 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		btnDay.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				pnlChart.setBounds((Utils.getScreenWidth()-235)/2 + 100, 180, 0, 0);
+				pnlChart.setBounds((Utils.getScreenWidth() - 235) / 2 + 100, 180, 0, 0);
 				pnlResultContainer.setBounds(90, 180, 0, 0);
 
 				btnDay.setColor(Utils.primaryColor);
@@ -98,21 +139,18 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 				btnYear.setBorderColor(new Color(242, 246, 252));
 				btnYear.setColorOver(new Color(242, 246, 252));
 
-				cboDay.setEnabled(true);
-				cboMonth.setEnabled(true);
-				valueDay = cboDay.getSelectedItem().toString();
-				valueMonth = cboMonth.getSelectedItem().toString();
-				valueYear = cboYear.getSelectedItem().toString();
+				cmbDay.setEnabled(true);
+				cmbMonth.setEnabled(true);
+				setDaysToCmb();
 			}
 		});
 
 		btnMonth = new Button("Tháng");
 		btnMonth.setFocusable(false);
-
 		btnMonth.setForeground(Color.WHITE);
 		btnMonth.setColor(Utils.primaryColor);
 		btnMonth.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		btnMonth.setBounds(719, 1, 118, 44);
+		btnMonth.setBounds(696, 1, 118, 44);
 		btnMonth.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnMonth.setBorderColor(Utils.primaryColor);
 		btnMonth.setColorOver(Utils.primaryColor);
@@ -122,7 +160,7 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 
 		btnMonth.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				pnlChart.setBounds((Utils.getScreenWidth()-235)/2 + 100, 180, 0, 0);
+				pnlChart.setBounds((Utils.getScreenWidth() - 235) / 2 + 100, 180, 0, 0);
 				pnlResultContainer.setBounds(90, 180, 0, 0);
 
 				btnMonth.setColor(Utils.primaryColor);
@@ -142,21 +180,17 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 				btnDay.setBorderColor(new Color(242, 246, 252));
 				btnDay.setColorOver(new Color(242, 246, 252));
 
-				cboDay.setEnabled(false);
-				cboMonth.setEnabled(true);
-				valueDay = "";
-				valueMonth = cboMonth.getSelectedItem().toString();
-				valueYear = cboYear.getSelectedItem().toString();
+				cmbDay.setEnabled(false);
+				cmbMonth.setEnabled(true);
 			}
 		});
 
 		btnYear = new Button("Năm");
 		btnYear.setFocusable(false);
-
 		btnYear.setForeground(new Color(100, 100, 100));
 		btnYear.setColor(new Color(242, 246, 252));
 		btnYear.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		btnYear.setBounds(897, 1, 118, 44);
+		btnYear.setBounds(894, 1, 118, 44);
 		btnYear.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnYear.setBorderColor(new Color(242, 246, 252));
 		btnYear.setColorOver(Utils.primaryColor);
@@ -166,7 +200,7 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 
 		btnYear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				pnlChart.setBounds((Utils.getScreenWidth()-235)/2 + 100, 180, 0, 0);
+				pnlChart.setBounds((Utils.getScreenWidth() - 235) / 2 + 100, 180, 0, 0);
 				pnlResultContainer.setBounds(90, 180, 0, 0);
 
 				btnYear.setColor(Utils.primaryColor);
@@ -186,91 +220,73 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 				btnDay.setBorderColor(new Color(242, 246, 252));
 				btnDay.setColorOver(new Color(242, 246, 252));
 
-				cboDay.setEnabled(false);
-				cboMonth.setEnabled(false);
-				valueDay = "";
-				valueMonth = "";
-				valueYear = cboYear.getSelectedItem().toString();
+				cmbDay.setEnabled(false);
+				cmbMonth.setEnabled(false);
 
 			}
 		});
 
-		// ==================  Kết thúc phần Button Tính doanh thu
-		// ==================  Bắt đầu phần hiển thị ngày, tháng, năm
+		// ================== Kết thúc phần Button Tính doanh thu
+		// ================== Bắt đầu phần hiển thị ngày, tháng, năm
 		JPanel pnlDate = new JPanel();
 		pnlDate.setBackground(Color.WHITE);
-		pnlDate.setBounds(20, 80, Utils.getScreenWidth()-235, 46);
+		pnlDate.setBounds(20, 76, 1012, 46);
 		pnlContainerAction.add(pnlDate);
 		pnlDate.setLayout(null);
 
 		JLabel lblDay = new JLabel("Ngày: ");
 		lblDay.setForeground(new Color(100, 100, 100));
-		lblDay.setBounds(0, 5, 70, 28);
+		lblDay.setBounds(0, 9, 70, 28);
 		lblDay.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		pnlDate.add(lblDay);
 
-		String days[] = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
-				"11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
-				"21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
-		cboDay = new JComboBox<String>(days);
-		cboDay.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		cboDay.setBackground(Color.WHITE);
-		cboDay.setBounds(70, 4, 100, 40);
-		cboDay.setBorder(new EmptyBorder(0, 0, 0, 0));
-		cboDay.setEnabled(false);
-		pnlDate.add(cboDay);
-
-		cboDay.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				valueDay = cboDay.getSelectedItem().toString();
-			}
-		});
+		cmbDay = new JComboBox<String>();
+		cmbDay.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		cmbDay.setBackground(Color.WHITE);
+		cmbDay.setBounds(70, 3, 100, 40);
+		cmbDay.setBorder(new EmptyBorder(0, 0, 0, 0));
+		cmbDay.setEnabled(false);
+		pnlDate.add(cmbDay);
 
 		JLabel lblMonth = new JLabel("Tháng: ");
 		lblMonth.setForeground(new Color(100, 100, 100));
-		lblMonth.setBounds(240, 5, 70, 28);
+		lblMonth.setBounds(269, 9, 70, 28);
 		lblMonth.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		pnlDate.add(lblMonth);
 
-		String months[] = {"01","02", "03", "04", "05", "06","07", "08", "09", "10", "11", "12"};
-		cboMonth = new JComboBox<String>(months);
-		cboMonth.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		cboMonth.setBackground(Color.WHITE);
-		cboMonth.setAlignmentX(CENTER_ALIGNMENT);
-		cboMonth.setBounds(310, 4, 100, 40);
-		cboMonth.setBorder(new EmptyBorder(0, 0, 0, 0));
-		cboMonth.setSelectedItem("11");
-		pnlDate.add(cboMonth);
+		cmbMonth = new JComboBox<String>();
+		cmbMonth.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		cmbMonth.setBackground(Color.WHITE);
+		cmbMonth.setAlignmentX(CENTER_ALIGNMENT);
+		cmbMonth.setBounds(339, 3, 100, 40);
+		cmbMonth.setBorder(new EmptyBorder(0, 0, 0, 0));
+		cmbMonth.setSelectedItem("11");
+		cmbMonth.addItemListener(e -> setDaysToCmb());
+		pnlDate.add(cmbMonth);
 
-		cboMonth.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				valueMonth = cboMonth.getSelectedItem().toString();
-			}
-		});
+		for (int i = 1; i < 13; i++)
+			cmbMonth.addItem(Utils.convertIntToString(i));
 
 		JLabel lblYear = new JLabel("Năm: ");
 		lblYear.setForeground(new Color(100, 100, 100));
-		lblYear.setBounds(480, 5, 70, 28);
+		lblYear.setBounds(538, 9, 70, 28);
 		lblYear.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		pnlDate.add(lblYear);
 
-		String years[] = {"2018","2019", "2020", "2021", "2022"};
-		cboYear = new JComboBox<String>(years);
-		cboYear.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		cboYear.setBackground(Color.WHITE);
-		cboYear.setAlignmentX(CENTER_ALIGNMENT);
-		cboYear.setBounds(550, 4, 100, 40);
-		cboYear.setBorder(new EmptyBorder(0, 0, 0, 0));
-		cboYear.setSelectedItem("2022");
-		pnlDate.add(cboYear);
+		cmbYear = new JComboBox<String>();
+		cmbYear.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		cmbYear.setBackground(Color.WHITE);
+		cmbYear.setAlignmentX(CENTER_ALIGNMENT);
+		cmbYear.setBounds(608, 3, 100, 40);
+		cmbYear.setBorder(new EmptyBorder(0, 0, 0, 0));
+		cmbYear.addItemListener(e -> setDaysToCmb());
+		pnlDate.add(cmbYear);
 
-		cboYear.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				valueYear = cboYear.getSelectedItem().toString();
-			}
-		});
+		int yearNow = LocalDate.now().getYear();
+		for (int i = 2015; i <= yearNow; ++i)
+			cmbYear.addItem(i + "");
 
-		// ==================  Kết thúc phần hiển thị ngày, tháng, năm
+		// ================== Kết thúc phần hiển thị ngày, tháng, năm
 
 		Button btnStatisticize = new Button("Thống kê doanh thu");
 		btnStatisticize.setFocusable(false);
@@ -279,7 +295,7 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		btnStatisticize.setBorderColor(Utils.primaryColor);
 		btnStatisticize.setRadius(10);
 		btnStatisticize.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		btnStatisticize.setBounds(810, 1, 205, 44);
+		btnStatisticize.setBounds(807, 1, 205, 44);
 		btnStatisticize.setColorOver(Utils.primaryColor);
 		btnStatisticize.setColorTextOver(Color.WHITE);
 		btnStatisticize.setColorTextOut(Color.WHITE);
@@ -290,123 +306,19 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		btnStatisticize.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				pnlResultContainer.setBounds(90, 180, (Utils.getScreenWidth()-235)/2 - 10, Utils.getBodyHeight() - 230);
-
-				// Day
-				if (valueDay.trim()!="" && valueMonth.trim()!="") {
-					lblResDate.setText(valueDay + "/" + valueMonth +"/" + valueYear);
-					lblResult.setText("Doanh thu trong: ");
-
-					// doanh thu
-					int randomPhongThuong = ThreadLocalRandom.current().nextInt(1, 15 + 1);
-					int randomPhongVIP= ThreadLocalRandom.current().nextInt(1, 15 + 1);
-					int randomDichVu= ThreadLocalRandom.current().nextInt(1, 7 + 1);
-					int randomGioHat = ThreadLocalRandom.current().nextInt(1, 6 + 1);
-					int randomHoaDon = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-
-					lblTongDoanhThuKQ.setText(randomPhongThuong*100000 + randomPhongVIP*100000+ randomDichVu*100000+ " VNĐ");
-					lblTongTienPhongKQ.setText(randomPhongThuong*100000 + randomPhongVIP*100000+ " VNĐ");
-					lblDoanhThuPhongThuongKQ.setText(randomPhongThuong*100000+" VNĐ");
-					lblDoanhThuPhongVIPKQ.setText(randomPhongVIP*100000+" VNĐ");
-					lblTongTienDVKQ.setText(randomDichVu*100000+" VNĐ");
-					lblTongSoGHKQ.setText(randomGioHat+" giờ");
-					lblTongSoHDKQ.setText(randomHoaDon +"");
-					lblDoanhThuTrungBinhKQ.setText((randomPhongThuong*100000 + randomPhongVIP*100000+ randomDichVu*100000)/randomHoaDon +" VNĐ/ngày");
-					
-					// chart
-					pnlChart.setBounds((Utils.getScreenWidth()-235)/2 + 100, 180, 0, 0);
-
-				}
-				// Month
-				if(valueDay.trim()=="" && valueMonth.trim()!="")
-				{
-					pnlChart.setBounds((Utils.getScreenWidth()-235)/2 + 100, 180, (Utils.getScreenWidth()-235)/2 + 30, Utils.getBodyHeight() - 230);
-					lblResDate.setText(valueMonth +"/" + valueYear);
-					lblResult.setText("Doanh thu trong: ");
-					
-					// chart
-					String date1 = "01/" + valueMonth +"/" + valueYear + " - 10/" + valueMonth +"/" + valueYear;
-					String date2 = "11/" + valueMonth +"/" + valueYear + " - 20/" + valueMonth +"/" + valueYear;
-					String date3 = "21/" + valueMonth +"/" + valueYear + " - 30/" + valueMonth +"/" + valueYear;
-					chart = new Chart();
-					chart.addLegend("", Utils.primaryColor);
-					chart.addLegend("", Utils.primaryColor);
-					chart.addLegend("", Utils.primaryColor);
-					int randomNum1 = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-					int randomNum2 = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-					int randomNum3= ThreadLocalRandom.current().nextInt(1, 10 + 1);
-					chart.addData(new ModelChart(date1, new double[] {0, randomNum1*5, 0}));
-					chart.addData(new ModelChart(date2, new double[] {0, randomNum2*5, 0}));
-					chart.addData(new ModelChart(date3, new double[] {0, randomNum3*5, 0}));
-					chart.setBounds(10, 10, (Utils.getScreenWidth()-235)/2 + 10, Utils.getBodyHeight() - 210);
-					pnlChart.add(chart);
-					chart.start();
-
-					// doanh thu
-					int randomPhongThuong = ThreadLocalRandom.current().nextInt(1, 15 + 1);
-					int randomPhongVIP= ThreadLocalRandom.current().nextInt(1, 15 + 1);
-					int randomDichVu= ThreadLocalRandom.current().nextInt(1, 7 + 1);
-					int randomGioHat = ThreadLocalRandom.current().nextInt(1, 6 + 1) * 30;
-					int randomHoaDon = ThreadLocalRandom.current().nextInt(5, 10 + 1) * 30;
-
-					lblTongDoanhThuKQ.setText(randomPhongThuong*30*100000 + randomPhongVIP*30*100000+ randomDichVu*30*100000+ " VNĐ");
-					lblTongTienPhongKQ.setText(randomPhongThuong*100000 + randomPhongVIP*30*100000+ " VNĐ");
-					lblDoanhThuPhongThuongKQ.setText(randomPhongThuong*30*100000+" VNĐ");
-					lblDoanhThuPhongVIPKQ.setText(randomPhongVIP*30*100000+" VNĐ");
-					lblTongTienDVKQ.setText(randomDichVu*30*100000+" VNĐ");
-					lblTongSoGHKQ.setText(randomGioHat+" giờ");
-					lblTongSoHDKQ.setText(randomHoaDon +"");
-					lblDoanhThuTrungBinhKQ.setText((randomPhongThuong*30*100000 + randomPhongVIP*30*100000+ randomDichVu*30*100000)/randomHoaDon +" VNĐ/ngày");
-
-				}
-
-				// Year
-				if(valueDay.trim()=="" && valueMonth.trim()=="" && valueYear.trim()!="")
-				{
-					pnlChart.setBounds((Utils.getScreenWidth()-235)/2 + 100, 180, (Utils.getScreenWidth()-235)/2 + 30, Utils.getBodyHeight() - 230);
-					lblResDate.setText(valueYear);
-					lblResult.setText("Doanh thu trong: ");
-					// doanh thu
-					int randomPhongThuong = ThreadLocalRandom.current().nextInt(1, 15 + 1);
-					int randomPhongVIP= ThreadLocalRandom.current().nextInt(1, 15 + 1);
-					int randomDichVu= ThreadLocalRandom.current().nextInt(1, 7 + 1);
-					int randomGioHat = ThreadLocalRandom.current().nextInt(1, 6 + 1) * 365;
-					int randomHoaDon = ThreadLocalRandom.current().nextInt(5, 10 + 1) * 365;
-
-					lblTongDoanhThuKQ.setText(randomPhongThuong*365*100000 + randomPhongVIP*365*100000+ randomDichVu*365*100000+ " VNĐ");
-					lblTongTienPhongKQ.setText(randomPhongThuong*100000 + randomPhongVIP*365*100000+ " VNĐ");
-					lblDoanhThuPhongThuongKQ.setText(randomPhongThuong*365*100000+" VNĐ");
-					lblDoanhThuPhongVIPKQ.setText(randomPhongVIP*365*100000+" VNĐ");
-					lblTongTienDVKQ.setText(randomDichVu*365*100000+" VNĐ");
-					lblTongSoGHKQ.setText(randomGioHat+" giờ");
-					lblTongSoHDKQ.setText(randomHoaDon +"");
-					lblDoanhThuTrungBinhKQ.setText((randomPhongThuong*365*100000 + randomPhongVIP*365*100000+ randomDichVu*365*100000)/randomHoaDon +" VNĐ/ngày");
-
-					// chart
-					String date1 = "01/" + valueYear + " - 04/" +valueYear;
-					String date2 = "05/" + valueYear + " - 08/" +valueYear;
-					String date3 = "09/" + valueYear + " - 12/" +valueYear;
-					chart = new Chart();
-					chart.addLegend("", Utils.primaryColor);
-					chart.addLegend("", Utils.primaryColor);
-					chart.addLegend("", Utils.primaryColor);
-					int randomNum1 = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-					int randomNum2 = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-					int randomNum3= ThreadLocalRandom.current().nextInt(1, 10 + 1);
-					chart.addData(new ModelChart(date1, new double[] {0, randomNum1*5, 0}));
-					chart.addData(new ModelChart(date2, new double[] {0, randomNum2*5, 0}));
-					chart.addData(new ModelChart(date3, new double[] {0, randomNum3*5, 0}));
-					chart.setBounds(10, 10, (Utils.getScreenWidth()-235)/2 + 10, Utils.getBodyHeight() - 210);
-					pnlChart.add(chart);
-					chart.start();
-				}
+				handleThongKe();
+				cmbYear.showPopup();
+				cmbYear.hidePopup();
 			}
 
 		});
 
 		// Kết quả doanh thu
+		boundsPnlResultContainer = new Rectangle(Utils.getLeft(1052), top, 516, 335);
+		boundsPnlChart = new Rectangle(Utils.getLeft(1052) + 536, top, 516, 335);
+		boundsChart = new Rectangle(10, 10, 496, 315);
 		pnlResultContainer = new PanelRound();
-		pnlResultContainer.setBounds(90, 180, (Utils.getScreenWidth()-235)/2 - 10, Utils.getBodyHeight() - 230);
+		pnlResultContainer.setBounds(boundsPnlResultContainer);
 		pnlResultContainer.setBackground(Color.WHITE);
 		pnlResultContainer.setRoundBottomRight(20);
 		pnlResultContainer.setRoundTopLeft(20);
@@ -423,28 +335,28 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		pnlResultContainer.add(lblResult);
 
 		lblResDate = new JLabel("11/2022", SwingConstants.RIGHT);
-		lblResDate.setBounds(180, 15, 299, 24);
+		lblResDate.setBounds(197, 15, 299, 24);
 		lblResDate.setFont(new Font("Segoe UI", Font.BOLD, 18));
 		lblResDate.setForeground(new Color(100, 100, 100));
 		pnlResultContainer.add(lblResDate);
 
 		// Phần line
 		JPanel line = new JPanel();
-		line.setBounds(20, 50, (Utils.getScreenWidth()-235)/2 - 50, 2);
+		line.setBounds(20, 50, 476, 2);
 		line.setLayout(null);
 		line.setBackground(new Color(100, 100, 100));
 		pnlResultContainer.add(line);
 
 		// Phần Result
 		PanelRound pnlResult = new PanelRound();
-		pnlResult.setBounds(20, 65, (Utils.getScreenWidth()-235)/2 - 50, 300);
+		pnlResult.setBounds(20, 65, 476, 249);
 		pnlResult.setBackground(Color.WHITE);
 		pnlResult.setLayout(null);
 		pnlResultContainer.add(pnlResult);
 
 		// Tổng doanh thu
 		JPanel pnlTongDoanhThu = new JPanel();
-		pnlTongDoanhThu.setBounds(0, 0, (Utils.getScreenWidth()-235)/2 - 50, 30);
+		pnlTongDoanhThu.setBounds(0, 0, 476, 30);
 		pnlTongDoanhThu.setBackground(Color.WHITE);
 		pnlTongDoanhThu.setLayout(new BorderLayout());
 		pnlResult.add(pnlTongDoanhThu);
@@ -462,7 +374,7 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 
 		// Tổng tiền phòng
 		JPanel pnlTongTienPhong = new JPanel();
-		pnlTongTienPhong.setBounds(20, 35, (Utils.getScreenWidth()-235)/2 - 70, 30);
+		pnlTongTienPhong.setBounds(59, 30, 417, 30);
 		pnlTongTienPhong.setBackground(Color.WHITE);
 		pnlTongTienPhong.setLayout(new BorderLayout());
 		pnlResult.add(pnlTongTienPhong);
@@ -480,7 +392,7 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 
 		// Doanh thu phòng thường
 		JPanel pnlDoanhThuPhongThuong = new JPanel();
-		pnlDoanhThuPhongThuong.setBounds(40, 70, (Utils.getScreenWidth()-235)/2 - 90, 30);
+		pnlDoanhThuPhongThuong.setBounds(109, 60, 367, 30);
 		pnlDoanhThuPhongThuong.setBackground(Color.WHITE);
 		pnlDoanhThuPhongThuong.setLayout(new BorderLayout());
 		pnlResult.add(pnlDoanhThuPhongThuong);
@@ -498,7 +410,7 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 
 		// Doanh thu phòng VIP
 		JPanel pnlDoanhThuPhongVIP = new JPanel();
-		pnlDoanhThuPhongVIP.setBounds(40, 105, (Utils.getScreenWidth()-235)/2 - 90, 30);
+		pnlDoanhThuPhongVIP.setBounds(109, 90, 367, 30);
 		pnlDoanhThuPhongVIP.setBackground(Color.WHITE);
 		pnlDoanhThuPhongVIP.setLayout(new BorderLayout());
 		pnlResult.add(pnlDoanhThuPhongVIP);
@@ -516,7 +428,7 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 
 		// Tổng tiền dịch vụ
 		JPanel pnlTongTienDV = new JPanel();
-		pnlTongTienDV.setBounds(20, 140, (Utils.getScreenWidth()-235)/2 - 70, 30);
+		pnlTongTienDV.setBounds(59, 120, 417, 30);
 		pnlTongTienDV.setBackground(Color.WHITE);
 		pnlTongTienDV.setLayout(new BorderLayout());
 		pnlResult.add(pnlTongTienDV);
@@ -534,7 +446,7 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 
 		// Tổng số giờ hát
 		JPanel pnlTongSoGH = new JPanel();
-		pnlTongSoGH.setBounds(20, 175, (Utils.getScreenWidth()-235)/2 - 70, 30);
+		pnlTongSoGH.setBounds(59, 150, 417, 30);
 		pnlTongSoGH.setBackground(Color.WHITE);
 		pnlTongSoGH.setLayout(new BorderLayout());
 		pnlResult.add(pnlTongSoGH);
@@ -550,10 +462,9 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		lblTongSoGHKQ.setForeground(new Color(100, 100, 100));
 		pnlTongSoGH.add(lblTongSoGHKQ, BorderLayout.EAST);
 
-
 		// Tổng số hoá đơn
 		JPanel pnlTongSoHD = new JPanel();
-		pnlTongSoHD.setBounds(0, 210, (Utils.getScreenWidth()-235)/2 - 50, 30);
+		pnlTongSoHD.setBounds(0, 185, 476, 30);
 		pnlTongSoHD.setBackground(Color.WHITE);
 		pnlTongSoHD.setLayout(new BorderLayout());
 		pnlResult.add(pnlTongSoHD);
@@ -571,7 +482,7 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 
 		// Doanh thu trung bình
 		JPanel pnlDoanhThuTrungBinh = new JPanel();
-		pnlDoanhThuTrungBinh.setBounds(0, 245, (Utils.getScreenWidth()-235)/2 - 50, 30);
+		pnlDoanhThuTrungBinh.setBounds(0, 220, 476, 30);
 		pnlDoanhThuTrungBinh.setBackground(Color.WHITE);
 		pnlDoanhThuTrungBinh.setLayout(new BorderLayout());
 		pnlResult.add(pnlDoanhThuTrungBinh);
@@ -587,25 +498,11 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		lblDoanhThuTrungBinhKQ.setForeground(new Color(100, 100, 100));
 		pnlDoanhThuTrungBinh.add(lblDoanhThuTrungBinhKQ, BorderLayout.EAST);
 
-		int randomPhongThuong = ThreadLocalRandom.current().nextInt(1, 15 + 1);
-		int randomPhongVIP= ThreadLocalRandom.current().nextInt(1, 15 + 1);
-		int randomDichVu= ThreadLocalRandom.current().nextInt(1, 7 + 1);
-		int randomGioHat = ThreadLocalRandom.current().nextInt(1, 6 + 1) * 30;
-		int randomHoaDon = ThreadLocalRandom.current().nextInt(5, 10 + 1) * 30;
+		dsLoaiPhong = loaiPhong_DAO.getAllLoaiPhong();
 
-		lblTongDoanhThuKQ.setText(randomPhongThuong*30*100000 + randomPhongVIP*30*100000+ randomDichVu*30*100000+ " VNĐ");
-		lblTongTienPhongKQ.setText(randomPhongThuong*100000 + randomPhongVIP*30*100000+ " VNĐ");
-		lblDoanhThuPhongThuongKQ.setText(randomPhongThuong*30*100000+" VNĐ");
-		lblDoanhThuPhongVIPKQ.setText(randomPhongVIP*30*100000+" VNĐ");
-		lblTongTienDVKQ.setText(randomDichVu*30*100000+" VNĐ");
-		lblTongSoGHKQ.setText(randomGioHat+" giờ");
-		lblTongSoHDKQ.setText(randomHoaDon +"");
-		lblDoanhThuTrungBinhKQ.setText((randomPhongThuong*30*100000 + randomPhongVIP*30*100000+ randomDichVu*30*100000)/randomHoaDon +" VNĐ/ngày");
-		
-		
 		// pnlChart
 		pnlChart = new PanelRound();
-		pnlChart.setBounds((Utils.getScreenWidth()-235)/2 + 100, 180, (Utils.getScreenWidth()-235)/2 + 30, Utils.getBodyHeight() - 230);
+		pnlChart.setBounds(boundsPnlChart);
 		pnlChart.setBackground(Color.WHITE);
 		pnlChart.setRoundBottomRight(20);
 		pnlChart.setRoundTopLeft(20);
@@ -613,25 +510,348 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		pnlChart.setRoundBottomLeft(20);
 		pnlChart.setLayout(null);
 		this.add(pnlChart);
-		
-		// chart
-		String date1 = "01/" + 11 +"/" + 2022 + " - 10/" + 11 +"/" + 2022;
-		String date2 = "11/" + 11 +"/" + 2022 + " - 20/" + 11 +"/" + 2022;
-		String date3 = "21/" + 11 +"/" + 2022 + " - 30/" + 11 +"/" + 2022;
-		chart = new Chart();
-		chart.addLegend("", Utils.primaryColor);
-		chart.addLegend("", Utils.primaryColor);
-		chart.addLegend("", Utils.primaryColor);
-		int randomNum1 = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-		int randomNum2 = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-		int randomNum3= ThreadLocalRandom.current().nextInt(1, 10 + 1);
-		chart.addData(new ModelChart(date1, new double[] {0, randomNum1*5, 0}));
-		chart.addData(new ModelChart(date2, new double[] {0, randomNum2*5, 0}));
-		chart.addData(new ModelChart(date3, new double[] {0, randomNum3*5, 0}));
-		chart.setBounds(10, 10, (Utils.getScreenWidth()-235)/2 + 10, Utils.getBodyHeight() - 210);
-		pnlChart.add(chart);
-		chart.start();
+
+//		jTable
+		scr = new JScrollPane();
+		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scr.setBounds(boundsChart);
+		scr.setBackground(Utils.primaryColor);
+		scr.getViewport().setBackground(Color.WHITE);
+
+		ScrollBarCustom scp = new ScrollBarCustom();
+//		Set color scrollbar thumb
+		scp.setScrollbarColor(new Color(203, 203, 203));
+		scr.setVerticalScrollBar(scp);
+		tbl = new JTable() {
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean getShowVerticalLines() {
+				return false;
+			}
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+
+			@Override
+			/**
+			 * Set màu từng dòng cho Table
+			 */
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+				Component c = super.prepareRenderer(renderer, row, column);
+				if (isRowSelected(row))
+					c.setBackground(Utils.getOpacity(Utils.primaryColor, 0.3f));
+				else if (row % 2 == 0)
+					c.setBackground(Color.WHITE);
+				else
+					c.setBackground(new Color(232, 232, 232));
+				return c;
+			}
+		};
+		tbl.setAutoCreateRowSorter(true);
+
+		tableModel = new DefaultTableModel(new String[] { "Mã đặt phòng", "Khách hàng", "Tổng tiền", "Nhân viên" }, 0);
+		JTableHeader tblHeader = tbl.getTableHeader();
+
+		tbl.setModel(tableModel);
+		tbl.setFocusable(false);
+		tblHeader.setBackground(Utils.primaryColor);
+		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tbl.setBackground(Color.WHITE);
+		tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tblHeader.setPreferredSize(new Dimension((int) tblHeader.getPreferredSize().getWidth(), 36));
+		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tbl.setRowHeight(36);
+		scr.setViewportView(tbl);
+
+		cmbMonth.setSelectedIndex(LocalDate.now().getMonthValue() - 1);
+		cmbYear.setSelectedItem(yearNow + "");
+		handleThongKe();
 	}
 
+	private int getNumberOfDaysInMonth(int year, int month) {
+		YearMonth yearMonthObject = YearMonth.of(year, month);
+		int daysInMonth = yearMonthObject.lengthOfMonth();
+		return daysInMonth;
+	}
 
+	private void setDaysToCmb() {
+		if (!cmbDay.isEnabled())
+			return;
+
+		int month = Integer.parseInt(cmbMonth.getSelectedItem().toString());
+		int year = Integer.parseInt(cmbYear.getSelectedItem().toString());
+		int daysOfMonth = getNumberOfDaysInMonth(year, month);
+
+		cmbDay.removeAllItems();
+		for (int i = 1; i <= daysOfMonth; ++i)
+			if (i < 10)
+				cmbDay.addItem("0" + i);
+			else
+				cmbDay.addItem(i + "");
+		cmbDay.setSelectedIndex(0);
+	}
+
+	private void handleThongKe() {
+		pnlResultContainer.setBounds(boundsPnlResultContainer);
+
+		LocalDate dateNow = LocalDate.now();
+		int ngay = 0, thang = 0, nam = 0, countDate = 0, yearNow = dateNow.getYear();
+
+		if (cmbDay.isEnabled())
+			ngay = Integer.parseInt(cmbDay.getSelectedItem().toString());
+		if (cmbMonth.isEnabled())
+			thang = Integer.parseInt(cmbMonth.getSelectedItem().toString());
+		nam = Integer.parseInt(cmbYear.getSelectedItem().toString());
+
+		countDate = setTextLblResDate(ngay, thang, nam, dateNow);
+
+		int count = cmbMonth.isEnabled() ? countDate : (nam == yearNow ? dateNow.getMonthValue() : 12);
+		int div = count / 3, mod = count % 3, q1 = div + (mod-- > 0 ? 1 : 0), q2 = q1 + div + (mod-- > 0 ? 1 : 0);
+		double tongTienPhongThuongQ1 = 0, tongTienPhongThuongQ2 = 0, tongTienPhongThuongQ3 = 0;
+		double tongTienPhongVIPQ1 = 0, tongTienPhongVIPQ2 = 0, tongTienPhongVIPQ3 = 0;
+		double tongTienDichVuQ1 = 0, tongTienDichVuQ2 = 0, tongTienDichVuQ3 = 0;
+
+		List<ChiTietDatPhong> dsChiTietDatPhong = chiTietDatPhong_DAO.getChiTietDatPhong(ngay, thang, nam);
+		List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO.getChiTietDichVu(ngay, thang, nam);
+		Phong phong;
+		boolean isPhongVIP;
+		LocalTime gioVao, gioThuePhong;
+		double doanhThuPhongThuong = 0, doanhThuPhongVIP = 0, giaPhong;
+		int tongGioHat = 0, tongPhutHat = 0, gio = 0, phut = 0, dayOfMonth, monthValue;
+		Set<String> setMaDonDatPhong = new HashSet<String>();
+		List<Double> dsTongTien = new ArrayList<>();
+		String maDonDatPhong;
+		for (ChiTietDatPhong chiTietDatPhong : dsChiTietDatPhong) {
+			phong = chiTietDatPhong.getPhong();
+			isPhongVIP = false;
+			for (LoaiPhong loaiPhong : dsLoaiPhong) {
+				if (phong.getLoaiPhong().equals(loaiPhong)) {
+					if (loaiPhong.getTenLoai().toUpperCase().contains("VIP"))
+						isPhongVIP = true;
+					phong.setLoaiPhong(loaiPhong);
+					break;
+				}
+			}
+
+			gioVao = chiTietDatPhong.getGioVao();
+			gioThuePhong = chiTietDatPhong.getGioRa().minusHours(gioVao.getHour()).minusMinutes(gioVao.getMinute())
+					.minusSeconds(gioVao.getSecond());
+
+			gio = gioThuePhong.getHour();
+			phut = gioThuePhong.getMinute();
+
+			tongGioHat += gio;
+			tongPhutHat += phut;
+			giaPhong = (gio + phut * 1.0 / 60) * phong.getGiaTien();
+
+			if (isPhongVIP)
+				doanhThuPhongVIP += giaPhong;
+			else
+				doanhThuPhongThuong += giaPhong;
+
+			LocalDate ngayNhanPhong = chiTietDatPhong.getDonDatPhong().getNgayNhanPhong();
+			if (cmbMonth.isEnabled()) {
+				dayOfMonth = ngayNhanPhong.getDayOfMonth();
+				if (dayOfMonth <= q1) {
+					if (isPhongVIP)
+						tongTienPhongVIPQ1 += giaPhong;
+					else
+						tongTienPhongThuongQ1 += giaPhong;
+				} else if (dayOfMonth <= q2) {
+					if (isPhongVIP)
+						tongTienPhongVIPQ2 += giaPhong;
+					else
+						tongTienPhongThuongQ2 += giaPhong;
+				} else {
+					if (isPhongVIP)
+						tongTienPhongVIPQ3 += giaPhong;
+					else
+						tongTienPhongThuongQ3 += giaPhong;
+				}
+			} else if (!cmbDay.isEnabled()) {
+				monthValue = ngayNhanPhong.getMonthValue();
+				if (monthValue <= q1) {
+					if (isPhongVIP)
+						tongTienPhongVIPQ1 += giaPhong;
+					else
+						tongTienPhongThuongQ1 += giaPhong;
+				} else if (monthValue <= q2) {
+					if (isPhongVIP)
+						tongTienPhongVIPQ2 += giaPhong;
+					else
+						tongTienPhongThuongQ2 += giaPhong;
+				} else {
+					if (isPhongVIP)
+						tongTienPhongVIPQ3 += giaPhong;
+					else
+						tongTienPhongThuongQ3 += giaPhong;
+				}
+			}
+			maDonDatPhong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
+			if (setMaDonDatPhong.add(maDonDatPhong)) {
+				dsTongTien.add(giaPhong);
+			} else {
+			}
+		}
+
+		double tongTienDichVu = 0, giaDichVu;
+		for (ChiTietDichVu chiTietDichVu : dsChiTietDichVu) {
+			giaDichVu = chiTietDichVu.getSoLuong() * chiTietDichVu.getDichVu().getGiaBan();
+			tongTienDichVu += giaDichVu;
+
+			LocalDate ngayNhanPhong = chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getNgayNhanPhong();
+			if (cmbMonth.isEnabled()) {
+				dayOfMonth = ngayNhanPhong.getDayOfMonth();
+				if (dayOfMonth <= q1) {
+					tongTienDichVuQ1 += giaDichVu;
+				} else if (dayOfMonth <= q2) {
+					tongTienDichVuQ2 += giaDichVu;
+				} else {
+					tongTienDichVuQ3 += giaDichVu;
+				}
+			} else if (!cmbDay.isEnabled()) {
+				monthValue = ngayNhanPhong.getMonthValue();
+				if (monthValue <= q1) {
+					tongTienDichVuQ1 += giaDichVu;
+				} else if (monthValue <= q2) {
+					tongTienDichVuQ2 += giaDichVu;
+				} else {
+					tongTienDichVuQ3 += giaDichVu;
+				}
+			}
+		}
+
+		tongGioHat += tongPhutHat / 60;
+		tongPhutHat %= 60;
+		double tongTienPhong = doanhThuPhongThuong, tongDoanhThu = 0;
+		tongTienPhong += doanhThuPhongVIP;
+		tongDoanhThu = tongTienDichVu + tongTienPhong;
+		lblDoanhThuPhongVIPKQ.setText(Utils.formatTienTe(Math.round(doanhThuPhongVIP)));
+		lblDoanhThuPhongThuongKQ.setText(Utils.formatTienTe(Math.round(doanhThuPhongThuong)));
+		lblTongTienPhongKQ.setText(Utils.formatTienTe(Math.round(tongTienPhong)));
+		lblTongSoGHKQ.setText(String.format("%d giờ %d phút", tongGioHat, tongPhutHat));
+		lblTongSoHDKQ.setText(setMaDonDatPhong.size() + "");
+		lblTongTienDVKQ.setText(Utils.formatTienTe(Math.round(tongTienDichVu)));
+		lblTongDoanhThuKQ.setText(Utils.formatTienTe(Math.round(tongDoanhThu)));
+		lblDoanhThuTrungBinhKQ
+				.setText(Utils.formatTienTe(Math.round(countDate > 0 ? tongDoanhThu / countDate : tongDoanhThu)));
+		pnlChart.setBounds(boundsPnlChart);
+		pnlChart.removeAll();
+
+		if (ngay == 0) {
+			chart = new Chart();
+			chart.addLegend("Phòng thường", new Color(238, 255, 65));
+			chart.addLegend("Phòng VIP", new Color(24, 255, 255));
+			chart.addLegend("Dịch vụ", new Color(105, 240, 174));
+			double dsTongTienPhongThuong[] = { tongTienPhongThuongQ1, tongTienPhongThuongQ2, tongTienPhongThuongQ3 };
+			double dsTongTienPhongVIP[] = { tongTienPhongVIPQ1, tongTienPhongVIPQ2, tongTienPhongVIPQ3 };
+			double dsTongTienDichVu[] = { tongTienDichVuQ1, tongTienDichVuQ2, tongTienDichVuQ3 };
+			int dsMoc[] = { 0, q1, q2, count };
+			String monthYear, labelDay;
+			if (thang == 0) {
+				for (int i = 0; i < Math.min(countDate, 3); i++) {
+					monthYear = dsMoc[i] + 1 == dsMoc[i + 1] ? Utils.convertIntToString(dsMoc[i] + 1) + "/"
+							: String.format("%s-%s/", Utils.convertIntToString(dsMoc[i] + 1),
+									Utils.convertIntToString(dsMoc[i + 1])) + nam;
+					chart.addData(new ModelChart(monthYear,
+							new double[] { dsTongTienPhongThuong[i], dsTongTienPhongVIP[i], dsTongTienDichVu[i] }));
+				}
+			} else {
+				monthYear = Utils.convertIntToString(thang) + "/" + nam;
+				for (int i = 0; i < Math.min(countDate, 3); i++) {
+					labelDay = dsMoc[i] + 1 == dsMoc[i + 1] ? Utils.convertIntToString(dsMoc[i] + 1) + "/"
+							: String.format("%s-%s/", Utils.convertIntToString(dsMoc[i] + 1),
+									Utils.convertIntToString(dsMoc[i + 1]));
+					labelDay += monthYear;
+					chart.addData(new ModelChart(labelDay,
+							new double[] { dsTongTienPhongThuong[i], dsTongTienPhongVIP[i], dsTongTienDichVu[i] }));
+				}
+			}
+			chart.setBounds(boundsChart);
+			pnlChart.add(chart);
+			chart.start();
+		} else {
+			Utils.emptyTable(tbl);
+			pnlChart.add(scr);
+		}
+	}
+
+	private int setTextLblResDate(int ngay, int thang, int nam, LocalDate dateNow) {
+		int yearNow = dateNow.getYear(), countDate = 0;
+		if (!cmbMonth.isEnabled()) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date(nam));
+
+			if (nam == yearNow)
+				countDate = dateNow.getDayOfYear();
+			else
+				countDate = cal.getActualMaximum(Calendar.DAY_OF_YEAR);
+
+			lblResDate.setText(nam + "");
+		} else if (cmbDay.isEnabled()) {
+			lblResDate.setText(Utils.convertIntToString(ngay) + "/" + Utils.convertIntToString(thang) + "/" + nam);
+		} else {
+			if (nam == yearNow && thang == dateNow.getMonthValue())
+				countDate = dateNow.getDayOfMonth();
+			else
+				countDate = getNumberOfDaysInMonth(nam, thang);
+
+			lblResDate.setText(Utils.convertIntToString(thang) + "/" + nam);
+		}
+		return countDate;
+	}
+
+	public class HoaDon {
+		private String maDatPhong;
+		private String khachHang;
+		private String nhanVien;
+		private double tongTien;
+
+		public HoaDon(String maDatPhong) {
+			super();
+			this.maDatPhong = maDatPhong;
+			this.tongTien = 0;
+		}
+
+		@Override
+		public String toString() {
+			return "HoaDon [maDatPhong=" + maDatPhong + ", khachHang=" + khachHang + ", nhanVien=" + nhanVien
+					+ ", tongTien=" + tongTien + "]";
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getEnclosingInstance().hashCode();
+			result = prime * result + Objects.hash(maDatPhong);
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			HoaDon other = (HoaDon) obj;
+			if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
+				return false;
+			return Objects.equals(maDatPhong, other.maDatPhong);
+		}
+
+		private ThongKeDoanhThu_GUI getEnclosingInstance() {
+			return ThongKeDoanhThu_GUI.this;
+		}
+
+	}
 }

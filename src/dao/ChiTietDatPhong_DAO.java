@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import connectDB.ConnectDB;
 import entity.ChiTietDatPhong;
 import entity.DonDatPhong;
+import entity.LoaiPhong;
 import entity.Phong;
 import entity.Phong.TrangThai;
 
@@ -361,6 +363,56 @@ public class ChiTietDatPhong_DAO extends DAO {
 		}
 
 		return false;
+	}
+
+	public List<ChiTietDatPhong> getChiTietDatPhong(int day, int month, int year) {
+		List<ChiTietDatPhong> list = new ArrayList<>();
+		String sql = "SELECT CTDP.*, P.*, ngayNhanPhong FROM [dbo].[DonDatPhong] DDP "
+				+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DDP.maDonDatPhong = CTDP.donDatPhong "
+				+ "JOIN [dbo].[Phong] P ON CTDP.phong = P.maPhong "
+				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả'";
+
+		if (month > 0)
+			sql += " AND MONTH([ngayNhanPhong]) = ?";
+		if (day > 0)
+			sql += " AND DAY([ngayNhanPhong]) = ?";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setInt(1, year);
+			if (month > 0)
+				preparedStatement.setInt(2, month);
+			if (day > 0)
+				preparedStatement.setInt(3, day);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			ChiTietDatPhong chiTietDatPhong;
+			Phong phong;
+			String maPhong;
+			String loaiPhong;
+			int soLuongKhach;
+			LocalDate ngayNhanPhong;
+			while (resultSet.next()) {
+				chiTietDatPhong = getChiTietDatPhong(resultSet);
+				
+				maPhong = resultSet.getString("maPhong");
+				loaiPhong = resultSet.getString("loaiPhong");
+				soLuongKhach = resultSet.getInt("soLuongKhach");
+				phong = new Phong(maPhong, new LoaiPhong(loaiPhong), soLuongKhach, TrangThai.DangThue);
+				chiTietDatPhong.setPhong(phong);
+				
+				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
+				chiTietDatPhong.getDonDatPhong().setNgayNhanPhong(ngayNhanPhong);
+				
+				list.add(chiTietDatPhong);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 
 	/**
