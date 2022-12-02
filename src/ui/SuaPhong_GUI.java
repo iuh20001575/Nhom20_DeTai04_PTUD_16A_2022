@@ -37,7 +37,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
-import components.jDialog.JDialogCustom;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import dao.ChiTietDatPhong_DAO;
@@ -72,8 +71,6 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	private List<Phong> dsPhongDatTruoc;
 	private LocalTime gioNhanPhong;
 	private LocalDate ngayNhanPhong;
-	private Main main;
-	private DonDatPhong donDatPhong;
 	private PanelRound pnlContainerItem;
 	private JLabel lblMaPhong;
 	private JLabel lblIconClose;
@@ -81,17 +78,16 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	private final int heightItem = 36;
 	private final int gapY = 8;
 	private final int top = 11;
-	private ChiTietDatPhong_DAO chiTietDatPhong_DAO ;
-	
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+
 	/**
 	 * Create the frame.
 	 *
 	 * @param parentFrame
 	 */
-	public SuaPhong_GUI (Main main, ThongTinChiTietPhieuDatPhong_GUI thongTinChiTietPhieuDatPhong_GUI, DonDatPhong donDatPhong,JFrame parentFrame) {
+	public SuaPhong_GUI(Main main, ThongTinChiTietPhieuDatPhong_GUI thongTinChiTietPhieuDatPhong_GUI,
+			DonDatPhong donDatPhong, JFrame parentFrame) {
 		_this = this;
-		this.donDatPhong = donDatPhong;
-		this.main = main;
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		datPhong_DAO = new DonDatPhong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
@@ -99,36 +95,35 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		gioNhanPhong = datPhong.getGioNhanPhong();
 		ngayNhanPhong = datPhong.getNgayNhanPhong();
 
-		
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(0, 0, 850, 466);
 		setUndecorated(true);
 		setLocationRelativeTo(null);
-		
+
 		pnlContent = new JPanel();
 		pnlContent.setBorder(new EmptyBorder(5, 5, 5, 5));
 		pnlContent.setLayout(null);
 		setContentPane(pnlContent);
-		
+
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Color.WHITE);
 		pnlContainer.setBounds(0, 0, 850, 466);
 		pnlContent.add(pnlContainer);
 		pnlContainer.setLayout(null);
-		
+
 		JPanel pnlHeading = new JPanel();
 		pnlHeading.setBackground(Utils.primaryColor);
 		pnlHeading.setBounds(0, 0, 850, 50);
 		pnlContainer.add(pnlHeading);
 		pnlHeading.setLayout(null);
-		
+
 		JLabel lblTitle = new JLabel("Sửa phòng");
 		lblTitle.setForeground(Color.WHITE);
 		lblTitle.setBounds(325, 9, 200, 32);
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
 		pnlHeading.add(lblTitle);
-		
+
 		JPanel pnlBody = new JPanel();
 		pnlBody.setBackground(Color.WHITE);
 		pnlBody.setBounds(40, 50, 770, 398);
@@ -210,8 +205,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scrDanhSachPhong.setViewportView(tbl);
-		
-		
+
 //		Căn phải column 3 table
 		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -281,7 +275,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		btnLamMoi.setBounds(660, 0, 110, 36);
 		pnlFilter.add(btnLamMoi);
-		
+
 		scrPhongDaChon = new JScrollPane();
 		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -300,41 +294,45 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		pnlPhongDaChon.setBackground(Color.WHITE);
 		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 		pnlPhongDaChon.setLayout(null);
-		
-		List<ChiTietDatPhong> listChiTietDatPhong =  chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
+
+		List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
 		dsPhongDaChon = new ArrayList<>();
-		listChiTietDatPhong.forEach( list -> dsPhongDaChon.add(list.getPhong()));
+		listChiTietDatPhong.forEach(list -> dsPhongDaChon.add(list.getPhong()));
 		showDanhSachPhongDaChon();
-		
+
 //		Sự kiện window
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
 				dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong);
 				List<LoaiPhong> loaiPhongs = loaiPhong_DAO.getAllLoaiPhong();
-				
+
 				cmbMaPhong.removeItemListener(_this);
-				
+
 				emptyComboBox(cmbMaPhong, "Mã phòng");
 				emptyComboBox(cmbLoaiPhong, "Loại phòng");
-				
-				addRow(dsPhongDatTruoc);
-				dsPhongDatTruoc.forEach(phong -> cmbMaPhong.addItem(phong.getMaPhong()));
+
+				for (Phong phong : dsPhongDatTruoc) {
+					if (dsPhongDaChon.contains(phong))
+						continue;
+					addRow(phong);
+					cmbMaPhong.addItem(phong.getMaPhong());
+				}
 				loaiPhongs.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));
 
 				setEventFilterComboBox(true);
 			}
 		});
-		
+
 		btnChonPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
-				if(row != 1 && row < tbl.getRowCount()) {
+				if (row != 1 && row < tbl.getRowCount()) {
 					if (dsPhongDaChon == null)
 						dsPhongDaChon = new ArrayList<>();
 					Phong phong = new Phong((String) tableModel.getValueAt(row, 0));
-					if(dsPhongDaChon.contains(phong))
+					if (dsPhongDaChon.contains(phong))
 						return;
 					dsPhongDaChon.add(phong);
 					capNhatDanhSachPhongDatTruoc();
@@ -343,7 +341,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 				}
 			}
 		});
-		
+
 //		Sự kiện JTable
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
@@ -361,8 +359,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			}
 		});
 	}
-	
-	
+
 	/**
 	 * Xóa tất các các item trong ComboBox và thêm label vào ComboBox
 	 *
@@ -378,12 +375,12 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	 * @param jComboBox ComboBox
 	 * @param label
 	 */
-	
+
 	private void emptyComboBox(JComboBox<String> cmb, String label) {
 		emptyComboBox(cmb);
 		cmb.addItem(label);
 	}
-	
+
 	/**
 	 * Lọc danh sách các phòng theo mã phòng, loại phòng và số lượng
 	 */
@@ -396,35 +393,35 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			maPhong = "";
 		if (loaiPhong.equals("Loại phòng"))
 			loaiPhong = "";
-		
+
 		dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
-		if(dsPhongDatTruoc.size() == 0) {
+		if (dsPhongDatTruoc.size() == 0) {
 			return;
 		}
-		
+
 		Utils.emptyTable(tbl);
 		addRow(dsPhongDatTruoc);
 		capNhatDanhSachPhongDatTruoc();
 	}
-	
+
 	private void capNhatDanhSachPhongDatTruoc() {
 		if (dsPhongDatTruoc == null || dsPhongDaChon == null)
 			return;
-		
-		Utils.emptyTable(tbl);
+
+		tableModel.removeRow(tbl.getSelectedRow());
 		btnChonPhong.setEnabled(false);
-		
-		for(Phong phong : dsPhongDatTruoc) {
-			if(!dsPhongDatTruoc.contains(phong))
+
+		for (Phong phong : dsPhongDatTruoc) {
+			if (!dsPhongDatTruoc.contains(phong))
 				addRow(phong);
 		}
-		
-		if(tbl.getRowCount() > 0) {
+
+		if (tbl.getRowCount() > 0) {
 			tbl.setRowSelectionInterval(0, 0);
 			btnChonPhong.setEnabled(true);
 		}
 	}
-	
+
 	private void showDanhSachPhongDaChon() {
 		if (dsPhongDaChon == null)
 			return;
@@ -444,7 +441,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
 		repaint();
 	}
-	
+
 	private PanelRound getPanelPhongDaChonItem(int top, Phong phong) {
 		pnlContainerItem = new PanelRound(8);
 		pnlContainerItem.setBackground(Utils.primaryColor);
@@ -473,35 +470,36 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 
 		return pnlContainerItem;
 	}
-	
+
 	/**
-	* Thêm danh sách các phòng vào table
-	*
-	* @param list danh sách các phòng cần thêm
-	*/
+	 * Thêm danh sách các phòng vào table
+	 *
+	 * @param list danh sách các phòng cần thêm
+	 */
 	private void addRow(List<Phong> list) {
 		Utils.emptyTable(tbl);
 		list.forEach(phong -> addRow(phong));
 	}
-	
+
 	/**
-	* Thêm một phòng vào table
-	*
-	* @param phong phòng muốn thêm
-	*/
+	 * Thêm một phòng vào table
+	 *
+	 * @param phong phòng muốn thêm
+	 */
 	private void addRow(Phong phong) {
 		phong.setLoaiPhong(loaiPhong_DAO.getLoaiPhong(phong.getLoaiPhong().getMaLoai()));
 		tableModel.addRow(new String[] { phong.getMaPhong(), phong.getLoaiPhong().getTenLoai(),
 				phong.getSoLuongKhach() + "", Phong.convertTrangThaiToString(phong.getTrangThai()) });
 	}
-	
+
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED)
 			return;
 
-		filterPhongDatTruoc();		
+		filterPhongDatTruoc();
 	}
+
 	private void setEventFilterComboBox(boolean b) {
 		if (b) {
 			cmbLoaiPhong.addItemListener(_this);

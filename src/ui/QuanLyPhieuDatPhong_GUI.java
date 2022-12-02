@@ -65,15 +65,12 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	private Button btnXuatPDF;
 	private Button btnLamMoi;
 	private final int widthPnlContainer = 1086;
-	private Main main;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
-
 
 	/**
 	 * Create the frame.
 	 */
 	public QuanLyPhieuDatPhong_GUI(Main main) {
-		this.main = main;
 		khachHang_DAO = new KhachHang_DAO();
 		phieuDatPhong_DAO = new PhieuDatPhong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
@@ -82,7 +79,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		setBackground(Utils.secondaryColor);
 		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
-		
+
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
 		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
@@ -259,7 +256,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 //		Table danh sách phiếu đặt phòng trước
 		int topPnlControl = Utils.getBodyHeight();
 		topPnlControl -= 80;
-		
+
 		JScrollPane scr = new JScrollPane();
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -344,12 +341,11 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 					return;
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
-					jDialog.showMessage("Warning",
-							"Vui lòng chọn phòng muốn xem");
+					jDialog.showMessage("Warning", "Vui lòng chọn phòng muốn xem");
 				} else {
 					String maPhieuDat = (String) tableModel.getValueAt(row, 0);
 					ChiTietDatPhong phieuDatPhong = phieuDatPhong_DAO
-							.getChiTietDatPhongTheoMa(maPhieuDat);
+							.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
 					ThongTinChiTietPhieuDatPhong_GUI jFrame = new ThongTinChiTietPhieuDatPhong_GUI(main, phieuDatPhong);
 					main.addPnlBody(jFrame, "Thông tin chi tiêt phiếu đặt phòng", 1, 0);
 				}
@@ -358,9 +354,8 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 //		Sự kiện nút nhận phòng
 		btnNhanPhong.addMouseListener(new MouseAdapter() {
 			private void handleNhanPhong() {
-				int row = tbl.getSelectedRow();
-				String maPhieuDat = (String) tbl.getValueAt(row, 0);
-				
+//				int row = tbl.getSelectedRow();
+//				String maPhieuDat = (String) tbl.getValueAt(row, 0);
 
 			}
 
@@ -427,7 +422,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 
 			public void ancestorAdded(AncestorEvent event) {
 				clockThread = clock();
-				
+
 				Utils.emptyTable(tbl);
 				cboMaPhieuDat.removeAllItems();
 				cboMaPhieuDat.addItem("Mã phiếu đặt");
@@ -458,8 +453,8 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 			trangThai = "";
 		if (soDienThoai.trim().equals(""))
 			soDienThoai = "%%";
-		
-		List<DonDatPhong> list = phieuDatPhong_DAO.filterPhieuDatPhong(maPhieuDat, soDienThoai,  trangThai);
+
+		List<DonDatPhong> list = phieuDatPhong_DAO.filterPhieuDatPhong(maPhieuDat, soDienThoai, trangThai);
 		if (list.size() == 0) {
 			jDialog.showMessage("Thông báo", "Không có phòng cần tìm");
 			tableModel.removeRow(0);
@@ -510,16 +505,14 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		String maKhachHang = donDatPhong.getKhachHang().getMaKhachHang();
 		List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
 		List<String> listPhong = new ArrayList<String>();
-		listChiTietDatPhong.forEach( chiTietDatPhong -> listPhong.add(chiTietDatPhong.getPhong().getMaPhong()));
-		
-		tableModel.addRow(new String[] { maDatPhong, khachHang_DAO.getKhachHangTheoMa(maKhachHang).getSoDienThoai(),
-				String.format("%s - %s", donDatPhong.getGioDatPhong(),
-						donDatPhong.getNgayDatPhong()),
-				String.format("%s - %s", donDatPhong.getGioNhanPhong(),
-						donDatPhong.getNgayNhanPhong()),
-				  String.format("%s - %s",listPhong.size(),String.join(", ", listPhong)), DonDatPhong.convertTrangThaiToString(donDatPhong.getTrangThai()) });
-	}
+		listChiTietDatPhong.forEach(chiTietDatPhong -> listPhong.add(chiTietDatPhong.getPhong().getMaPhong()));
 
+		tableModel.addRow(new String[] { maDatPhong, khachHang_DAO.getKhachHangTheoMa(maKhachHang).getSoDienThoai(),
+				String.format("%s - %s", donDatPhong.getGioDatPhong(), donDatPhong.getNgayDatPhong()),
+				String.format("%s - %s", donDatPhong.getGioNhanPhong(), donDatPhong.getNgayNhanPhong()),
+				String.format("%s - %s", listPhong.size(), String.join(", ", listPhong)),
+				DonDatPhong.convertTrangThaiToString(donDatPhong.getTrangThai()) });
+	}
 
 //	private void setEnabledBtnActions() {
 //		int row = tbl.getSelectedRow();
