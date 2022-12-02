@@ -64,6 +64,11 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 	private DefaultTableModel tableModel;
 	private JScrollPane scr;
 	private String maNhanVien;
+	private boolean isPhongVIP;
+	private ArrayList<String> setMaDonDatPhong;
+	private ArrayList<String> dsNhanVien;
+	private ArrayList<String> dsKhachHang;
+	private ArrayList<Double> dsTongTien;
 
 	public ThongKeDoanhThu_GUI() {
 		loaiPhong_DAO = new LoaiPhong_DAO();
@@ -602,33 +607,25 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 
 		int count = cmbMonth.isEnabled() ? countDate : (nam == yearNow ? dateNow.getMonthValue() : 12);
 		int div = count / 3, mod = count % 3, q1 = div + (mod-- > 0 ? 1 : 0), q2 = q1 + div + (mod-- > 0 ? 1 : 0);
-		double tongTienPhongThuongQ1 = 0, tongTienPhongThuongQ2 = 0, tongTienPhongThuongQ3 = 0;
-		double tongTienPhongVIPQ1 = 0, tongTienPhongVIPQ2 = 0, tongTienPhongVIPQ3 = 0;
-		double tongTienDichVuQ1 = 0, tongTienDichVuQ2 = 0, tongTienDichVuQ3 = 0;
+		double dsTongTienPhongThuong[] = { 0, 0, 0 };
+		double dsTongTienPhongVIP[] = { 0, 0, 0 };
+		double dsTongTienDichVu[] = { 0, 0, 0 };
 
 		List<ChiTietDatPhong> dsChiTietDatPhong = chiTietDatPhong_DAO.getChiTietDatPhong(ngay, thang, nam, maNhanVien);
 		List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO.getChiTietDichVu(ngay, thang, nam, maNhanVien);
 		Phong phong;
-		boolean isPhongVIP;
 		LocalTime gioVao, gioThuePhong;
 		double doanhThuPhongThuong = 0, doanhThuPhongVIP = 0, giaPhong;
 		int tongGioHat = 0, tongPhutHat = 0, gio = 0, phut = 0, dayOfMonth = 0, indexOf;
-		List<String> setMaDonDatPhong = new ArrayList<>();
-		List<String> dsNhanVien = new ArrayList<>();
-		List<String> dsKhachHang = new ArrayList<>();
-		List<Double> dsTongTien = new ArrayList<>();
+		setMaDonDatPhong = new ArrayList<>();
+		dsNhanVien = new ArrayList<>();
+		dsKhachHang = new ArrayList<>();
+		dsTongTien = new ArrayList<>();
 		String maDonDatPhong;
 		for (ChiTietDatPhong chiTietDatPhong : dsChiTietDatPhong) {
 			phong = chiTietDatPhong.getPhong();
 			isPhongVIP = false;
-			for (LoaiPhong loaiPhong : dsLoaiPhong) {
-				if (phong.getLoaiPhong().equals(loaiPhong)) {
-					if (loaiPhong.getTenLoai().toUpperCase().contains("VIP"))
-						isPhongVIP = true;
-					phong.setLoaiPhong(loaiPhong);
-					break;
-				}
-			}
+			phong.setLoaiPhong(getLoaiPhong(phong.getLoaiPhong()));
 
 			gioVao = chiTietDatPhong.getGioVao();
 			gioThuePhong = chiTietDatPhong.getGioRa().minusHours(gioVao.getHour()).minusMinutes(gioVao.getMinute())
@@ -654,19 +651,19 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 			}
 			if (dayOfMonth <= q1) {
 				if (isPhongVIP)
-					tongTienPhongVIPQ1 += giaPhong;
+					dsTongTienPhongVIP[0] += giaPhong;
 				else
-					tongTienPhongThuongQ1 += giaPhong;
+					dsTongTienPhongThuong[0] += giaPhong;
 			} else if (dayOfMonth <= q2) {
 				if (isPhongVIP)
-					tongTienPhongVIPQ2 += giaPhong;
+					dsTongTienPhongVIP[1] += giaPhong;
 				else
-					tongTienPhongThuongQ2 += giaPhong;
+					dsTongTienPhongThuong[1] += giaPhong;
 			} else {
 				if (isPhongVIP)
-					tongTienPhongVIPQ3 += giaPhong;
+					dsTongTienPhongVIP[2] += giaPhong;
 				else
-					tongTienPhongThuongQ3 += giaPhong;
+					dsTongTienPhongThuong[2] += giaPhong;
 			}
 			maDonDatPhong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
 			if (setMaDonDatPhong.contains(maDonDatPhong)) {
@@ -691,12 +688,11 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 			} else if (!cmbDay.isEnabled())
 				dayOfMonth = ngayNhanPhong.getMonthValue();
 			if (dayOfMonth <= q1) {
-				tongTienDichVuQ1 += giaDichVu;
+				dsTongTienDichVu[0] += giaDichVu;
 			} else if (dayOfMonth <= q2) {
-				tongTienDichVuQ2 += giaDichVu;
-			} else {
-				tongTienDichVuQ3 += giaDichVu;
-			}
+				dsTongTienDichVu[1] += giaDichVu;
+			} else
+				dsTongTienDichVu[2] += giaDichVu;
 			maDonDatPhong = chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getMaDonDatPhong();
 			indexOf = setMaDonDatPhong.indexOf(maDonDatPhong);
 			dsTongTien.set(indexOf, giaDichVu + dsTongTien.get(indexOf));
@@ -710,7 +706,9 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		lblDoanhThuPhongVIPKQ.setText(Utils.formatTienTe(Math.round(doanhThuPhongVIP)));
 		lblDoanhThuPhongThuongKQ.setText(Utils.formatTienTe(Math.round(doanhThuPhongThuong)));
 		lblTongTienPhongKQ.setText(Utils.formatTienTe(Math.round(tongTienPhong)));
-		lblTongSoGHKQ.setText(String.format("%d giờ %d phút", tongGioHat, tongPhutHat));
+		String lblSoGio = ((tongGioHat > 0 ? tongGioHat + " giờ" : "")
+				+ (tongPhutHat > 0 ? " " + tongPhutHat + " phút" : "")).trim();
+		lblTongSoGHKQ.setText(lblSoGio.length() <= 0 ? "0 giờ" : lblSoGio);
 		lblTongSoHDKQ.setText(setMaDonDatPhong.size() + "");
 		lblTongTienDVKQ.setText(Utils.formatTienTe(Math.round(tongTienDichVu)));
 		lblTongDoanhThuKQ.setText(Utils.formatTienTe(Math.round(tongDoanhThu)));
@@ -724,9 +722,6 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 			chart.addLegend("Phòng thường", new Color(238, 255, 65));
 			chart.addLegend("Phòng VIP", new Color(24, 255, 255));
 			chart.addLegend("Dịch vụ", new Color(105, 240, 174));
-			double dsTongTienPhongThuong[] = { tongTienPhongThuongQ1, tongTienPhongThuongQ2, tongTienPhongThuongQ3 };
-			double dsTongTienPhongVIP[] = { tongTienPhongVIPQ1, tongTienPhongVIPQ2, tongTienPhongVIPQ3 };
-			double dsTongTienDichVu[] = { tongTienDichVuQ1, tongTienDichVuQ2, tongTienDichVuQ3 };
 			int dsMoc[] = { 0, q1, q2, count };
 			String monthYear, labelDay;
 			if (thang == 0) {
@@ -751,15 +746,30 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 			chart.setBounds(boundsChart);
 			pnlChart.add(chart);
 			chart.start();
-		} else {
-			Utils.emptyTable(tbl);
+		} else
+			thongKeDoanhThuTheoNgay();
+	}
 
-			for (int i = 0; i < setMaDonDatPhong.size(); i++)
-				tableModel.addRow(new String[] { setMaDonDatPhong.get(i), dsKhachHang.get(i),
-						Utils.formatTienTe(dsTongTien.get(i)), dsNhanVien.get(i) });
+	private void thongKeDoanhThuTheoNgay() {
+		tableModel.setRowCount(0);
 
-			pnlChart.add(scr);
-		}
+		for (int i = 0; i < setMaDonDatPhong.size(); i++)
+			tableModel.addRow(new String[] { setMaDonDatPhong.get(i), dsKhachHang.get(i),
+					Utils.formatTienTe(dsTongTien.get(i)), dsNhanVien.get(i) });
+
+		pnlChart.add(scr);
+	}
+
+	private LoaiPhong getLoaiPhong(LoaiPhong lp) {
+		for (LoaiPhong loaiPhong : dsLoaiPhong)
+			if (loaiPhong.equals(lp)) {
+				if (loaiPhong.getTenLoai().toUpperCase().contains("VIP"))
+					isPhongVIP = true;
+				else
+					isPhongVIP = false;
+				return loaiPhong;
+			}
+		return null;
 	}
 
 	private int setTextLblResDate(int ngay, int thang, int nam, LocalDate dateNow) {
