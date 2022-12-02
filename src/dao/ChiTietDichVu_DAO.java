@@ -20,8 +20,8 @@ public class ChiTietDichVu_DAO {
 		boolean res = false;
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ? and phong = ?");
+			preparedStatement = ConnectDB.getConnection().prepareStatement(
+					"UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ? and phong = ?");
 			preparedStatement.setInt(1, soLuongMua);
 			preparedStatement.setString(2, maDV);
 			preparedStatement.setString(3, maDP);
@@ -33,10 +33,29 @@ public class ChiTietDichVu_DAO {
 		}
 		return res;
 	}
+
+	public boolean capNhatSoLuongDichVuTang(String maDV, String maDP, String maPhong, int soLuongMua) {
+		boolean res = false;
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = ConnectDB.getConnection().prepareStatement(
+					"UPDATE ChiTietDichVu SET soLuong += ? WHERE dichVu = ? and donDatPhong = ? and phong = ?");
+			preparedStatement.setInt(1, soLuongMua);
+			preparedStatement.setString(2, maDV);
+			preparedStatement.setString(3, maDP);
+			preparedStatement.setString(4, maPhong);
+			res = preparedStatement.executeUpdate() > 0;
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
 	public List<ChiTietDichVu> getAllChiTietDichVu() {
 		List<ChiTietDichVu> list = new ArrayList<>();
 		Statement statement;
-		
+
 		try {
 			statement = ConnectDB.getConnection().createStatement();
 			ResultSet resultSet = statement.executeQuery("SELECT * FROM ChiTietDichVu");
@@ -52,11 +71,12 @@ public class ChiTietDichVu_DAO {
 
 	public List<ChiTietDichVu> getAllChiTietDichVuTheoMaDatPhong(String maDP, String maPhong) {
 		List<ChiTietDichVu> list = new ArrayList<>();
-		
+
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT * " + "FROM   ChiTietDichVu INNER JOIN DonDatPhong ON  "
-							+ "	   ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong " + "WHERE  maDonDatPhong = ? and phong = ?");
+							+ "	   ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
+							+ "WHERE  maDonDatPhong = ? and phong = ?");
 
 			preparedStatement.setString(1, maDP);
 			preparedStatement.setString(2, maPhong);
@@ -84,8 +104,8 @@ public class ChiTietDichVu_DAO {
 
 	public ChiTietDichVu getChiTietDichVuTheoMa(String maDichVu, String maDatPhong, String maPhong) {
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDichVu INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu INNER JOIN "
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
+					"SELECT * FROM ChiTietDichVu INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu INNER JOIN "
 							+ "DonDatPhong ON ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
 							+ "WHERE maDichVu = ? and maDonDatPhong = ? and phong = ?");
 			preparedStatement.setString(1, maDichVu);
@@ -144,7 +164,8 @@ public class ChiTietDichVu_DAO {
 		int res = 0;
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement("INSERT ChiTietDichVu VALUES (?, ?, ?, ?, ?)");
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("INSERT ChiTietDichVu VALUES (?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, chiTietDichVu.getDichVu().getMaDichVu());
 			preparedStatement.setString(2, chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getMaDonDatPhong());
 			preparedStatement.setString(3, chiTietDichVu.getChiTietDatPhong().getPhong().getMaPhong());
@@ -162,12 +183,11 @@ public class ChiTietDichVu_DAO {
 	public boolean xoaChiTietDichVu(String maDichVu, String maDatPhong, String maPhong) {
 		int res = 0;
 		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("DELETE ChiTietDichVu "
-							+ "FROM   ChiTietDatPhong INNER JOIN ChiTietDichVu ON ChiTietDatPhong.donDatPhong = ChiTietDichVu.donDatPhong "
-							+ "AND ChiTietDatPhong.phong = ChiTietDichVu.phong AND ChiTietDatPhong.gioVao = ChiTietDichVu.gioVao "
-							+ "INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu "
-							+ "WHERE dichVu =  ? and ChiTietDichVu.donDatPhong = ? and ChiTietDichVu.phong = ?");
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement("DELETE ChiTietDichVu "
+					+ "FROM   ChiTietDatPhong INNER JOIN ChiTietDichVu ON ChiTietDatPhong.donDatPhong = ChiTietDichVu.donDatPhong "
+					+ "AND ChiTietDatPhong.phong = ChiTietDichVu.phong AND ChiTietDatPhong.gioVao = ChiTietDichVu.gioVao "
+					+ "INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu "
+					+ "WHERE dichVu =  ? and ChiTietDichVu.donDatPhong = ? and ChiTietDichVu.phong = ?");
 			preparedStatement.setString(1, maDichVu);
 			preparedStatement.setString(2, maDatPhong);
 			preparedStatement.setString(3, maPhong);

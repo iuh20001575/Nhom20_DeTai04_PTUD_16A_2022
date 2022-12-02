@@ -235,7 +235,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 					maDatPhongChon = (String) cmbDatPhong.getSelectedItem();
 					// kiểm tra mã phòng
 					maPhongChon = (String) cmbPhongDat.getSelectedItem();
-					if (maPhongChon.equals("Mã đặt phòng") || maPhongChon.equals(null)) {
+					if (maPhongChon.equals("Mã phòng đặt") || maPhongChon.equals(null)) {
 						JOptionPane.showMessageDialog(_this, "Vui lòng chọn mã phòng", "Error",
 								JOptionPane.ERROR_MESSAGE);
 						return;
@@ -249,21 +249,61 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 					if (!dsDVDaChon.contains(DichVuChon)) {
 						DichVuChon = dichVu_DAO.getDichVuTheoMa(DichVuChon.getMaDichVu());
 						DichVuChon.setSoLuong(1);
-						dsDVDaChon.add(DichVuChon);
 						dichVu_DAO.capNhatSoLuongDichVuGiam(DichVuChon.getMaDichVu(), DichVuChon.getSoLuong());
 						chiTietDichVu_DAO.themChiTietDichVu(new ChiTietDichVu(DichVuChon, chiTietDatPhong_DAO
 								.getChiTietDatPhongTheoMaPhongvaMaDonDatPhong(maPhongChon, maDatPhongChon),
 								DichVuChon.getSoLuong()));
-						new ChiTietDichVu(DichVuChon, null, DichVuChon.getSoLuong());
+						// new ChiTietDichVu(DichVuChon, null, DichVuChon.getSoLuong());
 						new Notification(_this, components.notification.Notification.Type.SUCCESS,
 								"Thêm dịch vụ thành công").showNotification();
+
+						dsDVDaChon.removeAll(dsDVDaChon);
+						List<ChiTietDichVu> ListChiTietDV = new ArrayList<>();
+						DichVu dichVuTrongChiTiet = new DichVu();
+						ListChiTietDV = chiTietDichVu_DAO.getAllChiTietDichVuTheoMaDatPhong(maDatPhongChon,
+								maPhongChon);
+						// lấy danh sách chi tiết của phòng được chọn
+						for (ChiTietDichVu chiTietDichVu : ListChiTietDV) {
+							if (maPhongChon.equals(chiTietDichVu.getChiTietDatPhong().getPhong().getMaPhong())) {
+
+								dichVuTrongChiTiet = dichVu_DAO
+										.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu());
+								dichVuTrongChiTiet.setSoLuong(chiTietDichVu.getSoLuong());
+
+								dsDVDaChon.add(dichVuTrongChiTiet);
+
+							}
+						}
 						emptyTable(tbl3, tableModel3);
 						List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
 						addRow2(listDV);
 						loadTable3();
 						capNhatThanhTien();
 					} else {
-						return;
+						DichVuChon = dichVu_DAO.getDichVuTheoMa(DichVuChon.getMaDichVu());
+						dichVu_DAO.capNhatSoLuongDichVuGiam(DichVuChon.getMaDichVu(), 1);
+						chiTietDichVu_DAO.capNhatSoLuongDichVuTang(DichVuChon.getMaDichVu(), maDatPhongChon,
+								maPhongChon, 1);
+
+						dsDVDaChon.removeAll(dsDVDaChon);
+						List<ChiTietDichVu> ListChiTietDV = new ArrayList<>();
+						DichVu dichVuTrongChiTiet = new DichVu();
+						ListChiTietDV = chiTietDichVu_DAO.getAllChiTietDichVuTheoMaDatPhong(maDatPhongChon,
+								maPhongChon);
+						// lấy danh sách chi tiết của phòng được chọn
+						for (ChiTietDichVu chiTietDichVu : ListChiTietDV) {
+							if (maPhongChon.equals(chiTietDichVu.getChiTietDatPhong().getPhong().getMaPhong())) {
+								dichVuTrongChiTiet = dichVu_DAO
+										.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu());
+								dichVuTrongChiTiet.setSoLuong(chiTietDichVu.getSoLuong());
+								dsDVDaChon.add(dichVuTrongChiTiet);
+							}
+						}
+						emptyTable(tbl3, tableModel3);
+						List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
+						addRow2(listDV);
+						loadTable3();
+						capNhatThanhTien();
 					}
 
 				}
@@ -870,7 +910,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 				if (dsDVDaChon == null)
 					dsDVDaChon = new ArrayList<>();
 				List<ChiTietDichVu> ListChiTietDV = new ArrayList<>();
-				ListChiTietDV = chiTietDichVu_DAO.getAllChiTietDichVu();
+				ListChiTietDV = chiTietDichVu_DAO.getAllChiTietDichVuTheoMaDatPhong(maDatPhongChon, maPhongChon);
 				// lấy danh sách chi tiết của phòng được chọn
 				for (ChiTietDichVu chiTietDichVu : ListChiTietDV) {
 					if (maPhongChon.equals(chiTietDichVu.getChiTietDatPhong().getPhong().getMaPhong())) {
