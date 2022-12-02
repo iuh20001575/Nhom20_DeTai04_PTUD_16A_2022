@@ -164,12 +164,12 @@ public class ChiTietDichVu_DAO {
 		return res > 0;
 	}
 
-	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year) {
+	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year, String maNhanVien) {
 		List<ChiTietDichVu> list = new ArrayList<>();
 		String sql = "SELECT CTDV.*, DV.*, ngayNhanPhong FROM [dbo].[DonDatPhong] DDP "
 				+ "JOIN [dbo].[ChiTietDichVu] CTDV ON DDP.maDonDatPhong = CTDV.donDatPhong "
 				+ "JOIN [dbo].[DichVu] DV ON DV.maDichVu = CTDV.dichVu "
-				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả'";
+				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ?";
 
 		if (month > 0)
 			sql += " AND MONTH([ngayNhanPhong]) = ?";
@@ -179,10 +179,11 @@ public class ChiTietDichVu_DAO {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setInt(1, year);
+			preparedStatement.setString(2, "%" + maNhanVien + "%");
 			if (month > 0)
-				preparedStatement.setInt(2, month);
+				preparedStatement.setInt(3, month);
 			if (day > 0)
-				preparedStatement.setInt(3, day);
+				preparedStatement.setInt(4, day);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 			ChiTietDichVu chiTietDichVu;
@@ -193,7 +194,7 @@ public class ChiTietDichVu_DAO {
 			LocalDate ngayNhanPhong;
 			while (resultSet.next()) {
 				chiTietDichVu = getChiTietDichVu(resultSet);
-				
+
 				maDichVu = resultSet.getString("maDichVu");
 				tenDichVu = resultSet.getString("tenDichVu");
 				soLuong = resultSet.getInt("soLuong");
@@ -202,10 +203,10 @@ public class ChiTietDichVu_DAO {
 				giaMua = resultSet.getDouble("giaMua");
 				dichVu = new DichVu(maDichVu, tenDichVu, soLuong, donViTinh, new LoaiDichVu(loaiDichVu), giaMua);
 				chiTietDichVu.setDichVu(dichVu);
-				
+
 				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
 				chiTietDichVu.getChiTietDatPhong().getDonDatPhong().setNgayNhanPhong(ngayNhanPhong);
-				
+
 				list.add(chiTietDichVu);
 			}
 

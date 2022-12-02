@@ -2,7 +2,6 @@ package ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
@@ -14,10 +13,7 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -28,9 +24,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
 
 import components.barChart.Chart;
 import components.barChart.ModelChart;
@@ -44,6 +40,7 @@ import entity.ChiTietDatPhong;
 import entity.ChiTietDichVu;
 import entity.LoaiPhong;
 import entity.Phong;
+import utils.NhanVien;
 import utils.Utils;
 
 public class ThongKeDoanhThu_GUI extends JPanel {
@@ -66,6 +63,7 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 	private JTable tbl;
 	private DefaultTableModel tableModel;
 	private JScrollPane scr;
+	private String maNhanVien;
 
 	public ThongKeDoanhThu_GUI() {
 		loaiPhong_DAO = new LoaiPhong_DAO();
@@ -73,6 +71,8 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		chiTietDichVu_DAO = new ChiTietDichVu_DAO();
 		int padding = (int) Math.floor((Utils.getBodyHeight() - 509) * 1.0 / 3);
 		top = padding;
+		entity.NhanVien nhanVien = NhanVien.getNhanVien();
+		maNhanVien = nhanVien.getChucVu().equals(entity.NhanVien.ChucVu.QuanLy) ? "" : nhanVien.getMaNhanVien();
 
 		setBackground(new Color(242, 246, 252));
 		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
@@ -530,29 +530,10 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public boolean getShowVerticalLines() {
-				return false;
-			}
-
-			@Override
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
 
-			@Override
-			/**
-			 * Set màu từng dòng cho Table
-			 */
-			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-				Component c = super.prepareRenderer(renderer, row, column);
-				if (isRowSelected(row))
-					c.setBackground(Utils.getOpacity(Utils.primaryColor, 0.3f));
-				else if (row % 2 == 0)
-					c.setBackground(Color.WHITE);
-				else
-					c.setBackground(new Color(232, 232, 232));
-				return c;
-			}
 		};
 		tbl.setAutoCreateRowSorter(true);
 
@@ -569,6 +550,9 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tbl.setRowHeight(36);
 		scr.setViewportView(tbl);
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
+		tbl.getColumnModel().getColumn(2).setCellRenderer(dtcr);
 
 		cmbMonth.setSelectedIndex(LocalDate.now().getMonthValue() - 1);
 		cmbYear.setSelectedItem(yearNow + "");
@@ -588,6 +572,10 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		int month = Integer.parseInt(cmbMonth.getSelectedItem().toString());
 		int year = Integer.parseInt(cmbYear.getSelectedItem().toString());
 		int daysOfMonth = getNumberOfDaysInMonth(year, month);
+		LocalDate dateNow = LocalDate.now();
+
+		if (month == dateNow.getMonthValue() && year == dateNow.getYear())
+			daysOfMonth = dateNow.getDayOfMonth();
 
 		cmbDay.removeAllItems();
 		for (int i = 1; i <= daysOfMonth; ++i)
@@ -618,14 +606,16 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		double tongTienPhongVIPQ1 = 0, tongTienPhongVIPQ2 = 0, tongTienPhongVIPQ3 = 0;
 		double tongTienDichVuQ1 = 0, tongTienDichVuQ2 = 0, tongTienDichVuQ3 = 0;
 
-		List<ChiTietDatPhong> dsChiTietDatPhong = chiTietDatPhong_DAO.getChiTietDatPhong(ngay, thang, nam);
-		List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO.getChiTietDichVu(ngay, thang, nam);
+		List<ChiTietDatPhong> dsChiTietDatPhong = chiTietDatPhong_DAO.getChiTietDatPhong(ngay, thang, nam, maNhanVien);
+		List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO.getChiTietDichVu(ngay, thang, nam, maNhanVien);
 		Phong phong;
 		boolean isPhongVIP;
 		LocalTime gioVao, gioThuePhong;
 		double doanhThuPhongThuong = 0, doanhThuPhongVIP = 0, giaPhong;
-		int tongGioHat = 0, tongPhutHat = 0, gio = 0, phut = 0, dayOfMonth, monthValue;
-		Set<String> setMaDonDatPhong = new HashSet<String>();
+		int tongGioHat = 0, tongPhutHat = 0, gio = 0, phut = 0, dayOfMonth = 0, indexOf;
+		List<String> setMaDonDatPhong = new ArrayList<>();
+		List<String> dsNhanVien = new ArrayList<>();
+		List<String> dsKhachHang = new ArrayList<>();
 		List<Double> dsTongTien = new ArrayList<>();
 		String maDonDatPhong;
 		for (ChiTietDatPhong chiTietDatPhong : dsChiTietDatPhong) {
@@ -659,45 +649,34 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 			LocalDate ngayNhanPhong = chiTietDatPhong.getDonDatPhong().getNgayNhanPhong();
 			if (cmbMonth.isEnabled()) {
 				dayOfMonth = ngayNhanPhong.getDayOfMonth();
-				if (dayOfMonth <= q1) {
-					if (isPhongVIP)
-						tongTienPhongVIPQ1 += giaPhong;
-					else
-						tongTienPhongThuongQ1 += giaPhong;
-				} else if (dayOfMonth <= q2) {
-					if (isPhongVIP)
-						tongTienPhongVIPQ2 += giaPhong;
-					else
-						tongTienPhongThuongQ2 += giaPhong;
-				} else {
-					if (isPhongVIP)
-						tongTienPhongVIPQ3 += giaPhong;
-					else
-						tongTienPhongThuongQ3 += giaPhong;
-				}
 			} else if (!cmbDay.isEnabled()) {
-				monthValue = ngayNhanPhong.getMonthValue();
-				if (monthValue <= q1) {
-					if (isPhongVIP)
-						tongTienPhongVIPQ1 += giaPhong;
-					else
-						tongTienPhongThuongQ1 += giaPhong;
-				} else if (monthValue <= q2) {
-					if (isPhongVIP)
-						tongTienPhongVIPQ2 += giaPhong;
-					else
-						tongTienPhongThuongQ2 += giaPhong;
-				} else {
-					if (isPhongVIP)
-						tongTienPhongVIPQ3 += giaPhong;
-					else
-						tongTienPhongThuongQ3 += giaPhong;
-				}
+				dayOfMonth = ngayNhanPhong.getMonthValue();
+			}
+			if (dayOfMonth <= q1) {
+				if (isPhongVIP)
+					tongTienPhongVIPQ1 += giaPhong;
+				else
+					tongTienPhongThuongQ1 += giaPhong;
+			} else if (dayOfMonth <= q2) {
+				if (isPhongVIP)
+					tongTienPhongVIPQ2 += giaPhong;
+				else
+					tongTienPhongThuongQ2 += giaPhong;
+			} else {
+				if (isPhongVIP)
+					tongTienPhongVIPQ3 += giaPhong;
+				else
+					tongTienPhongThuongQ3 += giaPhong;
 			}
 			maDonDatPhong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
-			if (setMaDonDatPhong.add(maDonDatPhong)) {
-				dsTongTien.add(giaPhong);
+			if (setMaDonDatPhong.contains(maDonDatPhong)) {
+				indexOf = setMaDonDatPhong.indexOf(maDonDatPhong);
+				dsTongTien.set(indexOf, giaPhong + dsTongTien.get(indexOf));
 			} else {
+				setMaDonDatPhong.add(maDonDatPhong);
+				dsTongTien.add(giaPhong);
+				dsNhanVien.add(chiTietDatPhong.getDonDatPhong().getNhanVien().getHoTen());
+				dsKhachHang.add(chiTietDatPhong.getDonDatPhong().getKhachHang().getHoTen());
 			}
 		}
 
@@ -709,23 +688,18 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 			LocalDate ngayNhanPhong = chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getNgayNhanPhong();
 			if (cmbMonth.isEnabled()) {
 				dayOfMonth = ngayNhanPhong.getDayOfMonth();
-				if (dayOfMonth <= q1) {
-					tongTienDichVuQ1 += giaDichVu;
-				} else if (dayOfMonth <= q2) {
-					tongTienDichVuQ2 += giaDichVu;
-				} else {
-					tongTienDichVuQ3 += giaDichVu;
-				}
-			} else if (!cmbDay.isEnabled()) {
-				monthValue = ngayNhanPhong.getMonthValue();
-				if (monthValue <= q1) {
-					tongTienDichVuQ1 += giaDichVu;
-				} else if (monthValue <= q2) {
-					tongTienDichVuQ2 += giaDichVu;
-				} else {
-					tongTienDichVuQ3 += giaDichVu;
-				}
+			} else if (!cmbDay.isEnabled())
+				dayOfMonth = ngayNhanPhong.getMonthValue();
+			if (dayOfMonth <= q1) {
+				tongTienDichVuQ1 += giaDichVu;
+			} else if (dayOfMonth <= q2) {
+				tongTienDichVuQ2 += giaDichVu;
+			} else {
+				tongTienDichVuQ3 += giaDichVu;
 			}
+			maDonDatPhong = chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getMaDonDatPhong();
+			indexOf = setMaDonDatPhong.indexOf(maDonDatPhong);
+			dsTongTien.set(indexOf, giaDichVu + dsTongTien.get(indexOf));
 		}
 
 		tongGioHat += tongPhutHat / 60;
@@ -779,6 +753,11 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 			chart.start();
 		} else {
 			Utils.emptyTable(tbl);
+
+			for (int i = 0; i < setMaDonDatPhong.size(); i++)
+				tableModel.addRow(new String[] { setMaDonDatPhong.get(i), dsKhachHang.get(i),
+						Utils.formatTienTe(dsTongTien.get(i)), dsNhanVien.get(i) });
+
 			pnlChart.add(scr);
 		}
 	}
@@ -806,52 +785,5 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 			lblResDate.setText(Utils.convertIntToString(thang) + "/" + nam);
 		}
 		return countDate;
-	}
-
-	public class HoaDon {
-		private String maDatPhong;
-		private String khachHang;
-		private String nhanVien;
-		private double tongTien;
-
-		public HoaDon(String maDatPhong) {
-			super();
-			this.maDatPhong = maDatPhong;
-			this.tongTien = 0;
-		}
-
-		@Override
-		public String toString() {
-			return "HoaDon [maDatPhong=" + maDatPhong + ", khachHang=" + khachHang + ", nhanVien=" + nhanVien
-					+ ", tongTien=" + tongTien + "]";
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getEnclosingInstance().hashCode();
-			result = prime * result + Objects.hash(maDatPhong);
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			HoaDon other = (HoaDon) obj;
-			if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
-				return false;
-			return Objects.equals(maDatPhong, other.maDatPhong);
-		}
-
-		private ThongKeDoanhThu_GUI getEnclosingInstance() {
-			return ThongKeDoanhThu_GUI.this;
-		}
-
 	}
 }

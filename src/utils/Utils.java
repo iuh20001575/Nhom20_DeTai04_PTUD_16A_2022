@@ -219,6 +219,8 @@ public class Utils {
 	}
 
 	public static void emptyTable(JTable tbl) {
+		if (tbl.getRowCount() <= 0)
+			return;
 		DefaultTableModel dm = (DefaultTableModel) tbl.getModel();
 		dm.getDataVector().removeAllElements();
 	}
