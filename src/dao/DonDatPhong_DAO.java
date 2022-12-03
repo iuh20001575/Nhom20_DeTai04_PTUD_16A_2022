@@ -29,6 +29,24 @@ public class DonDatPhong_DAO extends DAO {
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 	}
 
+	public DonDatPhong getDonDatPhong(String maPhong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT [donDatPhong] FROM [dbo].[ChiTietDatPhong] CTDP "
+							+ "JOIN [dbo].[DonDatPhong] DDP ON CTDP.donDatPhong = DDP.maDonDatPhong "
+							+ "WHERE [phong] = ? AND [gioRa] IS NULL AND [trangThai] = N'Đang thuê'");
+			preparedStatement.setString(1, maPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return new DonDatPhong(resultSet.getString("donDatPhong"));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	/**
 	 * Chuyển phòng từ mã phòng cũ sang mã phòng mới
 	 * 

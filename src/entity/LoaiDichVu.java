@@ -8,6 +8,11 @@ public class LoaiDichVu {
 		super();
 	}
 
+	public LoaiDichVu(String maLoaiDichVu) {
+		super();
+		this.maLoaiDichVu = maLoaiDichVu;
+	}
+
 	public LoaiDichVu(String maLoaiDichVu, String tenLoaiDichVu) {
 		super();
 		this.maLoaiDichVu = maLoaiDichVu;

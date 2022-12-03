@@ -23166,5 +23166,3 @@ BEGIN
        (cast(@dateSecond as float) - floor(cast(@dateSecond as float)))))
 END
 GO
-
-SELECT [dbo].[fnSubTime](CONVERT(TIME(0), GETDATE()), CONVERT(TIME(0), '9:00'))
