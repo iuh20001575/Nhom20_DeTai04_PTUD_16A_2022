@@ -309,59 +309,44 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 					String maDichVu = (String) tableModel2.getValueAt(row2, 0);
 					DichVu dichVu = new DichVu(maDichVu);
+					ChiTietDatPhong chiTietDatPhong = chiTietDatPhong_DAO.getChiTietDatPhongDangThue(maDonDatPhong,
+							maPhongChon);
+					chiTietDatPhong.setDonDatPhong(new DonDatPhong(maDonDatPhong));
+					ChiTietDichVu chiTietDichVu = new ChiTietDichVu(dichVu, chiTietDatPhong, 1);
 
 					if (dsDVDaChon.contains(dichVu)) {
-//						dichVu = dichVu_DAO.getDichVuTheoMa(maDichVu);
-//
-//						dichVu_DAO.capNhatSoLuongDichVuGiam(maDichVu, 1);
-//						chiTietDichVu_DAO.capNhatSoLuongDichVuTang(maDichVu, maDatPhongChon, maPhongChon, 1);
-//
-//						dsDVDaChon.removeAll(dsDVDaChon);
-//						List<ChiTietDichVu> ListChiTietDV = new ArrayList<>();
-//						DichVu dichVuTrongChiTiet = new DichVu();
-//						ListChiTietDV = chiTietDichVu_DAO.getAllChiTietDichVuTheoMaDatPhong(maDatPhongChon,
-//								maPhongChon);
-//						// lấy danh sách chi tiết của phòng được chọn
-//						for (ChiTietDichVu chiTietDichVu : ListChiTietDV) {
-//							if (maPhongChon.equals(chiTietDichVu.getChiTietDatPhong().getPhong().getMaPhong())) {
-//								dichVuTrongChiTiet = dichVu_DAO
-//										.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu());
-//								dichVuTrongChiTiet.setSoLuong(chiTietDichVu.getSoLuong());
-//								dsDVDaChon.add(dichVuTrongChiTiet);
-//							}
-//						}
-//						tableModel3.setRowCount(0);
-//						List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
-//						addRow2(listDV);
-//						loadTable3();
-//						capNhatThanhTien();
+
+						if (!chiTietDichVu_DAO.capNhatSoLuongDichVu(chiTietDichVu, true)) {
+							new Notification(_this, components.notification.Notification.Type.ERROR,
+									"Thêm dịch vụ thất bại").showNotification();
+							return;
+						}
 					} else {
-						ChiTietDatPhong chiTietDatPhong = chiTietDatPhong_DAO.getChiTietDatPhongDangThue(maDonDatPhong,
-								maPhongChon);
-						chiTietDatPhong.setDonDatPhong(new DonDatPhong(maDonDatPhong));
-						ChiTietDichVu chiTietDichVu = new ChiTietDichVu(dichVu, chiTietDatPhong, 1);
 
-						if (chiTietDichVu_DAO.themChiTietDichVu(chiTietDichVu)) {
-							new Notification(_this, components.notification.Notification.Type.SUCCESS,
-									"Thêm dịch vụ thành công").showNotification();
-
-							dsDVDaChon.removeAll(dsDVDaChon);
-							List<ChiTietDichVu> ListChiTietDV = chiTietDichVu_DAO.getAllChiTietDichVu(maDonDatPhong,
-									maPhongChon);
-							DichVu dichVuTrongChiTiet;
-							// lấy danh sách chi tiết của phòng được chọn
-							for (ChiTietDichVu chiTietDV : ListChiTietDV) {
-								dichVuTrongChiTiet = chiTietDV.getDichVu();
-								dichVuTrongChiTiet.setSoLuong(chiTietDV.getSoLuong());
-								dsDVDaChon.add(dichVuTrongChiTiet);
-							}
-							tableModel3.setRowCount(0);
-							List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
-							addRow2(listDV);
-							loadTable3();
-							capNhatThanhTien();
+						if (!chiTietDichVu_DAO.themChiTietDichVu(chiTietDichVu)) {
+							new Notification(_this, components.notification.Notification.Type.ERROR,
+									"Thêm dịch vụ thất bại").showNotification();
+							return;
 						}
 					}
+					new Notification(_this, components.notification.Notification.Type.SUCCESS,
+							"Thêm dịch vụ thành công").showNotification();
+
+					dsDVDaChon.clear();
+					List<ChiTietDichVu> ListChiTietDV = chiTietDichVu_DAO.getAllChiTietDichVu(maDonDatPhong,
+							maPhongChon);
+					DichVu dichVuTrongChiTiet;
+					// lấy danh sách chi tiết của phòng được chọn
+					for (ChiTietDichVu chiTietDV : ListChiTietDV) {
+						dichVuTrongChiTiet = chiTietDV.getDichVu();
+						dichVuTrongChiTiet.setSoLuong(chiTietDV.getSoLuong());
+						dsDVDaChon.add(dichVuTrongChiTiet);
+					}
+					tableModel3.setRowCount(0);
+					List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
+					addRow2(listDV);
+					loadTable3();
+					capNhatThanhTien();
 
 				}
 			}
@@ -712,9 +697,9 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 	}
 
 	private void loadTable3() {
-		maDatPhongChon = (String) cmbDatPhong.getSelectedItem();
+		maPhongChon = (String) cmbPhongDat.getSelectedItem();
 
-		if (maDatPhongChon.equals(labelCmbDatPhong) || maDatPhongChon.equals(null))
+		if (maPhongChon.equals(labelCmbPhongDat))
 			return;
 		addRow3(dsDVDaChon);
 	}
