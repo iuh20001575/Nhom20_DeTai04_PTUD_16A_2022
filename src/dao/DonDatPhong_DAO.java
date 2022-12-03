@@ -896,4 +896,36 @@ public class DonDatPhong_DAO extends DAO {
 
 		return false;
 	}
+	public boolean capNhatPhongTrongPhieuDatPhongTruoc(String maDatPhong, LocalTime gioNhanPhong, List<Phong> phongs) {
+		
+		try {
+			Connection connection = ConnectDB.getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement;
+			String sql;
+			boolean res;
+			
+//			--Xoá chi tiết đặt phòng theo mã đơn đặt phòng
+			sql = "DELETE ChiTietDatPhong WHERE donDatPhong = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, maDatPhong);
+			res = preparedStatement.executeUpdate() > 0;
+
+			if (!res)
+				return rollback();
+			
+//			Cập nhật danh sách phòng 
+			Time gioNhanPhongTime = Time.valueOf(gioNhanPhong);
+			for(Phong phong : phongs) {
+				res = chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phong, gioNhanPhongTime);
+				if (!res)
+					return rollback();
+			}
+			return commit();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
