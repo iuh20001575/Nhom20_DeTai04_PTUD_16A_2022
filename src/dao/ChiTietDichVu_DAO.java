@@ -80,8 +80,6 @@ public class ChiTietDichVu_DAO extends DAO {
 				+ "WHERE CTDV.[phong] = ? AND CTDV.[donDatPhong] = ? AND [gioRa] IS NULL";
 
 		try {
-			System.out.println(maDonDatPhong);
-			System.out.println(maPhong);
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setString(1, maPhong);
 			preparedStatement.setString(2, maDonDatPhong);
@@ -97,7 +95,6 @@ public class ChiTietDichVu_DAO extends DAO {
 						resultSet.getString(9), loaiDichVu, resultSet.getDouble(11));
 				chiTietDichVu.setDichVu(dichVu);
 
-				System.out.println(97 + " " + chiTietDichVu);
 				list.add(chiTietDichVu);
 			}
 		} catch (SQLException e) {
@@ -200,7 +197,6 @@ public class ChiTietDichVu_DAO extends DAO {
 	}
 
 	public boolean themChiTietDichVu(ChiTietDichVu chiTietDichVu) {
-		System.out.println("themChiTietDichVu");
 		int res = 0;
 		PreparedStatement preparedStatement;
 		Connection connection = ConnectDB.getConnection();

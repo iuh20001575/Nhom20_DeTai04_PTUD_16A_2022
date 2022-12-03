@@ -109,9 +109,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 			List<ChiTietDichVu> dsDichVu = chiTietDichVu_DAO.getAllChiTietDichVu(maDonDatPhong, maPhongChon);
 			for (ChiTietDichVu chiTietDichVu : dsDichVu) {
-				System.out.println(chiTietDichVu);
-			}
-			for (ChiTietDichVu chiTietDichVu : dsDichVu) {
 				dichVuTrongChiTiet = chiTietDichVu.getDichVu();
 				dichVuTrongChiTiet.setSoLuong(chiTietDichVu.getSoLuong());
 
@@ -358,7 +355,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 								dichVuTrongChiTiet.setSoLuong(chiTietDV.getSoLuong());
 								dsDVDaChon.add(dichVuTrongChiTiet);
 							}
-							System.out.println(dsDVDaChon);
 							tableModel3.setRowCount(0);
 							List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
 							addRow2(listDV);
