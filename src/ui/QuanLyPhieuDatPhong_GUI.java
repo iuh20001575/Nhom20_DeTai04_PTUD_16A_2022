@@ -454,10 +454,10 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		if (soDienThoai.trim().equals(""))
 			soDienThoai = "%%";
 
-		List<DonDatPhong> list = phieuDatPhong_DAO.filterPhieuDatPhong(maPhieuDat, soDienThoai, trangThai);
+		List<DonDatPhong> list = phieuDatPhong_DAO.filterDonDatPhong(maPhieuDat, soDienThoai, trangThai);
 		if (list.size() == 0) {
 			jDialog.showMessage("Thông báo", "Không có phòng cần tìm");
-			tableModel.removeRow(0);
+			return;
 		}
 
 		Utils.emptyTable(tbl);
