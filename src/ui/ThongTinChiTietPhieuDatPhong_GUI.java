@@ -6,6 +6,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import components.button.Button;
 import components.jDialog.Glass;
@@ -23,7 +26,6 @@ import dao.ChiTietDatPhong_DAO;
 import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.NhanVien_DAO;
-import dao.PhieuDatPhong_DAO;
 import entity.ChiTietDatPhong;
 import entity.DonDatPhong;
 import entity.KhachHang;
@@ -45,35 +47,32 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 	private TextField txtSDT;
 	private TextField txtTGLP;
 	private TextField txtTGNP;
-	private Main jFrame;
+	private Main main;
 	private DonDatPhong_DAO donDatPhong_DAO;
-	private PhieuDatPhong_DAO phieuDatPhong_DAO;
 	private NhanVien_DAO nhanVien_DAO;
 	private KhachHang_DAO khachHang_DAO;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
 	private Button btnNhanPhong;
-	private Button btnCapNhat;
 	private Button btnHuyPhong;
 	private final int widthPnlContainer = 948;
-	private Button btnSuaDSPhong;
 	private TextField txtKhachHang;
 	private Glass glass;
 	private JFrame jFrameSub;
-	private PanelEvent pnlSuaDSPhong;
+	private PanelEvent pnlSuaPhong;
+	private static JLabel lblTime;
 
 
 	/**
 	 * Create the frame.
 	 */
-	public ThongTinChiTietPhieuDatPhong_GUI(Main jFrame, ChiTietDatPhong chiTietDatPhong) {
-		phieuDatPhong_DAO = new PhieuDatPhong_DAO();
+	public ThongTinChiTietPhieuDatPhong_GUI(Main main, ChiTietDatPhong chiTietDatPhong) {
 		donDatPhong_DAO = new DonDatPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
 		nhanVien_DAO = new NhanVien_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 		glass = new Glass();
 		this.chiTietDatPhong = chiTietDatPhong;
-		this.jFrame = jFrame;
+		this.main = main;
 		_this = this;
 		int padding = (int) Math.floor((Utils.getBodyHeight() - 428) / 5);
 		int top = padding;
@@ -94,6 +93,13 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
 		this.add(pnlContainer);
 		pnlContainer.setLayout(null);
+		
+		lblTime = new JLabel("");
+		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
+		lblTime.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		lblTime.setBounds(800, 0, 180, 24);
+		pnlContainer.add(lblTime);
+		clock();
 
 		JPanel pnlRow1 = new JPanel();
 		pnlRow1.setBackground(Utils.secondaryColor);
@@ -134,7 +140,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		txtPhong = new TextField();
 		txtPhong.setLineColor(Utils.lineTextField);
 		txtPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		txtPhong.setBounds(50, 20, 300, 50);
+		txtPhong.setBounds(50, 20, 480, 50);
 		txtPhong.setLabelText("Phòng");
 		txtPhong.setBackground(Utils.secondaryColor);
 		txtPhong.setEnabled(false);
@@ -144,8 +150,8 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		txtSLPhong = new TextField();
 		txtSLPhong.setLineColor(Utils.lineTextField);
 		txtSLPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		txtSLPhong.setBounds(400, 20, 150, 50);
-		txtSLPhong.setLabelText("Số lượng phòng");
+		txtSLPhong.setBounds(560, 20, 70, 50);
+		txtSLPhong.setLabelText("Số lượng");
 		txtSLPhong.setBackground(Utils.secondaryColor);
 		txtSLPhong.setEnabled(false);
 		pnlRow2.add(txtSLPhong);
@@ -155,13 +161,13 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		txtTrangThai.setLineColor(Utils.lineTextField);
 		txtTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTrangThai.setLabelText("Trạng thái");
-		txtTrangThai.setBounds(600, 20, 150, 50);
+		txtTrangThai.setBounds(650, 20, 100, 50);
 		txtTrangThai.setBackground(Utils.secondaryColor);
 		txtTrangThai.setEnabled(false);
 		pnlRow2.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
 		
-		pnlSuaDSPhong = new PanelEvent(13) {
+		pnlSuaPhong = new PanelEvent(13) {
 			/**
 			 *
 			 */
@@ -174,9 +180,9 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 				return super.getBackground();
 			}
 		};
-		pnlSuaDSPhong.setLayout(null);
-		pnlSuaDSPhong.setBackgroundColor(Utils.primaryColor);
-		pnlRow2.add(pnlSuaDSPhong);
+		pnlSuaPhong.setLayout(null);
+		pnlSuaPhong.setBackgroundColor(Utils.primaryColor);
+		pnlRow2.add(pnlSuaPhong);
 		JLabel lblSuaPhong = new JLabel("Sửa phòng");
 		lblSuaPhong.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSuaPhong.setForeground(Color.WHITE);
@@ -184,9 +190,9 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		JLabel lblIcon = new JLabel("");
 		lblIcon.setHorizontalAlignment(SwingConstants.CENTER);
 		lblIcon.setIcon(Utils.getImageIcon("change-door.png"));
-		pnlSuaDSPhong.add(lblSuaPhong);
-		pnlSuaDSPhong.add(lblIcon);
-		pnlSuaDSPhong.setBounds(780, 30, 160, 40);
+		pnlSuaPhong.add(lblSuaPhong);
+		pnlSuaPhong.add(lblIcon);
+		pnlSuaPhong.setBounds(780, 30, 160, 40);
 		lblSuaPhong.setBounds(50, 5, 90, 26);
 		lblIcon.setBounds(12, 5, 32, 32);
 
@@ -263,22 +269,8 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		btnNhanPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnNhanPhong.setForeground(Color.WHITE);
 		btnNhanPhong.setFont(new Font("Segoe UI", Font.PLAIN, 32));
-		btnNhanPhong.setBounds(70, 0, 250, 48);
+		btnNhanPhong.setBounds(180, 0, 250, 48);
 		pnlActions.add(btnNhanPhong);
-
-		btnCapNhat = new Button("Cập nhật");
-		btnCapNhat.setIcon(Utils.getImageIcon("door.png"));
-		btnCapNhat.setFocusable(false);
-		btnCapNhat.setRadius(8);
-		btnCapNhat.setBorderColor(Utils.secondaryColor);
-		btnCapNhat.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnCapNhat.setColor(Utils.primaryColor);
-		btnCapNhat.setColorOver(Utils.primaryColor);
-		btnCapNhat.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
-		btnCapNhat.setForeground(Color.WHITE);
-		btnCapNhat.setFont(new Font("Segoe UI", Font.PLAIN, 32));
-		btnCapNhat.setBounds(370, 0, 250, 48);
-		pnlActions.add(btnCapNhat);
 
 		btnHuyPhong = new Button("Huỷ phòng");
 		btnHuyPhong.setIcon(Utils.getImageIcon("edit 1.png"));
@@ -291,22 +283,38 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		btnHuyPhong.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
 		btnHuyPhong.setForeground(Color.WHITE);
 		btnHuyPhong.setFont(new Font("Segoe UI", Font.PLAIN, 32));
-		btnHuyPhong.setBounds(670, 0, 250, 48);
+		btnHuyPhong.setBounds(550, 0, 250, 48);
 		pnlActions.add(btnHuyPhong);
 
 		setPhieuDatPhongVaoForm(this.chiTietDatPhong);
+
+		addAncestorListener(new AncestorListener() {
+			Thread clockThread;
+			
+			public void ancestorAdded(AncestorEvent event) {
+				clockThread = clock();
+				
+			}
+			public void ancestorMoved(AncestorEvent event) {
+			}
+
+			@SuppressWarnings("deprecation")
+			public void ancestorRemoved(AncestorEvent event) {
+				clockThread.stop();
+			}
+		});
 		
 //		Sự kiện nút Sửa danh sách phòng
-		pnlSuaDSPhong.addMouseListener(new MouseAdapter() {
+		pnlSuaPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleOpenSubFrame(pnlSuaDSPhong, new SuaPhong_GUI(jFrame, _this, chiTietDatPhong.getDonDatPhong(),ThongTinChiTietPhieuDatPhong_GUI.this.jFrame));
+				handleOpenSubFrame(pnlSuaPhong, new SuaPhong_GUI(main, _this, chiTietDatPhong.getDonDatPhong()));
 			}
 		});
 
 	}
 
-	private void setPhieuDatPhongVaoForm(ChiTietDatPhong chiTietDatPhong) {
+	public void setPhieuDatPhongVaoForm(ChiTietDatPhong chiTietDatPhong) {
 		String maDatPhong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
 		DonDatPhong donDatPhong = donDatPhong_DAO.getDatPhong(maDatPhong);
 		KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(donDatPhong.getKhachHang().getMaKhachHang());
@@ -332,8 +340,8 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
 
+		
 	}
 	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
 		if (!pnl.isEnabled())
@@ -348,10 +356,39 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		jFrameSub = null;
 	}
 	public void openJFrameSub(JFrame jFrame) {
-		this.jFrame.setGlassPane(glass);
+		this.main.setGlassPane(glass);
 		glass.setVisible(true);
 		glass.setAlpha(0.5f);
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
+	}
+
+	public static Thread clock() {
+		Thread clock = new Thread() {
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						LocalDateTime currTime = LocalDateTime.now();
+						int day = currTime.getDayOfMonth();
+						int month = currTime.getMonthValue();
+						int year = currTime.getYear();
+						int hour = currTime.getHour();
+						int minute = currTime.getMinute();
+						int second = currTime.getSecond();
+						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
+								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
+								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+
+		clock.start();
+
+		return clock;
 	}
 }
