@@ -37,6 +37,8 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
+import components.jDialog.JDialogCustom;
+import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import dao.ChiTietDatPhong_DAO;
@@ -79,6 +81,9 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	private final int gapY = 8;
 	private final int top = 11;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private Button btnLamMoi;
+	private Button btnQuayLai;
+	private List<ChiTietDatPhong> listChiTietDatPhong;
 
 	/**
 	 * Create the frame.
@@ -86,14 +91,16 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	 * @param parentFrame
 	 */
 	public SuaPhong_GUI(Main main, ThongTinChiTietPhieuDatPhong_GUI thongTinChiTietPhieuDatPhong_GUI,
-			DonDatPhong donDatPhong, JFrame parentFrame) {
+			DonDatPhong donDatPhong) {
 		_this = this;
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		datPhong_DAO = new DonDatPhong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
 		DonDatPhong datPhong = datPhong_DAO.getDatPhong(donDatPhong.getMaDonDatPhong());
 		gioNhanPhong = datPhong.getGioNhanPhong();
 		ngayNhanPhong = datPhong.getNgayNhanPhong();
+
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(0, 0, 850, 466);
@@ -229,7 +236,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		btnSuaPhong.setEnabled(false);
 		pnlBtnGroup.add(btnSuaPhong);
 
-		Button btnQuayLai = new Button("Quay lại");
+		btnQuayLai = new Button("Quay lại");
 		btnQuayLai.setFocusable(false);
 		btnQuayLai.setRadius(8);
 		btnQuayLai.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -266,7 +273,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		cmbSoLuong.setBounds(440, 0, 200, 36);
 		pnlFilter.add(cmbSoLuong);
 
-		Button btnLamMoi = new Button("Làm mới");
+		btnLamMoi = new Button("Làm mới");
 		btnLamMoi.setFocusable(false);
 		btnLamMoi.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnLamMoi.setRadius(4);
@@ -295,7 +302,6 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 		pnlPhongDaChon.setLayout(null);
 
-		List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
 		dsPhongDaChon = new ArrayList<>();
 		listChiTietDatPhong.forEach(list -> dsPhongDaChon.add(list.getPhong()));
 		showDanhSachPhongDaChon();
@@ -318,12 +324,42 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 					addRow(phong);
 					cmbMaPhong.addItem(phong.getMaPhong());
 				}
-				loaiPhongs.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));
-
+				loaiPhongs.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));	
+				
 				setEventFilterComboBox(true);
 			}
 		});
-
+		
+//		Sự kiện nút quay lại
+		btnQuayLai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				thongTinChiTietPhieuDatPhong_GUI.closeJFrameSub();
+			}
+		});
+		
+//		Sự kiện nút làm mới
+		btnLamMoi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setEventFilterComboBox(false);
+				
+				btnChonPhong.setEnabled(false);
+				Utils.emptyTable(tbl);
+				addRow(datPhong_DAO.getPhongDatTruoc(ngayNhanPhong,gioNhanPhong));
+				cmbLoaiPhong.setSelectedIndex(0);
+				cmbMaPhong.setSelectedIndex(0);
+				cmbSoLuong.setSelectedIndex(0);
+				dsPhongDaChon.clear();
+				capNhatDanhSachPhongDatTruoc();
+				showDanhSachPhongDaChon();
+				
+				setEventFilterComboBox(true);
+				
+			}
+		});
+		
+//		Sự kiện nút chọn phòng
 		btnChonPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -335,6 +371,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 					if (dsPhongDaChon.contains(phong))
 						return;
 					dsPhongDaChon.add(phong);
+					
 					capNhatDanhSachPhongDatTruoc();
 					showDanhSachPhongDaChon();
 					repaint();
@@ -342,6 +379,45 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			}
 		});
 
+//		Sự kiện nút sửa phòng
+		btnSuaPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!btnSuaPhong.isEnabled())
+					return;
+				
+//				Kiểm tra phòng đã được chọn hay chưa?
+				if(dsPhongDaChon.size() <=0 ) {
+					new Notification(_this, components.notification.Notification.Type.ERROR, "Chọn phòng muốn đặt")
+					.showNotification();
+					return;
+				}
+				
+				boolean res = datPhong_DAO.capNhatPhongTrongPhieuDatPhongTruoc(donDatPhong.getMaDonDatPhong(),gioNhanPhong, dsPhongDaChon);
+				if(res) {
+					JDialogCustom jDialogCustom = new JDialogCustom(_this);
+					
+					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							thongTinChiTietPhieuDatPhong_GUI.setPhieuDatPhongVaoForm(chiTietDatPhong_DAO.getChiTietDatPhongTheoMaDatPhong(donDatPhong.getMaDonDatPhong()));
+							thongTinChiTietPhieuDatPhong_GUI.closeJFrameSub();
+							new Notification(main, components.notification.Notification.Type.SUCCESS, "Cập nhật phòng thành công")
+							.showNotification(); 
+						}
+					});
+					
+					jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							return;
+						}
+					});
+					jDialogCustom.showMessage("Warning", "Bạn có chắc muốn sửa phòng?");
+				}
+			}
+		});
+		
 //		Sự kiện JTable
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
@@ -396,6 +472,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 
 		dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
 		if (dsPhongDatTruoc.size() == 0) {
+			tableModel.removeRow(0);
 			return;
 		}
 
@@ -407,12 +484,17 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	private void capNhatDanhSachPhongDatTruoc() {
 		if (dsPhongDatTruoc == null || dsPhongDaChon == null)
 			return;
-
-		tableModel.removeRow(tbl.getSelectedRow());
-		btnChonPhong.setEnabled(false);
+		
+		int row = tbl.getSelectedRow();
+		if(row != -1 && row < tbl.getRowCount()) {
+			tableModel.removeRow(tbl.getSelectedRow());
+			btnChonPhong.setEnabled(false);
+		}
+		
+		Utils.emptyTable(tbl);
 
 		for (Phong phong : dsPhongDatTruoc) {
-			if (!dsPhongDatTruoc.contains(phong))
+			if (!dsPhongDaChon.contains(phong))
 				addRow(phong);
 		}
 
@@ -439,6 +521,14 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 
 		pnlPhongDaChon.setPreferredSize(
 				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
+		
+		List<Phong> dsPhongBanDau = new ArrayList<>();
+		listChiTietDatPhong.forEach(list -> dsPhongBanDau.add(list.getPhong()));
+		if(!dsPhongBanDau.equals(dsPhongDaChon))
+			btnSuaPhong.setEnabled(true);
+		else
+			btnSuaPhong.setEnabled(false);
+		
 		repaint();
 	}
 
@@ -494,6 +584,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
+		
 		if (e.getStateChange() == ItemEvent.DESELECTED)
 			return;
 
