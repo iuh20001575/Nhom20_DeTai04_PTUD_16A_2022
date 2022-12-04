@@ -71,6 +71,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	private DonDatPhong_DAO datPhong_DAO;
 	private List<Phong> dsPhongDaChon;
 	private List<Phong> dsPhongDatTruoc;
+	private List<Phong> dsPhongDaChonBanDau;
 	private LocalTime gioNhanPhong;
 	private LocalDate ngayNhanPhong;
 	private PanelRound pnlContainerItem;
@@ -302,10 +303,12 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 		pnlPhongDaChon.setLayout(null);
 
+		dsPhongDaChonBanDau = new ArrayList<>();
 		dsPhongDaChon = new ArrayList<>();
+		listChiTietDatPhong.forEach(list -> dsPhongDaChonBanDau.add(list.getPhong()));
 		listChiTietDatPhong.forEach(list -> dsPhongDaChon.add(list.getPhong()));
 		showDanhSachPhongDaChon();
-
+		
 //		Sự kiện window
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -318,12 +321,14 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 				emptyComboBox(cmbMaPhong, "Mã phòng");
 				emptyComboBox(cmbLoaiPhong, "Loại phòng");
 
+				
 				for (Phong phong : dsPhongDatTruoc) {
 					if (dsPhongDaChon.contains(phong))
 						continue;
 					addRow(phong);
 					cmbMaPhong.addItem(phong.getMaPhong());
 				}
+
 				loaiPhongs.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));	
 				
 				setEventFilterComboBox(true);
@@ -365,8 +370,6 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
 				if (row != 1 && row < tbl.getRowCount()) {
-					if (dsPhongDaChon == null)
-						dsPhongDaChon = new ArrayList<>();
 					Phong phong = new Phong((String) tableModel.getValueAt(row, 0));
 					if (dsPhongDaChon.contains(phong))
 						return;
@@ -398,7 +401,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
-							boolean res = datPhong_DAO.capNhatPhongTrongPhieuDatPhongTruoc(donDatPhong.getMaDonDatPhong(),gioNhanPhong, dsPhongDaChon);
+							boolean res = datPhong_DAO.capNhatPhongTrongPhieuDatPhongTruoc(donDatPhong.getMaDonDatPhong(),gioNhanPhong, dsPhongDaChon,dsPhongDaChonBanDau);
 							if(res) {
 								thongTinChiTietPhieuDatPhong_GUI.setPhieuDatPhongVaoForm(chiTietDatPhong_DAO.getChiTietDatPhongTheoMaDatPhong(donDatPhong.getMaDonDatPhong()));
 								thongTinChiTietPhieuDatPhong_GUI.closeJFrameSub();
