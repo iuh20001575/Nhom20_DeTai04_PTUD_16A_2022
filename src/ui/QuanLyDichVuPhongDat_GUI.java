@@ -768,26 +768,29 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 			public void tableChanged(TableModelEvent e) {
 				if (e.getType() == TableModelEvent.UPDATE) {
 					int row3 = tbl3.getSelectedRow();
-
 					if (row3 != -1) {
+						maPhongChon = (String) cmbPhongDat.getSelectedItem();
+						String maDonDatPhong = (String) cmbDatPhong.getSelectedItem();
+						if (maDonDatPhong.equals(labelCmbDatPhong))
+							maDonDatPhong = datPhong_DAO.getDonDatPhong(maPhongChon).getMaDonDatPhong();
 						// Dịch vụ thay đổi trong table3
 						DichVu DichVuThayDoiSoLuong = new DichVu((String) tableModel3.getValueAt(row3, 0));
 						// chi tiết dịch vụ trong chi tiết dịch vụ cua table3
-						ChiTietDichVu chiTietDichVuThayDoi = chiTietDichVu_DAO.getChiTietDichVuTheoMa(
-								(String) tableModel3.getValueAt(row3, 0), maDatPhongChon, maPhongChon);
+						ChiTietDichVu chiTietDichVuThayDoi = chiTietDichVu_DAO
+								.getChiTietDichVuTheoMa(DichVuThayDoiSoLuong.getMaDichVu(), maDonDatPhong, maPhongChon);
 
+						// Trường hợp 1: Giảm số lượng dịch vụ
 						if (chiTietDichVuThayDoi.getSoLuong() > Integer.parseInt((String) tbl3.getValueAt(row3, 2))) {
-							chiTietDichVu_DAO.capNhatSoLuongDichVu(DichVuThayDoiSoLuong.getMaDichVu(), maDatPhongChon,
-									maPhongChon, Integer.parseInt((String) tbl3.getValueAt(row3, 2)));
-							dichVu_DAO.capNhatSoLuongDichVuTang(DichVuThayDoiSoLuong.getMaDichVu(),
-									chiTietDichVuThayDoi.getSoLuong()
-											- Integer.parseInt((String) tbl3.getValueAt(row3, 2)));
-							dsDVDaChon.forEach(dichVu1 -> {
-								if (dichVu1.getMaDichVu().equals(DichVuThayDoiSoLuong.getMaDichVu())) {
-									dichVu1.setSoLuong(Integer.parseInt((String) tbl3.getValueAt(row3, 2)));
-									return;
-								}
-							});
+							chiTietDichVuThayDoi.setSoLuong(chiTietDichVuThayDoi.getSoLuong()
+									- Integer.parseInt((String) tbl3.getValueAt(row3, 2)));
+							if (!chiTietDichVu_DAO.capNhatSoLuongDichVu(chiTietDichVuThayDoi, false)) {
+								new Notification(_this, components.notification.Notification.Type.ERROR,
+										"Thêm dịch vụ thất bại").showNotification();
+								return;
+							}
+							new Notification(_this, components.notification.Notification.Type.SUCCESS,
+									"Thêm dịch vụ thành công").showNotification();
+						// Trường hợp 2: Tăng số lượng dịch vụ
 						} else if (chiTietDichVuThayDoi.getSoLuong() < Integer
 								.parseInt((String) tbl3.getValueAt(row3, 2))) {
 							dichVu_DAO.getAllDichVuCoSoLuongLonHon0().forEach(dichVu -> {
@@ -797,26 +800,37 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 										JOptionPane.showMessageDialog(_this, "Số lượng tồn không đủ", "Error",
 												JOptionPane.ERROR_MESSAGE);
 									} else {
-										chiTietDichVu_DAO.capNhatSoLuongDichVu(DichVuThayDoiSoLuong.getMaDichVu(),
-												maDatPhongChon, maPhongChon,
-												Integer.parseInt((String) tbl3.getValueAt(row3, 2)));
-										dichVu_DAO.capNhatSoLuongDichVuGiam(DichVuThayDoiSoLuong.getMaDichVu(),
-												Integer.parseInt((String) tbl3.getValueAt(row3, 2))
+										chiTietDichVuThayDoi
+												.setSoLuong(Integer.parseInt((String) tbl3.getValueAt(row3, 2))
 														- chiTietDichVuThayDoi.getSoLuong());
-										dsDVDaChon.forEach(dichVu1 -> {
-											if (dichVu1.getMaDichVu().equals(DichVuThayDoiSoLuong.getMaDichVu())) {
-												dichVu1.setSoLuong(Integer.parseInt((String) tbl3.getValueAt(row3, 2)));
-												return;
-											}
-										});
+										if (!chiTietDichVu_DAO.capNhatSoLuongDichVu(chiTietDichVuThayDoi, true)) {
+											new Notification(_this, components.notification.Notification.Type.ERROR,
+													"Cập nhật số lượng dịch vụ thất bại").showNotification();
+											return;
+										}
+										new Notification(_this, components.notification.Notification.Type.SUCCESS,
+												"Cập nhật số lượng dịch vụ thành công").showNotification();
 									}
 								}
 							});
 						}
+						dsDVDaChon.clear();
+						List<ChiTietDichVu> ListChiTietDV = chiTietDichVu_DAO.getAllChiTietDichVu(maDonDatPhong,
+								maPhongChon);
+						DichVu dichVuTrongChiTiet;
+						// lấy danh sách chi tiết của phòng được chọn
+						for (ChiTietDichVu chiTietDV : ListChiTietDV) {
+							dichVuTrongChiTiet = chiTietDV.getDichVu();
+							dichVuTrongChiTiet.setSoLuong(chiTietDV.getSoLuong());
+							dsDVDaChon.add(dichVuTrongChiTiet);
+						}
+						tableModel3.setRowCount(0);
+						List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
+						addRow2(listDV);
+						loadTable3();
+						capNhatThanhTien();
 					}
-					addRow3(dsDVDaChon);
-					capNhatThanhTien();
-					addRow2(dichVu_DAO.getAllDichVuCoSoLuongLonHon0());
+
 				}
 			}
 		});
