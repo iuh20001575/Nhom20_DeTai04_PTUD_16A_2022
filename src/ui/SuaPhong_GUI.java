@@ -393,17 +393,22 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 					return;
 				}
 				
-				boolean res = datPhong_DAO.capNhatPhongTrongPhieuDatPhongTruoc(donDatPhong.getMaDonDatPhong(),gioNhanPhong, dsPhongDaChon);
-				if(res) {
-					JDialogCustom jDialogCustom = new JDialogCustom(_this);
+				JDialogCustom jDialogCustom = new JDialogCustom(_this);
 					
 					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
-							thongTinChiTietPhieuDatPhong_GUI.setPhieuDatPhongVaoForm(chiTietDatPhong_DAO.getChiTietDatPhongTheoMaDatPhong(donDatPhong.getMaDonDatPhong()));
-							thongTinChiTietPhieuDatPhong_GUI.closeJFrameSub();
-							new Notification(main, components.notification.Notification.Type.SUCCESS, "Cập nhật phòng thành công")
-							.showNotification(); 
+							boolean res = datPhong_DAO.capNhatPhongTrongPhieuDatPhongTruoc(donDatPhong.getMaDonDatPhong(),gioNhanPhong, dsPhongDaChon);
+							if(res) {
+								thongTinChiTietPhieuDatPhong_GUI.setPhieuDatPhongVaoForm(chiTietDatPhong_DAO.getChiTietDatPhongTheoMaDatPhong(donDatPhong.getMaDonDatPhong()));
+								thongTinChiTietPhieuDatPhong_GUI.closeJFrameSub();
+								new Notification(main, components.notification.Notification.Type.SUCCESS, "Cập nhật phòng thành công")
+								.showNotification(); 
+							}
+							else {
+								new Notification(_this, components.notification.Notification.Type.ERROR, "Cập nhật phòng thất bại")
+								.showNotification();
+							}
 						}
 					});
 					
@@ -414,7 +419,6 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 						}
 					});
 					jDialogCustom.showMessage("Warning", "Bạn có chắc muốn sửa phòng?");
-				}
 			}
 		});
 		
