@@ -335,9 +335,8 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		pnlActions.setBounds(0, top, 948, 48);
 		pnlContainer.add(pnlActions);
 
-		Button btnThem = new Button("Cập nhật");
-		btnThem.setIcon(Utils.getImageIcon("unemployed 1.png"));
-		btnThem.setText("Thêm");
+		Button btnThem = new Button("Thêm");
+		btnThem.setIcon(Utils.getImageIcon("add-user (2) 1.png"));
 		btnThem.setRadius(8);
 		btnThem.setForeground(Color.WHITE);
 		btnThem.setFont(new Font("Segoe UI", Font.PLAIN, 32));
@@ -350,9 +349,8 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		btnThem.setBounds(698, 0, 250, 48);
 		pnlActions.add(btnThem);
 
-		Button btnHuy = new Button("Cập nhật");
+		Button btnHuy = new Button("Hủy");
 		btnHuy.setIcon(Utils.getImageIcon("cancelled 1.png"));
-		btnHuy.setText("Hủy");
 		btnHuy.setRadius(8);
 		btnHuy.setForeground(new Color(51, 51, 51));
 		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 32));
@@ -365,8 +363,7 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		btnHuy.setBounds(0, 0, 250, 48);
 		pnlActions.add(btnHuy);
 
-		Button btnLamMoi = new Button("Cập nhật");
-		btnLamMoi.setText("Làm mới");
+		Button btnLamMoi = new Button("Làm mới");
 		btnLamMoi.setRadius(8);
 		btnLamMoi.setForeground(new Color(51, 51, 51));
 		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 32));

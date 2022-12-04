@@ -643,20 +643,21 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		txtTienNhan.setText("");
 		txtTienThua.setText("");
 		btnThanhToan.setEnabled(false);
-		
+		txtTienNhan.setError(false);
+
 		Utils.emptyTable(tbl);
 		Object o = e.getSource();
 		boolean isMaDatPhong = true;
 		cmbMaDatPhong.removeItemListener(_this);
 		cmbSoDienThoai.removeItemListener(_this);
-		
+
 		if (o.equals(cmbMaDatPhong))
 			handleItemStateChangedCmbMaDatPhong();
 		else if (o.equals(cmbSoDienThoai)) {
 			isMaDatPhong = false;
 			handleItemStateChangedCmbSoDienThoai();
 		}
-		
+
 		if (datPhong != null) {
 			txtTienNhan.setEnabled(true);
 			KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(datPhong.getKhachHang().getMaKhachHang());

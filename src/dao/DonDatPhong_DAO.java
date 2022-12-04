@@ -650,10 +650,7 @@ public class DonDatPhong_DAO extends DAO {
 				maPhongList.add(maPhong);
 			}
 
-			if (maPhongList.size() == 0) {
-				connection.setAutoCommit(true);
-				return false;
-			}
+			if (maPhongList.size() == 0) return rollback();
 
 //			[Phong] - Cập nhật trạng thái phòng
 			boolean res;
