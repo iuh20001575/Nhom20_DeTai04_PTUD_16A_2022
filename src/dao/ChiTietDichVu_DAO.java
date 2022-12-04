@@ -18,41 +18,7 @@ import entity.LoaiDichVu;
 import entity.Phong;
 
 public class ChiTietDichVu_DAO extends DAO {
-	public boolean capNhatSoLuongDichVu(String maDV, String maDP, String maPhong, int soLuongMua) {
-		boolean res = false;
-		PreparedStatement preparedStatement;
-		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ? and phong = ?");
-			preparedStatement.setInt(1, soLuongMua);
-			preparedStatement.setString(2, maDV);
-			preparedStatement.setString(3, maDP);
-			preparedStatement.setString(4, maPhong);
-			res = preparedStatement.executeUpdate() > 0;
-			preparedStatement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return res;
-	}
 
-	public boolean capNhatSoLuongDichVuTang(String maDV, String maDP, String maPhong, int soLuongMua) {
-		boolean res = false;
-		PreparedStatement preparedStatement;
-		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"UPDATE ChiTietDichVu SET soLuong += ? WHERE dichVu = ? and donDatPhong = ? and phong = ?");
-			preparedStatement.setInt(1, soLuongMua);
-			preparedStatement.setString(2, maDV);
-			preparedStatement.setString(3, maDP);
-			preparedStatement.setString(4, maPhong);
-			res = preparedStatement.executeUpdate() > 0;
-			preparedStatement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return res;
-	}
 
 	public List<ChiTietDichVu> getAllChiTietDichVu() {
 		List<ChiTietDichVu> list = new ArrayList<>();
@@ -148,7 +114,7 @@ public class ChiTietDichVu_DAO extends DAO {
 			preparedStatement.setString(2, maDatPhong);
 			preparedStatement.setString(3, maPhong);
 			ResultSet resultSet = preparedStatement.executeQuery();
-
+			
 			if (resultSet.next())
 				return getChiTietDichVu(resultSet);
 		} catch (SQLException e) {
@@ -273,7 +239,6 @@ public class ChiTietDichVu_DAO extends DAO {
 			res = preparedStatement.executeUpdate() > 0;
 			if (!res)
 				return rollback();
-
 			return commit();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
