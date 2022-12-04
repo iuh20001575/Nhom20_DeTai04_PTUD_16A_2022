@@ -896,7 +896,7 @@ public class DonDatPhong_DAO extends DAO {
 
 		return false;
 	}
-	public boolean capNhatPhongTrongPhieuDatPhongTruoc(String maDatPhong, LocalTime gioNhanPhong, List<Phong> phongs) {
+	public boolean capNhatPhongTrongPhieuDatPhongTruoc(String maDatPhong, LocalTime gioNhanPhong, List<Phong> phongMoi, List<Phong> phongBanDau) {
 		
 		try {
 			Connection connection = ConnectDB.getConnection();
@@ -916,11 +916,25 @@ public class DonDatPhong_DAO extends DAO {
 			
 //			Cập nhật danh sách phòng 
 			Time gioNhanPhongTime = Time.valueOf(gioNhanPhong);
-			for(Phong phong : phongs) {
+			for(Phong phong : phongMoi) {
 				res = chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phong, gioNhanPhongTime);
 				if (!res)
 					return rollback();
 			}
+//			[Phong] - Cập nhật trạng thái phòng
+//				+ Phòng tạm -> trống
+			for(Phong phong : phongBanDau) {
+				res = phong_DAO.capNhatTrangThaiPhong(phong, "Trống");
+				if(!res)
+					return rollback();
+			}
+//				+ Trống -> Phòng tạm
+			for(Phong phong : phongMoi) {
+				res = phong_DAO.capNhatTrangThaiPhong(phong, "Đã đặt");
+				if(!res)
+					return rollback();
+			}
+
 			return commit();
 			
 		} catch (SQLException e) {
