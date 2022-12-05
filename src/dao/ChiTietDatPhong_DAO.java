@@ -274,6 +274,24 @@ public class ChiTietDatPhong_DAO extends DAO {
 		return list;
 	}
 
+	public ChiTietDatPhong getChiTietDatPhongDangThue(String maDonDatPhong, String phong) {
+		try {
+			String sql = "SELECT * FROM [dbo].[ChiTietDatPhong] "
+					+ "WHERE [donDatPhong] = ? AND [phong] = ? AND [gioRa] IS NULL";
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, maDonDatPhong);
+			preparedStatement.setString(2, phong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getChiTietDatPhong(resultSet);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	/**
 	 * Set giờ ra của phòng
 	 * 

@@ -45,8 +45,8 @@ public class PhieuDatPhong_DAO {
 	 * @param trangThai
 	 * @return
 	 */
-	public List<ChiTietDatPhong> filterPhieuDatPhong(String maDatPhong, String soDienThoai, String trangThai) {
-		List<ChiTietDatPhong> list = new ArrayList<>();
+	public List<DonDatPhong> filterPhieuDatPhong(String maDatPhong, String soDienThoai, String trangThai) {
+		List<DonDatPhong> list = new ArrayList<>();
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
@@ -59,10 +59,10 @@ public class PhieuDatPhong_DAO {
 			preparedStatement.setString(3, soDienThoai);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
-			ChiTietDatPhong chiTietDatPhong;
+			DonDatPhong donDatPhong;
 			while (resultSet.next()) {
-				chiTietDatPhong = getChiTietDatPhong(resultSet);
-				list.add(chiTietDatPhong);
+				donDatPhong = getDonDatPhong(resultSet);
+				list.add(donDatPhong);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

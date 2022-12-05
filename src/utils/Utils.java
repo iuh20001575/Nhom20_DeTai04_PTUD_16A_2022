@@ -229,7 +229,6 @@ public class Utils {
 		try {
 			File file = new File(pathname);
 			if (!Desktop.isDesktopSupported()) {
-				System.out.println("not supported");
 				return;
 			}
 			Desktop desktop = Desktop.getDesktop();

@@ -393,9 +393,8 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 		btnHuy.setBounds(49, 0, 250, 48);
 		pnlActions.add(btnHuy);
 
-		Button btnNghiViec = new Button("Cập nhật");
+		Button btnNghiViec = new Button("Nghỉ việc");
 		btnNghiViec.setIcon(Utils.getImageIcon("unemployed 1.png"));
-		btnNghiViec.setText("Nghỉ việc");
 		btnNghiViec.setRadius(8);
 		btnNghiViec.setForeground(Color.WHITE);
 		btnNghiViec.setFont(new Font("Segoe UI", Font.PLAIN, 32));

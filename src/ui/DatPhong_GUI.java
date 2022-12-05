@@ -355,7 +355,6 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 				if (Utils.isSoDienThoai(soDienThoai)) {
 					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
-					quanLyDatPhongGUI.getGlass().setVisible(true);
 
 					if (khachHang != null) {
 						txtTenKhachHang.setText(khachHang.getHoTen());
