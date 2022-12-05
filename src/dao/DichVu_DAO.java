@@ -18,22 +18,6 @@ public class DichVu_DAO {
 		loaiDichVu_DAO = new LoaiDichVu_DAO();
 	}
 
-	public boolean capNhatSoLuongDichVuGiam(String maDV, int soLuongMua) {
-		boolean res = false;
-		PreparedStatement preparedStatement;
-		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE DichVu SET soLuong -= ? WHERE maDichVu = ?");
-			preparedStatement.setInt(1, soLuongMua);
-			preparedStatement.setString(2, maDV);
-			res = preparedStatement.executeUpdate() > 0;
-			preparedStatement.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return res;
-	}
 
 	public boolean capNhatSoLuongDichVuTang(String maDV, int soLuong) {
 		boolean res = false;

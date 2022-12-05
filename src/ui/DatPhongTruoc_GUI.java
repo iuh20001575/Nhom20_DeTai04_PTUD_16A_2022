@@ -54,7 +54,6 @@ import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.LoaiPhong_DAO;
 import entity.KhachHang;
-import entity.NhanVien;
 import entity.Phong;
 import utils.Utils;
 
@@ -418,7 +417,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 				if (Utils.isSoDienThoai(soDienThoai)) {
 					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
-					quanLyDatPhongGUI.getGlass().setVisible(true);
 
 					if (khachHang != null) {
 						txtTenKhachHang.setText(khachHang.getHoTen());
@@ -511,7 +509,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				cmbMaPhong.removeItemListener(_this);
 				cmbMaPhong.removeAllItems();
 				cmbMaPhong.addItem(labelCmbMaPhong);
-
 				if (ngayNhanPhong.isBefore(dateNow)) {
 					JDialogCustom jDialogCustom = new JDialogCustom(_this,
 							components.jDialog.JDialogCustom.Type.warning);
@@ -628,8 +625,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				int gio = Integer.parseInt((String) cmbGio.getSelectedItem()),
 						phut = Integer.parseInt((String) cmbPhut.getSelectedItem());
 				LocalTime gioNhanPhong = LocalTime.of(gio, phut);
-				boolean res = datPhong_DAO.themPhieuDatPhongTruoc(khachHang, new NhanVien("NV112"), dsPhongDaChon,
-						ngayNhanPhong, gioNhanPhong);
+				boolean res = datPhong_DAO.themPhieuDatPhongTruoc(khachHang, utils.NhanVien.getNhanVien(),
+						dsPhongDaChon, ngayNhanPhong, gioNhanPhong);
 				if (res) {
 					quanLyDatPhongGUI.capNhatTrangThaiPhong();
 					quanLyDatPhongGUI.closeJFrameSub();
@@ -682,6 +679,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	}
 
 	private void filterPhongDatTruoc() {
+		if (!cmbGio.isEnabled())
+			return;
 		String maPhong = (String) cmbMaPhong.getSelectedItem();
 		String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
 		String soLuong = (String) cmbSoLuong.getSelectedItem();
@@ -701,6 +700,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		addRow(dsPhongDatTruoc);
 		capNhatDanhSachPhongDatTruoc();
 		Utils.scrollToVisiable(tbl, 0, 0);
+		repaint();
 	}
 
 	private PanelRound getPanelPhongDaChonItem(int top, Phong phong) {
@@ -739,6 +739,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnChonPhong.setEnabled(false);
 		Utils.emptyTable(tbl);
 		showDanhSachPhongDaChon();
+		repaint();
 	}
 
 	@Override

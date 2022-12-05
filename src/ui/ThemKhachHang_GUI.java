@@ -34,12 +34,9 @@ import components.textField.TextField;
 import dao.DiaChi_DAO;
 import dao.KhachHang_DAO;
 import entity.KhachHang;
-import entity.NhanVien;
 import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
-import entity.NhanVien.ChucVu;
-import entity.NhanVien.TrangThai;
 import utils.Utils;
 
 public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseListener {
@@ -52,7 +49,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 	private DiaChi_DAO DiaChi_DAO;
 	private JFrame jFrameParent = null;
 	private KhachHang_DAO khachHang_DAO;
-	private JFrame main;
+	private Main main;
 	private Phuong phuong;
 	private Quan quan;
 	private RadioButtonCustom radNam, radNu;
@@ -350,8 +347,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		phuong = DiaChi_DAO.getPhuong(quan, sPhuong);
 		String sDCCT = txtDiaChiCT.getText();
 
-		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinhSelect, quan, phuong,
-				sDCCT);
+		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinhSelect, quan, phuong, sDCCT);
 	}
 
 	@Override
@@ -411,16 +407,17 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 	public void mouseClicked(MouseEvent e) {
 		if (!validator())
 			return;
-		
+
 		KhachHang khachHang = getKhachHangTuForm();
 		if (khachHang_DAO.themKhachHang(khachHang)) {
 			new Notification(main, components.notification.Notification.Type.SUCCESS,
 					"Đã thêm khách hàng mới thành công").showNotification();
 
 			if (jFrameParent != null) {
-				jFrameParent.setVisible(false);
+				main.backPanel();
 				jFrameParent.setVisible(true);
-				main.setVisible(false);
+				jFrameParent.setAlwaysOnTop(true);
+				main.getGlassPane().setVisible(true);
 			}
 		}
 	}
@@ -430,8 +427,6 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 	}
 
-	
-	
 	@Override
 	public void mouseExited(MouseEvent e) {
 
@@ -452,10 +447,11 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		// list.addItem((E) firstLabel);
 		return list;
 	}
+
 	private void setjFrameParent(JFrame jFrameParent) {
 		this.jFrameParent = jFrameParent;
 	}
-	
+
 	/**
 	 * Hiển thị thông báo lỗi và focus các JTextField
 	 *
@@ -489,8 +485,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 			return showThongBaoLoi(txtTen, "Họ tên chỉ chứa các ký tự chữ cái");
 
 		if (!Pattern.matches(
-				String.format("[%s][%s]*( [%s][%s]*)+", vietNamese, vietNameseLower, vietNamese, vietNameseLower),
-				ten))
+				String.format("[%s][%s]*( [%s][%s]*)+", vietNamese, vietNameseLower, vietNamese, vietNameseLower), ten))
 			return showThongBaoLoi(txtTen, "Họ tên phải bắt đầu bằng ký tự hoa và có ít nhất 2 từ");
 
 		String cccd = txtCCCD.getText().trim();

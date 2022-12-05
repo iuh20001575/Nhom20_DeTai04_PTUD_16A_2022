@@ -91,6 +91,14 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private JTable tbl;
 	private JTextField txtSearch;
 	private final int widthPnlContainer = 1086;
+	private ItemListener evtFilterNhanVien = new ItemListener() {
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if (e.getStateChange() == ItemEvent.SELECTED)
+				filterNhanVien();
+		}
+	};
 
 	/**
 	 * Create the frame.
@@ -441,16 +449,25 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 				if (row != -1) {
 					String maNhanVien = (String) tbl.getValueAt(row, 0);
-					boolean res = nhanVien_DAO.setNghiLam(maNhanVien);
+					String hoTen = tbl.getValueAt(row, 1).toString();
 
-					if (res) {
-						new Notification(main, components.notification.Notification.Type.SUCCESS,
-								"Cập nhật trạng thái nhân viên thành công").showNotification();
-						tableModel.setValueAt("Nghỉ làm", row, 7);
-						btnEmployeeRemove.setEnabled(false);
-					} else
-						new Notification(main, components.notification.Notification.Type.ERROR,
-								"Cập nhật trạng thái nhân viên thất bại").showNotification();
+					JDialogCustom jDialogCustom = new JDialogCustom(main, Type.confirm);
+					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+							boolean res = nhanVien_DAO.setNghiLam(maNhanVien);
+
+							if (res) {
+								new Notification(main, components.notification.Notification.Type.SUCCESS,
+										"Cập nhật trạng thái nhân viên thành công").showNotification();
+								tableModel.setValueAt("Nghỉ làm", row, 7);
+								btnEmployeeRemove.setEnabled(false);
+							} else
+								new Notification(main, components.notification.Notification.Type.ERROR,
+										"Cập nhật trạng thái nhân viên thất bại").showNotification();
+						};
+					});
+					jDialogCustom.showMessage("Cập nhật trạng thái làm việc", String.format(
+							"Bạn có chắc chắn muốn cho nhân viên %s - %s nghỉ việc hay không?", maNhanVien, hoTen));
 				}
 			}
 		});
@@ -459,9 +476,8 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent lse) {
-				if (!lse.getValueIsAdjusting()) {
+				if (!lse.getValueIsAdjusting())
 					setEnabledBtnActions();
-				}
 			}
 		});
 
@@ -501,24 +517,10 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		});
 
 // 		Sự kiện JComboBox mã nhân viên
-		cmbMaNhanVien.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterNhanVien();
-				}
-			}
-		});
+		cmbMaNhanVien.addItemListener(evtFilterNhanVien);
 
 //		Sự kiện JComboBox trạng thái
-		cmbTrangThai.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterNhanVien();
-				}
-			}
-		});
+		cmbTrangThai.addItemListener(evtFilterNhanVien);
 	}
 
 	private List<NhanVien> addRow(List<NhanVien> list) {
@@ -577,7 +579,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 			trangThai = "";
 
 		List<NhanVien> list = nhanVien_DAO.filterNhanVien(hoTen, maNhanVien, trangThai);
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		addRow(list);
 		pnlControl.setTbl(tbl);
 
