@@ -18,7 +18,7 @@ import entity.DonDatPhong;
 import entity.LoaiDichVu;
 import entity.Phong;
 
-public class ChiTietDichVu_DAO {
+public class ChiTietDichVu_DAO extends DAO {
 	public boolean capNhatSoLuongDichVu(String maDV, String maDP, String maPhong, int soLuongMua) {
 		boolean res = false;
 		PreparedStatement preparedStatement;
@@ -131,7 +131,7 @@ public class ChiTietDichVu_DAO {
 			preparedStatement.setString(2, maDatPhong);
 			preparedStatement.setString(3, maPhong);
 			ResultSet resultSet = preparedStatement.executeQuery();
-			
+
 			if (resultSet.next())
 				return getChiTietDichVu(resultSet);
 		} catch (SQLException e) {
