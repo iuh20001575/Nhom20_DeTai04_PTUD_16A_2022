@@ -22883,7 +22883,7 @@ CREATE TABLE KhachHang (
 	CONSTRAINT CHK_KhachHang_ngaySinh_BeHonHienTai CHECK (ngaySinh < GETDATE()), -- Kiểm tra ngày sinh <  ngày hiện tại
 	CONSTRAINT FK_KhachHang_Tinh FOREIGN KEY (tinh) REFERENCES Tinh(id),
 	CONSTRAINT FK_KhachHang_Quan FOREIGN KEY (quan) REFERENCES Quan(id),
-	CONSTRAINT FK_KhachHang_Phuong FOREIGN KEY (phuong) REFERENCES Phuong(id),
+	CONSTRAINT FK_KhachHang_Phuong FOREIGN KEY (phuong) REFERENCES Phuong(id)
 )
 
 -- THÊM DỮ LIỆU VÀO BẢNG
