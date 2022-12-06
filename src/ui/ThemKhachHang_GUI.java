@@ -347,7 +347,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		phuong = DiaChi_DAO.getPhuong(quan, sPhuong);
 		String sDCCT = txtDiaChiCT.getText();
 
-		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinhSelect, quan, phuong, sDCCT);
+		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinhSelect, quan, phuong, sDCCT, false);
 	}
 
 	@Override

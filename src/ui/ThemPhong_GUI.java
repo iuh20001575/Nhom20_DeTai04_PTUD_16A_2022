@@ -157,7 +157,7 @@ public class ThemPhong_GUI extends JFrame {
 			};
 		});
 
-//		Sự kiện nút quay laij
+//		Sự kiện nút quay lại
 		btnQuayLai.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent e) {
 				quanLyPhong_GUI.closeJFrameSub();
@@ -185,6 +185,7 @@ public class ThemPhong_GUI extends JFrame {
 						xoaRong();
 						new Notification(_this, components.notification.Notification.Type.SUCCESS,
 								String.format("Thêm phòng %s thành công", maPhong)).showNotification();
+						quanLyPhong_GUI.loadTable();
 					} else
 						new Notification(_this, components.notification.Notification.Type.ERROR,
 								String.format("Thêm phòng %s thất bại", maPhong)).showNotification();

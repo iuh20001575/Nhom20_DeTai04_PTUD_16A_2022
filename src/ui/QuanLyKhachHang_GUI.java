@@ -28,6 +28,7 @@ import javax.swing.table.TableColumnModel;
 import components.button.Button;
 import components.controlPanel.ControlPanel;
 import components.jDialog.JDialogCustom;
+import components.notification.Notification;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import dao.DiaChi_DAO;
@@ -45,6 +46,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	public static void clock() {
 		Thread clock = new Thread() {
 			@Override
@@ -71,6 +73,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 		clock.start();
 	}
+
 	private DiaChi_DAO diaChi_DAO;
 	private KhachHang_DAO khachHang_DAO;
 	private ControlPanel pnlControl;
@@ -179,7 +182,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		});
 		btnKhachHangView.setFocusable(false);
 		btnKhachHangView.setIcon(new ImageIcon("Icon\\user 1.png"));
-		btnKhachHangView.setBounds(-2, -2, 154, 40);
+		btnKhachHangView.setBounds(-2, -2, 120, 40);
 		btnKhachHangView.setRadius(4);
 		btnKhachHangView.setForeground(Color.WHITE);
 		btnKhachHangView.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -201,7 +204,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnKhachHangAdd.setColor(Utils.primaryColor);
 		btnKhachHangAdd.setBorderColor(Utils.secondaryColor);
 		btnKhachHangAdd.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnKhachHangAdd.setBounds(163, -2, 154, 40);
+		btnKhachHangAdd.setBounds(129, -2, 120, 40);
 		pnlActions.add(btnKhachHangAdd);
 
 		btnKhachHangAdd.addMouseListener(new MouseAdapter() {
@@ -222,7 +225,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnKhachHangEdit.setColor(Utils.primaryColor);
 		btnKhachHangEdit.setBorderColor(Utils.secondaryColor);
 		btnKhachHangEdit.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnKhachHangEdit.setBounds(328, -2, 154, 40);
+		btnKhachHangEdit.setBounds(260, -2, 120, 40);
 		pnlActions.add(btnKhachHangEdit);
 
 		btnKhachHangEdit.addMouseListener(new MouseAdapter() {
@@ -250,7 +253,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnKhachHangRemove.setColor(Utils.primaryColor);
 		btnKhachHangRemove.setBorderColor(Utils.secondaryColor);
 		btnKhachHangRemove.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnKhachHangRemove.setBounds(493, -2, 154, 40);
+		btnKhachHangRemove.setBounds(391, -2, 160, 40);
 		pnlActions.add(btnKhachHangRemove);
 
 		btnKhachHangRemove.addMouseListener(new MouseAdapter() {
@@ -265,9 +268,99 @@ public class QuanLyKhachHang_GUI extends JPanel {
 							"Xóa khách hàng", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 					if (res == JOptionPane.OK_OPTION) {
 						String maKH = tbl.getValueAt(row, 0).toString();
-						khachHang_DAO.xoaKhachHang(maKH);
+						if (khachHang_DAO.xoaKhachHang(maKH)) {
+							new Notification(main, components.notification.Notification.Type.SUCCESS,
+									"Xóa thông tin khách hàng thành công").showNotification();
+							loadTable();
+						} else
+							new Notification(main, components.notification.Notification.Type.ERROR,
+									"Xóa thông tin khách hàng thất bại").showNotification();
 					}
 				}
+			}
+		});
+
+		Button btnKhachHangRestore = new Button("Khôi phục");
+		btnKhachHangRestore.setFocusable(false);
+		btnKhachHangRestore.setVisible(false);
+		btnKhachHangRestore.setIcon(new ImageIcon("Icon\\restore.png"));
+		btnKhachHangRestore.setRadius(4);
+		btnKhachHangRestore.setForeground(Color.WHITE);
+		btnKhachHangRestore.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnKhachHangRestore.setColorOver(Utils.primaryColor);
+		btnKhachHangRestore.setColorClick(new Color(161, 184, 186));
+		btnKhachHangRestore.setColor(Utils.primaryColor);
+		btnKhachHangRestore.setBorderColor(Utils.secondaryColor);
+		btnKhachHangRestore.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnKhachHangRestore.setBounds(391, -2, 160, 40);
+		pnlActions.add(btnKhachHangRestore);
+
+		btnKhachHangRestore.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = tbl.getSelectedRow();
+				if (row == -1) {
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+							"Vui lòng chọn khách hàng muốn khôi phục");
+				} else {
+					int res = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn khôi phục khách hàng này",
+							"Khôi phục khách hàng", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if (res == JOptionPane.OK_OPTION) {
+						String maKH = tbl.getValueAt(row, 0).toString();
+						if (khachHang_DAO.khoiPhucKhachHang(maKH)) {
+							new Notification(main, components.notification.Notification.Type.SUCCESS,
+									"Khôi phục thông tin khách hàng thành công").showNotification();
+							setEmptyTable();
+							addRow(khachHang_DAO.getAllKhachHangDaXoa());
+						} else
+							new Notification(main, components.notification.Notification.Type.ERROR,
+									"Khôi phục thông tin khách hàng thất bại").showNotification();
+					}
+				}
+			}
+		});
+
+		Button btnLamMoi = new Button("Làm mới");
+		btnLamMoi.setIcon(new ImageIcon("Icon\\refresh.png"));
+		btnLamMoi.setRadius(4);
+		btnLamMoi.setForeground(Color.WHITE);
+		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnLamMoi.setColorOver(Utils.primaryColor);
+		btnLamMoi.setColorClick(new Color(161, 184, 186));
+		btnLamMoi.setColor(Utils.primaryColor);
+		btnLamMoi.setBorderColor(Utils.secondaryColor);
+		btnLamMoi.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnLamMoi.setBounds(634, -2, 200, 40);
+		pnlActions.add(btnLamMoi);
+
+		btnLamMoi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				loadTable();
+				btnKhachHangRemove.setVisible(true);
+				btnKhachHangRestore.setVisible(false);
+			}
+		});
+
+		Button btnDanhSachXoa = new Button("Danh sách đã xóa");
+		btnDanhSachXoa.setIcon(new ImageIcon("Icon\\listdelete.png"));
+		btnDanhSachXoa.setRadius(4);
+		btnDanhSachXoa.setForeground(Color.WHITE);
+		btnDanhSachXoa.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnDanhSachXoa.setColorOver(Utils.primaryColor);
+		btnDanhSachXoa.setColorClick(new Color(161, 184, 186));
+		btnDanhSachXoa.setColor(Utils.primaryColor);
+		btnDanhSachXoa.setBorderColor(Utils.secondaryColor);
+		btnDanhSachXoa.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnDanhSachXoa.setBounds(854, -2, 200, 40);
+		pnlActions.add(btnDanhSachXoa);
+		btnDanhSachXoa.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setEmptyTable();
+				addRow(khachHang_DAO.getAllKhachHangDaXoa());
+				btnKhachHangRemove.setVisible(false);
+				btnKhachHangRestore.setVisible(true);
 			}
 		});
 
@@ -349,9 +442,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 			}
 		});
 
-		setEmptyTable();
-		List<KhachHang> listKH = (List<KhachHang>) khachHang_DAO.getAllKhachHang();
-		addRow(listKH);
+		loadTable();
 		pnlControl.setTbl(tbl);
 	}
 
@@ -385,5 +476,10 @@ public class QuanLyKhachHang_GUI extends JPanel {
 	private void setEmptyTable() {
 		while (tbl.getRowCount() > 0)
 			tableModel.removeRow(0);
+	}
+
+	public void loadTable() {
+		setEmptyTable();
+		addRow(khachHang_DAO.getAllKhachHang());
 	}
 }
