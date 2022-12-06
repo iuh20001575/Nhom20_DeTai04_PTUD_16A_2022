@@ -13,6 +13,7 @@ public class Starting {
 
 				splashScreen.setVisible(true);
 				splashScreen.handleOpen(dangNhap_GUI);
+				System.out.println("hihi");
 			}
 		});
 	}

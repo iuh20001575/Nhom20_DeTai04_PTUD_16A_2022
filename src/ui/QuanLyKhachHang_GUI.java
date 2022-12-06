@@ -20,6 +20,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -34,6 +36,7 @@ import components.scrollbarCustom.ScrollBarCustom;
 import dao.DiaChi_DAO;
 import dao.KhachHang_DAO;
 import entity.KhachHang;
+import entity.NhanVien;
 import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
@@ -47,7 +50,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public static void clock() {
+	public Thread clock() {
 		Thread clock = new Thread() {
 			@Override
 			public void run() {
@@ -72,6 +75,8 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		};
 
 		clock.start();
+
+		return clock;
 	}
 
 	private DiaChi_DAO diaChi_DAO;
@@ -121,12 +126,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		pnlSearchForm.setLayout(null);
 
 		Button btnSearch = new Button("Tìm");
-		btnSearch.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				filterKhachHang();
-			}
-		});
+		
 		btnSearch.setFocusable(false);
 		btnSearch.setIcon(new ImageIcon("Icon\\searching.png"));
 		btnSearch.setRadius(4);
@@ -182,7 +182,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		});
 		btnKhachHangView.setFocusable(false);
 		btnKhachHangView.setIcon(new ImageIcon("Icon\\user 1.png"));
-		btnKhachHangView.setBounds(-2, -2, 120, 40);
+		btnKhachHangView.setBounds(-2, -2, 150, 40);
 		btnKhachHangView.setRadius(4);
 		btnKhachHangView.setForeground(Color.WHITE);
 		btnKhachHangView.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -204,7 +204,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnKhachHangAdd.setColor(Utils.primaryColor);
 		btnKhachHangAdd.setBorderColor(Utils.secondaryColor);
 		btnKhachHangAdd.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnKhachHangAdd.setBounds(129, -2, 120, 40);
+		btnKhachHangAdd.setBounds(158, -2, 150, 40);
 		pnlActions.add(btnKhachHangAdd);
 
 		btnKhachHangAdd.addMouseListener(new MouseAdapter() {
@@ -225,7 +225,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnKhachHangEdit.setColor(Utils.primaryColor);
 		btnKhachHangEdit.setBorderColor(Utils.secondaryColor);
 		btnKhachHangEdit.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnKhachHangEdit.setBounds(260, -2, 120, 40);
+		btnKhachHangEdit.setBounds(318, -2, 150, 40);
 		pnlActions.add(btnKhachHangEdit);
 
 		btnKhachHangEdit.addMouseListener(new MouseAdapter() {
@@ -253,7 +253,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnKhachHangRemove.setColor(Utils.primaryColor);
 		btnKhachHangRemove.setBorderColor(Utils.secondaryColor);
 		btnKhachHangRemove.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnKhachHangRemove.setBounds(391, -2, 160, 40);
+		btnKhachHangRemove.setBounds(478, -2, 150, 40);
 		pnlActions.add(btnKhachHangRemove);
 
 		btnKhachHangRemove.addMouseListener(new MouseAdapter() {
@@ -292,7 +292,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnKhachHangRestore.setColor(Utils.primaryColor);
 		btnKhachHangRestore.setBorderColor(Utils.secondaryColor);
 		btnKhachHangRestore.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnKhachHangRestore.setBounds(391, -2, 160, 40);
+		btnKhachHangRestore.setBounds(478, -2, 150, 40);
 		pnlActions.add(btnKhachHangRestore);
 
 		btnKhachHangRestore.addMouseListener(new MouseAdapter() {
@@ -330,19 +330,12 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnLamMoi.setColor(Utils.primaryColor);
 		btnLamMoi.setBorderColor(Utils.secondaryColor);
 		btnLamMoi.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnLamMoi.setBounds(634, -2, 200, 40);
+		btnLamMoi.setBounds(744, -2, 150, 40);
 		pnlActions.add(btnLamMoi);
 
-		btnLamMoi.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				loadTable();
-				btnKhachHangRemove.setVisible(true);
-				btnKhachHangRestore.setVisible(false);
-			}
-		});
+		
 
-		Button btnDanhSachXoa = new Button("Danh sách đã xóa");
+		Button btnDanhSachXoa = new Button("DS đã xóa");
 		btnDanhSachXoa.setIcon(new ImageIcon("Icon\\listdelete.png"));
 		btnDanhSachXoa.setRadius(4);
 		btnDanhSachXoa.setForeground(Color.WHITE);
@@ -352,8 +345,37 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnDanhSachXoa.setColor(Utils.primaryColor);
 		btnDanhSachXoa.setBorderColor(Utils.secondaryColor);
 		btnDanhSachXoa.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnDanhSachXoa.setBounds(854, -2, 200, 40);
+		btnDanhSachXoa.setBounds(904, -2, 150, 40);
 		pnlActions.add(btnDanhSachXoa);
+		
+
+		Button btnDanhSachTonTai = new Button("DS chưa xóa");
+		btnDanhSachTonTai.setIcon(new ImageIcon("Icon\\requirement.png"));
+		btnDanhSachTonTai.setVisible(false);
+		btnDanhSachTonTai.setForeground(Color.WHITE);
+		btnDanhSachTonTai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnDanhSachTonTai.setColorOver(Utils.primaryColor);
+		btnDanhSachTonTai.setColorClick(new Color(161, 184, 186));
+		btnDanhSachTonTai.setColor(Utils.primaryColor);
+		btnDanhSachTonTai.setBorderColor(Utils.secondaryColor);
+		btnDanhSachTonTai.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnDanhSachTonTai.setBounds(904, -2, 150, 40);
+		pnlActions.add(btnDanhSachTonTai);
+//		sự kiện nút btnDanhSachTonTai
+		btnDanhSachTonTai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				btnKhachHangRemove.setVisible(true);
+				btnKhachHangRestore.setVisible(false);
+				btnDanhSachXoa.setVisible(true);
+				btnKhachHangView.setEnabled(true);
+				btnKhachHangAdd.setEnabled(true);
+				btnKhachHangEdit.setEnabled(true);
+				btnDanhSachTonTai.setVisible(false);
+				loadTable();
+			}
+		});
+// sự kiện nút btnDanhSachXoa
 		btnDanhSachXoa.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -361,9 +383,40 @@ public class QuanLyKhachHang_GUI extends JPanel {
 				addRow(khachHang_DAO.getAllKhachHangDaXoa());
 				btnKhachHangRemove.setVisible(false);
 				btnKhachHangRestore.setVisible(true);
+				btnDanhSachTonTai.setVisible(true);
+				btnKhachHangView.setEnabled(false);
+				btnKhachHangAdd.setEnabled(false);
+				btnKhachHangEdit.setEnabled(false);
+				btnDanhSachXoa.setVisible(false);
 			}
 		});
-
+//Sự kiện nút btnLamMoi
+		btnLamMoi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				loadTable();
+				btnKhachHangRemove.setVisible(true);
+				btnKhachHangRestore.setVisible(false);
+				btnDanhSachXoa.setVisible(true);
+				btnKhachHangView.setEnabled(true);
+				btnKhachHangAdd.setEnabled(true);
+				btnKhachHangEdit.setEnabled(true);
+				btnDanhSachTonTai.setVisible(false);
+				txtSearch.setText("");
+			}
+		});
+		
+		//Sự kiện nút Search
+		btnSearch.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(btnDanhSachXoa.isVisible()) {
+					filterKhachHang();
+				}
+				else
+					filterKhachHangDaXoa();
+			}
+		});
 //		Table danh sách khách hàng
 		JScrollPane scr = new JScrollPane();
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -441,6 +494,29 @@ public class QuanLyKhachHang_GUI extends JPanel {
 				}
 			}
 		});
+		
+//		Panel event
+		addAncestorListener(new AncestorListener() {
+			Thread clockThread;
+
+			@Override
+			public void ancestorAdded(AncestorEvent event) {
+				clockThread = clock();
+
+				loadTable();
+				pnlControl.setTbl(tbl);
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+			}
+
+			@Override
+			@SuppressWarnings("deprecation")
+			public void ancestorRemoved(AncestorEvent event) {
+				clockThread.stop();
+			}
+		});
 
 		loadTable();
 		pnlControl.setTbl(tbl);
@@ -472,6 +548,18 @@ public class QuanLyKhachHang_GUI extends JPanel {
 			JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng cần tìm");
 
 	}
+	private void filterKhachHangDaXoa() {
+		String hoTen = txtSearch.getText();
+		List<KhachHang> list = khachHang_DAO.filterKhachHangDaXoa(hoTen);
+		setEmptyTable();
+		addRow(list);
+		pnlControl.setTbl(tbl);
+
+		if (list.size() == 0)
+			JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng cần tìm");
+
+	}
+
 
 	private void setEmptyTable() {
 		while (tbl.getRowCount() > 0)

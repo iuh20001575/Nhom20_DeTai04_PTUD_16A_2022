@@ -343,7 +343,7 @@ public class QuanLyPhong_GUI extends JPanel {
 			}
 		});
 
-		// Sự kiện JComboBox loại phong
+//		Sự kiện JComboBox loại phong
 		cmbLoaiPhong.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -351,7 +351,7 @@ public class QuanLyPhong_GUI extends JPanel {
 				}
 			}
 		});
-		// Sự kiện JComboBox số lượng khách
+//		Sự kiện JComboBox số lượng khách
 		cmbSoLuongKhach.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -359,8 +359,7 @@ public class QuanLyPhong_GUI extends JPanel {
 				}
 			}
 		});
-
-		// Sự kiện nút thêm
+// Sự kiện nút thêm
 		btnThem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -368,7 +367,7 @@ public class QuanLyPhong_GUI extends JPanel {
 			}
 		});
 
-		// Sự kiện nút sửa thông tin phòng
+//		Sự kiện nút sửa thông tin phòng
 		btnSua.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -380,8 +379,7 @@ public class QuanLyPhong_GUI extends JPanel {
 							"Vui lòng chọn phòng muốn sửa");
 				} else {
 					String maPhong = tableModel.getValueAt(row, 0).toString();
-					openJFrameSub(new ThongTinChiTietPhong_GUI(jFrame, phong_DAO.getPhong(maPhong), true));
-
+					openJFrameSub(new ThongTinChiTietPhong_GUI(_this, phong_DAO.getPhong(maPhong)));		
 				}
 			}
 		});
@@ -450,6 +448,11 @@ public class QuanLyPhong_GUI extends JPanel {
 		addRow(list);
 		pnlControl.setTbl(tbl);
 	}
+	public void loadTable() {
+		tableModel.setRowCount(0);
+		addRow(phong_DAO.getAllPhong());
+	}
+	
 
 	public void openJFrameSub(JFrame jFrame) {
 		this.jFrame.setGlassPane(glass);
@@ -465,10 +468,5 @@ public class QuanLyPhong_GUI extends JPanel {
 	private void setEmptyTable() {
 		while (tbl.getRowCount() > 0)
 			tableModel.removeRow(0);
-	}
-
-	public void loadTable() {
-		tableModel.setRowCount(0);
-		addRow(phong_DAO.getAllPhong());
 	}
 }

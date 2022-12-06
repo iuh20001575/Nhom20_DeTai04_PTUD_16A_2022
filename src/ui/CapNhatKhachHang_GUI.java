@@ -292,8 +292,7 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				main.backPanel();
-
+				main.addPnlBody(new XemKhachHang_GUI(main, khachHang), "Xem khách hàng", 2, 0);
 			}
 		});
 

@@ -41,6 +41,33 @@ public class KhachHang_DAO {
 
 		return list;
 	}
+	
+	/**
+	 * Lọc khách hàng đã xóa theo họ tên
+	 * 
+	 * @param hoTen
+	 * @return
+	 */
+	public List<KhachHang> filterKhachHangDaXoa(String hoTen) {
+		List<KhachHang> list = new ArrayList<>();
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM KhachHang WHERE hoTen LIKE ? and trangThaiXoa = 1");
+
+			preparedStatement.setString(1, "%" + hoTen + "%");
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getKhachHang(resultSet));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
 
 	/**
 	 * Get danh sách tất cả các khách hàng chưa xóa
