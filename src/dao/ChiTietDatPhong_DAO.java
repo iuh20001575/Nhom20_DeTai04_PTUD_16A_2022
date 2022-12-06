@@ -57,68 +57,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 		return list;
 	}
 
-	/**
-	 * Get tất cả các chi tiết đặt phòng theo mã đặt phòng
-	 * 
-	 * @param datPhong
-	 * @return
-	 */
-	public List<ChiTietDatPhong> getAllChiTietDatPhong(String maDonDatPhong) {
-		List<ChiTietDatPhong> list = new ArrayList<>();
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-
-		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE donDatPhong = ?");
-			preparedStatement.setString(1, maDonDatPhong);
-
-			resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getChiTietDatPhong(resultSet));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close(preparedStatement, resultSet);
-		}
-
-		return list;
-	}
-
-	/**
-	 * Get chi tiết đặt phòng của phòng đang thuê
-	 * 
-	 * @param phong
-	 * @return
-	 */
-	public ChiTietDatPhong getChiTietDatPhong(Phong phong) {
-		ChiTietDatPhong chiTietDatPhong = null;
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-
-		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT donDatPhong, phong, gioVao FROM ChiTietDatPhong WHERE phong = ? and gioRa is null");
-			preparedStatement.setString(1, phong.getMaPhong());
-
-			resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next()) {
-				String datPhong = resultSet.getString(1);
-				String maPhong = resultSet.getString(2);
-				LocalTime gioVao = resultSet.getTime(3).toLocalTime();
-				chiTietDatPhong = new ChiTietDatPhong(new DonDatPhong(datPhong), new Phong(maPhong), gioVao);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close(preparedStatement, resultSet);
-		}
-
-		return chiTietDatPhong;
-	}
-
+//	TODO
 	/**
 	 * Get chi tiết đặt phòng resultSet
 	 * 
@@ -274,6 +213,13 @@ public class ChiTietDatPhong_DAO extends DAO {
 		return list;
 	}
 
+	/**
+	 * Get chi tiết đặt phòng đang thuê
+	 * 
+	 * @param maDonDatPhong
+	 * @param phong
+	 * @return
+	 */
 	public ChiTietDatPhong getChiTietDatPhongDangThue(String maDonDatPhong, String phong) {
 		try {
 			String sql = "SELECT * FROM [dbo].[ChiTietDatPhong] "
@@ -385,6 +331,15 @@ public class ChiTietDatPhong_DAO extends DAO {
 		return false;
 	}
 
+	/**
+	 * Get chi tiết đặt phòng theo ngày, tháng năm và nhân viên
+	 * 
+	 * @param day
+	 * @param month
+	 * @param year
+	 * @param maNhanVien
+	 * @return
+	 */
 	public List<ChiTietDatPhong> getChiTietDatPhong(int day, int month, int year, String maNhanVien) {
 		List<ChiTietDatPhong> list = new ArrayList<>();
 		String sql = "SELECT CTDP.*, P.*, ngayNhanPhong, [maKhachHang], KH.[hoTen] AS HOTENKHACHHANG, "

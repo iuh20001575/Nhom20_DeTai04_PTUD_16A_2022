@@ -380,7 +380,6 @@ public class QuanLyPhong_GUI extends JPanel {
 				} else {
 					String maPhong = tableModel.getValueAt(row, 0).toString();
 					openJFrameSub(new ThongTinChiTietPhong_GUI(jFrame, phong_DAO.getPhong(maPhong), true));
-
 				}
 			}
 		});

@@ -313,8 +313,6 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		btnLamMoi.setBounds(660, 0, 110, 36);
 		pnlFilter.add(btnLamMoi);
 
-		showDanhSachPhongDaChon();
-
 		scrPhongDaChon = new JScrollPane();
 		scrPhongDaChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrPhongDaChon.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -359,10 +357,15 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 					if (khachHang != null) {
 						txtTenKhachHang.setText(khachHang.getHoTen());
 						txtTenKhachHang.requestFocus();
+
+						if (dsPhongDaChon != null && dsPhongDaChon.size() > 0)
+							btnDatPhong.setEnabled(true);
 					}
 				}
 
 				setEventFilterComboBox(true);
+				showDanhSachPhongDaChon();
+				capNhatDanhSachPhongDatNgay();
 			}
 		});
 
@@ -704,9 +707,10 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * Hiển thị các phòng đã chọn vào mục phòng đã chọn
 	 */
 	private void showDanhSachPhongDaChon() {
+		if (pnlPhongDaChon != null)
+			pnlPhongDaChon.removeAll();
 		if (dsPhongDaChon == null)
 			return;
-		pnlPhongDaChon.removeAll();
 		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 
 		countItem = dsPhongDaChon.size();

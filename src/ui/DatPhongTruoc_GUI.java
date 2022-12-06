@@ -386,7 +386,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 		setEnabledFilterComboBox(false);
 
-		showDanhSachPhongDaChon();
 		setEventFilterComboBox(true);
 		cmbPhut.addItemListener(_this);
 
@@ -426,6 +425,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 				setEventFilterComboBox(true);
 				setTimeComboBox(LocalTime.now().getHour());
+				showDanhSachPhongDaChon();
+				repaint();
 			}
 		});
 
@@ -664,7 +665,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			return;
 
 		btnChonPhong.setEnabled(false);
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		btnChonPhong.setEnabled(false);
 
 		for (Phong phong : dsPhongDatTruoc) {
@@ -834,9 +835,10 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 	}
 
 	private void showDanhSachPhongDaChon() {
+		if (pnlPhongDaChon != null)
+			pnlPhongDaChon.removeAll();
 		if (dsPhongDaChon == null)
 			return;
-		pnlPhongDaChon.removeAll();
 		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 
 		countItem = dsPhongDaChon.size();

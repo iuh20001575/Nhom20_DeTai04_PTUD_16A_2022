@@ -410,14 +410,20 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 		KhachHang khachHang = getKhachHangTuForm();
 		if (khachHang_DAO.themKhachHang(khachHang)) {
-			new Notification(main, components.notification.Notification.Type.SUCCESS,
-					"Đã thêm khách hàng mới thành công").showNotification();
+			new Notification(jFrameParent != null ? jFrameParent : main,
+					components.notification.Notification.Type.SUCCESS, "Đã thêm khách hàng mới thành công")
+					.showNotification();
 
 			if (jFrameParent != null) {
+//				System.out.println(417);
 				main.backPanel();
+//				System.out.println(419);
 				jFrameParent.setVisible(true);
+//				System.out.println(421);
 				jFrameParent.setAlwaysOnTop(true);
+//				System.out.println(423);
 				main.getGlassPane().setVisible(true);
+//				System.out.println(425);
 			}
 		}
 	}

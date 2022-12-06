@@ -525,7 +525,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 
 			@Override
 			public void windowOpened(WindowEvent e) {
-				List<DonDatPhong> list = datPhong_DAO.getAllDatPhongDangThue();
+				List<DonDatPhong> list = datPhong_DAO.getAllDonDatPhongDangThue();
 				list.forEach(datPhong -> {
 					cmbMaDatPhong.addItem(datPhong.getMaDonDatPhong());
 					khachHang = khachHang_DAO.getKhachHangTheoMa(datPhong.getKhachHang().getMaKhachHang());
@@ -633,7 +633,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			cmbMaDatPhong.setSelectedIndex(0);
 			txtTienNhan.setEnabled(false);
 		} else
-			datPhong = datPhong_DAO.getDatPhongNgayTheoSoDienThoai((String) cmbSoDienThoai.getSelectedItem());
+			datPhong = datPhong_DAO.getDonDatPhongNgayTheoSoDienThoai((String) cmbSoDienThoai.getSelectedItem());
 	}
 
 	@Override

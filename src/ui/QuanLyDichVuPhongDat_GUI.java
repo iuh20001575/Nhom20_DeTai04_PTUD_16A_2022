@@ -203,7 +203,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 					if (khachHang != null) {
 						txtTenKhachHang.setText(khachHang.getHoTen());
-						List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDatPhongDangThue();
+						List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDonDatPhongDangThue();
 						emptyComboBox(cmbDatPhong, "Mã đặt phòng");
 						for (DonDatPhong datPhong : listDatPhongDangThue) {
 							if (datPhong.getKhachHang().getMaKhachHang().equals(khachHang.getMaKhachHang())) {
@@ -233,14 +233,14 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 					txtSoDienThoai.setError(true);
 				}
 				if (txtTenKhachHang.getText().equals("") || txtTenKhachHang == null) {
-					List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDatPhongDangThue();
+					List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDonDatPhongDangThue();
 					emptyComboBox(cmbDatPhong, "Mã đặt phòng");
 					for (DonDatPhong datPhong : listDatPhongDangThue) {
 						cmbDatPhong.addItem(datPhong.getMaDonDatPhong());
 					}
 				} else {
 					emptyComboBox(cmbDatPhong, "Mã đặt phòng");
-					cmbDatPhong.addItem(datPhong_DAO.getDatPhongNgayTheoSoDienThoai(soDienThoai).getMaDonDatPhong());
+					cmbDatPhong.addItem(datPhong_DAO.getDonDatPhongNgayTheoSoDienThoai(soDienThoai).getMaDonDatPhong());
 					cmbDatPhong.setSelectedIndex(1);
 				}
 			}
@@ -906,7 +906,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 	private void setAllDonDatPhongDangThueToCombobox() {
 		emptyComboBox(cmbDatPhong, labelCmbDatPhong);
-		List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDatPhongDangThue();
+		List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDonDatPhongDangThue();
 		for (DonDatPhong datPhong : listDatPhongDangThue)
 			cmbDatPhong.addItem(datPhong.getMaDonDatPhong());
 	}
