@@ -252,7 +252,7 @@ public class KhachHang_DAO {
 		PreparedStatement preparedStatement;
 		try {
 			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("INSERT KhachHang VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					.prepareStatement("INSERT KhachHang VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
 			preparedStatement.setString(1, khachHang.getMaKhachHang());
 			preparedStatement.setString(2, khachHang.getHoTen());
 			preparedStatement.setString(3, khachHang.getCccd());
