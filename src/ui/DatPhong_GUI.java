@@ -341,7 +341,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 
 				cmbMaPhong.removeItemListener(_this);
 
-				Utils.emptyTable(tbl);
+				tableModel.setRowCount(0);
 				emptyComboBox(cmbMaPhong, "Mã phòng");
 				emptyComboBox(cmbLoaiPhong, "Loại phòng");
 
@@ -386,7 +386,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				setEventFilterComboBox(false);
 
-				Utils.emptyTable(tbl);
+				tableModel.setRowCount(0);
 				dsPhongDatNgay = datPhong_DAO.getPhongDatNgay();
 				addRow(dsPhongDatNgay);
 				cmbLoaiPhong.setSelectedIndex(0);
@@ -479,9 +479,9 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 					new Notification(main, components.notification.Notification.Type.SUCCESS, "Đặt phòng thành công")
 							.showNotification();
 				} else {
+					quanLyDatPhongGUI.closeJFrameSub();
 					new Notification(main, components.notification.Notification.Type.ERROR, "Đặt phòng thất bại")
 							.showNotification();
-					quanLyDatPhongGUI.closeJFrameSub();
 				}
 			}
 
@@ -498,7 +498,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 				}
 
 //				Kiểm tra phòng đã được chọn hay chưa?
-				if (dsPhongDaChon.size() <= 0) {
+				if (dsPhongDaChon == null || dsPhongDaChon.size() <= 0) {
 					new Notification(_this, components.notification.Notification.Type.ERROR, "Chọn phòng muốn đặt")
 							.showNotification();
 					return;
@@ -534,7 +534,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 	 * @param list danh sách các phòng cần thêm
 	 */
 	private void addRow(List<Phong> list) {
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 
 		list.forEach(phong -> addRow(phong));
 	}
@@ -554,7 +554,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 		if (dsPhongDatNgay == null || dsPhongDaChon == null)
 			return;
 
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		btnChonPhong.setEnabled(false);
 
 		for (Phong phong : dsPhongDatNgay) {
@@ -602,7 +602,7 @@ public class DatPhong_GUI extends JFrame implements ItemListener {
 			loaiPhong = "";
 
 		dsPhongDatNgay = datPhong_DAO.getPhongDatNgay(maPhong, loaiPhong, soLuong);
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		addRow(dsPhongDatNgay);
 		capNhatDanhSachPhongDatNgay();
 	}

@@ -346,7 +346,9 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		tblPhongCanGop.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				btnChonPhong.setEnabled(true);
+				int row = tblPhongCanGop.getSelectedRow();
+				if (row >= 0)
+					btnChonPhong.setEnabled(true);
 			}
 		});
 
@@ -422,6 +424,10 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 					quanLyDatPhongGUI.closeJFrameSub();
 					new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
 							"Gộp phòng thành công").showNotification();
+				} else {
+					quanLyDatPhongGUI.closeJFrameSub();
+					new Notification(parentFrame, components.notification.Notification.Type.ERROR, "Gộp phòng thất bại")
+							.showNotification();
 				}
 			}
 		});
@@ -459,7 +465,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		if (dsPhongCanGop == null || dsPhongDaChon == null)
 			return;
 
-		Utils.emptyTable(tblPhongCanGop);
+		tableModelPhongCanGop.setRowCount(0);
 
 		for (Phong phong : dsPhongCanGop)
 			if (!dsPhongDaChon.contains(phong))
@@ -531,8 +537,8 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		String maDatPhong = (String) cmbMaDatPhong.getSelectedItem();
 		dsPhongDaChon = null;
 		showDanhSachPhongDaChon();
-		Utils.emptyTable(tblPhongGop);
-		Utils.emptyTable(tblPhongCanGop);
+		tableModelPhongGop.setRowCount(0);
+		tableModelPhongCanGop.setRowCount(0);
 
 		if (!maDatPhong.equals(labelCmbMaDatPhong)) {
 			dsPhongCanGop = datPhong_DAO.getPhongDangThue(maDatPhong);
@@ -553,6 +559,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 
 		setEnabledBtnChuyenPhong();
 		btnChonPhong.setEnabled(false);
+		repaint();
 	}
 
 	/**
@@ -569,9 +576,10 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 	 * Hiển thị các phòng đã chọn vào mục phòng đã chọn
 	 */
 	private void showDanhSachPhongDaChon() {
+		if (pnlPhongDaChon != null)
+			pnlPhongDaChon.removeAll();
 		if (dsPhongDaChon == null)
 			return;
-		pnlPhongDaChon.removeAll();
 		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 
 		countItem = dsPhongDaChon.size();
@@ -597,7 +605,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		if (maDatPhong.equals(labelCmbMaDatPhong))
 			return;
 
-		Utils.emptyTable(tblPhongGop);
+		tableModelPhongGop.setRowCount(0);
 
 		List<LoaiPhong> dsLoaiPhong = loaiPhong_DAO.getAllLoaiPhong();
 		List<Phong> dsPhongGop = datPhong_DAO.getPhongCoTheGop(maDatPhong, dsPhongDaChon);

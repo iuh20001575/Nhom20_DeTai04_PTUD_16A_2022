@@ -350,7 +350,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 				setEventFilterComboBox(false);
 				
 				btnChonPhong.setEnabled(false);
-				Utils.emptyTable(tbl);
+				tableModel.setRowCount(0);
 				addRow(datPhong_DAO.getPhongDatTruoc(ngayNhanPhong,gioNhanPhong));
 				cmbLoaiPhong.setSelectedIndex(0);
 				cmbMaPhong.setSelectedIndex(0);
@@ -483,7 +483,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			return;
 		}
 
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		addRow(dsPhongDatTruoc);
 		capNhatDanhSachPhongDatTruoc();
 	}
@@ -498,7 +498,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			btnChonPhong.setEnabled(false);
 		}
 		
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 
 		for (Phong phong : dsPhongDatTruoc) {
 			if (!dsPhongDaChon.contains(phong))
@@ -574,7 +574,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	 * @param list danh sách các phòng cần thêm
 	 */
 	private void addRow(List<Phong> list) {
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		list.forEach(phong -> addRow(phong));
 	}
 

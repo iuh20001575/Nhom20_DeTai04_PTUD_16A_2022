@@ -15,9 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
 public class Utils {
 	public static final String trangChuMenuItem = "Trang chủ";
@@ -48,38 +46,61 @@ public class Utils {
 	private final static Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 	private final static Class<?> _class = Utils.class;
 
-	private static JFrame main;
-
-	public static JFrame getMain() {
-		return main;
-	}
-
+	/**
+	 * Get độ dài màn hình
+	 * 
+	 * @return
+	 */
 	public static int getScreenWidth() {
 		return (int) dimension.getWidth() + 14;
 	}
 
+	/**
+	 * Get chiều cao màn hình
+	 * 
+	 * @return
+	 */
 	public static int getScreenHeight() {
 		return (int) dimension.getHeight() + 7;
 	}
 
+	/**
+	 * Get chiều cao phần header
+	 * 
+	 * @return
+	 */
 	public static int getHeaderHeight() {
 		return 65;
 	}
 
+	/**
+	 * Get chiều cao phần thân
+	 * 
+	 * @return
+	 */
 	public static int getBodyHeight() {
 		return getScreenHeight() - getHeaderHeight();
 	}
 
+	/**
+	 * Get left căn giữa component với màn hình
+	 * 
+	 * @param width
+	 * @return
+	 */
 	public static int getLeft(int width) {
 		return (int) Math.ceil((Utils.getScreenWidth() - width - 14) / 2);
 	}
 
+	/**
+	 * Get left căn giữa component với một width bất kỳ
+	 * 
+	 * @param widthParent
+	 * @param width
+	 * @return
+	 */
 	public static int getLeft(int widthParent, int width) {
 		return (int) Math.ceil((widthParent - width) / 2);
-	}
-
-	public static void setMain(JFrame main) {
-		Utils.main = main;
 	}
 
 	/**
@@ -178,6 +199,12 @@ public class Utils {
 		return false;
 	}
 
+	/**
+	 * Kiểm tra một chuỗi có thể chuyển thành double được không?
+	 * 
+	 * @param string
+	 * @return
+	 */
 	public static boolean isDouble(String string) {
 		try {
 			Double.parseDouble(string);
@@ -200,31 +227,53 @@ public class Utils {
 		return matcher.matches();
 	}
 
+	/**
+	 * scroll to row and column Jtable
+	 * 
+	 * @param tbl
+	 * @param row
+	 * @param col
+	 */
 	public static void scrollToVisiable(JTable tbl, int row, int col) {
 		tbl.scrollRectToVisible(tbl.getCellRect(row, col, true));
 	}
 
+	/**
+	 * Convert LocalTime to String
+	 * 
+	 * @param time
+	 * @return
+	 */
 	public static String convertLocalTimeToString(LocalTime time) {
 		return String.format("%s:%s", convertIntToString(time.getHour()), convertIntToString(time.getMinute()));
 	}
 
+	/**
+	 * Convert int to String
+	 * 
+	 * @param number
+	 * @return
+	 */
 	public static String convertIntToString(int number) {
 		if (number < 10)
 			return "0" + number;
 		return number + "";
 	}
 
+	/**
+	 * Get các từ tiếng Việt hoa có dấu
+	 * 
+	 * @return
+	 */
 	public static String getVietnameseDiacriticCharacters() {
 		return "ẮẰẲẴẶĂẤẦẨẪẬÂÁÀÃẢẠĐẾỀỂỄỆÊÉÈẺẼẸÍÌỈĨỊỐỒỔỖỘÔỚỜỞỠỢƠÓÒÕỎỌỨỪỬỮỰƯÚÙỦŨỤÝỲỶỸỴ";
 	}
 
-	public static void emptyTable(JTable tbl) {
-		if (tbl.getRowCount() <= 0)
-			return;
-		DefaultTableModel dm = (DefaultTableModel) tbl.getModel();
-		dm.getDataVector().removeAllElements();
-	}
-
+	/**
+	 * Mở file
+	 * 
+	 * @param pathname
+	 */
 	public static void openFile(String pathname) {
 		try {
 			File file = new File(pathname);
@@ -239,10 +288,21 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Get ImageIcon
+	 * 
+	 * @param iconName
+	 * @return
+	 */
 	public static ImageIcon getImageIcon(String iconName) {
 		return new ImageIcon(_class.getResource("/" + iconName));
 	}
 
+	/**
+	 * Get các từ tiếng Việt thường có dấu
+	 * 
+	 * @return
+	 */
 	public static String getVietnameseDiacriticCharactersLower() {
 		return getVietnameseDiacriticCharacters().toLowerCase();
 	}

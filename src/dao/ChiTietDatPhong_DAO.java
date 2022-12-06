@@ -29,7 +29,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 	}
 
 	/**
-	 * Get tất cả các chi tiết đặt phòng theo đặt phòng
+	 * Get tất cả các chi tiết đặt phòng theo đơn đặt phòng
 	 * 
 	 * @param datPhong
 	 * @return
@@ -57,7 +57,6 @@ public class ChiTietDatPhong_DAO extends DAO {
 		return list;
 	}
 
-//	TODO
 	/**
 	 * Get chi tiết đặt phòng resultSet
 	 * 
@@ -86,18 +85,14 @@ public class ChiTietDatPhong_DAO extends DAO {
 		ResultSet resultSet = null;
 
 		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT donDatPhong, phong, gioVao FROM ChiTietDatPhong WHERE donDatPhong = ? and gioRa is null");
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE donDatPhong = ? and gioRa is null");
 			preparedStatement.setString(1, maDonDatPhong);
 
 			resultSet = preparedStatement.executeQuery();
 
-			if (resultSet.next()) {
-				String datPhong = resultSet.getString(1);
-				String maPhong = resultSet.getString(2);
-				LocalTime gioVao = resultSet.getTime(3).toLocalTime();
-				chiTietDatPhong = new ChiTietDatPhong(new DonDatPhong(datPhong), new Phong(maPhong), gioVao);
-			}
+			if (resultSet.next())
+				chiTietDatPhong = getChiTietDatPhong(resultSet);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -190,7 +185,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 		for (int i = 1; i < length; ++i)
 			q += ", ?";
 
-		String sql = String.format("SELECT [donDatPhong], [phong], [gioVao], [gioRa] FROM [dbo].[DonDatPhong] DP "
+		String sql = String.format("SELECT CTDP.* FROM [dbo].[DonDatPhong] DP "
 				+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.maDonDatPhong = CTDP.donDatPhong "
 				+ "WHERE [ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
 				+ "AND [trangThai] = N'Đang chờ' AND [phong] in (%s)", q);
@@ -201,9 +196,11 @@ public class ChiTietDatPhong_DAO extends DAO {
 				preparedStatement.setString(i + 1, dsPhong.get(i).getMaPhong());
 
 			resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getChiTietDatPhong(resultSet));
+			ChiTietDatPhong chiTietDatPhong;
+			while (resultSet.next()) {
+				chiTietDatPhong = getChiTietDatPhong(resultSet);
+				list.add(chiTietDatPhong);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -250,8 +247,8 @@ public class ChiTietDatPhong_DAO extends DAO {
 		PreparedStatement preparedStatement;
 		try {
 			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE [dbo].[ChiTietDatPhong] SET [gioRa] = ? "
-							+ "WHERE [phong] IN (SELECT [phong] FROM [dbo].[DonDatPhong] DP"
+					.prepareStatement("UPDATE [dbo].[ChiTietDatPhong] SET [gioRa] = ?"
+							+ " WHERE [phong] IN (SELECT [phong] FROM [dbo].[DonDatPhong] DP"
 							+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong]"
 							+ "	WHERE DP.[trangThai] = N'Đang thuê' AND [phong] = ? AND maDonDatPhong = ?) AND donDatPhong = ?");
 			preparedStatement.setTime(1, gioRa);
@@ -276,10 +273,10 @@ public class ChiTietDatPhong_DAO extends DAO {
 	public boolean thanhToanDatPhong(String maDatPhong, LocalTime gioRa) {
 		boolean res = false;
 		PreparedStatement preparedStatement = null;
+		String sql = "UPDATE ChiTietDatPhong SET gioRa = ? WHERE donDatPhong = ? AND gioRa is null";
 
 		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE ChiTietDatPhong SET gioRa = ? WHERE donDatPhong = ? AND gioRa is null");
+			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setTime(1, Time.valueOf(gioRa));
 			preparedStatement.setString(2, maDatPhong);
 
@@ -304,14 +301,22 @@ public class ChiTietDatPhong_DAO extends DAO {
 	public boolean themChiTietDatPhong(String maDatPhong, List<Phong> dsPhong, Time gioVao) {
 		try {
 			ConnectDB.getConnection().setAutoCommit(false);
+			boolean res;
 
 			for (Phong phong : dsPhong) {
 //				[ChiTietDatPhong] - Tạo chi tiết phiếu đặt phòng
-				if (!themChiTietDatPhong(maDatPhong, phong, gioVao))
+				res = themChiTietDatPhong(maDatPhong, phong, gioVao);
+				if (!res)
 					return rollback();
 
 //				[Phong] - Cập nhật trạng thái phòng
+//							+ Trống --> Đang thuê
+//							+ Đang thuê --> X
+//							+ Phòng tạm --> X
+//							+ Phòng chờ --> Phòng tạm
 				Phong phongFull = phong_DAO.getPhong(phong.getMaPhong());
+				if (phongFull == null)
+					return rollback();
 				TrangThai trangThaiNew;
 
 				if (phongFull.getTrangThai().equals(entity.Phong.TrangThai.DaDat))
@@ -319,7 +324,8 @@ public class ChiTietDatPhong_DAO extends DAO {
 				else
 					trangThaiNew = Phong.TrangThai.DangThue;
 
-				if (!phong_DAO.capNhatTrangThaiPhong(phongFull, Phong.convertTrangThaiToString(trangThaiNew)))
+				res = phong_DAO.capNhatTrangThaiPhong(phongFull, Phong.convertTrangThaiToString(trangThaiNew));
+				if (!res)
 					return rollback();
 			}
 
@@ -413,9 +419,9 @@ public class ChiTietDatPhong_DAO extends DAO {
 	public boolean themChiTietDatPhong(String maDatPhong, Phong phong, Time gioVao) {
 		PreparedStatement preparedStatement = null;
 		boolean res = false;
+		String sql = "INSERT ChiTietDatPhong(donDatPhong, phong, gioVao) VALUES(?, ?, ?)";
 		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("INSERT ChiTietDatPhong(donDatPhong, phong, gioVao) VALUES(?, ?, ?)");
+			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setString(1, maDatPhong);
 			preparedStatement.setString(2, phong.getMaPhong());
 			preparedStatement.setTime(3, gioVao);

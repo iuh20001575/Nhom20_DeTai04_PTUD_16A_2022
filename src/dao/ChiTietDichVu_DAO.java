@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,12 +18,21 @@ import entity.LoaiDichVu;
 import entity.Phong;
 
 public class ChiTietDichVu_DAO extends DAO {
+	/**
+	 * Cập nhật số lượng dịch vụ
+	 * 
+	 * @param maDV
+	 * @param maDP
+	 * @param maPhong
+	 * @param soLuongMua
+	 * @return
+	 */
 	public boolean capNhatSoLuongDichVu(String maDV, String maDP, String maPhong, int soLuongMua) {
 		boolean res = false;
 		PreparedStatement preparedStatement;
+		String sql = "UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ? and phong = ?";
 		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ? and phong = ?");
+			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setInt(1, soLuongMua);
 			preparedStatement.setString(2, maDV);
 			preparedStatement.setString(3, maDP);
@@ -37,23 +45,13 @@ public class ChiTietDichVu_DAO extends DAO {
 		return res;
 	}
 
-	public List<ChiTietDichVu> getAllChiTietDichVu() {
-		List<ChiTietDichVu> list = new ArrayList<>();
-		Statement statement;
-
-		try {
-			statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM ChiTietDichVu");
-			while (resultSet.next())
-				list.add(getChiTietDichVu(resultSet));
-			resultSet.close();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-
+	/**
+	 * Get tất cả chi tiết dịch vụ theo mã đơn đặt phòng và mã phòng
+	 * 
+	 * @param maDonDatPhong
+	 * @param maPhong
+	 * @return
+	 */
 	public List<ChiTietDichVu> getAllChiTietDichVu(String maDonDatPhong, String maPhong) {
 		List<ChiTietDichVu> list = new ArrayList<>();
 		String sql = "SELECT CTDV.*, DV.*, CTDV.soLuong AS SOLUONGBAN FROM [dbo].[ChiTietDichVu] CTDV "
@@ -93,8 +91,8 @@ public class ChiTietDichVu_DAO extends DAO {
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * " + "FROM   ChiTietDichVu INNER JOIN DonDatPhong ON  "
-							+ "	   ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
+					.prepareStatement("SELECT * FROM ChiTietDichVu INNER JOIN DonDatPhong ON "
+							+ "ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
 							+ "WHERE  maDonDatPhong = ? and phong = ?");
 
 			preparedStatement.setString(1, maDP);

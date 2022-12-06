@@ -553,7 +553,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				setEventFilterComboBox(false);
 
 				btnChonPhong.setEnabled(false);
-				Utils.emptyTable(tbl);
+				tableModel.setRowCount(0);
 				addRow(datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong));
 				cmbLoaiPhong.setSelectedIndex(0);
 				cmbMaPhong.setSelectedIndex(0);
@@ -616,7 +616,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				}
 
 //				Kiểm tra phòng đã được chọn hay chưa?
-				if (dsPhongDaChon.size() <= 0) {
+				if (dsPhongDaChon == null || dsPhongDaChon.size() <= 0) {
 					new Notification(_this, components.notification.Notification.Type.ERROR, "Chọn phòng muốn đặt")
 							.showNotification();
 					return;
@@ -632,6 +632,10 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 					quanLyDatPhongGUI.capNhatTrangThaiPhong();
 					quanLyDatPhongGUI.closeJFrameSub();
 					new Notification(main, components.notification.Notification.Type.SUCCESS, "Đặt phòng thành công")
+							.showNotification();
+				} else {
+					quanLyDatPhongGUI.closeJFrameSub();
+					new Notification(main, components.notification.Notification.Type.SUCCESS, "Đặt phòng thất bại")
 							.showNotification();
 				}
 			}
@@ -649,7 +653,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 	private void addRow(List<Phong> list) {
 		btnChonPhong.setEnabled(false);
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 
 		list.forEach(phong -> addRow(phong));
 	}
@@ -697,7 +701,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
 		dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
 		btnChonPhong.setEnabled(false);
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		addRow(dsPhongDatTruoc);
 		capNhatDanhSachPhongDatTruoc();
 		Utils.scrollToVisiable(tbl, 0, 0);
@@ -738,7 +742,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		dsPhongDaChon = null;
 		dsPhongDatTruoc = null;
 		btnChonPhong.setEnabled(false);
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		showDanhSachPhongDaChon();
 		repaint();
 	}

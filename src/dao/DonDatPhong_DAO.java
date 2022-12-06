@@ -54,7 +54,7 @@ public class DonDatPhong_DAO extends DAO {
 	}
 
 	/**
-	 * Chuyển phòng từ mã phòng cũ sang mã phòng mới
+	 * Chuyển phòng từ phòng cũ sang phòng mới
 	 * 
 	 * @param maPhongCu  mã phòng cũ
 	 * @param maPhongMoi mã phòng mới
@@ -71,7 +71,7 @@ public class DonDatPhong_DAO extends DAO {
 			Connection connection = ConnectDB.getConnection();
 			connection.setAutoCommit(false);
 
-//			[DatPhong - ChiTietDatPhong] - Get mã đặt phòng của phòng cần chuyển
+//			[DatPhong - ChiTietDatPhong] - Get mã đơn đặt phòng của phòng cần chuyển
 			preparedStatement = connection.prepareStatement("SELECT [donDatPhong] FROM [dbo].[DonDatPhong] DP "
 					+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong] "
 					+ "WHERE DP.[trangThai] = N'Đang thuê' AND [phong] = ? AND [gioRa] IS NULL");
@@ -83,11 +83,21 @@ public class DonDatPhong_DAO extends DAO {
 			if (!res)
 				return rollback();
 
-			String datPhong = resultSet.getString(1);
+			String donDatPhong = resultSet.getString(1);
+//			Phòng cũ - Trạng thái mới
+//						+ Trống --> X
+//						+ Đã đặt --> X
+//						+ Đang thuê --> Trống
+//						+ Phòng tạm --> Đã đặt
 			entity.Phong.TrangThai trangThaiCu = entity.Phong.TrangThai.DaDat;
 			if (phongCu.getTrangThai().equals(entity.Phong.TrangThai.DangThue))
 				trangThaiCu = entity.Phong.TrangThai.Trong;
 			String trangThaiMoiPhongCu = Phong.convertTrangThaiToString(trangThaiCu);
+//			Phòng mới - Trạng thái mới
+//						+ Trống --> Đang thuê
+//						+ Đã đặt --> Phòng tạm
+//						+ Đang thuê --> X
+//						+ Phòng tạm --> X
 			entity.Phong.TrangThai trangThaiMoi = entity.Phong.TrangThai.PhongTam;
 			if (phongMoi.getTrangThai().equals(entity.Phong.TrangThai.Trong))
 				trangThaiMoi = entity.Phong.TrangThai.DangThue;
@@ -104,12 +114,12 @@ public class DonDatPhong_DAO extends DAO {
 				return rollback();
 
 //			[ChiTietDatPhong] - Cập nhật giờ ra của phòng cũ
-			res = chiTietDatPhong_DAO.setGioRa(datPhong, maPhongCu, time);
+			res = chiTietDatPhong_DAO.setGioRa(donDatPhong, maPhongCu, time);
 			if (!res)
 				return rollback();
 
 //			[ChiTietDatPhong] - Thêm chi tiết đặt phòng phòng mới
-			res = chiTietDatPhong_DAO.themChiTietDatPhong(datPhong, phongMoi, time);
+			res = chiTietDatPhong_DAO.themChiTietDatPhong(donDatPhong, phongMoi, time);
 			if (!res)
 				return rollback();
 
@@ -122,7 +132,7 @@ public class DonDatPhong_DAO extends DAO {
 	}
 
 	/**
-	 * Get tất cả phòng đang thuê
+	 * Get tất cả đơn đặt phòng đang thuê
 	 * 
 	 * @return
 	 */
@@ -221,14 +231,15 @@ public class DonDatPhong_DAO extends DAO {
 	public LocalTime getGioVao(Phong phong) {
 		try {
 			Phong phong2 = phong_DAO.getPhong(phong.getMaPhong());
+			entity.Phong.TrangThai trangThaiPhong = phong2.getTrangThai();
 
-			if (phong2.getTrangThai().equals(entity.Phong.TrangThai.Trong))
+			if (trangThaiPhong.equals(entity.Phong.TrangThai.Trong))
 				return null;
 
 			PreparedStatement preparedStatement;
 			String trangThai;
 
-			if (phong2.getTrangThai().equals(entity.Phong.TrangThai.DaDat))
+			if (trangThaiPhong.equals(entity.Phong.TrangThai.DaDat))
 				trangThai = "Đang chờ";
 			else
 				trangThai = "Đang thuê";
@@ -259,23 +270,11 @@ public class DonDatPhong_DAO extends DAO {
 	 * @return
 	 */
 	public String getMaDatPhongDangThue(String soDienThoai) {
-		String sql = "SELECT maDonDatPhong FROM [dbo].[DonDatPhong] DP "
-				+ "JOIN [dbo].[KhachHang] KH ON DP.khachHang = KH.maKhachHang "
-				+ "WHERE [trangThai] = N'Đang thuê' AND [soDienThoai] = ?";
+		DonDatPhong donDatPhong = getDonDatPhongNgayTheoSoDienThoai(soDienThoai);
 
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setString(1, soDienThoai);
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return resultSet.getString(1);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		if (donDatPhong == null)
+			return null;
+		return donDatPhong.getMaDonDatPhong();
 	}
 
 	/**
@@ -400,8 +399,8 @@ public class DonDatPhong_DAO extends DAO {
 					+ "	JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai WHERE maPhong NOT IN ("
 					+ "	SELECT [phong] FROM [dbo].[DonDatPhong] DP"
 					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong]"
-					+ "	WHERE ([trangThai] = N'Đang thuê' AND [gioRa] IS NULL)"
-					+ "	OR ([trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE())"
+					+ "	WHERE (DP.[trangThai] = N'Đang thuê' AND [gioRa] IS NULL)"
+					+ "	OR (DP.[trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE())"
 					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) < '6:00:00')"
 					+ "	) AND [maPhong] LIKE ? AND tenLoai LIKE ?";
 
@@ -539,9 +538,11 @@ public class DonDatPhong_DAO extends DAO {
 			if (!res)
 				return rollback();
 
-//			[ChiTietDatPhong] - Thêm chi tiết đặt phòng nếu là phòng trống
-			if (phongGop.getTrangThai().equals(entity.Phong.TrangThai.Trong)) {
-				if (!chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phongGop, time))
+//			[ChiTietDatPhong] - Thêm chi tiết đặt phòng nếu là phòng trống hoặc là phòng chờ
+			entity.Phong.TrangThai trangThai = phongGop.getTrangThai();
+			if (trangThai.equals(entity.Phong.TrangThai.Trong) || trangThai.equals(entity.Phong.TrangThai.DaDat)) {
+				res = chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phongGop, time);
+				if (!res)
 					return rollback();
 
 //				[Phong] - Cập nhật trạng thái phòng gộp
@@ -575,7 +576,7 @@ public class DonDatPhong_DAO extends DAO {
 	 */
 	private boolean hasDatPhongTruocHopLe(String maPhong) {
 		String sql = "SELECT * FROM [dbo].[DonDatPhong] DP JOIN [dbo].[ChiTietDatPhong] CTDP "
-				+ "ON DP.maDonDatPhong = CTDP.donDatPhong WHERE [trangThai] = N'Đang chờ' "
+				+ "ON DP.maDonDatPhong = CTDP.donDatPhong WHERE DP.[trangThai] = N'Đang chờ' "
 				+ "AND [phong] = ? AND ([ngayNhanPhong] > CONVERT(DATE, GETDATE()) "
 				+ "OR ([ngayNhanPhong] = CONVERT(DATE, GETDATE()) AND ([gioNhanPhong] >= CONVERT(TIME(0), GETDATE()) "
 				+ "OR [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) < CONVERT(TIME(0), '1:00:00'))))";
@@ -602,10 +603,9 @@ public class DonDatPhong_DAO extends DAO {
 	public boolean huyPhongDatTre() {
 		try {
 			Connection connection = ConnectDB.getConnection();
-			connection.setAutoCommit(false);
 			Statement statement = connection.createStatement();
 
-//			Get danh sách phòng cần cập nhật
+//			Get danh sách phòng có đơn đặt phòng trễ
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("SELECT [phong] FROM [dbo].[DonDatPhong] DP "
 							+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong] "
@@ -623,7 +623,8 @@ public class DonDatPhong_DAO extends DAO {
 			}
 
 			if (maPhongList.size() == 0)
-				return rollback();
+				return false;
+			connection.setAutoCommit(false);
 
 //			[Phong] - Cập nhật trạng thái phòng
 			boolean res;
@@ -641,7 +642,7 @@ public class DonDatPhong_DAO extends DAO {
 					return rollback();
 			}
 
-//			[DatPhong] - Cập nhật trạng thái đơn đặt phòng thành đã hủy
+//			[DonDatPhong] - Cập nhật trạng thái đơn đặt phòng thành đã hủy
 			res = statement.executeUpdate("UPDATE [dbo].[DonDatPhong] SET [trangThai] = N'Đã hủy' WHERE ("
 					+ "[trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE()) "
 					+ "AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) >= CONVERT(TIME(0), '1:00:00') "
@@ -696,14 +697,14 @@ public class DonDatPhong_DAO extends DAO {
 			ResultSet resultSet = statement
 					.executeQuery("SELECT maDonDatPhong FROM DonDatPhong ORDER BY maDonDatPhong DESC");
 
-			if (!resultSet.next()) {
+			if (!resultSet.next())
 				return "MDP0001";
-			}
 			String prevMaDatPhong = resultSet.getString(1);
 			int prevSTT = Integer.parseInt(prevMaDatPhong.substring(3));
 
-			String newMaDatPhong = prevSTT + 1 + "";
-			while (newMaDatPhong.length() < 4)
+			String newMaDatPhong = (prevSTT + 1) + "";
+			int length = newMaDatPhong.length();
+			while (length++ < 4)
 				newMaDatPhong = "0" + newMaDatPhong;
 
 			statement.close();
@@ -752,7 +753,7 @@ public class DonDatPhong_DAO extends DAO {
 			if (!res)
 				return rollback();
 
-//			[DatPhong] - Cập nhật trạng thái của đơn đặt phòng thành đã trả
+//			[DonDatPhong] - Cập nhật trạng thái của đơn đặt phòng thành đã trả
 			sql = "UPDATE [dbo].[DonDatPhong] SET [trangThai] = N'Đã trả' WHERE [maDonDatPhong] = ?";
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1, maDatPhong);
@@ -790,7 +791,7 @@ public class DonDatPhong_DAO extends DAO {
 			Time time = Time.valueOf(LocalTime.now());
 			Date date = Date.valueOf(LocalDate.now());
 
-//			[DatPhong] - Tạo phiếu đặt phòng
+//			[DonDatPhong] - Tạo đơn đặt phòng
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("INSERT DonDatPhong VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 			preparedStatement.setString(1, maDatPhong);
@@ -801,12 +802,15 @@ public class DonDatPhong_DAO extends DAO {
 			preparedStatement.setDate(6, date);
 			preparedStatement.setTime(7, time);
 			preparedStatement.setString(8, DonDatPhong.convertTrangThaiToString(TrangThai.DangThue));
-			int res = preparedStatement.executeUpdate();
+			boolean res = preparedStatement.executeUpdate() > 0;
 
-			if (res <= 0)
+			if (!res)
 				return rollback();
 
-			return chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phongs, time);
+			res = chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phongs, time);
+			if (!res)
+				rollback();
+			return commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -848,13 +852,12 @@ public class DonDatPhong_DAO extends DAO {
 			preparedStatement.setDate(6, Date.valueOf(ngayNhanPhong));
 			preparedStatement.setTime(7, Time.valueOf(gioNhanPhong));
 			preparedStatement.setString(8, DonDatPhong.convertTrangThaiToString(TrangThai.DangCho));
-			int res = preparedStatement.executeUpdate();
+			boolean result = preparedStatement.executeUpdate() > 0;
 
-			if (res <= 0)
+			if (!result)
 				return rollback();
 
 			entity.Phong.TrangThai trangThai, trangThaiNew;
-			boolean result;
 			Time gioNhanPhongTime = Time.valueOf(gioNhanPhong);
 			for (Phong phong : phongs) {
 //				[ChiTietDatPhong] - Tạo chi tiết phiếu đặt phòng
@@ -868,12 +871,11 @@ public class DonDatPhong_DAO extends DAO {
 //							+ Đã đặt -> Đã đặt
 //							+ Phòng tạm -> Phòng tạm
 				trangThai = phong_DAO.getTrangThai(phong.getMaPhong());
+				trangThaiNew = entity.Phong.TrangThai.DaDat;
 
 				if (trangThai.equals(entity.Phong.TrangThai.DangThue)
 						|| trangThai.equals(entity.Phong.TrangThai.PhongTam))
 					trangThaiNew = entity.Phong.TrangThai.PhongTam;
-				else
-					trangThaiNew = entity.Phong.TrangThai.DaDat;
 				result = phong_DAO.capNhatTrangThaiPhong(phong, Phong.convertTrangThaiToString(trangThaiNew));
 				if (!result)
 					return rollback();

@@ -285,7 +285,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener, MouseListen
 				List<Phong> dsPhong = datPhong_DAO.getPhongDatNgay();
 				List<Phong> dsPhongDangThue = phong_DAO.getAllPhongDangThue();
 
-				Utils.emptyTable(tbl);
+				tableModel.setRowCount(0);
 				cmbPhongHienTai.removeAllItems();
 				cmbMaPhong.removeAllItems();
 				cmbLoaiPhong.removeAllItems();
@@ -373,7 +373,7 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener, MouseListen
 			loaiPhong = "";
 
 		List<Phong> dsPhong = datPhong_DAO.getPhongDatNgay(maPhong, loaiPhong, soKhach);
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		addRow(dsPhong);
 		repaint();
 	}
@@ -420,6 +420,10 @@ public class ChuyenPhong_GUI extends JFrame implements ItemListener, MouseListen
 				quanLyDatPhongGUI.closeJFrameSub();
 				new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
 						"Chuyển phòng thành công").showNotification();
+			} else {
+				quanLyDatPhongGUI.closeJFrameSub();
+				new Notification(parentFrame, components.notification.Notification.Type.SUCCESS,
+						"Chuyển phòng thất bại").showNotification();
 			}
 		} else if (o.equals(tbl)) {
 			int row = tbl.getSelectedRow();

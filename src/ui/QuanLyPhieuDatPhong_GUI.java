@@ -375,7 +375,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				cboMaPhieuDat.setSelectedIndex(0);
 				cboTrangThai.setSelectedIndex(0);
 				txtSoDienThoai.setText("");
-				Utils.emptyTable(tbl);
+				tableModel.setRowCount(0);
 				addRow(phieuDatPhong_DAO.getAllDonDatPhong());
 				pnlControl.setTbl(tbl);
 			}
@@ -423,7 +423,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 			public void ancestorAdded(AncestorEvent event) {
 				clockThread = clock();
 
-				Utils.emptyTable(tbl);
+				tableModel.setRowCount(0);
 				cboMaPhieuDat.removeAllItems();
 				cboMaPhieuDat.addItem("Mã phiếu đặt");
 				List<DonDatPhong> list = phieuDatPhong_DAO.getAllDonDatPhong();
@@ -460,7 +460,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 			return;
 		}
 
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		addRow(list);
 		pnlControl.setTbl(tbl);
 

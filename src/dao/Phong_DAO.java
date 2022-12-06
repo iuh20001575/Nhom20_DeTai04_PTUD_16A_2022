@@ -24,7 +24,7 @@ public class Phong_DAO extends DAO {
 			preparedStatement.setString(1, trangThai);
 			preparedStatement.setString(2, phong.getMaPhong());
 
-			res = preparedStatement.executeUpdate() >= 0;
+			res = preparedStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

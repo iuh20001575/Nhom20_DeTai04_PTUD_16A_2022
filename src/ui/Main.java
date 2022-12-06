@@ -172,7 +172,6 @@ public class Main extends JFrame {
 			}
 		});
 
-		Utils.setMain(this);
 		btnBack.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

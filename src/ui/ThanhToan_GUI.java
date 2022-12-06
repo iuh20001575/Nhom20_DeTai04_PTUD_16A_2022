@@ -645,7 +645,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		btnThanhToan.setEnabled(false);
 		txtTienNhan.setError(false);
 
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		Object o = e.getSource();
 		boolean isMaDatPhong = true;
 		cmbMaDatPhong.removeItemListener(_this);
@@ -718,7 +718,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			lblTienDichVu.setText("");
 			dsChiTietDatPhong = null;
 			btnThanhToan.setEnabled(false);
-			Utils.emptyTable(tbl);
+			tableModel.setRowCount(0);
 		}
 		cmbMaDatPhong.addItemListener(_this);
 		cmbSoDienThoai.addItemListener(_this);

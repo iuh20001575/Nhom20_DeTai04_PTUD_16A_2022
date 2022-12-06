@@ -497,7 +497,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 			public void ancestorAdded(AncestorEvent event) {
 				clockThread = clock();
 
-				Utils.emptyTable(tbl);
+				tableModel.setRowCount(0);
 				cmbMaNhanVien.removeAllItems();
 				cmbMaNhanVien.addItem("Mã NV");
 				List<NhanVien> list = nhanVien_DAO.getAllNhanVien();
