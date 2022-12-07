@@ -10,9 +10,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -44,6 +47,7 @@ import components.scrollbarCustom.ScrollBarCustom;
 import dao.ChiTietDatPhong_DAO;
 import dao.DonDatPhong_DAO;
 import dao.LoaiPhong_DAO;
+import dao.Phong_DAO;
 import entity.ChiTietDatPhong;
 import entity.DonDatPhong;
 import entity.LoaiPhong;
@@ -85,6 +89,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	private Button btnLamMoi;
 	private Button btnQuayLai;
 	private List<ChiTietDatPhong> listChiTietDatPhong;
+	private Phong_DAO phong_DAO;
 
 	/**
 	 * Create the frame.
@@ -96,6 +101,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		_this = this;
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		datPhong_DAO = new DonDatPhong_DAO();
+		phong_DAO = new Phong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 		listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
 		DonDatPhong datPhong = datPhong_DAO.getDatPhong(donDatPhong.getMaDonDatPhong());
@@ -304,9 +310,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		pnlPhongDaChon.setLayout(null);
 
 		dsPhongDaChonBanDau = new ArrayList<>();
-		dsPhongDaChon = new ArrayList<>();
 		listChiTietDatPhong.forEach(list -> dsPhongDaChonBanDau.add(list.getPhong()));
-		listChiTietDatPhong.forEach(list -> dsPhongDaChon.add(list.getPhong()));
 		showDanhSachPhongDaChon();
 		
 //		Sự kiện window
@@ -321,14 +325,13 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 				emptyComboBox(cmbMaPhong, "Mã phòng");
 				emptyComboBox(cmbLoaiPhong, "Loại phòng");
 
-				
-				for (Phong phong : dsPhongDatTruoc) {
-					if (dsPhongDaChon.contains(phong))
-						continue;
-					addRow(phong);
-					cmbMaPhong.addItem(phong.getMaPhong());
-				}
-
+					for (Phong phong : dsPhongDatTruoc) {
+						if (dsPhongDaChon.contains(phong))
+							continue;
+						addRow(phong);
+						cmbMaPhong.addItem(phong.getMaPhong());
+					}
+					
 				loaiPhongs.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));	
 				
 				setEventFilterComboBox(true);
@@ -355,7 +358,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 				cmbLoaiPhong.setSelectedIndex(0);
 				cmbMaPhong.setSelectedIndex(0);
 				cmbSoLuong.setSelectedIndex(0);
-				dsPhongDaChon.clear();
+				dsPhongDaChon.removeAll(dsPhongDaChon);
 				capNhatDanhSachPhongDatTruoc();
 				showDanhSachPhongDaChon();
 				
@@ -370,6 +373,8 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
 				if (row != 1 && row < tbl.getRowCount()) {
+					if(dsPhongDaChon == null)
+						dsPhongDaChon = new ArrayList<>();
 					Phong phong = new Phong((String) tableModel.getValueAt(row, 0));
 					if (dsPhongDaChon.contains(phong))
 						return;
@@ -472,24 +477,32 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
 		String soLuong = (String) cmbSoLuong.getSelectedItem();
 
-		if (maPhong.equals("Mã phòng"))
+		if (maPhong.equals("Mã phòng")) 
 			maPhong = "";
-		if (loaiPhong.equals("Loại phòng"))
+		if (loaiPhong.equals("Loại phòng")) 
 			loaiPhong = "";
-
-		dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
-		if (dsPhongDatTruoc.size() == 0) {
-			tableModel.removeRow(0);
+	
+		List<Phong> dsPhong = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
+		if (dsPhong.size() == 0) {
 			return;
 		}
-
+		
+		if(cmbMaPhong.getSelectedItem().toString().equals("Mã phòng") && cmbLoaiPhong.getSelectedItem().toString().equals("Loại phòng") 
+				&& cmbSoLuong.getSelectedItem().toString().equals("Số lượng") ){
+			for(Phong phong : dsPhongDaChonBanDau) {
+				if(!dsPhongDaChon.contains(phong)) {
+					dsPhong.add(phong_DAO.getPhong(phong.getMaPhong()));
+				}
+			}
+			Collections.sort(dsPhong);
+		}
+		
 		Utils.emptyTable(tbl);
-		addRow(dsPhongDatTruoc);
-		capNhatDanhSachPhongDatTruoc();
+		addRow(dsPhong);
 	}
 
 	private void capNhatDanhSachPhongDatTruoc() {
-		if (dsPhongDatTruoc == null || dsPhongDaChon == null)
+		if ( dsPhongDaChon == null || dsPhongDatTruoc == null)
 			return;
 		
 		int row = tbl.getSelectedRow();
@@ -497,13 +510,23 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			tableModel.removeRow(tbl.getSelectedRow());
 			btnChonPhong.setEnabled(false);
 		}
-		
+		emptyComboBox(cmbMaPhong, "Mã phòng");
 		Utils.emptyTable(tbl);
-
-		for (Phong phong : dsPhongDatTruoc) {
-			if (!dsPhongDaChon.contains(phong))
-				addRow(phong);
+		
+		for(Phong phongBanDau : dsPhongDaChonBanDau) {
+			if(!dsPhongDatTruoc.contains(phongBanDau) && !dsPhongDaChon.contains(phongBanDau)) {
+				dsPhongDatTruoc.add(phong_DAO.getPhong(phongBanDau.getMaPhong()));
+			}
 		}
+		Collections.sort(dsPhongDatTruoc);
+		for (Phong phong : dsPhongDatTruoc) {
+			if (dsPhongDaChon.contains(phong))
+				continue;
+			
+			addRow(phong);
+			cmbMaPhong.addItem(phong.getMaPhong());
+		}
+		
 
 		if (tbl.getRowCount() > 0) {
 			tbl.setRowSelectionInterval(0, 0);
@@ -512,8 +535,10 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	}
 
 	private void showDanhSachPhongDaChon() {
-		if (dsPhongDaChon == null)
-			return;
+		if (dsPhongDaChon == null) {
+			dsPhongDaChon = new ArrayList<>();
+			dsPhongDaChonBanDau.forEach(list -> dsPhongDaChon.add(list));
+		}
 		pnlPhongDaChon.removeAll();
 		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 
@@ -529,9 +554,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		pnlPhongDaChon.setPreferredSize(
 				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
 		
-		List<Phong> dsPhongBanDau = new ArrayList<>();
-		listChiTietDatPhong.forEach(list -> dsPhongBanDau.add(list.getPhong()));
-		if(!dsPhongBanDau.equals(dsPhongDaChon))
+		if(!dsPhongDaChonBanDau.equals(dsPhongDaChon))
 			btnSuaPhong.setEnabled(true);
 		else
 			btnSuaPhong.setEnabled(false);
@@ -560,6 +583,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 				dsPhongDaChon.remove(phong);
 				if (dsPhongDaChon.size() <= 0)
 					btnSuaPhong.setEnabled(false);
+				
 				capNhatDanhSachPhongDatTruoc();
 				showDanhSachPhongDaChon();
 			}
@@ -610,3 +634,4 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		cmbSoLuong.removeItemListener(_this);
 	}
 }
+
