@@ -2,7 +2,7 @@ package entity;
 
 import java.util.Objects;
 
-public class Phong {
+public class Phong implements Comparable<Phong>{
 	public static enum TrangThai {
 		DaDat, DangThue, PhongTam, Trong
 	}
@@ -118,4 +118,10 @@ public class Phong {
 		return "Phong [maPhong=" + maPhong + ", loaiPhong=" + loaiPhong + ", soLuongKhach=" + soLuongKhach
 				+ ", trangThai=" + trangThai + "]";
 	}
+	@Override
+	public int compareTo(Phong o) {
+		// TODO Auto-generated method stub
+		return this.getMaPhong().compareTo(o.getMaPhong());
+	}
+	
 }
