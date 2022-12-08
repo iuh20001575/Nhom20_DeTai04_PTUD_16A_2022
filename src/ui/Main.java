@@ -262,6 +262,7 @@ public class Main extends JFrame {
 		}
 		addPnlBody(panelUI);
 		menu.setSelectedMenu(panelUI.getIndex(), panelUI.getIndexSubmenu());
+		repaint();
 	}
 
 	public Menu getMenu() {
