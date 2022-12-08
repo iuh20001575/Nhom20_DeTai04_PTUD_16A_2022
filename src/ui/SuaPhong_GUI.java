@@ -372,7 +372,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
-				if (row != 1 && row < tbl.getRowCount()) {
+				if (row != -1 && row < tbl.getRowCount()) {
 					if(dsPhongDaChon == null)
 						dsPhongDaChon = new ArrayList<>();
 					Phong phong = new Phong((String) tableModel.getValueAt(row, 0));
@@ -481,24 +481,26 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			maPhong = "";
 		if (loaiPhong.equals("Loại phòng")) 
 			loaiPhong = "";
-	
-		List<Phong> dsPhong = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
-		if (dsPhong.size() == 0) {
+		
+		if(dsPhongDaChonBanDau.contains(phong_DAO.getPhong(maPhong))) {
+			Utils.emptyTable(tbl);
+			addRow(phong_DAO.getPhong(maPhong));
+			return;
+		}
+		
+		dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
+		if (dsPhongDatTruoc.size() == 0) {
+			tableModel.removeRow(0);
 			return;
 		}
 		
 		if(cmbMaPhong.getSelectedItem().toString().equals("Mã phòng") && cmbLoaiPhong.getSelectedItem().toString().equals("Loại phòng") 
 				&& cmbSoLuong.getSelectedItem().toString().equals("Số lượng") ){
-			for(Phong phong : dsPhongDaChonBanDau) {
-				if(!dsPhongDaChon.contains(phong)) {
-					dsPhong.add(phong_DAO.getPhong(phong.getMaPhong()));
-				}
-			}
-			Collections.sort(dsPhong);
+			themPhongBanDau();
 		}
 		
 		Utils.emptyTable(tbl);
-		addRow(dsPhong);
+		addRow(dsPhongDatTruoc);
 	}
 
 	private void capNhatDanhSachPhongDatTruoc() {
@@ -513,12 +515,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		emptyComboBox(cmbMaPhong, "Mã phòng");
 		Utils.emptyTable(tbl);
 		
-		for(Phong phongBanDau : dsPhongDaChonBanDau) {
-			if(!dsPhongDatTruoc.contains(phongBanDau) && !dsPhongDaChon.contains(phongBanDau)) {
-				dsPhongDatTruoc.add(phong_DAO.getPhong(phongBanDau.getMaPhong()));
-			}
-		}
-		Collections.sort(dsPhongDatTruoc);
+		themPhongBanDau();
 		for (Phong phong : dsPhongDatTruoc) {
 			if (dsPhongDaChon.contains(phong))
 				continue;
@@ -590,6 +587,14 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		});
 
 		return pnlContainerItem;
+	}
+	private void themPhongBanDau() {
+		for(Phong phongBanDau : dsPhongDaChonBanDau) {
+			if(!dsPhongDatTruoc.contains(phongBanDau) && !dsPhongDaChon.contains(phongBanDau)) {
+				dsPhongDatTruoc.add(phong_DAO.getPhong(phongBanDau.getMaPhong()));
+			}
+		}
+		Collections.sort(dsPhongDatTruoc);
 	}
 
 	/**
