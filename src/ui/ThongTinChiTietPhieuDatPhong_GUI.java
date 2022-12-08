@@ -308,7 +308,14 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		pnlSuaPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if(txtTrangThai.getText().equals("Đã hủy")) {
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning)
+					.showMessage("Warning","Phòng đã huỷ không thể cập nhật" );		
+					return;
+				}
+
 				handleOpenSubFrame(pnlSuaPhong, new SuaPhong_GUI(main, _this, chiTietDatPhong.getDonDatPhong()));
+
 			}
 		});
 
