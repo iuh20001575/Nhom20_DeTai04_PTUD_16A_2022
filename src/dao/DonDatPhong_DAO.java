@@ -957,4 +957,114 @@ public class DonDatPhong_DAO extends DAO {
 		}
 		return false;
 	}
+	public boolean nhanPhongTrongPhieuDatPhongTruoc(DonDatPhong donDatPhong, List<Phong> phongs) {
+
+		try {
+			Connection connection = ConnectDB.getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement;
+			String sql;
+			boolean res;
+			
+//			Cập nhật trạng thái 'Đang thuê' trong đơn đặt phòng
+			sql = "UPDATE DONDATPHONG SET trangThai = N'Đang thuê' WHERE maDonDatPhong = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, donDatPhong.getMaDonDatPhong());
+			res = preparedStatement.executeUpdate() > 0;
+
+			if (!res)
+				return rollback();
+			
+//			Cập nhật giờ vào trong chi tiết phiếu đặt phòng
+			Time time = Time.valueOf(LocalTime.now());
+			sql = "UPDATE CHITIETDATPHONG SET gioVao = ? WHERE donDatPhong = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setTime(1, time);
+			preparedStatement.setString(2, donDatPhong.getMaDonDatPhong());
+			res = preparedStatement.executeUpdate() > 0;
+
+			if (!res)
+				return rollback();
+			
+//			Cập nhật danh sách phòng
+//				+Phòng tạm -> đang thuê
+			for(Phong phong : phongs) {
+				res = phong_DAO.capNhatTrangThaiPhong(phong, "Đang thuê");
+				if(!res)
+					return rollback();
+			}
+			
+			return commit();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	/**
+	 * Kiểm tra phòng có phiếu đặt trước khác hay không? 
+	 * 
+	 * @param maPhong ma phòng cần kiểm tra
+	 * @param gioNhanPhong giờ nhận phòng cần kiểm tra
+	 * @return true nếu có phiếu đặt phòng trước khác
+	 */
+	public boolean hasDatPhongTruoc(String maPhong) {
+		String sql = "SELECT * FROM ChiTietDatPhong CP INNER JOIN DonDatPhong DP  ON CP.donDatPhong = DP.maDonDatPhong\n"
+				+ "WHERE CP.phong like ? AND ( DP.trangThai = N'Đang chờ' or DP.trangThai = N'Phòng tạm') \n";
+				
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, maPhong);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			if(resultSet.next())
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public boolean huyPhongTrongPhieuDatPhongTruoc(DonDatPhong donDatPhong,List<Phong> phongs) {
+		try {
+			Connection connection = ConnectDB.getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement;
+			boolean res;
+			
+//			[DatPhong] - Cập nhật trạng thái đặt phòng thành đã hủy
+			preparedStatement = connection.prepareStatement("UPDATE [dbo].[DonDatPhong] SET [trangThai] = N'Đã hủy' WHERE "
+					+ "[maDonDatPhong] = ?");
+			preparedStatement.setString(1, donDatPhong.getMaDonDatPhong());
+			res = preparedStatement.executeUpdate() > 0;
+				
+			if (!res)
+				return rollback();
+			
+//			[Phong] - Cập nhật trạng thái phòng
+			boolean isDatPhongTruoc ;
+			for (Phong phong : phongs) {
+				isDatPhongTruoc = hasDatPhongTruoc(phong.getMaPhong());
+				preparedStatement = connection.prepareStatement("UPDATE [dbo].[Phong] SET [trangThai] = ("
+						+ "	CASE WHEN [trangThai] = N'Đã đặt' THEN ? ELSE ? END) WHERE [maPhong] = ?");
+				preparedStatement.setString(1, isDatPhongTruoc ? "Đã đặt" : "Trống");
+				preparedStatement.setString(2, isDatPhongTruoc ? "Phòng tạm" : "Đang thuê");
+				preparedStatement.setString(3, phong.getMaPhong());
+				res = preparedStatement.executeUpdate() > 0;
+
+				if (!res)
+					return rollback();
+			}
+
+				return commit();
+				
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
