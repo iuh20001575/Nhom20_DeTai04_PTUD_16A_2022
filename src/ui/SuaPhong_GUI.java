@@ -96,7 +96,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	 *
 	 * @param parentFrame
 	 */
-	public SuaPhong_GUI(Main main, ThongTinChiTietPhieuDatPhong_GUI thongTinChiTietPhieuDatPhong_GUI,
+	public SuaPhong_GUI(Main main, ThongTinChiTietPhieuDatPhongTruoc_GUI thongTinChiTietPhieuDatPhongTruoc_GUI,
 			DonDatPhong donDatPhong) {
 		_this = this;
 		loaiPhong_DAO = new LoaiPhong_DAO();
@@ -342,7 +342,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		btnQuayLai.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				thongTinChiTietPhieuDatPhong_GUI.closeJFrameSub();
+				thongTinChiTietPhieuDatPhongTruoc_GUI.closeJFrameSub();
 			}
 		});
 		
@@ -408,8 +408,8 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 						public void mouseClicked(MouseEvent e) {
 							boolean res = datPhong_DAO.capNhatPhongTrongPhieuDatPhongTruoc(donDatPhong.getMaDonDatPhong(),gioNhanPhong, dsPhongDaChon,dsPhongDaChonBanDau);
 							if(res) {
-								thongTinChiTietPhieuDatPhong_GUI.setPhieuDatPhongVaoForm(chiTietDatPhong_DAO.getChiTietDatPhongTheoMaDatPhong(donDatPhong.getMaDonDatPhong()));
-								thongTinChiTietPhieuDatPhong_GUI.closeJFrameSub();
+								thongTinChiTietPhieuDatPhongTruoc_GUI.setPhieuDatPhongVaoForm(chiTietDatPhong_DAO.getChiTietDatPhongTheoMaDatPhong(donDatPhong.getMaDonDatPhong()));
+								thongTinChiTietPhieuDatPhongTruoc_GUI.closeJFrameSub();
 								new Notification(main, components.notification.Notification.Type.SUCCESS, "Cập nhật phòng thành công")
 								.showNotification(); 
 							}
