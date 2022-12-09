@@ -20,16 +20,22 @@ import javax.swing.event.AncestorListener;
 
 import components.button.Button;
 import components.jDialog.Glass;
+import components.jDialog.JDialogCustom;
+import components.notification.Notification;
 import components.panelEvent.PanelEvent;
 import components.textField.TextField;
 import dao.ChiTietDatPhong_DAO;
 import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.NhanVien_DAO;
+import dao.Phong_DAO;
 import entity.ChiTietDatPhong;
 import entity.DonDatPhong;
 import entity.KhachHang;
 import entity.NhanVien;
+import entity.PanelUI;
+import entity.Phong;
+import utils.StackPanel;
 import utils.Utils;
 
 public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemListener {
@@ -52,6 +58,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 	private NhanVien_DAO nhanVien_DAO;
 	private KhachHang_DAO khachHang_DAO;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private Phong_DAO phong_DAO;
 	private Button btnNhanPhong;
 	private Button btnHuyPhong;
 	private final int widthPnlContainer = 948;
@@ -70,6 +77,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		khachHang_DAO = new KhachHang_DAO();
 		nhanVien_DAO = new NhanVien_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		phong_DAO = new Phong_DAO();
 		glass = new Glass();
 		this.chiTietDatPhong = chiTietDatPhong;
 		this.main = main;
@@ -97,7 +105,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		lblTime = new JLabel("");
 		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTime.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-		lblTime.setBounds(800, 0, 180, 24);
+		lblTime.setBounds(750, 0, 180, 24);
 		pnlContainer.add(lblTime);
 		clock();
 
@@ -287,13 +295,13 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		pnlActions.add(btnHuyPhong);
 
 		setPhieuDatPhongVaoForm(this.chiTietDatPhong);
+		setEnabledForm();
 
 		addAncestorListener(new AncestorListener() {
 			Thread clockThread;
 			
 			public void ancestorAdded(AncestorEvent event) {
 				clockThread = clock();
-				
 			}
 			public void ancestorMoved(AncestorEvent event) {
 			}
@@ -309,8 +317,72 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				handleOpenSubFrame(pnlSuaPhong, new SuaPhong_GUI(main, _this, chiTietDatPhong.getDonDatPhong()));
+
 			}
 		});
+		
+//		Sự kiện nút Nhận phòng
+		btnNhanPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				boolean res = false;
+				List<Phong> listPhong = new ArrayList<>();
+				List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(chiTietDatPhong.getDonDatPhong());
+				listChiTietDatPhong.forEach( list -> listPhong.add(list.getPhong()));
+
+				res = donDatPhong_DAO.nhanPhongTrongPhieuDatPhongTruoc(chiTietDatPhong.getDonDatPhong(), listPhong);
+				
+				if(!res) {
+					new Notification(main, components.notification.Notification.Type.ERROR, "Chưa đến giờ nhận phòng")
+					.showNotification();
+					return;
+				}
+				
+				JDialogCustom jDialogCustom = new JDialogCustom(main, components.jDialog.JDialogCustom.Type.confirm);
+				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						QuanLyDatPhong_GUI quanLyDatPhong_GUI = new QuanLyDatPhong_GUI(main);
+						main.addPnlBody(quanLyDatPhong_GUI,"Quản lý đặt phòng",1,0);
+					}
+				});
+				jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						QuanLyPhieuDatPhong_GUI quanLyPhieuDatPhong_GUI = new QuanLyPhieuDatPhong_GUI(main);
+						main.addPnlBody(quanLyPhieuDatPhong_GUI,"Quản lý đặt phòng trước",1,0);
+					}
+				});
+				jDialogCustom.showMessage("Question","Nhận phòng thành công! \nBạn có muốn chuyển sang trang quản lý đặt phòng");
+			}
+		});
+//		Sự kiện nút Huỷ phòng
+		btnHuyPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				boolean res = false;
+				List<Phong> listPhong = new ArrayList<>();
+				List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(chiTietDatPhong.getDonDatPhong());
+				listChiTietDatPhong.forEach( list -> listPhong.add(list.getPhong()));
+				
+				res = donDatPhong_DAO.huyPhongTrongPhieuDatPhongTruoc(chiTietDatPhong.getDonDatPhong(),listPhong);
+				if(res) {
+					new Notification(main, components.notification.Notification.Type.SUCCESS, "Huỷ phòng thành công")
+					.showNotification();
+					txtTrangThai.setText("Đã hủy");
+					setEnabledForm();
+					return;
+				}
+				else {
+					new Notification(main, components.notification.Notification.Type.ERROR, "Huỷ phòng thất bại")
+					.showNotification();
+					return;
+				}
+				
+			}
+		});
+			
+		
 
 	}
 
@@ -320,8 +392,8 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(donDatPhong.getKhachHang().getMaKhachHang());
 		NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(donDatPhong.getNhanVien().getMaNhanVien());
 		
-		List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
 		List<String> listPhong = new ArrayList<String>();
+		List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
 		listChiTietDatPhong.forEach( list -> listPhong.add(list.getPhong().getMaPhong()));
 		
 		txtMaDatPhong.setText(maDatPhong);
@@ -336,11 +408,13 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 				+ Utils.formatDate(donDatPhong.getNgayDatPhong()));
 		txtTGNP.setText(Utils.convertLocalTimeToString(donDatPhong.getGioNhanPhong()) + " - "
 				+ Utils.formatDate(donDatPhong.getNgayNhanPhong()));
+		
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-
+		if (e.getStateChange() == ItemEvent.DESELECTED)
+			return;
 		
 	}
 	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
@@ -362,7 +436,13 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
 	}
-
+	private void setEnabledForm() {
+		if(txtTrangThai.getText().equals("Đã hủy")){
+			pnlSuaPhong.setEnabled(false);
+			btnNhanPhong.setEnabled(false);
+			btnHuyPhong.setEnabled(false);
+		}
+	}
 	public static Thread clock() {
 		Thread clock = new Thread() {
 			@Override
@@ -391,4 +471,6 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 
 		return clock;
 	}
+	
 }
+
