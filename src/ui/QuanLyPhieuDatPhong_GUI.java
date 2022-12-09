@@ -33,12 +33,15 @@ import javax.swing.table.TableColumnModel;
 import components.button.Button;
 import components.controlPanel.ControlPanel;
 import components.jDialog.JDialogCustom;
+import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
 import dao.ChiTietDatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.PhieuDatPhong_DAO;
 import entity.ChiTietDatPhong;
 import entity.DonDatPhong;
+import entity.Phong;
 import utils.Utils;
 
 public class QuanLyPhieuDatPhong_GUI extends JPanel {
@@ -66,6 +69,8 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	private Button btnLamMoi;
 	private final int widthPnlContainer = 1086;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private DonDatPhong_DAO donDatPhong_DAO;
+	private Main main;
 
 	/**
 	 * Create the frame.
@@ -74,6 +79,9 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		khachHang_DAO = new KhachHang_DAO();
 		phieuDatPhong_DAO = new PhieuDatPhong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		donDatPhong_DAO = new DonDatPhong_DAO();
+		this.main = main;
+		
 		jDialog = new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning);
 
 		setBackground(Utils.secondaryColor);
@@ -341,11 +349,10 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 					return;
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
-					jDialog.showMessage("Warning", "Vui lòng chọn phòng muốn xem");
+					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
 				} else {
 					String maPhieuDat = (String) tableModel.getValueAt(row, 0);
-					ChiTietDatPhong phieuDatPhong = phieuDatPhong_DAO
-							.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
+					ChiTietDatPhong phieuDatPhong = phieuDatPhong_DAO.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
 					ThongTinChiTietPhieuDatPhong_GUI jFrame = new ThongTinChiTietPhieuDatPhong_GUI(main, phieuDatPhong);
 					main.addPnlBody(jFrame, "Thông tin chi tiêt phiếu đặt phòng", 1, 0);
 				}
@@ -353,18 +360,97 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		});
 //		Sự kiện nút nhận phòng
 		btnNhanPhong.addMouseListener(new MouseAdapter() {
-			private void handleNhanPhong() {
-//				int row = tbl.getSelectedRow();
-//				String maPhieuDat = (String) tbl.getValueAt(row, 0);
-
-			}
-
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!btnNhanPhong.isEnabled())
+				boolean res = false;
+				int row = tbl.getSelectedRow();
+				
+				if (row == -1) {
+					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
 					return;
+				} 
+				
+				String maPhieuDat = (String) tableModel.getValueAt(row, 0);
+				ChiTietDatPhong chiTietDatPhong = phieuDatPhong_DAO.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
+				List<Phong> listPhong = new ArrayList<>();
+				List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(chiTietDatPhong.getDonDatPhong());
+				listChiTietDatPhong.forEach( list -> listPhong.add(list.getPhong()));
+				
+				String trangThai = (String) tableModel.getValueAt(row, 5);
+				if(trangThai.equals("Đã hủy")) {
+					new Notification(main, components.notification.Notification.Type.ERROR, "Phòng đã huỷ")
+					.showNotification();
+					return;
+				}
+				
 
-				handleNhanPhong();
+				res = donDatPhong_DAO.nhanPhongTrongPhieuDatPhongTruoc(chiTietDatPhong.getDonDatPhong(), listPhong);
+				
+				if(!res) {
+					new Notification(main, components.notification.Notification.Type.ERROR, "Chưa đến giờ nhận phòng")
+					.showNotification();
+					return;
+				}
+				
+				JDialogCustom jDialogCustom = new JDialogCustom(main, components.jDialog.JDialogCustom.Type.confirm);
+				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						QuanLyDatPhong_GUI quanLyDatPhong_GUI = new QuanLyDatPhong_GUI(main);
+						main.addPnlBody(quanLyDatPhong_GUI,"Quản lý đặt phòng",1,0);
+					}
+				});
+				jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						QuanLyPhieuDatPhong_GUI quanLyPhieuDatPhong_GUI = new QuanLyPhieuDatPhong_GUI(main);
+						main.addPnlBody(quanLyPhieuDatPhong_GUI,"Quản lý đặt phòng trước",1,0);
+					}
+				});
+				jDialogCustom.showMessage("Question","Nhận phòng thành công! \nBạn có muốn chuyển sang trang quản lý đặt phòng");
+			}
+		});
+		
+//		Sự kiện nút Huỷ phòng
+		btnHuyPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				boolean res = false;
+				int row = tbl.getSelectedRow();
+				
+				if (row != -1 && row < tbl.getRowCount()) {
+				
+					String maPhieuDat = (String) tableModel.getValueAt(row, 0);
+					ChiTietDatPhong chiTietDatPhong = phieuDatPhong_DAO.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
+					List<Phong> listPhong = new ArrayList<>();
+					List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(chiTietDatPhong.getDonDatPhong());
+					listChiTietDatPhong.forEach( list -> listPhong.add(list.getPhong()));
+					
+					String trangThai = (String) tableModel.getValueAt(row, 5);
+					if(trangThai.equals("Đã hủy")) {
+						new Notification(main, components.notification.Notification.Type.ERROR, "Phòng đã huỷ")
+						.showNotification();
+						return;
+					}
+			
+					res = donDatPhong_DAO.huyPhongTrongPhieuDatPhongTruoc(donDatPhong_DAO.getDatPhong(maPhieuDat),listPhong);
+					
+					if(res) {
+						new Notification(main, components.notification.Notification.Type.SUCCESS, "Huỷ phòng thành công")
+						.showNotification();
+							loadTable();
+						return;
+					}
+					else {
+						new Notification(main, components.notification.Notification.Type.ERROR, "Huỷ phòng thất bại")
+						.showNotification();
+						return;
+					}
+				}
+				else {
+					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
+					return;
+				}
 			}
 		});
 
@@ -372,12 +458,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		btnLamMoi.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				cboMaPhieuDat.setSelectedIndex(0);
-				cboTrangThai.setSelectedIndex(0);
-				txtSoDienThoai.setText("");
-				Utils.emptyTable(tbl);
-				addRow(phieuDatPhong_DAO.getAllDonDatPhong());
-				pnlControl.setTbl(tbl);
+				loadTable();
 			}
 		});
 
@@ -429,6 +510,8 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				List<DonDatPhong> list = phieuDatPhong_DAO.getAllDonDatPhong();
 				list.forEach(phieuDatPhong -> cboMaPhieuDat.addItem(phieuDatPhong.getMaDonDatPhong()));
 				pnlControl.setTbl(tbl);
+				
+			
 			}
 
 			public void ancestorMoved(AncestorEvent event) {
@@ -441,7 +524,14 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		});
 
 	}
-
+	private void loadTable() {
+		cboMaPhieuDat.setSelectedIndex(0);
+		cboTrangThai.setSelectedIndex(0);
+		txtSoDienThoai.setText("");
+		Utils.emptyTable(tbl);
+		filterPhieuDatPhong();
+		pnlControl.setTbl(tbl);
+	}
 	private void filterPhieuDatPhong() {
 		String maPhieuDat = (String) cboMaPhieuDat.getSelectedItem();
 		String trangThai = (String) cboTrangThai.getSelectedItem();
@@ -453,10 +543,11 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 			trangThai = "";
 		if (soDienThoai.trim().equals(""))
 			soDienThoai = "%%";
-
+		
 		List<DonDatPhong> list = phieuDatPhong_DAO.filterDonDatPhong(maPhieuDat, soDienThoai, trangThai);
 		if (list.size() == 0) {
-			jDialog.showMessage("Thông báo", "Không có phòng cần tìm");
+			new Notification(main, components.notification.Notification.Type.ERROR, "Không tìm thấy")
+			.showNotification();
 			return;
 		}
 
@@ -513,7 +604,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				String.format("%s - %s", listPhong.size(), String.join(", ", listPhong)),
 				DonDatPhong.convertTrangThaiToString(donDatPhong.getTrangThai()) });
 	}
-
+	
 //	private void setEnabledBtnActions() {
 //		int row = tbl.getSelectedRow();
 //
@@ -530,3 +621,4 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 //		}
 //	}
 }
+
