@@ -696,8 +696,9 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 				dichVu = dichVu_DAO.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu());
 				tienDichVu = dichVu.getGiaBan() * chiTietDichVu.getSoLuong();
 				tongTienDichVu += tienDichVu;
-				tableModel.addRow(new String[] { n + i + 1 + "", dichVu.getTenDichVu(), chiTietDichVu.getSoLuong() + "",
-						Utils.formatTienTe(dichVu.getGiaBan()), Utils.formatTienTe(tienDichVu) });
+				tableModel.addRow(
+						new String[] { length + i + 1 + "", dichVu.getTenDichVu(), chiTietDichVu.getSoLuong() + "",
+								Utils.formatTienTe(dichVu.getGiaBan()), Utils.formatTienTe(tienDichVu) });
 			}
 
 			int gio = tongThoiGian / 60;
