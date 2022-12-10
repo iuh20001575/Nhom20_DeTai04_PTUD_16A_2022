@@ -6,8 +6,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +33,7 @@ import entity.ChiTietDatPhong;
 import entity.DonDatPhong;
 import entity.KhachHang;
 import entity.NhanVien;
-import entity.PanelUI;
 import entity.Phong;
-import utils.StackPanel;
 import utils.Utils;
 
 public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements ItemListener {
@@ -78,7 +74,6 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 	private ArrayList<String> listPhongString;
 	private static JLabel lblTime;
 
-
 	/**
 	 * Create the frame.
 	 */
@@ -89,25 +84,24 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		_this = this;
 		int padding = (int) Math.floor((Utils.getBodyHeight() - 428) / 5);
 		int top = padding;
-		
+
 		donDatPhong_DAO = new DonDatPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
 		nhanVien_DAO = new NhanVien_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 		phong_DAO = new Phong_DAO();
-		
+
 		maDatPhong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
 		donDatPhong = donDatPhong_DAO.getDatPhong(maDatPhong);
 		khachHang = khachHang_DAO.getKhachHangTheoMa(donDatPhong.getKhachHang().getMaKhachHang());
 		nhanVien = nhanVien_DAO.getNhanVienTheoMa(donDatPhong.getNhanVien().getMaNhanVien());
-		
+
 		listPhong = new ArrayList<>();
 		listPhongString = new ArrayList<>();
 		List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
-		listChiTietDatPhong.forEach( list -> listPhong.add(list.getPhong()));
-		listChiTietDatPhong.forEach( list -> listPhongString.add(list.getPhong().getMaPhong()));
-		
-		
+		listChiTietDatPhong.forEach(list -> listPhong.add(list.getPhong()));
+		listChiTietDatPhong.forEach(list -> listPhongString.add(list.getPhong().getMaPhong()));
+
 		glass.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -124,7 +118,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
 		this.add(pnlContainer);
 		pnlContainer.setLayout(null);
-		
+
 		lblTime = new JLabel("");
 		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTime.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -167,7 +161,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		top += 55;
 		pnlContainer.add(pnlRow2);
 		pnlRow2.setLayout(null);
-		
+
 		txtPhong = new TextField();
 		txtPhong.setLineColor(Utils.lineTextField);
 		txtPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -177,7 +171,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		txtPhong.setEnabled(false);
 		pnlRow2.add(txtPhong);
 		txtPhong.setColumns(10);
-		
+
 		txtSLPhong = new TextField();
 		txtSLPhong.setLineColor(Utils.lineTextField);
 		txtSLPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -197,7 +191,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		txtTrangThai.setEnabled(false);
 		pnlRow2.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
-		
+
 		pnlSuaPhong = new PanelEvent(13) {
 			/**
 			 *
@@ -316,7 +310,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		btnHuyPhong.setFont(new Font("Segoe UI", Font.PLAIN, 32));
 		btnHuyPhong.setBounds(370, 0, 250, 48);
 		pnlActions.add(btnHuyPhong);
-		
+
 		pnlXuatPDF = new PanelEvent(13) {
 			/**
 			 *
@@ -347,16 +341,16 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		lblXuatPDF.setBounds(30, 5, 200, 32);
 		lblIconXuatPDF.setBounds(20, 5, 40, 40);
 
-
 		setPhieuDatPhongVaoForm(chiTietDatPhong);
 		setEnabledForm();
 
 		addAncestorListener(new AncestorListener() {
 			Thread clockThread;
-			
+
 			public void ancestorAdded(AncestorEvent event) {
 				clockThread = clock();
 			}
+
 			public void ancestorMoved(AncestorEvent event) {
 			}
 
@@ -365,7 +359,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 				clockThread.stop();
 			}
 		});
-		
+
 //		Sự kiện nút Sửa danh sách phòng
 		pnlSuaPhong.addMouseListener(new MouseAdapter() {
 			@Override
@@ -374,7 +368,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 
 			}
 		});
-		
+
 //		Sự kiện nút Nhận phòng
 		btnNhanPhong.addMouseListener(new MouseAdapter() {
 			@Override
@@ -382,29 +376,30 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 				boolean res = false;
 
 				res = donDatPhong_DAO.nhanPhongTrongPhieuDatPhongTruoc(donDatPhong, listPhong);
-				
-				if(!res) {
+
+				if (!res) {
 					new Notification(main, components.notification.Notification.Type.ERROR, "Chưa đến giờ nhận phòng")
-					.showNotification();
+							.showNotification();
 					return;
 				}
-				
+
 				JDialogCustom jDialogCustom = new JDialogCustom(main, components.jDialog.JDialogCustom.Type.confirm);
 				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						QuanLyDatPhong_GUI quanLyDatPhong_GUI = new QuanLyDatPhong_GUI(main);
-						main.addPnlBody(quanLyDatPhong_GUI,"Quản lý đặt phòng",1,0);
+						main.addPnlBody(quanLyDatPhong_GUI, "Quản lý đặt phòng", 1, 0);
 					}
 				});
 				jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						QuanLyPhieuDatPhongTruoc_GUI quanLyPhieuDatPhong_GUI = new QuanLyPhieuDatPhongTruoc_GUI(main);
-						main.addPnlBody(quanLyPhieuDatPhong_GUI,"Quản lý đặt phòng trước",1,0);
+						main.addPnlBody(quanLyPhieuDatPhong_GUI, "Quản lý đặt phòng trước", 1, 0);
 					}
 				});
-				jDialogCustom.showMessage("Question","Nhận phòng thành công! \nBạn có muốn chuyển sang trang quản lý đặt phòng");
+				jDialogCustom.showMessage("Question",
+						"Nhận phòng thành công! \nBạn có muốn chuyển sang trang quản lý đặt phòng");
 			}
 		});
 //		Sự kiện nút Huỷ phòng
@@ -412,33 +407,32 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean res = false;
-				
-				res = donDatPhong_DAO.huyPhongTrongPhieuDatPhongTruoc(donDatPhong,listPhong);
-				if(res) {
+
+				res = donDatPhong_DAO.huyPhongTrongPhieuDatPhongTruoc(donDatPhong, listPhong);
+				if (res) {
 					new Notification(main, components.notification.Notification.Type.SUCCESS, "Huỷ phòng thành công")
-					.showNotification();
+							.showNotification();
 					txtTrangThai.setText("Đã hủy");
 					setEnabledForm();
 					return;
-				}
-				else {
+				} else {
 					new Notification(main, components.notification.Notification.Type.ERROR, "Huỷ phòng thất bại")
-					.showNotification();
+							.showNotification();
 					return;
 				}
-				
+
 			}
 		});
-			
+
 //		Sự kiện nút Xuất PDF
 		pnlXuatPDF.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
-				handleOpenSubFrame(pnlXuatPDF, new PhieuDatPhongTruoc_PDF(main, _this, nhanVien, khachHang, donDatPhong, listPhongString));
+
+				handleOpenSubFrame(pnlXuatPDF,
+						new PhieuDatPhongTruoc_PDF(main, _this, nhanVien, khachHang, donDatPhong, listPhongString));
 			}
 		});
-		
 
 	}
 
@@ -447,16 +441,16 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		donDatPhong = donDatPhong_DAO.getDatPhong(maDatPhong);
 		khachHang = khachHang_DAO.getKhachHangTheoMa(donDatPhong.getKhachHang().getMaKhachHang());
 		nhanVien = nhanVien_DAO.getNhanVienTheoMa(donDatPhong.getNhanVien().getMaNhanVien());
-		
+
 		List<String> listPhong = new ArrayList<String>();
 		List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
-		listChiTietDatPhong.forEach( list -> listPhong.add(list.getPhong().getMaPhong()));
-		
+		listChiTietDatPhong.forEach(list -> listPhong.add(list.getPhong().getMaPhong()));
+
 		txtMaDatPhong.setText(maDatPhong);
 		txtKhachHang.setText(khachHang.getMaKhachHang() + " - " + khachHang.getHoTen());
 		txtNhanVien.setText(nhanVien.getMaNhanVien() + " - " + nhanVien.getHoTen());
 		txtPhong.setText(String.join(", ", listPhong));
-		txtSLPhong.setText(listPhong.size()+"");
+		txtSLPhong.setText(listPhong.size() + "");
 		txtTrangThai.setText(DonDatPhong.convertTrangThaiToString(donDatPhong.getTrangThai()));
 		txtKhachHang.setText(khachHang.getMaKhachHang() + " - " + khachHang.getHoTen());
 		txtSDT.setText(khachHang.getSoDienThoai());
@@ -464,20 +458,22 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 				+ Utils.formatDate(donDatPhong.getNgayDatPhong()));
 		txtTGNP.setText(Utils.convertLocalTimeToString(donDatPhong.getGioNhanPhong()) + " - "
 				+ Utils.formatDate(donDatPhong.getNgayNhanPhong()));
-		
+
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.DESELECTED)
 			return;
-		
+
 	}
+
 	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
 		if (!pnl.isEnabled())
 			return;
 		openJFrameSub(jFrame);
 	}
+
 	public void closeJFrameSub() {
 		if (jFrameSub != null)
 			jFrameSub.setVisible(false);
@@ -485,6 +481,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		glass.setAlpha(0f);
 		jFrameSub = null;
 	}
+
 	public void openJFrameSub(JFrame jFrame) {
 		this.main.setGlassPane(glass);
 		glass.setVisible(true);
@@ -492,13 +489,15 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
 	}
+
 	private void setEnabledForm() {
-		if(txtTrangThai.getText().equals("Đã hủy")){
+		if (txtTrangThai.getText().equals("Đã hủy")) {
 			pnlSuaPhong.setEnabled(false);
 			btnNhanPhong.setEnabled(false);
 			btnHuyPhong.setEnabled(false);
 		}
 	}
+
 	public static Thread clock() {
 		Thread clock = new Thread() {
 			@Override
@@ -528,7 +527,4 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		return clock;
 	}
 
-	
-	
 }
-
