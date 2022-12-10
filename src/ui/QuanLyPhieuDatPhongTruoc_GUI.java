@@ -25,6 +25,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -330,17 +332,17 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		btnXemPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!btnXemPhong.isEnabled())
-					return;
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
 					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
-				} else {
-					String maPhieuDat = (String) tableModel.getValueAt(row, 0);
-					ChiTietDatPhong chiTietDatPhong = phieuDatPhongTruoc_DAO.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
-					ThongTinChiTietPhieuDatPhongTruoc_GUI jFrame = new ThongTinChiTietPhieuDatPhongTruoc_GUI(main, chiTietDatPhong);
-					main.addPnlBody(jFrame, "Thông tin chi tiêt phiếu đặt phòng trước", 1, 0);
-				}
+					return;
+				} 
+				
+				String maPhieuDat = (String) tableModel.getValueAt(row, 0);
+				ChiTietDatPhong chiTietDatPhong = phieuDatPhongTruoc_DAO.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
+				ThongTinChiTietPhieuDatPhongTruoc_GUI jFrame = new ThongTinChiTietPhieuDatPhongTruoc_GUI(main, chiTietDatPhong);
+				main.addPnlBody(jFrame, "Thông tin chi tiêt phiếu đặt phòng trước", 1, 0);
+				
 			}
 		});
 //		Sự kiện nút nhận phòng
@@ -354,6 +356,10 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
 					return;
 				} 
+				String trangThai = (String) tableModel.getValueAt(row, 5);
+				if(trangThai.equals("Đã hủy")) {
+					return;
+				}
 				
 				String maPhieuDat = (String) tableModel.getValueAt(row, 0);
 				ChiTietDatPhong chiTietDatPhong = phieuDatPhongTruoc_DAO.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
@@ -361,12 +367,18 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 				List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(chiTietDatPhong.getDonDatPhong());
 				listChiTietDatPhong.forEach( list -> listPhong.add(list.getPhong()));
 				
-				String trangThai = (String) tableModel.getValueAt(row, 5);
-				if(trangThai.equals("Đã hủy")) {
-					new Notification(main, components.notification.Notification.Type.ERROR, "Phòng đã huỷ")
-					.showNotification();
-					return;
-				}
+//				Kiểm tra phòng có đang thuê hay không
+				List<Phong> listPhongDangThue = donDatPhong_DAO.timPhongDangThue(listPhong);
+				if(listPhongDangThue.size() > 0) {
+					String[] maPhong = new String[listPhongDangThue.size()] ;
+					int i = 0;
+					for(Phong phong : listPhongDangThue) {
+						maPhong[i++] =  phong.getMaPhong();
+					}
+					
+						jDialog.showMessage("Question","Phòng " + String.join(", ", maPhong) + " đang thuê\n");
+						return;
+					}
 				
 
 				res = donDatPhong_DAO.nhanPhongTrongPhieuDatPhongTruoc(chiTietDatPhong.getDonDatPhong(), listPhong);
@@ -377,22 +389,21 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 					return;
 				}
 				
-				JDialogCustom jDialogCustom = new JDialogCustom(main, components.jDialog.JDialogCustom.Type.confirm);
-				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+				jDialog.getBtnOK().addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						QuanLyDatPhong_GUI quanLyDatPhong_GUI = new QuanLyDatPhong_GUI(main);
 						main.addPnlBody(quanLyDatPhong_GUI,"Quản lý đặt phòng",1,0);
 					}
 				});
-				jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
+				jDialog.getBtnCancel().addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						QuanLyPhieuDatPhongTruoc_GUI quanLyPhieuDatPhong_GUI = new QuanLyPhieuDatPhongTruoc_GUI(main);
 						main.addPnlBody(quanLyPhieuDatPhong_GUI,"Quản lý đặt phòng trước",1,0);
 					}
 				});
-				jDialogCustom.showMessage("Question","Nhận phòng thành công! \nBạn có muốn chuyển sang trang quản lý đặt phòng");
+				jDialog.showMessage("Question","Nhận phòng thành công! \nBạn có muốn chuyển sang trang quản lý đặt phòng");
 			}
 		});
 		
@@ -447,7 +458,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 			}
 		});
 
-//	Sự kiện JCombobox mã phiếu đặt phòng
+//		Sự kiện JCombobox mã phiếu đặt phòng
 		cboMaPhieuDat.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -456,7 +467,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 				}
 			}
 		});
-//	Sự kiện JCombobox trạng thái
+//		Sự kiện JCombobox trạng thái
 		cboTrangThai.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -465,14 +476,14 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 				}
 			}
 		});
-//	Sự kiện cho JTable
-//		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-//			public void valueChanged(ListSelectionEvent lse) {
-//				if (!lse.getValueIsAdjusting()) {
-//					setEnabledBtnActions();
-//				}
-//			}
-//		});
+//		Sự kiện cho JTable
+		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent lse) {
+				if (!lse.getValueIsAdjusting()) {
+					setEnabledBtnActions();
+				}
+			}
+		});
 
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
@@ -590,20 +601,18 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 				DonDatPhong.convertTrangThaiToString(donDatPhong.getTrangThai()) });
 	}
 	
-//	private void setEnabledBtnActions() {
-//		int row = tbl.getSelectedRow();
-//
-//		if (row == -1) {
-//			btnXemPhong.setEnabled(false);
-//			btnNhanPhong.setEnabled(false);
-//			btnHuyPhong.setEnabled(false);
-//			btnXuatPDF.setEnabled(false);
-//		} else {
-//			btnXemPhong.setEnabled(true);
-//			btnNhanPhong.setEnabled(true);
-//			btnHuyPhong.setEnabled(true);
-//			btnXuatPDF.setEnabled(true);
-//		}
-//	}
+	private void setEnabledBtnActions() {
+		int row = tbl.getSelectedRow();
+		if(row == -1)
+			return;
+		String trangThai = (String) tableModel.getValueAt(row, 5);
+		if (trangThai.equals("Đã hủy")) {
+			btnNhanPhong.setEnabled(false);
+			btnHuyPhong.setEnabled(false);
+		} else {
+			btnNhanPhong.setEnabled(true);
+			btnHuyPhong.setEnabled(true);
+		}
+	}
 }
 
