@@ -937,18 +937,84 @@ public class DonDatPhong_DAO extends DAO {
 					return rollback();
 			}
 //			[Phong] - Cập nhật trạng thái phòng
-//				+ Phòng tạm -> trống
-			for(Phong phong : phongBanDau) {
-				res = phong_DAO.capNhatTrangThaiPhong(phong, "Trống");
-				if(!res)
-					return rollback();
+
+			List<Phong> pBD = timPhongDangThue(phongBanDau);
+			List<Phong> pM = timPhongDangThue(phongMoi);
+//			Nếu phòng mới và phòng ban đầu không có phòng thuê
+			if(pBD.size() <= 0 && pM.size() <= 0) {
+				for(Phong phong : phongBanDau) {
+					res = phong_DAO.capNhatTrangThaiPhong(phong, "Trống");
+					if(!res)
+						return rollback();
+				}
+//				+ Phòng mới: Trống -> Đã đặt
+				for(Phong phong : phongMoi) {
+					res = phong_DAO.capNhatTrangThaiPhong(phong, "Đã đặt");
+					if(!res)
+						return rollback();
+				}
 			}
-//				+ Trống -> Phòng tạm
-			for(Phong phong : phongMoi) {
-				res = phong_DAO.capNhatTrangThaiPhong(phong, "Đã đặt");
-				if(!res)
-					return rollback();
+//			Nếu có phòng mới đang thuê
+			else if(pBD.size() <= 0 && pM.size() > 0){
+				for(Phong phong : phongBanDau) {
+					res = phong_DAO.capNhatTrangThaiPhong(phong, "Trống");
+					if(!res)
+						return rollback();
+				}
+//				+ Phòng mới: Trống -> Đã đặt
+				for(Phong phong : phongMoi) {
+					if(pM.contains(phong)) {
+						res = phong_DAO.capNhatTrangThaiPhong(phong, "Phòng tạm");
+						continue;
+					}
+					res = phong_DAO.capNhatTrangThaiPhong(phong, "Đã đặt");
+					if(!res)
+						return rollback();
+				}
 			}
+//			Nếu phòng ban đầu đang thuê
+			else if(pBD.size() > 0 && pM.size() <= 0){
+//				+Phòng ban đầu: -> Đang thuê
+				for(Phong phong : phongBanDau) {
+					if(pBD.contains(phong)) {
+						res = phong_DAO.capNhatTrangThaiPhong(phong, "Đang thuê");
+						continue;
+					}
+					res = phong_DAO.capNhatTrangThaiPhong(phong, "Trống");
+					if(!res)
+						return rollback();
+				}
+//				+ Phòng mới: -> Đã đặt
+				for(Phong phong : phongMoi) {
+					res = phong_DAO.capNhatTrangThaiPhong(phong, "Đã đặt");
+					if(!res)
+						return rollback();
+				}				
+			}
+//			Nếu phòng mới và phòng ban đầu đang thuê
+			else {
+//				+Phòng ban đầu: -> Đang thuê
+				for(Phong phong : phongBanDau) {
+					if(pBD.contains(phong)) {
+						res = phong_DAO.capNhatTrangThaiPhong(phong, "Đang thuê");
+						continue;
+					}
+					res = phong_DAO.capNhatTrangThaiPhong(phong, "Trống");
+					if(!res)
+						return rollback();
+				}
+//				+ Phòng mới: -> Phòng tạm
+				for(Phong phong : phongMoi) {
+					if(pM.contains(phong)) {
+						res = phong_DAO.capNhatTrangThaiPhong(phong, "Phòng tạm");
+						continue;
+					}
+					res = phong_DAO.capNhatTrangThaiPhong(phong, "Đã đặt");
+					if(!res)
+						return rollback();
+				}			
+			}
+
 
 			return commit();
 			
@@ -957,6 +1023,28 @@ public class DonDatPhong_DAO extends DAO {
 		}
 		return false;
 	}
+//		Tìm phòng có trạng thái đang thuê
+	public List<Phong> timPhongDangThue(List<Phong> phongs) {
+		List<Phong> listPhongDangThue = new ArrayList<>();
+		String sql = "SELECT * FROM ChiTietDatPhong CP INNER JOIN DonDatPhong DP  ON CP.donDatPhong = DP.maDonDatPhong\n"
+				+ "WHERE CP.phong = ? and DP.trangThai = N'Đang thuê'";
+		try {
+			for(Phong phong : phongs) {
+				PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+				preparedStatement.setString(1, phong.getMaPhong());
+				
+				ResultSet resultSet = preparedStatement.executeQuery();
+					
+				while(resultSet.next())
+					listPhongDangThue.add(phong);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+			
+			return listPhongDangThue;
+	}
+	
 	public boolean nhanPhongTrongPhieuDatPhongTruoc(DonDatPhong donDatPhong, List<Phong> phongs) {
 
 		try {
@@ -965,18 +1053,23 @@ public class DonDatPhong_DAO extends DAO {
 			PreparedStatement preparedStatement;
 			String sql;
 			boolean res;
+			Time time = Time.valueOf(LocalTime.now());
+			Date date = Date.valueOf(LocalDate.now());
+			
 			
 //			Cập nhật trạng thái 'Đang thuê' trong đơn đặt phòng
-			sql = "UPDATE DONDATPHONG SET trangThai = N'Đang thuê' WHERE maDonDatPhong = ?";
+			sql = "UPDATE DONDATPHONG SET trangThai = N'Đang thuê', ngayNhanPhong = ?, gioNhanPhong = ? WHERE maDonDatPhong = ?";
 			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, donDatPhong.getMaDonDatPhong());
+			preparedStatement.setDate(1, date);
+			preparedStatement.setTime(2, time);
+			preparedStatement.setString(3, donDatPhong.getMaDonDatPhong());
+
 			res = preparedStatement.executeUpdate() > 0;
 
 			if (!res)
 				return rollback();
 			
 //			Cập nhật giờ vào trong chi tiết phiếu đặt phòng
-			Time time = Time.valueOf(LocalTime.now());
 			sql = "UPDATE CHITIETDATPHONG SET gioVao = ? WHERE donDatPhong = ?";
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setTime(1, time);
@@ -1019,8 +1112,7 @@ public class DonDatPhong_DAO extends DAO {
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 			
-			if(resultSet.next())
-				return true;
+				return resultSet.next();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
