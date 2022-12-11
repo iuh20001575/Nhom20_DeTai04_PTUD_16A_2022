@@ -34,14 +34,13 @@ import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
 import utils.Utils;
 
-public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
+public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 
 	private static final long serialVersionUID = 1L;
-	private JTable tblThongKe;
-	private DefaultTableModel tableModel;
 	private Main main;
+	private DefaultTableModel tableModel;
+	private JTable tblThongKe;
 	private JTextField txtMaHD, txtTenKhach, txtTenNhanVien, txtNgayLap;
-
 
 	public ThongKeHoaDon_GUI(Main jFrame) {
 		main = jFrame;
@@ -51,7 +50,7 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 
 		PanelRound pnlContainerAction = new PanelRound();
 		pnlContainerAction.setBackground(Color.WHITE);
-		pnlContainerAction.setBounds(90, 20, Utils.getScreenWidth()-195, 180);
+		pnlContainerAction.setBounds(90, 20, Utils.getScreenWidth() - 195, 180);
 		pnlContainerAction.setRoundBottomRight(20);
 		pnlContainerAction.setRoundTopLeft(20);
 		pnlContainerAction.setRoundTopRight(20);
@@ -67,7 +66,7 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 
 		JPanel pnlTop = new JPanel();
 		pnlTop.setBackground(Color.WHITE);
-		pnlTop.setBounds(20, 60, Utils.getScreenWidth()-90, 30);
+		pnlTop.setBounds(20, 60, Utils.getScreenWidth() - 90, 30);
 		pnlContainerAction.add(pnlTop);
 		pnlTop.setLayout(null);
 
@@ -81,7 +80,7 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 		txtTenKhach.setText("");
 		txtTenKhach.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTenKhach.setBounds(115, 0, 250, 30);
-		txtTenKhach.setBorder(new LineBorder(Utils.primaryColor,1));
+		txtTenKhach.setBorder(new LineBorder(Utils.primaryColor, 1));
 		pnlTop.add(txtTenKhach);
 		txtTenKhach.setColumns(10);
 
@@ -95,13 +94,13 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 		txtTenNhanVien.setText("");
 		txtTenNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTenNhanVien.setBounds(530, 0, 280, 30);
-		txtTenNhanVien.setBorder(new LineBorder(Utils.primaryColor,1));
+		txtTenNhanVien.setBorder(new LineBorder(Utils.primaryColor, 1));
 		pnlTop.add(txtTenNhanVien);
 		txtTenNhanVien.setColumns(10);
 
 		JPanel pnlBottom = new JPanel();
 		pnlBottom.setBackground(Color.WHITE);
-		pnlBottom.setBounds(20, 100, Utils.getScreenWidth()-90, 45);
+		pnlBottom.setBounds(20, 100, Utils.getScreenWidth() - 90, 45);
 		pnlContainerAction.add(pnlBottom);
 		pnlBottom.setLayout(null);
 
@@ -115,7 +114,7 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 		txtMaHD.setText("");
 		txtMaHD.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtMaHD.setBounds(115, 14, 250, 30);
-		txtMaHD.setBorder(new LineBorder(Utils.primaryColor,1));
+		txtMaHD.setBorder(new LineBorder(Utils.primaryColor, 1));
 		pnlBottom.add(txtMaHD);
 		txtMaHD.setColumns(10);
 
@@ -128,7 +127,7 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 		txtNgayLap = new JTextField();
 		txtNgayLap.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtNgayLap.setBounds(530, 14, 280, 30);
-		txtNgayLap.setBorder(new LineBorder(Utils.primaryColor,1));
+		txtNgayLap.setBorder(new LineBorder(Utils.primaryColor, 1));
 		pnlBottom.add(txtNgayLap);
 		txtNgayLap.setColumns(10);
 
@@ -150,7 +149,7 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 
 		PanelRound pnlTable = new PanelRound();
 		pnlTable.setBackground(Color.WHITE);
-		pnlTable.setBounds(90, 210, Utils.getScreenWidth()-195, 320);
+		pnlTable.setBounds(90, 210, Utils.getScreenWidth() - 195, 320);
 		pnlTable.setRoundBottomRight(20);
 		pnlTable.setRoundTopLeft(20);
 		pnlTable.setRoundTopRight(20);
@@ -161,7 +160,7 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 		JScrollPane scr = new JScrollPane();
 		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(10, 10, Utils.getScreenWidth()-215, 300);
+		scr.setBounds(10, 10, Utils.getScreenWidth() - 215, 300);
 		scr.setBackground(Utils.primaryColor);
 		ScrollBarCustom scp = new ScrollBarCustom();
 		scp.setScrollbarColor(new Color(203, 203, 203));
@@ -189,23 +188,24 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 			}
 		};
 
-		tableModel = new DefaultTableModel(new String[] { "Mã Hoá Đơn", "Mã Phòng","Tên Khách", "Tên Nhân Viên", "Ngày Lập", "Tiền Phòng", "Tiền Dịch Vụ", "Tổng Tiền" }, 0);
+		tableModel = new DefaultTableModel(new String[] { "Mã Hoá Đơn", "Mã Phòng", "Tên Khách", "Tên Nhân Viên",
+				"Ngày Lập", "Tiền Phòng", "Tiền Dịch Vụ", "Tổng Tiền" }, 0);
 		tblThongKe.setModel(tableModel);
-		tblThongKe.getColumnModel().getColumn(0).setPreferredWidth((Utils.getScreenWidth()-215)/8);
-		tblThongKe.getColumnModel().getColumn(1).setPreferredWidth((Utils.getScreenWidth()-215)/8);
-		tblThongKe.getColumnModel().getColumn(2).setPreferredWidth((Utils.getScreenWidth()-215)/8);
-		tblThongKe.getColumnModel().getColumn(3).setPreferredWidth((Utils.getScreenWidth()-215)/8);
-		tblThongKe.getColumnModel().getColumn(4).setPreferredWidth((Utils.getScreenWidth()-215)/8);
-		tblThongKe.getColumnModel().getColumn(5).setPreferredWidth((Utils.getScreenWidth()-215)/8);
-		tblThongKe.getColumnModel().getColumn(6).setPreferredWidth((Utils.getScreenWidth()-215)/8);
-		tblThongKe.getColumnModel().getColumn(7).setPreferredWidth((Utils.getScreenWidth()-215)/8 - 8);
+		tblThongKe.getColumnModel().getColumn(0).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
+		tblThongKe.getColumnModel().getColumn(1).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
+		tblThongKe.getColumnModel().getColumn(2).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
+		tblThongKe.getColumnModel().getColumn(3).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
+		tblThongKe.getColumnModel().getColumn(4).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
+		tblThongKe.getColumnModel().getColumn(5).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
+		tblThongKe.getColumnModel().getColumn(6).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
+		tblThongKe.getColumnModel().getColumn(7).setPreferredWidth((Utils.getScreenWidth() - 215) / 8 - 8);
 
 		tblThongKe.getTableHeader().setBackground(Utils.primaryColor);
 		tblThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		tblThongKe.getTableHeader().setForeground(Color.WHITE);
 		tblThongKe.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblThongKe.getTableHeader()
-		.setPreferredSize(new Dimension((int) tblThongKe.getTableHeader().getPreferredSize().getWidth(), 36));
+				.setPreferredSize(new Dimension((int) tblThongKe.getTableHeader().getPreferredSize().getWidth(), 36));
 		tblThongKe.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
 		tblThongKe.setRowHeight(36);
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -223,7 +223,7 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 		btnXemChiTiet.setBorderColor(new Color(193, 214, 217));
 		btnXemChiTiet.setRadius(10);
 		btnXemChiTiet.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		btnXemChiTiet.setBounds(986 , 550, 160, 44);
+		btnXemChiTiet.setBounds(986, 550, 160, 44);
 		btnXemChiTiet.setColorOver(new Color(140, 177, 180, 70));
 		btnXemChiTiet.setColorTextOver(Color.WHITE);
 		btnXemChiTiet.setColorTextOut(Color.WHITE);
@@ -258,49 +258,47 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener{
 					String maHoaDon = (String) tableModel.getValueAt(row, 0);
 					String ngayLap = (String) tableModel.getValueAt(row, 4);
 					String tenKhach = (String) tableModel.getValueAt(row, 2);
-					String tenNV = (String) tableModel.getValueAt(row, 	3);
+					String tenNV = (String) tableModel.getValueAt(row, 3);
 					HoaDon_GUI jFrame = new HoaDon_GUI(maHoaDon, ngayLap, tenKhach, tenNV);
 					jFrame.setVisible(true);
 				}
 			}
 		});
-		
+
 		btnTimKiem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableModel);
 				tblThongKe.setRowSorter(sorter);
-				if(txtTenKhach.getText().trim().length()!=0) {
+				if (txtTenKhach.getText().trim().length() != 0) {
 					sorter.setRowFilter(RowFilter.regexFilter(txtTenKhach.getText()));
-				}
-				else if(txtMaHD.getText().trim().length()!=0) {
+				} else if (txtMaHD.getText().trim().length() != 0) {
 					sorter.setRowFilter(RowFilter.regexFilter(txtMaHD.getText()));
-				}
-				else if(txtTenNhanVien.getText().trim().length()!=0) {
+				} else if (txtTenNhanVien.getText().trim().length() != 0) {
 					sorter.setRowFilter(RowFilter.regexFilter(txtTenNhanVien.getText()));
-				}
-				else if(txtNgayLap.getText().trim().length()!=0) {
+				} else if (txtNgayLap.getText().trim().length() != 0) {
 					sorter.setRowFilter(RowFilter.regexFilter(txtNgayLap.getText()));
 				}
 			}
 		});
 
-
 	}
-	private void addRowRandomData() {
-		for(int i =1; i<15; i++)
-		{
-			String maHD = i<10 ? "HD000" + i : "HD00" + i; 
-			String maPhong = i<10 ? "P000" + i : "P00" + i; 
-			String tenKhach[] = {"Phạm Thanh An", "Phạm Tường Vy", "Đặng Ngọc Hoài Thương"};
-			String tenKH = tenKhach[ThreadLocalRandom.current().nextInt(0, 2 + 1)];
-			String tenNhanVien[] = {"Nguyen Thanh Trung", "Trần Huỳnh Như", "Đặng Ngọc Hoài Thương"};
-			String tenNV = tenNhanVien[ThreadLocalRandom.current().nextInt(1, 2 + 1)];
-			String ngayLap = ThreadLocalRandom.current().nextInt(1, 31 + 1) + "/" + ThreadLocalRandom.current().nextInt(1, 12 + 1) + "/" + "2022";
-			long tienPhong = ThreadLocalRandom.current().nextInt(1, 15 + 1)*100000 ;
-			long tienDichVu = ThreadLocalRandom.current().nextInt(1, 7 + 1)*100000;
 
-			tableModel.addRow(new String[] {maHD, maPhong, tenKH, tenNV, ngayLap, tienPhong + " VNĐ", tienDichVu + " VNĐ", tienPhong + tienDichVu +" VNĐ" });
+	private void addRowRandomData() {
+		for (int i = 1; i < 15; i++) {
+			String maHD = i < 10 ? "HD000" + i : "HD00" + i;
+			String maPhong = i < 10 ? "P000" + i : "P00" + i;
+			String tenKhach[] = { "Phạm Thanh An", "Phạm Tường Vy", "Đặng Ngọc Hoài Thương" };
+			String tenKH = tenKhach[ThreadLocalRandom.current().nextInt(0, 2 + 1)];
+			String tenNhanVien[] = { "Nguyen Thanh Trung", "Trần Huỳnh Như", "Đặng Ngọc Hoài Thương" };
+			String tenNV = tenNhanVien[ThreadLocalRandom.current().nextInt(1, 2 + 1)];
+			String ngayLap = ThreadLocalRandom.current().nextInt(1, 31 + 1) + "/"
+					+ ThreadLocalRandom.current().nextInt(1, 12 + 1) + "/" + "2022";
+			long tienPhong = ThreadLocalRandom.current().nextInt(1, 15 + 1) * 100000;
+			long tienDichVu = ThreadLocalRandom.current().nextInt(1, 7 + 1) * 100000;
+
+			tableModel.addRow(new String[] { maHD, maPhong, tenKH, tenNV, ngayLap, tienPhong + " VNĐ",
+					tienDichVu + " VNĐ", tienPhong + tienDichVu + " VNĐ" });
 		}
 	}
 

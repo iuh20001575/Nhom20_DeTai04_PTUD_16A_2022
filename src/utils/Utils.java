@@ -20,95 +20,61 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 public class Utils {
-	public static final String trangChuMenuItem = "Trang chủ";
+	private final static Class<?> _class = Utils.class;
+	public static final Rectangle boundsPnlBody = new Rectangle(0, 65, 1086, 508);
+	public static final String dangXuatMenuItem = "Đăng xuất";
+	private final static Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+	public static final Color labelTextField = new Color(150, 150, 150);
+	public static final Color lineTextField = new Color(149, 166, 248);
+	private static JFrame main;
 	public static final String nhanVienMenuItem = "Nhân viên";
-	public static final String thongKeMenuItem = "Thống kê";
-	public static final String quanLyNhanVienMenuItem = "Quản lý nhân viên";
-	public static final String themNhanVienMenuItem = "Thêm nhân viên";
-	public static final String quanLyKhachHangMenuItem = "Quản lý khách hàng";
+	public static final Color phongCho = getRGBA(4, 191, 173, 0.85f);
+	public static final Color phongDangSuDung = getRGBA(242, 68, 68, 0.85f);
+	public static final Color phongTam = new Color(115, 120, 234);
+	public static final Color phongTrong = new Color(125, 214, 112, 191);
+	public static final Color primaryColor = new Color(140, 177, 180);
 	public static final String quanLyDatPhongMenuItem = "Quản lý đặt phòng";
 	public static final String quanLyDatPhongTruocMenuItem = "Quản lý đặt phòng trước";
+	public static final String quanLyDichVuMenuItem = "Quản lý dịch vụ";
+	public static final String quanLyKhachHangMenuItem = "Quản lý khách hàng";
+	public static final String quanLyNhanVienMenuItem = "Quản lý nhân viên";
+	public static final String quanLyPhongMenuItem = "Quản lý phòng";
+	public static final Color secondaryColor = new Color(203, 239, 255);
+	public static final String themNhanVienMenuItem = "Thêm nhân viên";
+	public static final String thoatMenuItem = "Thoát";
 	public static final String thongKeDoanhThuMenuItem = "Doanh thu";
 	public static final String thongKeHoaDonMenuItem = "Hóa đơn";
 	public static final String thongKeKhachHangMenuItem = "Khách hàng";
+	public static final String thongKeMenuItem = "Thống kê";
 	public static final String thongTinCaNhanMenuItem = "Thông tin cá nhân";
-	public static final String quanLyDichVuMenuItem = "Quản lý dịch vụ";
-	public static final String quanLyPhongMenuItem = "Quản lý phòng";
-	public static final String thoatMenuItem = "Thoát";
-	public static final String dangXuatMenuItem = "Đăng xuất";
-	public static final Color primaryColor = new Color(140, 177, 180);
-	public static final Color secondaryColor = new Color(203, 239, 255);
-	public static final Color phongCho = getRGBA(4, 191, 173, 0.85f);
-	public static final Color phongTrong = new Color(125, 214, 112, 191);
-	public static final Color phongDangSuDung = getRGBA(242, 68, 68, 0.85f);
-	public static final Color phongTam = new Color(115, 120, 234);
-	public static final Color lineTextField = new Color(149, 166, 248);
-	public static final Color labelTextField = new Color(150, 150, 150);
-	public static final Rectangle boundsPnlBody = new Rectangle(0, 65, 1086, 508);
-	private final static Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-	private final static Class<?> _class = Utils.class;
 
-	private static JFrame main;
+	public static final String trangChuMenuItem = "Trang chủ";
 
-	public static JFrame getMain() {
-		return main;
+	public static String convertIntToString(int number) {
+		if (number < 10)
+			return "0" + number;
+		return number + "";
 	}
 
-	public static int getScreenWidth() {
-		return (int) dimension.getWidth() + 14;
-	}
-
-	public static int getScreenHeight() {
-		return (int) dimension.getHeight() + 7;
-	}
-
-	public static int getHeaderHeight() {
-		return 65;
-	}
-
-	public static int getBodyHeight() {
-		return getScreenHeight() - getHeaderHeight();
-	}
-
-	public static int getLeft(int width) {
-		return (int) Math.ceil((Utils.getScreenWidth() - width - 14) / 2);
-	}
-
-	public static int getLeft(int widthParent, int width) {
-		return (int) Math.ceil((widthParent - width) / 2);
-	}
-
-	public static void setMain(JFrame main) {
-		Utils.main = main;
+	public static String convertLocalTimeToString(LocalTime time) {
+		return String.format("%s:%s", convertIntToString(time.getHour()), convertIntToString(time.getMinute()));
 	}
 
 	/**
-	 * Get màu RGBA
+	 * Chuyển tiền tệ kiểu chuỗi sang double
 	 * 
-	 * @param r
-	 * @param g
-	 * @param b
-	 * @param a
+	 * @param tien
 	 * @return
 	 */
-	public static Color getRGBA(int r, int g, int b, float a) {
-		return new Color(r, g, b, Math.round(a * 255));
+	public static double convertStringToTienTe(String tien) {
+		return Double.parseDouble(tien.substring(0, tien.length() - 2));
 	}
 
-	/**
-	 * Get màu RGBA
-	 * 
-	 * @param color
-	 * @param alpha
-	 * @return
-	 */
-	public static Color getOpacity(Color color, float alpha) {
-		int r = color.getRed();
-		int g = color.getGreen();
-		int b = color.getBlue();
-		int a = color.getAlpha();
-
-		return new Color(r, g, b, Math.round(a * alpha));
+	public static void emptyTable(JTable tbl) {
+		if (tbl.getRowCount() <= 0)
+			return;
+		DefaultTableModel dm = (DefaultTableModel) tbl.getModel();
+		dm.getDataVector().removeAllElements();
 	}
 
 	/**
@@ -120,6 +86,38 @@ public class Utils {
 	public static String formatDate(LocalDate date) {
 		return String.format("%s/%s/%d", convertIntToString(date.getDayOfMonth()),
 				convertIntToString(date.getMonthValue()), date.getYear());
+	}
+
+	/**
+	 * Format kiểu tiền tệ
+	 * 
+	 * @param soTien
+	 * @return
+	 */
+	public static String formatTienTe(double soTien) {
+		Locale locale = new Locale("vi", "vn");
+		NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
+		return currencyFormatter.format(soTien);
+	}
+
+	public static int getBodyHeight() {
+		return getScreenHeight() - getHeaderHeight();
+	}
+
+	public static int getHeaderHeight() {
+		return 65;
+	}
+
+	public static ImageIcon getImageIcon(String iconName) {
+		return new ImageIcon(_class.getResource("/" + iconName));
+	}
+
+	public static int getLeft(int width) {
+		return (int) Math.ceil((Utils.getScreenWidth() - width - 14) / 2);
+	}
+
+	public static int getLeft(int widthParent, int width) {
+		return (int) Math.ceil((widthParent - width) / 2);
 	}
 
 	/**
@@ -141,26 +139,62 @@ public class Utils {
 				.parse(String.format(date.contains("/") ? "%s/%s/%s" : "%s-%s-%s", dates[0], dates[1], dates[2]), dtf);
 	}
 
-	/**
-	 * Format kiểu tiền tệ
-	 * 
-	 * @param soTien
-	 * @return
-	 */
-	public static String formatTienTe(double soTien) {
-		Locale locale = new Locale("vi", "vn");
-		NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
-		return currencyFormatter.format(soTien);
+	public static JFrame getMain() {
+		return main;
 	}
 
 	/**
-	 * Chuyển tiền tệ kiểu chuỗi sang double
+	 * Get màu RGBA
 	 * 
-	 * @param tien
+	 * @param color
+	 * @param alpha
 	 * @return
 	 */
-	public static double convertStringToTienTe(String tien) {
-		return Double.parseDouble(tien.substring(0, tien.length() - 2));
+	public static Color getOpacity(Color color, float alpha) {
+		int r = color.getRed();
+		int g = color.getGreen();
+		int b = color.getBlue();
+		int a = color.getAlpha();
+
+		return new Color(r, g, b, Math.round(a * alpha));
+	}
+
+	/**
+	 * Get màu RGBA
+	 * 
+	 * @param r
+	 * @param g
+	 * @param b
+	 * @param a
+	 * @return
+	 */
+	public static Color getRGBA(int r, int g, int b, float a) {
+		return new Color(r, g, b, Math.round(a * 255));
+	}
+
+	public static int getScreenHeight() {
+		return (int) dimension.getHeight() + 7;
+	}
+
+	public static int getScreenWidth() {
+		return (int) dimension.getWidth() + 14;
+	}
+
+	public static String getVietnameseDiacriticCharacters() {
+		return "ẮẰẲẴẶĂẤẦẨẪẬÂÁÀÃẢẠĐẾỀỂỄỆÊÉÈẺẼẸÍÌỈĨỊỐỒỔỖỘÔỚỜỞỠỢƠÓÒÕỎỌỨỪỬỮỰƯÚÙỦŨỤÝỲỶỸỴ";
+	}
+
+	public static String getVietnameseDiacriticCharactersLower() {
+		return getVietnameseDiacriticCharacters().toLowerCase();
+	}
+
+	public static boolean isDouble(String string) {
+		try {
+			Double.parseDouble(string);
+			return true;
+		} catch (Exception e) {
+		}
+		return false;
 	}
 
 	/**
@@ -172,15 +206,6 @@ public class Utils {
 	public static boolean isInteger(String numString) {
 		try {
 			Integer.parseInt(numString);
-			return true;
-		} catch (Exception e) {
-		}
-		return false;
-	}
-
-	public static boolean isDouble(String string) {
-		try {
-			Double.parseDouble(string);
 			return true;
 		} catch (Exception e) {
 		}
@@ -200,31 +225,6 @@ public class Utils {
 		return matcher.matches();
 	}
 
-	public static void scrollToVisiable(JTable tbl, int row, int col) {
-		tbl.scrollRectToVisible(tbl.getCellRect(row, col, true));
-	}
-
-	public static String convertLocalTimeToString(LocalTime time) {
-		return String.format("%s:%s", convertIntToString(time.getHour()), convertIntToString(time.getMinute()));
-	}
-
-	public static String convertIntToString(int number) {
-		if (number < 10)
-			return "0" + number;
-		return number + "";
-	}
-
-	public static String getVietnameseDiacriticCharacters() {
-		return "ẮẰẲẴẶĂẤẦẨẪẬÂÁÀÃẢẠĐẾỀỂỄỆÊÉÈẺẼẸÍÌỈĨỊỐỒỔỖỘÔỚỜỞỠỢƠÓÒÕỎỌỨỪỬỮỰƯÚÙỦŨỤÝỲỶỸỴ";
-	}
-
-	public static void emptyTable(JTable tbl) {
-		if (tbl.getRowCount() <= 0)
-			return;
-		DefaultTableModel dm = (DefaultTableModel) tbl.getModel();
-		dm.getDataVector().removeAllElements();
-	}
-
 	public static void openFile(String pathname) {
 		try {
 			File file = new File(pathname);
@@ -239,11 +239,11 @@ public class Utils {
 		}
 	}
 
-	public static ImageIcon getImageIcon(String iconName) {
-		return new ImageIcon(_class.getResource("/" + iconName));
+	public static void scrollToVisiable(JTable tbl, int row, int col) {
+		tbl.scrollRectToVisible(tbl.getCellRect(row, col, true));
 	}
 
-	public static String getVietnameseDiacriticCharactersLower() {
-		return getVietnameseDiacriticCharacters().toLowerCase();
+	public static void setMain(JFrame main) {
+		Utils.main = main;
 	}
 }

@@ -6,6 +6,7 @@ public class Quan {
 	public static String getQuanLabel() {
 		return "Quận/Huyện";
 	}
+
 	private String id;
 	private String quan;
 
@@ -67,7 +68,7 @@ public class Quan {
 	public void setTinh(Tinh tinh) {
 		this.tinh = tinh;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Quan [id=" + id + ", quan=" + quan + ", tinh=" + tinh + "]";

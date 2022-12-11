@@ -281,7 +281,7 @@ public class ThongTinChiTietNhanVien_GUI extends JPanel implements ItemListener 
 				// TODO Auto-generated method stub
 				return Color.BLACK;
 			}
-			
+
 			@Override
 			public char getEchoChar() {
 				// TODO Auto-generated method stub

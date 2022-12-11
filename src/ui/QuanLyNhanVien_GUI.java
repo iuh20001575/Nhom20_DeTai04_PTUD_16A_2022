@@ -80,6 +80,14 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private JComboBox<String> cmbMaNhanVien;
 	private JComboBox<String> cmbTrangThai;
 	private DiaChi_DAO diaChi_DAO;
+	private ItemListener evtFilterNhanVien = new ItemListener() {
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if (e.getStateChange() == ItemEvent.SELECTED)
+				filterNhanVien();
+		}
+	};
 	private final String[] header = { "Mã nhân viên", "Họ tên", "Căn cước công dân", "Số điện thoại", "Ngày sinh",
 			"Giới tính", "Địa chỉ", "Chức vụ", "Lương", "Trạng thái" };
 	private JLabel lblTime;
@@ -91,14 +99,6 @@ public class QuanLyNhanVien_GUI extends JPanel {
 	private JTable tbl;
 	private JTextField txtSearch;
 	private final int widthPnlContainer = 1086;
-	private ItemListener evtFilterNhanVien = new ItemListener() {
-
-		@Override
-		public void itemStateChanged(ItemEvent e) {
-			if (e.getStateChange() == ItemEvent.SELECTED)
-				filterNhanVien();
-		}
-	};
 
 	/**
 	 * Create the frame.

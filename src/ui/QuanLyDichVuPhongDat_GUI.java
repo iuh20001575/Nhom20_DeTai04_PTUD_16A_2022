@@ -69,20 +69,23 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 	private DonDatPhong_DAO datPhong_DAO;
 	private DichVu_DAO dichVu_DAO;
 	private List<DichVu> dsDVDaChon;
-	private KhachHang khachHang;
-	private KhachHang_DAO khachHang_DAO;
-	private LoaiDichVu_DAO loaiDichVu_DAO;
-	private String maDatPhongChon;
-	private String maPhongChon;
-	private JPanel pnlContent;
-	private JPanel pnlDV;
-	private DefaultTableModel tableModel2, tableModel3;
-	private JTable tbl2, tbl3;
-	private TextField txtSoDienThoai;
-	private TextField txtTenKhachHang;
-	private JTextField txtTongTien;
-	private final String labelCmbDatPhong = "Đơn đặt phòng";
-	private final String labelCmbPhongDat = "Mã phòng";
+	private ItemListener evtCmbDatPhong = new ItemListener() {
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if (e.getStateChange() == ItemEvent.DESELECTED)
+				return;
+			maDatPhongChon = (String) cmbDatPhong.getSelectedItem();
+			if (maDatPhongChon.equals(labelCmbDatPhong)) {
+				setAllMaPhongToCombobox();
+			} else {
+				List<Phong> dsPhongDangThue = datPhong_DAO.getPhongDangThue(maDatPhongChon);
+				emptyComboBox(cmbPhongDat, labelCmbPhongDat);
+				for (Phong phong : dsPhongDangThue)
+					cmbPhongDat.addItem(phong.getMaPhong());
+			}
+		}
+	};
 	private ItemListener evtCmbPhongDat = new ItemListener() {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
@@ -119,26 +122,23 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 			capNhatThanhTien();
 		}
 	};
-
-	private ItemListener evtCmbDatPhong = new ItemListener() {
-
-		@Override
-		public void itemStateChanged(ItemEvent e) {
-			if (e.getStateChange() == ItemEvent.DESELECTED)
-				return;
-			maDatPhongChon = (String) cmbDatPhong.getSelectedItem();
-			if (maDatPhongChon.equals(labelCmbDatPhong)) {
-				setAllMaPhongToCombobox();
-			} else {
-				List<Phong> dsPhongDangThue = datPhong_DAO.getPhongDangThue(maDatPhongChon);
-				emptyComboBox(cmbPhongDat, labelCmbPhongDat);
-				for (Phong phong : dsPhongDangThue)
-					cmbPhongDat.addItem(phong.getMaPhong());
-			}
-		}
-	};
-
+	private KhachHang khachHang;
+	private KhachHang_DAO khachHang_DAO;
+	private final String labelCmbDatPhong = "Đơn đặt phòng";
+	private final String labelCmbPhongDat = "Mã phòng";
+	private LoaiDichVu_DAO loaiDichVu_DAO;
+	private String maDatPhongChon;
+	private String maPhongChon;
 	private Phong_DAO phong_DAO;
+	private JPanel pnlContent;
+	private JPanel pnlDV;
+	private DefaultTableModel tableModel2, tableModel3;
+	private JTable tbl2, tbl3;
+	private TextField txtSoDienThoai;
+
+	private TextField txtTenKhachHang;
+
+	private JTextField txtTongTien;
 
 	public QuanLyDichVuPhongDat_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
@@ -732,6 +732,20 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		addRow3(dsDVDaChon);
 	}
 
+	private void setAllDonDatPhongDangThueToCombobox() {
+		emptyComboBox(cmbDatPhong, labelCmbDatPhong);
+		List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDatPhongDangThue();
+		for (DonDatPhong datPhong : listDatPhongDangThue)
+			cmbDatPhong.addItem(datPhong.getMaDonDatPhong());
+	}
+
+	private void setAllMaPhongToCombobox() {
+		emptyComboBox(cmbPhongDat, labelCmbPhongDat);
+		List<Phong> dsPhongDangThue = phong_DAO.getAllPhongDangThue();
+		for (Phong phong : dsPhongDangThue)
+			cmbPhongDat.addItem(phong.getMaPhong());
+	}
+
 	private void showDanhSachDichVuDaChon() {
 		JScrollPane scrDanhSachDichVuDuocChon = new JScrollPane();
 		scrDanhSachDichVuDuocChon.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -856,7 +870,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 										"Cập nhật số lượng dịch vụ thành công").showNotification();
 							}
 						}
-						//Làm mới lại các table
+						// Làm mới lại các table
 						dsDVDaChon.clear();
 						List<ChiTietDichVu> ListChiTietDV = chiTietDichVu_DAO.getAllChiTietDichVu(maDonDatPhong,
 								maPhongChon);
@@ -902,20 +916,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 				}
 			}
 		});
-	}
-
-	private void setAllDonDatPhongDangThueToCombobox() {
-		emptyComboBox(cmbDatPhong, labelCmbDatPhong);
-		List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDatPhongDangThue();
-		for (DonDatPhong datPhong : listDatPhongDangThue)
-			cmbDatPhong.addItem(datPhong.getMaDonDatPhong());
-	}
-
-	private void setAllMaPhongToCombobox() {
-		emptyComboBox(cmbPhongDat, labelCmbPhongDat);
-		List<Phong> dsPhongDangThue = phong_DAO.getAllPhongDangThue();
-		for (Phong phong : dsPhongDangThue)
-			cmbPhongDat.addItem(phong.getMaPhong());
 	}
 
 }

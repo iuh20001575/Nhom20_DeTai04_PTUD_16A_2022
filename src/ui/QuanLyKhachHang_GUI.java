@@ -45,6 +45,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	public static void clock() {
 		Thread clock = new Thread() {
 			@Override
@@ -71,6 +72,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 		clock.start();
 	}
+
 	private DiaChi_DAO diaChi_DAO;
 	private KhachHang_DAO khachHang_DAO;
 	private ControlPanel pnlControl;

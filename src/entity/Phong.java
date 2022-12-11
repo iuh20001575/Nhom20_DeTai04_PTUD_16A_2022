@@ -2,10 +2,11 @@ package entity;
 
 import java.util.Objects;
 
-public class Phong implements Comparable<Phong>{
+public class Phong implements Comparable<Phong> {
 	public static enum TrangThai {
 		DaDat, DangThue, PhongTam, Trong
 	}
+
 	public static TrangThai convertStringToTrangThai(String trangThai) {
 		if (trangThai.equals("Đã đặt"))
 			return TrangThai.DaDat;
@@ -15,6 +16,7 @@ public class Phong implements Comparable<Phong>{
 			return TrangThai.PhongTam;
 		return TrangThai.Trong;
 	}
+
 	public static String convertTrangThaiToString(TrangThai trangThai) {
 		if (trangThai.equals(TrangThai.DaDat))
 			return "Đã đặt";
@@ -24,6 +26,7 @@ public class Phong implements Comparable<Phong>{
 			return "Phòng tạm";
 		return "Trống";
 	}
+
 	private LoaiPhong loaiPhong;
 
 	private String maPhong;
@@ -47,6 +50,12 @@ public class Phong implements Comparable<Phong>{
 		this.loaiPhong = loaiPhong;
 		this.soLuongKhach = soLuongKhach;
 		this.trangThai = trangThai;
+	}
+
+	@Override
+	public int compareTo(Phong o) {
+		// TODO Auto-generated method stub
+		return this.getMaPhong().compareTo(o.getMaPhong());
 	}
 
 	@Override
@@ -118,10 +127,5 @@ public class Phong implements Comparable<Phong>{
 		return "Phong [maPhong=" + maPhong + ", loaiPhong=" + loaiPhong + ", soLuongKhach=" + soLuongKhach
 				+ ", trangThai=" + trangThai + "]";
 	}
-	@Override
-	public int compareTo(Phong o) {
-		// TODO Auto-generated method stub
-		return this.getMaPhong().compareTo(o.getMaPhong());
-	}
-	
+
 }
