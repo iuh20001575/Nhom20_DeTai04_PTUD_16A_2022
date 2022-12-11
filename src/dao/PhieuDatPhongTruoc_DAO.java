@@ -16,7 +16,7 @@ import entity.KhachHang;
 import entity.NhanVien;
 import entity.Phong;
 
-public class PhieuDatPhong_DAO {
+public class PhieuDatPhongTruoc_DAO {
 	/**
 	 * Get chi tiết phiếu đặt phòng theo mã phiếu đặt, trạng thái và số điện thoại
 	 * 

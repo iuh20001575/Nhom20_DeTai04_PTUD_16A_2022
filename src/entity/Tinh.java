@@ -6,6 +6,7 @@ public class Tinh {
 	public static String getTinhLabel() {
 		return "Tỉnh/Thành phố";
 	}
+
 	private String id;
 
 	private String tinh;

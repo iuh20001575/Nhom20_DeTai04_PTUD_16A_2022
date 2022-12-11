@@ -6,6 +6,7 @@ public class Phuong {
 	public static String getPhuongLabel() {
 		return "Phường/Xã";
 	}
+
 	private String id;
 	private String phuong;
 

@@ -7,29 +7,35 @@ public class NhanVien {
 	public static enum ChucVu {
 		NhanVien, QuanLy
 	}
+
 	public static enum TrangThai {
 		DangLam, NghiLam
 	}
+
 	public static String convertChucVuToString(ChucVu chucVu) {
 		if (chucVu.equals(ChucVu.NhanVien))
 			return "Nhân viên";
 		return "Quản lý";
 	}
+
 	public static ChucVu convertStringToChucVu(String chucVu) {
 		if (chucVu.equals("Nhân viên"))
 			return ChucVu.NhanVien;
 		return ChucVu.QuanLy;
 	}
+
 	public static TrangThai convertStringToTrangThai(String trangThai) {
 		if (trangThai.equals("Đang làm"))
 			return TrangThai.DangLam;
 		return TrangThai.NghiLam;
 	}
+
 	public static String convertTrangThaiToString(TrangThai trangThai) {
 		if (trangThai.equals(TrangThai.DangLam))
 			return "Đang làm";
 		return "Nghỉ làm";
 	}
+
 	private String cccd;
 	private ChucVu chucVu;
 	private String diaChiCuThe;

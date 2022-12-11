@@ -39,9 +39,17 @@ public class Utils {
 	public static final Color secondaryColor = new Color(203, 239, 255);
 	public static final String themNhanVienMenuItem = "Thêm nhân viên";
 	public static final String thoatMenuItem = "Thoát";
+	public static final String quanLyDichVuMenuItem = "Quản lý dịch vụ";
+	public static final String quanLyKhachHangMenuItem = "Quản lý khách hàng";
+	public static final String quanLyNhanVienMenuItem = "Quản lý nhân viên";
+	public static final String quanLyPhongMenuItem = "Quản lý phòng";
+	public static final Color secondaryColor = new Color(203, 239, 255);
+	public static final String themNhanVienMenuItem = "Thêm nhân viên";
+	public static final String thoatMenuItem = "Thoát";
 	public static final String thongKeDoanhThuMenuItem = "Doanh thu";
 	public static final String thongKeHoaDonMenuItem = "Hóa đơn";
 	public static final String thongKeKhachHangMenuItem = "Khách hàng";
+	public static final String thongKeMenuItem = "Thống kê";
 	public static final String thongKeMenuItem = "Thống kê";
 	public static final String thongTinCaNhanMenuItem = "Thông tin cá nhân";
 	public static final String trangChuMenuItem = "Trang chủ";
@@ -234,6 +242,7 @@ public class Utils {
 		return getVietnameseDiacriticCharacters().toLowerCase();
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Kiểm tra một chuỗi có thể chuyển thành double được không?
 	 * 
@@ -247,6 +256,7 @@ public class Utils {
 		} catch (Exception e) {
 		}
 		return false;
+>>>>>>> main
 	}
 
 	/**

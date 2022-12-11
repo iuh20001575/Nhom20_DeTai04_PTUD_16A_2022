@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -44,6 +45,7 @@ import components.scrollbarCustom.ScrollBarCustom;
 import dao.ChiTietDatPhong_DAO;
 import dao.DonDatPhong_DAO;
 import dao.LoaiPhong_DAO;
+import dao.Phong_DAO;
 import entity.ChiTietDatPhong;
 import entity.DonDatPhong;
 import entity.LoaiPhong;
@@ -77,6 +79,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	private List<ChiTietDatPhong> listChiTietDatPhong;
 	private LoaiPhong_DAO loaiPhong_DAO;
 	private LocalDate ngayNhanPhong;
+	private Phong_DAO phong_DAO;
 	private PanelRound pnlContainerItem;
 	private JPanel pnlContent;
 	private JPanel pnlPhong;
@@ -91,11 +94,12 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	 *
 	 * @param parentFrame
 	 */
-	public SuaPhong_GUI(Main main, ThongTinChiTietPhieuDatPhong_GUI thongTinChiTietPhieuDatPhong_GUI,
+	public SuaPhong_GUI(Main main, ThongTinChiTietPhieuDatPhongTruoc_GUI thongTinChiTietPhieuDatPhongTruoc_GUI,
 			DonDatPhong donDatPhong) {
 		_this = this;
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		datPhong_DAO = new DonDatPhong_DAO();
+		phong_DAO = new Phong_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 		listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
 		DonDatPhong datPhong = datPhong_DAO.getDatPhong(donDatPhong.getMaDonDatPhong());
@@ -303,9 +307,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		pnlPhongDaChon.setLayout(null);
 
 		dsPhongDaChonBanDau = new ArrayList<>();
-		dsPhongDaChon = new ArrayList<>();
 		listChiTietDatPhong.forEach(list -> dsPhongDaChonBanDau.add(list.getPhong()));
-		listChiTietDatPhong.forEach(list -> dsPhongDaChon.add(list.getPhong()));
 		showDanhSachPhongDaChon();
 
 //		Sự kiện window
@@ -337,7 +339,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		btnQuayLai.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				thongTinChiTietPhieuDatPhong_GUI.closeJFrameSub();
+				thongTinChiTietPhieuDatPhongTruoc_GUI.closeJFrameSub();
 			}
 		});
 
@@ -353,7 +355,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 				cmbLoaiPhong.setSelectedIndex(0);
 				cmbMaPhong.setSelectedIndex(0);
 				cmbSoLuong.setSelectedIndex(0);
-				dsPhongDaChon.clear();
+				dsPhongDaChon.removeAll(dsPhongDaChon);
 				capNhatDanhSachPhongDatTruoc();
 				showDanhSachPhongDaChon();
 
@@ -367,7 +369,9 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
-				if (row != 1 && row < tbl.getRowCount()) {
+				if (row != -1 && row < tbl.getRowCount()) {
+					if (dsPhongDaChon == null)
+						dsPhongDaChon = new ArrayList<>();
 					Phong phong = new Phong((String) tableModel.getValueAt(row, 0));
 					if (dsPhongDaChon.contains(phong))
 						return;
@@ -402,9 +406,9 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 						boolean res = datPhong_DAO.capNhatPhongTrongPhieuDatPhongTruoc(donDatPhong.getMaDonDatPhong(),
 								gioNhanPhong, dsPhongDaChon, dsPhongDaChonBanDau);
 						if (res) {
-							thongTinChiTietPhieuDatPhong_GUI.setPhieuDatPhongVaoForm(chiTietDatPhong_DAO
+							thongTinChiTietPhieuDatPhongTruoc_GUI.setPhieuDatPhongVaoForm(chiTietDatPhong_DAO
 									.getChiTietDatPhongTheoMaDatPhong(donDatPhong.getMaDonDatPhong()));
-							thongTinChiTietPhieuDatPhong_GUI.closeJFrameSub();
+							thongTinChiTietPhieuDatPhongTruoc_GUI.closeJFrameSub();
 							new Notification(main, components.notification.Notification.Type.SUCCESS,
 									"Cập nhật phòng thành công").showNotification();
 						} else {
@@ -421,6 +425,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 					}
 				});
 				jDialogCustom.showMessage("Warning", "Bạn có chắc muốn sửa phòng?");
+
 			}
 		});
 
@@ -448,7 +453,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	 * @param list danh sách các phòng cần thêm
 	 */
 	private void addRow(List<Phong> list) {
-		tableModel.setRowCount(0);
+		Utils.emptyTable(tbl);
 		list.forEach(phong -> addRow(phong));
 	}
 
@@ -464,7 +469,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	}
 
 	private void capNhatDanhSachPhongDatTruoc() {
-		if (dsPhongDatTruoc == null || dsPhongDaChon == null)
+		if (dsPhongDaChon == null || dsPhongDatTruoc == null)
 			return;
 
 		int row = tbl.getSelectedRow();
@@ -472,12 +477,16 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			tableModel.removeRow(tbl.getSelectedRow());
 			btnChonPhong.setEnabled(false);
 		}
+		emptyComboBox(cmbMaPhong, "Mã phòng");
+		Utils.emptyTable(tbl);
 
-		tableModel.setRowCount(0);
-
+		themPhongBanDau();
 		for (Phong phong : dsPhongDatTruoc) {
-			if (!dsPhongDaChon.contains(phong))
-				addRow(phong);
+			if (dsPhongDaChon.contains(phong))
+				continue;
+
+			addRow(phong);
+			cmbMaPhong.addItem(phong.getMaPhong());
 		}
 
 		if (tbl.getRowCount() > 0) {
@@ -520,15 +529,26 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		if (loaiPhong.equals("Loại phòng"))
 			loaiPhong = "";
 
+		if (dsPhongDaChonBanDau.contains(phong_DAO.getPhong(maPhong))) {
+			Utils.emptyTable(tbl);
+			addRow(phong_DAO.getPhong(maPhong));
+			return;
+		}
+
 		dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
 		if (dsPhongDatTruoc.size() == 0) {
 			tableModel.removeRow(0);
 			return;
 		}
 
-		tableModel.setRowCount(0);
+		if (cmbMaPhong.getSelectedItem().toString().equals("Mã phòng")
+				&& cmbLoaiPhong.getSelectedItem().toString().equals("Loại phòng")
+				&& cmbSoLuong.getSelectedItem().toString().equals("Số lượng")) {
+			themPhongBanDau();
+		}
+
+		Utils.emptyTable(tbl);
 		addRow(dsPhongDatTruoc);
-		capNhatDanhSachPhongDatTruoc();
 	}
 
 	private PanelRound getPanelPhongDaChonItem(int top, Phong phong) {
@@ -552,6 +572,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 				dsPhongDaChon.remove(phong);
 				if (dsPhongDaChon.size() <= 0)
 					btnSuaPhong.setEnabled(false);
+
 				capNhatDanhSachPhongDatTruoc();
 				showDanhSachPhongDaChon();
 			}
@@ -582,8 +603,10 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	}
 
 	private void showDanhSachPhongDaChon() {
-		if (dsPhongDaChon == null)
-			return;
+		if (dsPhongDaChon == null) {
+			dsPhongDaChon = new ArrayList<>();
+			dsPhongDaChonBanDau.forEach(list -> dsPhongDaChon.add(list));
+		}
 		pnlPhongDaChon.removeAll();
 		scrPhongDaChon.setViewportView(pnlPhongDaChon);
 
@@ -599,13 +622,20 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		pnlPhongDaChon.setPreferredSize(
 				new Dimension(140, Math.max(202, top + heightItem * countItem + gapY * (countItem - 1))));
 
-		List<Phong> dsPhongBanDau = new ArrayList<>();
-		listChiTietDatPhong.forEach(list -> dsPhongBanDau.add(list.getPhong()));
-		if (!dsPhongBanDau.equals(dsPhongDaChon))
+		if (!dsPhongDaChonBanDau.equals(dsPhongDaChon))
 			btnSuaPhong.setEnabled(true);
 		else
 			btnSuaPhong.setEnabled(false);
 
 		repaint();
+	}
+
+	private void themPhongBanDau() {
+		for (Phong phongBanDau : dsPhongDaChonBanDau) {
+			if (!dsPhongDatTruoc.contains(phongBanDau) && !dsPhongDaChon.contains(phongBanDau)) {
+				dsPhongDatTruoc.add(phong_DAO.getPhong(phongBanDau.getMaPhong()));
+			}
+		}
+		Collections.sort(dsPhongDatTruoc);
 	}
 }

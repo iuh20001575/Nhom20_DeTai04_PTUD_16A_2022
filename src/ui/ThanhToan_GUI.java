@@ -740,7 +740,7 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 		}
 
 		double tienNhan = Double.parseDouble(tienNhanS);
-
+		tienThanhToan = Math.round(tienThanhToan);
 		if (tienNhan < tienThanhToan) {
 			txtTienNhan.setError(true);
 			btnThanhToan.setEnabled(false);

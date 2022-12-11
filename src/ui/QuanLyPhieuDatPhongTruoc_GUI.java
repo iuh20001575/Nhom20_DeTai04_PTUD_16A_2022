@@ -25,6 +25,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -33,15 +35,18 @@ import javax.swing.table.TableColumnModel;
 import components.button.Button;
 import components.controlPanel.ControlPanel;
 import components.jDialog.JDialogCustom;
+import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
 import dao.ChiTietDatPhong_DAO;
+import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
-import dao.PhieuDatPhong_DAO;
+import dao.PhieuDatPhongTruoc_DAO;
 import entity.ChiTietDatPhong;
 import entity.DonDatPhong;
+import entity.Phong;
 import utils.Utils;
 
-public class QuanLyPhieuDatPhong_GUI extends JPanel {
+public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 	private static JLabel lblTime;
 	/**
 	 * 
@@ -81,14 +86,15 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	private Button btnNhanPhong;
 	private Button btnSearch;
 	private Button btnXemPhong;
-	private Button btnXuatPDF;
 	private JComboBox<String> cboMaPhieuDat;
 	private JComboBox<String> cboTrangThai;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private DonDatPhong_DAO donDatPhong_DAO;
 	private JDialogCustom jDialog;
 	private KhachHang_DAO khachHang_DAO;
+	private Main main;
 	private DefaultComboBoxModel<String> maPhieuDatModel;
-	private PhieuDatPhong_DAO phieuDatPhong_DAO;
+	private PhieuDatPhongTruoc_DAO phieuDatPhongTruoc_DAO;
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
@@ -99,10 +105,13 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public QuanLyPhieuDatPhong_GUI(Main main) {
+	public QuanLyPhieuDatPhongTruoc_GUI(Main main) {
 		khachHang_DAO = new KhachHang_DAO();
-		phieuDatPhong_DAO = new PhieuDatPhong_DAO();
+		phieuDatPhongTruoc_DAO = new PhieuDatPhongTruoc_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		donDatPhong_DAO = new DonDatPhong_DAO();
+		this.main = main;
+
 		jDialog = new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning);
 
 		setBackground(Utils.secondaryColor);
@@ -254,20 +263,6 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		btnHuyPhong.setBounds(440, 0, 200, 36);
 		pnlActions.add(btnHuyPhong);
 
-		btnXuatPDF = new Button("Xuất PDF");
-		btnXuatPDF.setRadius(4);
-		btnXuatPDF.setIcon(Utils.getImageIcon("add-file.png"));
-		btnXuatPDF.setForeground(Color.WHITE);
-		btnXuatPDF.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnXuatPDF.setFocusable(false);
-		btnXuatPDF.setColorOver(Utils.primaryColor);
-		btnXuatPDF.setColorClick(new Color(161, 184, 186));
-		btnXuatPDF.setColor(Utils.primaryColor);
-		btnXuatPDF.setBorderColor(Utils.secondaryColor);
-		btnXuatPDF.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnXuatPDF.setBounds(660, 0, 200, 36);
-		pnlActions.add(btnXuatPDF);
-
 		btnLamMoi = new Button("Làm mới");
 		btnLamMoi.setRadius(4);
 		btnLamMoi.setIcon(Utils.getImageIcon("reset.png"));
@@ -366,34 +361,126 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		btnXemPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!btnXemPhong.isEnabled())
-					return;
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
-					jDialog.showMessage("Warning", "Vui lòng chọn phòng muốn xem");
-				} else {
-					String maPhieuDat = (String) tableModel.getValueAt(row, 0);
-					ChiTietDatPhong phieuDatPhong = phieuDatPhong_DAO
-							.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
-					ThongTinChiTietPhieuDatPhong_GUI jFrame = new ThongTinChiTietPhieuDatPhong_GUI(main, phieuDatPhong);
-					main.addPnlBody(jFrame, "Thông tin chi tiêt phiếu đặt phòng", 1, 0);
+					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
+					return;
 				}
+
+				String maPhieuDat = (String) tableModel.getValueAt(row, 0);
+				ChiTietDatPhong chiTietDatPhong = phieuDatPhongTruoc_DAO
+						.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
+				ThongTinChiTietPhieuDatPhongTruoc_GUI jFrame = new ThongTinChiTietPhieuDatPhongTruoc_GUI(main,
+						chiTietDatPhong);
+				main.addPnlBody(jFrame, "Thông tin chi tiêt phiếu đặt phòng trước", 1, 0);
+
 			}
 		});
 //		Sự kiện nút nhận phòng
 		btnNhanPhong.addMouseListener(new MouseAdapter() {
-			private void handleNhanPhong() {
-//				int row = tbl.getSelectedRow();
-//				String maPhieuDat = (String) tbl.getValueAt(row, 0);
-
-			}
-
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!btnNhanPhong.isEnabled())
-					return;
+				boolean res = false;
+				int row = tbl.getSelectedRow();
 
-				handleNhanPhong();
+				if (row == -1) {
+					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
+					return;
+				}
+				String trangThai = (String) tableModel.getValueAt(row, 5);
+				if (trangThai.equals("Đã hủy")) {
+					return;
+				}
+
+				String maPhieuDat = (String) tableModel.getValueAt(row, 0);
+				ChiTietDatPhong chiTietDatPhong = phieuDatPhongTruoc_DAO
+						.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
+				List<Phong> listPhong = new ArrayList<>();
+				List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO
+						.getAllChiTietDatPhong(chiTietDatPhong.getDonDatPhong());
+				listChiTietDatPhong.forEach(list -> listPhong.add(list.getPhong()));
+
+//				Kiểm tra phòng có đang thuê hay không
+				List<Phong> listPhongDangThue = donDatPhong_DAO.timPhongDangThue(listPhong);
+				if (listPhongDangThue.size() > 0) {
+					String[] maPhong = new String[listPhongDangThue.size()];
+					int i = 0;
+					for (Phong phong : listPhongDangThue) {
+						maPhong[i++] = phong.getMaPhong();
+					}
+
+					jDialog.showMessage("Question", "Phòng " + String.join(", ", maPhong) + " đang thuê\n");
+					return;
+				}
+
+				res = donDatPhong_DAO.nhanPhongTrongPhieuDatPhongTruoc(chiTietDatPhong.getDonDatPhong(), listPhong);
+
+				if (!res) {
+					new Notification(main, components.notification.Notification.Type.ERROR, "Chưa đến giờ nhận phòng")
+							.showNotification();
+					return;
+				}
+
+				jDialog.getBtnOK().addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						QuanLyDatPhong_GUI quanLyDatPhong_GUI = new QuanLyDatPhong_GUI(main);
+						main.addPnlBody(quanLyDatPhong_GUI, "Quản lý đặt phòng", 1, 0);
+					}
+				});
+				jDialog.getBtnCancel().addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						QuanLyPhieuDatPhongTruoc_GUI quanLyPhieuDatPhong_GUI = new QuanLyPhieuDatPhongTruoc_GUI(main);
+						main.addPnlBody(quanLyPhieuDatPhong_GUI, "Quản lý đặt phòng trước", 1, 0);
+					}
+				});
+				jDialog.showMessage("Question",
+						"Nhận phòng thành công! \nBạn có muốn chuyển sang trang quản lý đặt phòng");
+			}
+		});
+
+//		Sự kiện nút Huỷ phòng
+		btnHuyPhong.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				boolean res = false;
+				int row = tbl.getSelectedRow();
+
+				if (row != -1 && row < tbl.getRowCount()) {
+
+					String maPhieuDat = (String) tableModel.getValueAt(row, 0);
+					ChiTietDatPhong chiTietDatPhong = phieuDatPhongTruoc_DAO
+							.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
+					List<Phong> listPhong = new ArrayList<>();
+					List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO
+							.getAllChiTietDatPhong(chiTietDatPhong.getDonDatPhong());
+					listChiTietDatPhong.forEach(list -> listPhong.add(list.getPhong()));
+
+					String trangThai = (String) tableModel.getValueAt(row, 5);
+					if (trangThai.equals("Đã hủy")) {
+						new Notification(main, components.notification.Notification.Type.ERROR, "Phòng đã huỷ")
+								.showNotification();
+						return;
+					}
+
+					res = donDatPhong_DAO.huyPhongTrongPhieuDatPhongTruoc(donDatPhong_DAO.getDatPhong(maPhieuDat),
+							listPhong);
+
+					if (res) {
+						new Notification(main, components.notification.Notification.Type.SUCCESS,
+								"Huỷ phòng thành công").showNotification();
+						loadTable();
+						return;
+					} else {
+						new Notification(main, components.notification.Notification.Type.ERROR, "Huỷ phòng thất bại")
+								.showNotification();
+						return;
+					}
+				} else {
+					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
+					return;
+				}
 			}
 		});
 
@@ -401,16 +488,11 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		btnLamMoi.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				cboMaPhieuDat.setSelectedIndex(0);
-				cboTrangThai.setSelectedIndex(0);
-				txtSoDienThoai.setText("");
-				tableModel.setRowCount(0);
-				addRow(phieuDatPhong_DAO.getAllDonDatPhong());
-				pnlControl.setTbl(tbl);
+				loadTable();
 			}
 		});
 
-//	Sự kiện JCombobox mã phiếu đặt phòng
+//		Sự kiện JCombobox mã phiếu đặt phòng
 		cboMaPhieuDat.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -419,7 +501,7 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				}
 			}
 		});
-//	Sự kiện JCombobox trạng thái
+//		Sự kiện JCombobox trạng thái
 		cboTrangThai.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -428,14 +510,14 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				}
 			}
 		});
-//	Sự kiện cho JTable
-//		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-//			public void valueChanged(ListSelectionEvent lse) {
-//				if (!lse.getValueIsAdjusting()) {
-//					setEnabledBtnActions();
-//				}
-//			}
-//		});
+//		Sự kiện cho JTable
+		tbl.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent lse) {
+				if (!lse.getValueIsAdjusting()) {
+					setEnabledBtnActions();
+				}
+			}
+		});
 
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
@@ -455,9 +537,10 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 				tableModel.setRowCount(0);
 				cboMaPhieuDat.removeAllItems();
 				cboMaPhieuDat.addItem("Mã phiếu đặt");
-				List<DonDatPhong> list = phieuDatPhong_DAO.getAllDonDatPhong();
+				List<DonDatPhong> list = phieuDatPhongTruoc_DAO.getAllDonDatPhong();
 				list.forEach(phieuDatPhong -> cboMaPhieuDat.addItem(phieuDatPhong.getMaDonDatPhong()));
 				pnlControl.setTbl(tbl);
+
 			}
 
 			public void ancestorMoved(AncestorEvent event) {
@@ -502,9 +585,10 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 		if (soDienThoai.trim().equals(""))
 			soDienThoai = "%%";
 
-		List<DonDatPhong> list = phieuDatPhong_DAO.filterDonDatPhong(maPhieuDat, soDienThoai, trangThai);
+		List<DonDatPhong> list = phieuDatPhongTruoc_DAO.filterDonDatPhong(maPhieuDat, soDienThoai, trangThai);
 		if (list.size() == 0) {
-			jDialog.showMessage("Thông báo", "Không có phòng cần tìm");
+			new Notification(main, components.notification.Notification.Type.ERROR, "Không tìm thấy")
+					.showNotification();
 			return;
 		}
 
@@ -514,19 +598,26 @@ public class QuanLyPhieuDatPhong_GUI extends JPanel {
 
 	}
 
-//	private void setEnabledBtnActions() {
-//		int row = tbl.getSelectedRow();
-//
-//		if (row == -1) {
-//			btnXemPhong.setEnabled(false);
-//			btnNhanPhong.setEnabled(false);
-//			btnHuyPhong.setEnabled(false);
-//			btnXuatPDF.setEnabled(false);
-//		} else {
-//			btnXemPhong.setEnabled(true);
-//			btnNhanPhong.setEnabled(true);
-//			btnHuyPhong.setEnabled(true);
-//			btnXuatPDF.setEnabled(true);
-//		}
-//	}
+	private void loadTable() {
+		cboMaPhieuDat.setSelectedIndex(0);
+		cboTrangThai.setSelectedIndex(0);
+		txtSoDienThoai.setText("");
+		Utils.emptyTable(tbl);
+		filterPhieuDatPhong();
+		pnlControl.setTbl(tbl);
+	}
+
+	private void setEnabledBtnActions() {
+		int row = tbl.getSelectedRow();
+		if (row == -1)
+			return;
+		String trangThai = (String) tableModel.getValueAt(row, 5);
+		if (trangThai.equals("Đã hủy")) {
+			btnNhanPhong.setEnabled(false);
+			btnHuyPhong.setEnabled(false);
+		} else {
+			btnNhanPhong.setEnabled(true);
+			btnHuyPhong.setEnabled(true);
+		}
+	}
 }

@@ -320,7 +320,7 @@ public class Main extends JFrame {
 					break;
 				case Utils.quanLyDatPhongTruocMenuItem:
 					title = "Quản lý đặt phòng trước";
-					pnl = new QuanLyPhieuDatPhong_GUI(_this);
+					pnl = new QuanLyPhieuDatPhongTruoc_GUI(_this);
 					break;
 				case Utils.thongKeDoanhThuMenuItem:
 					title = "Thống kê doanh thu";
