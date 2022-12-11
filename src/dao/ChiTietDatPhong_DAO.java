@@ -58,6 +58,77 @@ public class ChiTietDatPhong_DAO extends DAO {
 	}
 
 	/**
+	 * Get chi tiết đặt phòng theo ngày, tháng năm và nhân viên
+	 * 
+	 * @param day
+	 * @param month
+	 * @param year
+	 * @param maNhanVien
+	 * @return
+	 */
+	public List<ChiTietDatPhong> getChiTietDatPhong(int day, int month, int year, String maNhanVien) {
+		List<ChiTietDatPhong> list = new ArrayList<>();
+		String sql = "SELECT CTDP.*, P.*, ngayNhanPhong, [maKhachHang], KH.[hoTen] AS HOTENKHACHHANG, "
+				+ "[maNhanVien], NV.[hoTen] AS HOTENNHANVIEN FROM [dbo].[DonDatPhong] DDP "
+				+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DDP.maDonDatPhong = CTDP.donDatPhong "
+				+ "JOIN [dbo].[Phong] P ON CTDP.phong = P.maPhong "
+				+ "JOIN [dbo].[KhachHang] KH ON DDP.[khachHang] = KH.[maKhachHang] "
+				+ "JOIN [dbo].[NhanVien] NV ON DDP.NHANVIEN = NV.MANHANVIEN "
+				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ?";
+
+		if (month > 0)
+			sql += " AND MONTH([ngayNhanPhong]) = ?";
+		if (day > 0)
+			sql += " AND DAY([ngayNhanPhong]) = ?";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setInt(1, year);
+			preparedStatement.setString(2, "%" + maNhanVien + "%");
+			if (month > 0)
+				preparedStatement.setInt(3, month);
+			if (day > 0)
+				preparedStatement.setInt(4, day);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			ChiTietDatPhong chiTietDatPhong;
+			Phong phong;
+			String maPhong;
+			String loaiPhong;
+			NhanVien nhanVien;
+			KhachHang khachHang;
+			int soLuongKhach;
+			LocalDate ngayNhanPhong;
+			while (resultSet.next()) {
+				chiTietDatPhong = getChiTietDatPhong(resultSet);
+
+				maPhong = resultSet.getString("maPhong");
+				loaiPhong = resultSet.getString("loaiPhong");
+				soLuongKhach = resultSet.getInt("soLuongKhach");
+				phong = new Phong(maPhong, new LoaiPhong(loaiPhong), soLuongKhach, TrangThai.DangThue);
+				chiTietDatPhong.setPhong(phong);
+
+				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
+				chiTietDatPhong.getDonDatPhong().setNgayNhanPhong(ngayNhanPhong);
+				nhanVien = new NhanVien(resultSet.getString("maNhanVien"));
+				nhanVien.setHoTen(resultSet.getString("HOTENNHANVIEN"));
+				chiTietDatPhong.getDonDatPhong().setNhanVien(nhanVien);
+				khachHang = new KhachHang(resultSet.getString("maKhachHang"));
+				khachHang.setHoTen(resultSet.getString("HOTENKHACHHANG"));
+				chiTietDatPhong.getDonDatPhong().setKhachHang(khachHang);
+
+				list.add(chiTietDatPhong);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
 	 * Get chi tiết đặt phòng resultSet
 	 * 
 	 * @param resultSet
@@ -71,6 +142,31 @@ public class ChiTietDatPhong_DAO extends DAO {
 		Time time = resultSet.getTime("gioRa");
 		LocalTime gioRa = time == null ? null : resultSet.getTime("gioRa").toLocalTime();
 		return new ChiTietDatPhong(donDatPhong, phong, gioVao, gioRa);
+	}
+
+	/**
+	 * Get chi tiết đặt phòng đang thuê
+	 * 
+	 * @param maDonDatPhong
+	 * @param phong
+	 * @return
+	 */
+	public ChiTietDatPhong getChiTietDatPhongDangThue(String maDonDatPhong, String phong) {
+		try {
+			String sql = "SELECT * FROM [dbo].[ChiTietDatPhong] "
+					+ "WHERE [donDatPhong] = ? AND [phong] = ? AND [gioRa] IS NULL";
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, maDonDatPhong);
+			preparedStatement.setString(2, phong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getChiTietDatPhong(resultSet);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
@@ -211,31 +307,6 @@ public class ChiTietDatPhong_DAO extends DAO {
 	}
 
 	/**
-	 * Get chi tiết đặt phòng đang thuê
-	 * 
-	 * @param maDonDatPhong
-	 * @param phong
-	 * @return
-	 */
-	public ChiTietDatPhong getChiTietDatPhongDangThue(String maDonDatPhong, String phong) {
-		try {
-			String sql = "SELECT * FROM [dbo].[ChiTietDatPhong] "
-					+ "WHERE [donDatPhong] = ? AND [phong] = ? AND [gioRa] IS NULL";
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setString(1, maDonDatPhong);
-			preparedStatement.setString(2, phong);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return getChiTietDatPhong(resultSet);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	/**
 	 * Set giờ ra của phòng
 	 * 
 	 * @param maDonDatPhong
@@ -335,77 +406,6 @@ public class ChiTietDatPhong_DAO extends DAO {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Get chi tiết đặt phòng theo ngày, tháng năm và nhân viên
-	 * 
-	 * @param day
-	 * @param month
-	 * @param year
-	 * @param maNhanVien
-	 * @return
-	 */
-	public List<ChiTietDatPhong> getChiTietDatPhong(int day, int month, int year, String maNhanVien) {
-		List<ChiTietDatPhong> list = new ArrayList<>();
-		String sql = "SELECT CTDP.*, P.*, ngayNhanPhong, [maKhachHang], KH.[hoTen] AS HOTENKHACHHANG, "
-				+ "[maNhanVien], NV.[hoTen] AS HOTENNHANVIEN FROM [dbo].[DonDatPhong] DDP "
-				+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON DDP.maDonDatPhong = CTDP.donDatPhong "
-				+ "JOIN [dbo].[Phong] P ON CTDP.phong = P.maPhong "
-				+ "JOIN [dbo].[KhachHang] KH ON DDP.[khachHang] = KH.[maKhachHang] "
-				+ "JOIN [dbo].[NhanVien] NV ON DDP.NHANVIEN = NV.MANHANVIEN "
-				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ?";
-
-		if (month > 0)
-			sql += " AND MONTH([ngayNhanPhong]) = ?";
-		if (day > 0)
-			sql += " AND DAY([ngayNhanPhong]) = ?";
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setInt(1, year);
-			preparedStatement.setString(2, "%" + maNhanVien + "%");
-			if (month > 0)
-				preparedStatement.setInt(3, month);
-			if (day > 0)
-				preparedStatement.setInt(4, day);
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-			ChiTietDatPhong chiTietDatPhong;
-			Phong phong;
-			String maPhong;
-			String loaiPhong;
-			NhanVien nhanVien;
-			KhachHang khachHang;
-			int soLuongKhach;
-			LocalDate ngayNhanPhong;
-			while (resultSet.next()) {
-				chiTietDatPhong = getChiTietDatPhong(resultSet);
-
-				maPhong = resultSet.getString("maPhong");
-				loaiPhong = resultSet.getString("loaiPhong");
-				soLuongKhach = resultSet.getInt("soLuongKhach");
-				phong = new Phong(maPhong, new LoaiPhong(loaiPhong), soLuongKhach, TrangThai.DangThue);
-				chiTietDatPhong.setPhong(phong);
-
-				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
-				chiTietDatPhong.getDonDatPhong().setNgayNhanPhong(ngayNhanPhong);
-				nhanVien = new NhanVien(resultSet.getString("maNhanVien"));
-				nhanVien.setHoTen(resultSet.getString("HOTENNHANVIEN"));
-				chiTietDatPhong.getDonDatPhong().setNhanVien(nhanVien);
-				khachHang = new KhachHang(resultSet.getString("maKhachHang"));
-				khachHang.setHoTen(resultSet.getString("HOTENKHACHHANG"));
-				chiTietDatPhong.getDonDatPhong().setKhachHang(khachHang);
-
-				list.add(chiTietDatPhong);
-			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return list;
 	}
 
 	/**

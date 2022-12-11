@@ -18,7 +18,6 @@ public class DichVu_DAO {
 		loaiDichVu_DAO = new LoaiDichVu_DAO();
 	}
 
-
 	public boolean capNhatSoLuongDichVuTang(String maDV, int soLuong) {
 		boolean res = false;
 		PreparedStatement preparedStatement;

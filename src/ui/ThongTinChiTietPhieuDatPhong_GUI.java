@@ -33,34 +33,64 @@ import entity.NhanVien;
 import utils.Utils;
 
 public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemListener {
+	private static JLabel lblTime;
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	public static Thread clock() {
+		Thread clock = new Thread() {
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						LocalDateTime currTime = LocalDateTime.now();
+						int day = currTime.getDayOfMonth();
+						int month = currTime.getMonthValue();
+						int year = currTime.getYear();
+						int hour = currTime.getHour();
+						int minute = currTime.getMinute();
+						int second = currTime.getSecond();
+						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
+								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
+								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+
+		clock.start();
+
+		return clock;
+	}
+
 	private ThongTinChiTietPhieuDatPhong_GUI _this;
-	private ChiTietDatPhong chiTietDatPhong;
-	private TextField txtMaDatPhong;
-	private TextField txtPhong;
-	private TextField txtSLPhong;
-	private TextField txtTrangThai;
-	private TextField txtNhanVien;
-	private TextField txtSDT;
-	private TextField txtTGLP;
-	private TextField txtTGNP;
-	private Main main;
-	private DonDatPhong_DAO donDatPhong_DAO;
-	private NhanVien_DAO nhanVien_DAO;
-	private KhachHang_DAO khachHang_DAO;
-	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
-	private Button btnNhanPhong;
 	private Button btnHuyPhong;
-	private final int widthPnlContainer = 948;
-	private TextField txtKhachHang;
+	private Button btnNhanPhong;
+	private ChiTietDatPhong chiTietDatPhong;
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private DonDatPhong_DAO donDatPhong_DAO;
 	private Glass glass;
 	private JFrame jFrameSub;
+	private KhachHang_DAO khachHang_DAO;
+	private Main main;
+	private NhanVien_DAO nhanVien_DAO;
 	private PanelEvent pnlSuaPhong;
-	private static JLabel lblTime;
+	private TextField txtKhachHang;
+	private TextField txtMaDatPhong;
+	private TextField txtNhanVien;
+	private TextField txtPhong;
+	private TextField txtSDT;
+	private TextField txtSLPhong;
+	private TextField txtTGLP;
+	private TextField txtTGNP;
+	private TextField txtTrangThai;
 
+	private final int widthPnlContainer = 948;
 
 	/**
 	 * Create the frame.
@@ -76,7 +106,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		_this = this;
 		int padding = (int) Math.floor((Utils.getBodyHeight() - 428) / 5);
 		int top = padding;
-		
+
 		glass.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -93,7 +123,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
 		this.add(pnlContainer);
 		pnlContainer.setLayout(null);
-		
+
 		lblTime = new JLabel("");
 		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTime.setFont(new Font("Segoe UI", Font.PLAIN, 18));
@@ -136,7 +166,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		top += 55;
 		pnlContainer.add(pnlRow2);
 		pnlRow2.setLayout(null);
-		
+
 		txtPhong = new TextField();
 		txtPhong.setLineColor(Utils.lineTextField);
 		txtPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -146,7 +176,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		txtPhong.setEnabled(false);
 		pnlRow2.add(txtPhong);
 		txtPhong.setColumns(10);
-		
+
 		txtSLPhong = new TextField();
 		txtSLPhong.setLineColor(Utils.lineTextField);
 		txtSLPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -166,7 +196,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		txtTrangThai.setEnabled(false);
 		pnlRow2.add(txtTrangThai);
 		txtTrangThai.setColumns(10);
-		
+
 		pnlSuaPhong = new PanelEvent(13) {
 			/**
 			 *
@@ -290,11 +320,12 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 
 		addAncestorListener(new AncestorListener() {
 			Thread clockThread;
-			
+
 			public void ancestorAdded(AncestorEvent event) {
 				clockThread = clock();
-				
+
 			}
+
 			public void ancestorMoved(AncestorEvent event) {
 			}
 
@@ -303,7 +334,7 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 				clockThread.stop();
 			}
 		});
-		
+
 //		Sự kiện nút Sửa danh sách phòng
 		pnlSuaPhong.addMouseListener(new MouseAdapter() {
 			@Override
@@ -314,40 +345,6 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 
 	}
 
-	public void setPhieuDatPhongVaoForm(ChiTietDatPhong chiTietDatPhong) {
-		String maDatPhong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
-		DonDatPhong donDatPhong = donDatPhong_DAO.getDatPhong(maDatPhong);
-		KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(donDatPhong.getKhachHang().getMaKhachHang());
-		NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(donDatPhong.getNhanVien().getMaNhanVien());
-		
-		List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
-		List<String> listPhong = new ArrayList<String>();
-		listChiTietDatPhong.forEach( list -> listPhong.add(list.getPhong().getMaPhong()));
-		
-		txtMaDatPhong.setText(maDatPhong);
-		txtKhachHang.setText(khachHang.getMaKhachHang() + " - " + khachHang.getHoTen());
-		txtNhanVien.setText(nhanVien.getMaNhanVien() + " - " + nhanVien.getHoTen());
-		txtPhong.setText(String.join(", ", listPhong));
-		txtSLPhong.setText(listPhong.size()+"");
-		txtTrangThai.setText(DonDatPhong.convertTrangThaiToString(donDatPhong.getTrangThai()));
-		txtKhachHang.setText(khachHang.getMaKhachHang() + " - " + khachHang.getHoTen());
-		txtSDT.setText(khachHang.getSoDienThoai());
-		txtTGLP.setText(Utils.convertLocalTimeToString(donDatPhong.getGioDatPhong()) + " - "
-				+ Utils.formatDate(donDatPhong.getNgayDatPhong()));
-		txtTGNP.setText(Utils.convertLocalTimeToString(donDatPhong.getGioNhanPhong()) + " - "
-				+ Utils.formatDate(donDatPhong.getNgayNhanPhong()));
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-
-		
-	}
-	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
-		if (!pnl.isEnabled())
-			return;
-		openJFrameSub(jFrame);
-	}
 	public void closeJFrameSub() {
 		if (jFrameSub != null)
 			jFrameSub.setVisible(false);
@@ -355,6 +352,18 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		glass.setAlpha(0f);
 		jFrameSub = null;
 	}
+
+	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
+		if (!pnl.isEnabled())
+			return;
+		openJFrameSub(jFrame);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+
+	}
+
 	public void openJFrameSub(JFrame jFrame) {
 		this.main.setGlassPane(glass);
 		glass.setVisible(true);
@@ -363,32 +372,27 @@ public class ThongTinChiTietPhieuDatPhong_GUI extends JPanel implements ItemList
 		jFrameSub.setVisible(true);
 	}
 
-	public static Thread clock() {
-		Thread clock = new Thread() {
-			@Override
-			public void run() {
-				for (;;) {
-					try {
-						LocalDateTime currTime = LocalDateTime.now();
-						int day = currTime.getDayOfMonth();
-						int month = currTime.getMonthValue();
-						int year = currTime.getYear();
-						int hour = currTime.getHour();
-						int minute = currTime.getMinute();
-						int second = currTime.getSecond();
-						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
-								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
-								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
-						sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
+	public void setPhieuDatPhongVaoForm(ChiTietDatPhong chiTietDatPhong) {
+		String maDatPhong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
+		DonDatPhong donDatPhong = donDatPhong_DAO.getDatPhong(maDatPhong);
+		KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(donDatPhong.getKhachHang().getMaKhachHang());
+		NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(donDatPhong.getNhanVien().getMaNhanVien());
 
-		clock.start();
+		List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
+		List<String> listPhong = new ArrayList<String>();
+		listChiTietDatPhong.forEach(list -> listPhong.add(list.getPhong().getMaPhong()));
 
-		return clock;
+		txtMaDatPhong.setText(maDatPhong);
+		txtKhachHang.setText(khachHang.getMaKhachHang() + " - " + khachHang.getHoTen());
+		txtNhanVien.setText(nhanVien.getMaNhanVien() + " - " + nhanVien.getHoTen());
+		txtPhong.setText(String.join(", ", listPhong));
+		txtSLPhong.setText(listPhong.size() + "");
+		txtTrangThai.setText(DonDatPhong.convertTrangThaiToString(donDatPhong.getTrangThai()));
+		txtKhachHang.setText(khachHang.getMaKhachHang() + " - " + khachHang.getHoTen());
+		txtSDT.setText(khachHang.getSoDienThoai());
+		txtTGLP.setText(Utils.convertLocalTimeToString(donDatPhong.getGioDatPhong()) + " - "
+				+ Utils.formatDate(donDatPhong.getNgayDatPhong()));
+		txtTGNP.setText(Utils.convertLocalTimeToString(donDatPhong.getGioNhanPhong()) + " - "
+				+ Utils.formatDate(donDatPhong.getNgayNhanPhong()));
 	}
 }

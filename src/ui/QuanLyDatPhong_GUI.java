@@ -86,6 +86,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private PanelEvent pnlDichVu;
 	private PanelEvent pnlFilterPhongCho;
 	private PanelEvent pnlFilterPhongDangSuDung;
+	private PanelEvent pnlFilterPhongTam;
 	private PanelEvent pnlFilterPhongTrong;
 	private PanelEvent pnlGopPhong;
 	private JPanel pnlPhongItem = null;
@@ -97,7 +98,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private int soPhongTrong = 0;
 	private String trangThai = "";
 	private final int widthPhong = 131;
-	private PanelEvent pnlFilterPhongTam;
 
 	/**
 	 * Create the frame.

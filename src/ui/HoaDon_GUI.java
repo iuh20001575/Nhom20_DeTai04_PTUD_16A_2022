@@ -37,22 +37,10 @@ import components.scrollbarCustom.ScrollBarCustom;
 import utils.Utils;
 
 public class HoaDon_GUI extends JFrame implements ItemListener {
-	private JTable tblTienDV;
-	private DefaultTableModel tableModel;
 	private static final long serialVersionUID = 1L;
 	private PanelRound pnlContent;
-
-	private void addRowRandomData() {
-		for (int i = 0; i < 4; i++) {
-			String tenHH[] = { "7 Up", "Trái cây size L", "Snack tôm", "Pepsi" };
-			String ten = tenHH[i];
-			int soLuong = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-			int giaHH[] = { 16000, 25000, 5000, 16000 };
-			int gia = giaHH[i];
-			long tongTien = soLuong * gia;
-			tableModel.addRow(new String[] { ten, soLuong + "", gia + " VND", tongTien + " VND" });
-		}
-	}
+	private DefaultTableModel tableModel;
+	private JTable tblTienDV;
 
 	public HoaDon_GUI(String maHoaDon, String ngayLap, String tenKhach, String tenNV) {
 		setTitle("Hoá đơn tính tiền");
@@ -423,7 +411,19 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		});
 
 	}
-	 
+
+	private void addRowRandomData() {
+		for (int i = 0; i < 4; i++) {
+			String tenHH[] = { "7 Up", "Trái cây size L", "Snack tôm", "Pepsi" };
+			String ten = tenHH[i];
+			int soLuong = ThreadLocalRandom.current().nextInt(1, 10 + 1);
+			int giaHH[] = { 16000, 25000, 5000, 16000 };
+			int gia = giaHH[i];
+			long tongTien = soLuong * gia;
+			tableModel.addRow(new String[] { ten, soLuong + "", gia + " VND", tongTien + " VND" });
+		}
+	}
+
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// TODO Auto-generated method stub

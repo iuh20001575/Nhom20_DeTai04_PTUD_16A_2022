@@ -218,7 +218,7 @@ public class KhachHang_DAO {
 		}
 		return res > 0;
 	}
-	
+
 	/**
 	 * Thêm khách hàng
 	 * 
@@ -248,7 +248,7 @@ public class KhachHang_DAO {
 		}
 		return res > 0;
 	}
-	
+
 	/**
 	 * Xóa khách hàng
 	 * 

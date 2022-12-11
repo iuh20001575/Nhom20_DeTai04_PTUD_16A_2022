@@ -18,6 +18,40 @@ import entity.LoaiDichVu;
 import entity.Phong;
 
 public class ChiTietDichVu_DAO extends DAO {
+	public boolean capNhatSoLuongDichVu(ChiTietDichVu chiTietDichVu, boolean isSoLuongTang) {
+		Connection connection = ConnectDB.getConnection();
+		PreparedStatement preparedStatement;
+		boolean res;
+		try {
+			connection.setAutoCommit(false);
+			preparedStatement = connection.prepareStatement(
+					"UPDATE [dbo].[DichVu] SET [soLuong] " + (isSoLuongTang ? "-" : "+") + "= ? WHERE [maDichVu] = ?");
+			preparedStatement.setInt(1, chiTietDichVu.getSoLuong());
+			preparedStatement.setString(2, chiTietDichVu.getDichVu().getMaDichVu());
+			res = preparedStatement.executeUpdate() > 0;
+			if (!res)
+				return rollback();
+
+			ChiTietDatPhong chiTietDatPhong = chiTietDichVu.getChiTietDatPhong();
+			preparedStatement = connection
+					.prepareStatement("UPDATE [dbo].[ChiTietDichVu] SET [soLuong] " + (isSoLuongTang ? "+" : "-")
+							+ "= ? WHERE [dichVu] = ? AND [donDatPhong] = ? AND [phong] = ? AND [gioVao] = ?");
+			preparedStatement.setInt(1, chiTietDichVu.getSoLuong());
+			preparedStatement.setString(2, chiTietDichVu.getDichVu().getMaDichVu());
+			preparedStatement.setString(3, chiTietDatPhong.getDonDatPhong().getMaDonDatPhong());
+			preparedStatement.setString(4, chiTietDatPhong.getPhong().getMaPhong());
+			preparedStatement.setString(5, Time.valueOf(chiTietDatPhong.getGioVao()).toString());
+			res = preparedStatement.executeUpdate() > 0;
+			if (!res)
+				return rollback();
+			return commit();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	/**
 	 * Cập nhật số lượng dịch vụ
 	 * 
@@ -105,6 +139,60 @@ public class ChiTietDichVu_DAO extends DAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return list;
+	}
+
+	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year, String maNhanVien) {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		String sql = "SELECT CTDV.*, DV.*, ngayNhanPhong FROM [dbo].[DonDatPhong] DDP "
+				+ "JOIN [dbo].[ChiTietDichVu] CTDV ON DDP.maDonDatPhong = CTDV.donDatPhong "
+				+ "JOIN [dbo].[DichVu] DV ON DV.maDichVu = CTDV.dichVu "
+				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ?";
+
+		if (month > 0)
+			sql += " AND MONTH([ngayNhanPhong]) = ?";
+		if (day > 0)
+			sql += " AND DAY([ngayNhanPhong]) = ?";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setInt(1, year);
+			preparedStatement.setString(2, "%" + maNhanVien + "%");
+			if (month > 0)
+				preparedStatement.setInt(3, month);
+			if (day > 0)
+				preparedStatement.setInt(4, day);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			ChiTietDichVu chiTietDichVu;
+			DichVu dichVu;
+			String maDichVu, tenDichVu, donViTinh, loaiDichVu;
+			int soLuong;
+			double giaMua;
+			LocalDate ngayNhanPhong;
+			while (resultSet.next()) {
+				chiTietDichVu = getChiTietDichVu(resultSet);
+
+				maDichVu = resultSet.getString("maDichVu");
+				tenDichVu = resultSet.getString("tenDichVu");
+				soLuong = resultSet.getInt("soLuong");
+				donViTinh = resultSet.getString("donViTinh");
+				loaiDichVu = resultSet.getString("loaiDichVu");
+				giaMua = resultSet.getDouble("giaMua");
+				dichVu = new DichVu(maDichVu, tenDichVu, soLuong, donViTinh, new LoaiDichVu(loaiDichVu), giaMua);
+				chiTietDichVu.setDichVu(dichVu);
+
+				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
+				chiTietDichVu.getChiTietDatPhong().getDonDatPhong().setNgayNhanPhong(ngayNhanPhong);
+
+				list.add(chiTietDichVu);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return list;
 	}
 
@@ -210,60 +298,6 @@ public class ChiTietDichVu_DAO extends DAO {
 		return false;
 	}
 
-	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year, String maNhanVien) {
-		List<ChiTietDichVu> list = new ArrayList<>();
-		String sql = "SELECT CTDV.*, DV.*, ngayNhanPhong FROM [dbo].[DonDatPhong] DDP "
-				+ "JOIN [dbo].[ChiTietDichVu] CTDV ON DDP.maDonDatPhong = CTDV.donDatPhong "
-				+ "JOIN [dbo].[DichVu] DV ON DV.maDichVu = CTDV.dichVu "
-				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ?";
-
-		if (month > 0)
-			sql += " AND MONTH([ngayNhanPhong]) = ?";
-		if (day > 0)
-			sql += " AND DAY([ngayNhanPhong]) = ?";
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setInt(1, year);
-			preparedStatement.setString(2, "%" + maNhanVien + "%");
-			if (month > 0)
-				preparedStatement.setInt(3, month);
-			if (day > 0)
-				preparedStatement.setInt(4, day);
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-			ChiTietDichVu chiTietDichVu;
-			DichVu dichVu;
-			String maDichVu, tenDichVu, donViTinh, loaiDichVu;
-			int soLuong;
-			double giaMua;
-			LocalDate ngayNhanPhong;
-			while (resultSet.next()) {
-				chiTietDichVu = getChiTietDichVu(resultSet);
-
-				maDichVu = resultSet.getString("maDichVu");
-				tenDichVu = resultSet.getString("tenDichVu");
-				soLuong = resultSet.getInt("soLuong");
-				donViTinh = resultSet.getString("donViTinh");
-				loaiDichVu = resultSet.getString("loaiDichVu");
-				giaMua = resultSet.getDouble("giaMua");
-				dichVu = new DichVu(maDichVu, tenDichVu, soLuong, donViTinh, new LoaiDichVu(loaiDichVu), giaMua);
-				chiTietDichVu.setDichVu(dichVu);
-
-				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
-				chiTietDichVu.getChiTietDatPhong().getDonDatPhong().setNgayNhanPhong(ngayNhanPhong);
-
-				list.add(chiTietDichVu);
-			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
 	public boolean xoaChiTietDichVu(String maDichVu, String maDatPhong, String maPhong) {
 		int res = 0;
 		try {
@@ -281,39 +315,5 @@ public class ChiTietDichVu_DAO extends DAO {
 			e.printStackTrace();
 		}
 		return res > 0;
-	}
-
-	public boolean capNhatSoLuongDichVu(ChiTietDichVu chiTietDichVu, boolean isSoLuongTang) {
-		Connection connection = ConnectDB.getConnection();
-		PreparedStatement preparedStatement;
-		boolean res;
-		try {
-			connection.setAutoCommit(false);
-			preparedStatement = connection.prepareStatement(
-					"UPDATE [dbo].[DichVu] SET [soLuong] " + (isSoLuongTang ? "-" : "+") + "= ? WHERE [maDichVu] = ?");
-			preparedStatement.setInt(1, chiTietDichVu.getSoLuong());
-			preparedStatement.setString(2, chiTietDichVu.getDichVu().getMaDichVu());
-			res = preparedStatement.executeUpdate() > 0;
-			if (!res)
-				return rollback();
-
-			ChiTietDatPhong chiTietDatPhong = chiTietDichVu.getChiTietDatPhong();
-			preparedStatement = connection
-					.prepareStatement("UPDATE [dbo].[ChiTietDichVu] SET [soLuong] " + (isSoLuongTang ? "+" : "-")
-							+ "= ? WHERE [dichVu] = ? AND [donDatPhong] = ? AND [phong] = ? AND [gioVao] = ?");
-			preparedStatement.setInt(1, chiTietDichVu.getSoLuong());
-			preparedStatement.setString(2, chiTietDichVu.getDichVu().getMaDichVu());
-			preparedStatement.setString(3, chiTietDatPhong.getDonDatPhong().getMaDonDatPhong());
-			preparedStatement.setString(4, chiTietDatPhong.getPhong().getMaPhong());
-			preparedStatement.setString(5, Time.valueOf(chiTietDatPhong.getGioVao()).toString());
-			res = preparedStatement.executeUpdate() > 0;
-			if (!res)
-				return rollback();
-			return commit();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
 	}
 }

@@ -42,10 +42,10 @@ public class ThemPhong_GUI extends JFrame {
 
 	/**
 	 * Create the frame.
-	 *  
+	 * 
 	 * @param quanLyPhong_GUI
 	 */
-	public ThemPhong_GUI(QuanLyPhong_GUI quanLyPhong_GUI) { 
+	public ThemPhong_GUI(QuanLyPhong_GUI quanLyPhong_GUI) {
 		_this = this;
 		phong_DAO = new Phong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();

@@ -46,29 +46,29 @@ import utils.Utils;
 public class ThongKeDoanhThu_GUI extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private PanelRound pnlResultContainer, pnlChart;
-	private JComboBox<String> cmbDay, cmbMonth, cmbYear;
-	private Chart chart;
+	private Rectangle boundsChart;
+	private Rectangle boundsPnlChart;
+	private Rectangle boundsPnlResultContainer;
 	private Button btnDay, btnMonth, btnYear;
+	private Chart chart;
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private ChiTietDichVu_DAO chiTietDichVu_DAO;
+	private JComboBox<String> cmbDay, cmbMonth, cmbYear;
+	private ArrayList<String> dsKhachHang;
+	private List<LoaiPhong> dsLoaiPhong;
+	private ArrayList<String> dsNhanVien;
+	private ArrayList<Double> dsTongTien;
+	private boolean isPhongVIP;
 	private JLabel lblResDate, lblTongDoanhThuKQ, lblTongTienPhongKQ, lblDoanhThuPhongThuongKQ, lblDoanhThuPhongVIPKQ,
 			lblTongTienDVKQ, lblTongSoGHKQ, lblTongSoHDKQ, lblDoanhThuTrungBinhKQ, lblResult;
 	private LoaiPhong_DAO loaiPhong_DAO;
-	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
-	private List<LoaiPhong> dsLoaiPhong;
-	private ChiTietDichVu_DAO chiTietDichVu_DAO;
-	private Rectangle boundsPnlResultContainer;
-	private Rectangle boundsChart;
-	private int top;
-	private Rectangle boundsPnlChart;
-	private JTable tbl;
-	private DefaultTableModel tableModel;
-	private JScrollPane scr;
 	private String maNhanVien;
-	private boolean isPhongVIP;
+	private PanelRound pnlResultContainer, pnlChart;
+	private JScrollPane scr;
 	private ArrayList<String> setMaDonDatPhong;
-	private ArrayList<String> dsNhanVien;
-	private ArrayList<String> dsKhachHang;
-	private ArrayList<Double> dsTongTien;
+	private DefaultTableModel tableModel;
+	private JTable tbl;
+	private int top;
 
 	public ThongKeDoanhThu_GUI() {
 		loaiPhong_DAO = new LoaiPhong_DAO();
@@ -564,31 +564,22 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 		handleThongKe();
 	}
 
+	private LoaiPhong getLoaiPhong(LoaiPhong lp) {
+		for (LoaiPhong loaiPhong : dsLoaiPhong)
+			if (loaiPhong.equals(lp)) {
+				if (loaiPhong.getTenLoai().toUpperCase().contains("VIP"))
+					isPhongVIP = true;
+				else
+					isPhongVIP = false;
+				return loaiPhong;
+			}
+		return null;
+	}
+
 	private int getNumberOfDaysInMonth(int year, int month) {
 		YearMonth yearMonthObject = YearMonth.of(year, month);
 		int daysInMonth = yearMonthObject.lengthOfMonth();
 		return daysInMonth;
-	}
-
-	private void setDaysToCmb() {
-		if (!cmbDay.isEnabled())
-			return;
-
-		int month = Integer.parseInt(cmbMonth.getSelectedItem().toString());
-		int year = Integer.parseInt(cmbYear.getSelectedItem().toString());
-		int daysOfMonth = getNumberOfDaysInMonth(year, month);
-		LocalDate dateNow = LocalDate.now();
-
-		if (month == dateNow.getMonthValue() && year == dateNow.getYear())
-			daysOfMonth = dateNow.getDayOfMonth();
-
-		cmbDay.removeAllItems();
-		for (int i = 1; i <= daysOfMonth; ++i)
-			if (i < 10)
-				cmbDay.addItem("0" + i);
-			else
-				cmbDay.addItem(i + "");
-		cmbDay.setSelectedIndex(0);
 	}
 
 	private void handleThongKe() {
@@ -750,26 +741,25 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 			thongKeDoanhThuTheoNgay();
 	}
 
-	private void thongKeDoanhThuTheoNgay() {
-		tableModel.setRowCount(0);
+	private void setDaysToCmb() {
+		if (!cmbDay.isEnabled())
+			return;
 
-		for (int i = 0; i < setMaDonDatPhong.size(); i++)
-			tableModel.addRow(new String[] { setMaDonDatPhong.get(i), dsKhachHang.get(i),
-					Utils.formatTienTe(dsTongTien.get(i)), dsNhanVien.get(i) });
+		int month = Integer.parseInt(cmbMonth.getSelectedItem().toString());
+		int year = Integer.parseInt(cmbYear.getSelectedItem().toString());
+		int daysOfMonth = getNumberOfDaysInMonth(year, month);
+		LocalDate dateNow = LocalDate.now();
 
-		pnlChart.add(scr);
-	}
+		if (month == dateNow.getMonthValue() && year == dateNow.getYear())
+			daysOfMonth = dateNow.getDayOfMonth();
 
-	private LoaiPhong getLoaiPhong(LoaiPhong lp) {
-		for (LoaiPhong loaiPhong : dsLoaiPhong)
-			if (loaiPhong.equals(lp)) {
-				if (loaiPhong.getTenLoai().toUpperCase().contains("VIP"))
-					isPhongVIP = true;
-				else
-					isPhongVIP = false;
-				return loaiPhong;
-			}
-		return null;
+		cmbDay.removeAllItems();
+		for (int i = 1; i <= daysOfMonth; ++i)
+			if (i < 10)
+				cmbDay.addItem("0" + i);
+			else
+				cmbDay.addItem(i + "");
+		cmbDay.setSelectedIndex(0);
 	}
 
 	private int setTextLblResDate(int ngay, int thang, int nam, LocalDate dateNow) {
@@ -795,5 +785,15 @@ public class ThongKeDoanhThu_GUI extends JPanel {
 			lblResDate.setText(Utils.convertIntToString(thang) + "/" + nam);
 		}
 		return countDate;
+	}
+
+	private void thongKeDoanhThuTheoNgay() {
+		tableModel.setRowCount(0);
+
+		for (int i = 0; i < setMaDonDatPhong.size(); i++)
+			tableModel.addRow(new String[] { setMaDonDatPhong.get(i), dsKhachHang.get(i),
+					Utils.formatTienTe(dsTongTien.get(i)), dsNhanVien.get(i) });
+
+		pnlChart.add(scr);
 	}
 }

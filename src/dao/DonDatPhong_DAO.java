@@ -30,27 +30,60 @@ public class DonDatPhong_DAO extends DAO {
 	}
 
 	/**
-	 * Get mã đơn đặt phòng đang thuê theo mã phòng
+	 * Cập nhật trong đơn đặt phòng chờ
 	 * 
-	 * @param maPhong
+	 * @param maDatPhong
+	 * @param gioNhanPhong
+	 * @param phongMoi
+	 * @param phongBanDau
 	 * @return
 	 */
-	public DonDatPhong getDonDatPhong(String maPhong) {
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT [donDatPhong] FROM [dbo].[ChiTietDatPhong] CTDP "
-							+ "JOIN [dbo].[DonDatPhong] DDP ON CTDP.donDatPhong = DDP.maDonDatPhong "
-							+ "WHERE [phong] = ? AND [gioRa] IS NULL AND [trangThai] = N'Đang thuê'");
-			preparedStatement.setString(1, maPhong);
-			ResultSet resultSet = preparedStatement.executeQuery();
+	public boolean capNhatPhongTrongPhieuDatPhongTruoc(String maDatPhong, LocalTime gioNhanPhong, List<Phong> phongMoi,
+			List<Phong> phongBanDau) {
 
-			if (resultSet.next())
-				return new DonDatPhong(resultSet.getString("donDatPhong"));
+		try {
+			Connection connection = ConnectDB.getConnection();
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement;
+			String sql;
+			boolean res;
+
+//			--Xoá chi tiết đặt phòng theo mã đơn đặt phòng
+			sql = "DELETE ChiTietDatPhong WHERE donDatPhong = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, maDatPhong);
+			res = preparedStatement.executeUpdate() > 0;
+
+			if (!res)
+				return rollback();
+
+//			Cập nhật danh sách phòng 
+			Time gioNhanPhongTime = Time.valueOf(gioNhanPhong);
+			for (Phong phong : phongMoi) {
+				res = chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phong, gioNhanPhongTime);
+				if (!res)
+					return rollback();
+			}
+//			[Phong] - Cập nhật trạng thái phòng
+//				+ Phòng tạm -> trống
+			for (Phong phong : phongBanDau) {
+				res = phong_DAO.capNhatTrangThaiPhong(phong, "Trống");
+				if (!res)
+					return rollback();
+			}
+//				+ Trống -> Phòng tạm
+			for (Phong phong : phongMoi) {
+				res = phong_DAO.capNhatTrangThaiPhong(phong, "Đã đặt");
+				if (!res)
+					return rollback();
+			}
+
+			return commit();
+
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return false;
 	}
 
 	/**
@@ -194,6 +227,30 @@ public class DonDatPhong_DAO extends DAO {
 			e.printStackTrace();
 		}
 
+		return null;
+	}
+
+	/**
+	 * Get mã đơn đặt phòng đang thuê theo mã phòng
+	 * 
+	 * @param maPhong
+	 * @return
+	 */
+	public DonDatPhong getDonDatPhong(String maPhong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT [donDatPhong] FROM [dbo].[ChiTietDatPhong] CTDP "
+							+ "JOIN [dbo].[DonDatPhong] DDP ON CTDP.donDatPhong = DDP.maDonDatPhong "
+							+ "WHERE [phong] = ? AND [gioRa] IS NULL AND [trangThai] = N'Đang thuê'");
+			preparedStatement.setString(1, maPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return new DonDatPhong(resultSet.getString("donDatPhong"));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -886,63 +943,6 @@ public class DonDatPhong_DAO extends DAO {
 			e.printStackTrace();
 		}
 
-		return false;
-	}
-
-	/**
-	 * Cập nhật trong đơn đặt phòng chờ
-	 * 
-	 * @param maDatPhong
-	 * @param gioNhanPhong
-	 * @param phongMoi
-	 * @param phongBanDau
-	 * @return
-	 */
-	public boolean capNhatPhongTrongPhieuDatPhongTruoc(String maDatPhong, LocalTime gioNhanPhong, List<Phong> phongMoi,
-			List<Phong> phongBanDau) {
-
-		try {
-			Connection connection = ConnectDB.getConnection();
-			connection.setAutoCommit(false);
-			PreparedStatement preparedStatement;
-			String sql;
-			boolean res;
-
-//			--Xoá chi tiết đặt phòng theo mã đơn đặt phòng
-			sql = "DELETE ChiTietDatPhong WHERE donDatPhong = ?";
-			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, maDatPhong);
-			res = preparedStatement.executeUpdate() > 0;
-
-			if (!res)
-				return rollback();
-
-//			Cập nhật danh sách phòng 
-			Time gioNhanPhongTime = Time.valueOf(gioNhanPhong);
-			for (Phong phong : phongMoi) {
-				res = chiTietDatPhong_DAO.themChiTietDatPhong(maDatPhong, phong, gioNhanPhongTime);
-				if (!res)
-					return rollback();
-			}
-//			[Phong] - Cập nhật trạng thái phòng
-//				+ Phòng tạm -> trống
-			for (Phong phong : phongBanDau) {
-				res = phong_DAO.capNhatTrangThaiPhong(phong, "Trống");
-				if (!res)
-					return rollback();
-			}
-//				+ Trống -> Phòng tạm
-			for (Phong phong : phongMoi) {
-				res = phong_DAO.capNhatTrangThaiPhong(phong, "Đã đặt");
-				if (!res)
-					return rollback();
-			}
-
-			return commit();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		return false;
 	}
 }

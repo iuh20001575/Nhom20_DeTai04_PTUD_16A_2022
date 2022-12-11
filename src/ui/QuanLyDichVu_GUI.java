@@ -51,6 +51,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	public static void clock() {
 		Thread clock = new Thread() {
 			@Override
@@ -77,6 +78,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 
 		clock.start();
 	}
+
 	private Button btnXem, btnThem, btnSua, btnXoa;
 	private JComboBox<String> cmbLoaiDV;
 	private JComboBox<String> cmbSoLuong;
