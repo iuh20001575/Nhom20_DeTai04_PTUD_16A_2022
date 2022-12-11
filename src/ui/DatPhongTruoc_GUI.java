@@ -385,8 +385,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		pnlBody.add(lblPhut);
 
 		setEnabledFilterComboBox(false);
-
-		setEventFilterComboBox(true);
 		cmbPhut.addItemListener(_this);
 
 		scrPhongDaChon = new JScrollPane();
@@ -412,6 +410,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
+				System.out.println("413 windowActivated");
+				setEventFilterComboBox(false);
 				String soDienThoai = txtSoDienThoai.getText().trim();
 
 				if (Utils.isSoDienThoai(soDienThoai)) {
@@ -496,6 +496,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			public void dateSelected(SelectedAction arg0, SelectedDate arg1) {
 				setTimeComboBox(-1);
 				handleChangeDateTime();
+				setEnabledFilterComboBox(false);
 			}
 		});
 
@@ -503,11 +504,11 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		btnSearchPhongDatTruoc.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				cmbMaPhong.removeItemListener(_this);
 				dsPhongDaChon = null;
 				showDanhSachPhongDaChon();
 				LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
 				LocalDate dateNow = LocalDate.now();
-				cmbMaPhong.removeItemListener(_this);
 				cmbMaPhong.removeAllItems();
 				cmbMaPhong.addItem(labelCmbMaPhong);
 				if (ngayNhanPhong.isBefore(dateNow)) {
@@ -534,7 +535,8 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 					cmbMaPhong.addItemListener(_this);
 				} else
 					new Notification(_this, components.notification.Notification.Type.WARNING,
-							"Không có phòng nào trống trong khoản thời gian này.").showNotification();
+							"Không có phòng nào trống trong khoản thời gian này").showNotification();
+				repaint();
 			}
 		});
 
@@ -670,12 +672,10 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 
 		btnChonPhong.setEnabled(false);
 		tableModel.setRowCount(0);
-		btnChonPhong.setEnabled(false);
 
-		for (Phong phong : dsPhongDatTruoc) {
+		for (Phong phong : dsPhongDatTruoc)
 			if (!dsPhongDaChon.contains(phong))
 				addRow(phong);
-		}
 
 		if (tbl.getRowCount() > 0) {
 			tbl.setRowSelectionInterval(0, 0);
@@ -754,12 +754,24 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		if (e.getStateChange() == ItemEvent.DESELECTED)
 			return;
 		if (o.equals(cmbGio)) {
+			System.out.println("756 itemStateChanged cmbGio");
 			setTimeComboBox(Integer.parseInt((String) cmbGio.getSelectedItem()));
 			handleChangeDateTime();
-		} else if (o.equals(cmbPhut))
+			return;
+		}
+		if (o.equals(cmbPhut)) {
+			System.out.println("762 itemStateChanged cmbPhut");
 			handleChangeDateTime();
-		else
-			filterPhongDatTruoc();
+			return;
+		}
+		System.out.println("766 itemStateChanged filterPhongDatTruoc");
+		filterPhongDatTruoc();
+
+		if (dsPhongDatTruoc.size() == 0) {
+			JDialogCustom jDialogCustom = new JDialogCustom(_this, components.jDialog.JDialogCustom.Type.warning);
+
+			jDialogCustom.showMessage("Thông báo", "Không có phòng cần tìm");
+		}
 	}
 
 	private void setEnabledFilterComboBox(boolean b) {
@@ -806,11 +818,12 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		}
 		setEnabledTimeComboBox(true);
 
+//		Ngày nhận phòng là ngày hiện tại
 		if (dateSelect.isEqual(LocalDate.now())) {
 			for (int i = gio; i < gioDongCua; ++i)
-				cmbGio.addItem(i + "");
+				cmbGio.addItem(Utils.convertIntToString(i));
 			if (gio == gioSelect || gioSelect == -1) {
-				if (phut > 30) {
+				if (phut > 55) {
 					cmbGio.removeItemAt(0);
 					for (int j = 0; j < 60; j += 5)
 						cmbPhut.addItem(j + "");
@@ -823,10 +836,11 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				for (int j = 0; j < 60; j += 5)
 					cmbPhut.addItem(j + "");
 		} else {
+//			Ngày nhận phòng > ngày hiện tại
 			for (int i = gioMoCua; i < gioDongCua; ++i)
-				cmbGio.addItem(i + "");
+				cmbGio.addItem(Utils.convertIntToString(i));
 			for (int j = 0; j < 60; j += 5)
-				cmbPhut.addItem(j + "");
+				cmbPhut.addItem(Utils.convertIntToString(j));
 		}
 
 		if (gioSelect == 23) {
