@@ -42,6 +42,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	public static Thread clock() {
 		Thread clock = new Thread() {
 			@Override
@@ -70,6 +71,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 
 		return clock;
 	}
+
 	private ThongTinChiTietPhieuDatPhongTruoc_GUI _this;
 	private Button btnHuyPhong;
 	private Button btnNhanPhong;
@@ -474,8 +476,8 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 				List<Phong> listPhong = new ArrayList<>();
 				List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
 				listChiTietDatPhong.forEach(list -> listPhong.add(list.getPhong()));
-				handleOpenSubFrame(pnlXuatPDF,
-						new PhieuDatPhongTruoc_PDF(main, _this, nhanVien, khachHang, donDatPhong, listPhong));
+//				handleOpenSubFrame(pnlXuatPDF,
+//						new PhieuDatPhongTruoc_PDF(main, _this, nhanVien, khachHang, donDatPhong, listPhong));
 			}
 		});
 

@@ -367,24 +367,6 @@ public class DonDatPhong_DAO extends DAO {
 		return null;
 	}
 
-	public DonDatPhong getDonDatPhong(String maPhong) {
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT [donDatPhong] FROM [dbo].[ChiTietDatPhong] CTDP "
-							+ "JOIN [dbo].[DonDatPhong] DDP ON CTDP.donDatPhong = DDP.maDonDatPhong "
-							+ "WHERE [phong] = ? AND [gioRa] IS NULL AND [trangThai] = N'Đang thuê'");
-			preparedStatement.setString(1, maPhong);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return new DonDatPhong(resultSet.getString("donDatPhong"));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	/**
 	 * Get giờ vào phòng của phòng đang thuê hoặc phòng đặt trước gần nhất
 	 * 
@@ -1186,5 +1168,4 @@ public class DonDatPhong_DAO extends DAO {
 
 		return listPhongDangThue;
 	}
->>>>>>> main
 }

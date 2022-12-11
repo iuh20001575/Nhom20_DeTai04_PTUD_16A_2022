@@ -602,7 +602,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		cboMaPhieuDat.setSelectedIndex(0);
 		cboTrangThai.setSelectedIndex(0);
 		txtSoDienThoai.setText("");
-		Utils.emptyTable(tbl);
+		tableModel.setRowCount(0);
 		filterPhieuDatPhong();
 		pnlControl.setTbl(tbl);
 	}
