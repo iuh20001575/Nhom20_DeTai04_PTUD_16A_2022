@@ -476,8 +476,8 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 				List<Phong> listPhong = new ArrayList<>();
 				List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
 				listChiTietDatPhong.forEach(list -> listPhong.add(list.getPhong()));
-//				handleOpenSubFrame(pnlXuatPDF,
-//						new PhieuDatPhongTruoc_PDF(main, _this, nhanVien, khachHang, donDatPhong, listPhong));
+				handleOpenSubFrame(pnlXuatPDF,
+						new PhieuDatPhongTruoc_PDF(main, _this, nhanVien, khachHang, donDatPhong, listPhong));
 			}
 		});
 
