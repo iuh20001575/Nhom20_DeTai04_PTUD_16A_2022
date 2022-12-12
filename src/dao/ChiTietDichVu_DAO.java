@@ -18,6 +18,13 @@ import entity.LoaiDichVu;
 import entity.Phong;
 
 public class ChiTietDichVu_DAO extends DAO {
+	/**
+	 * Cập nhật số lượng dịch vụ
+	 * 
+	 * @param chiTietDichVu
+	 * @param isSoLuongTang
+	 * @return
+	 */
 	public boolean capNhatSoLuongDichVu(ChiTietDichVu chiTietDichVu, boolean isSoLuongTang) {
 		Connection connection = ConnectDB.getConnection();
 		PreparedStatement preparedStatement;

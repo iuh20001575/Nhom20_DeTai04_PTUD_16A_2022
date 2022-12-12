@@ -43,17 +43,11 @@ public class NhanVien {
 	private String hoTen;
 	private double luong;
 	private String maNhanVien;
-
 	private LocalDate ngaySinh;
-
 	private Phuong phuong;
-
 	private Quan quan;
-
 	private String soDienThoai;
-
 	private Tinh tinh;
-
 	private TrangThai trangThai;
 
 	public NhanVien() {

@@ -9,7 +9,6 @@ public class Quan {
 
 	private String id;
 	private String quan;
-
 	private Tinh tinh;
 
 	public Quan() {

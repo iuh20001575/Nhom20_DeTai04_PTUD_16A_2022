@@ -28,11 +28,8 @@ public class Phong implements Comparable<Phong> {
 	}
 
 	private LoaiPhong loaiPhong;
-
 	private String maPhong;
-
 	private int soLuongKhach;
-
 	private TrangThai trangThai;
 
 	public Phong() {
