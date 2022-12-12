@@ -4,16 +4,17 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class KhachHang {
-	private String cccd;
-	private String diaChiCuThe;
-	private boolean gioiTinh;
-	private String hoTen;
 	private String maKhachHang;
+	private String hoTen;
+	private String cccd;
 	private LocalDate ngaySinh;
-	private Phuong phuong;
-	private Quan quan;
+	private boolean gioiTinh;
 	private String soDienThoai;
 	private Tinh tinh;
+	private Quan quan;
+	private Phuong phuong;
+	private String diaChiCuThe;
+	private boolean trangThaiXoa;
 
 	public KhachHang() {
 		super();
@@ -25,7 +26,7 @@ public class KhachHang {
 	}
 
 	public KhachHang(String maKhachHang, String hoTen, String cccd, LocalDate ngaySinh, boolean gioiTinh,
-			String soDienThoai, Tinh tinh, Quan quan, Phuong phuong, String diaChiCuThe) {
+			String soDienThoai, Tinh tinh, Quan quan, Phuong phuong, String diaChiCuThe, boolean trangThaiXoa) {
 		super();
 		this.maKhachHang = maKhachHang;
 		this.hoTen = hoTen;
@@ -37,6 +38,7 @@ public class KhachHang {
 		this.quan = quan;
 		this.phuong = phuong;
 		this.diaChiCuThe = diaChiCuThe;
+		this.trangThaiXoa = trangThaiXoa;
 	}
 
 	@Override
@@ -85,6 +87,10 @@ public class KhachHang {
 
 	public Tinh getTinh() {
 		return tinh;
+	}
+
+	public boolean isTrangThaiXoa() {
+		return trangThaiXoa;
 	}
 
 	@Override
@@ -136,11 +142,14 @@ public class KhachHang {
 		this.tinh = tinh;
 	}
 
+	public void setTrangThaiXoa(boolean trangThaiXoa) {
+		this.trangThaiXoa = trangThaiXoa;
+	}
+
 	@Override
 	public String toString() {
 		return "KhachHang [maKhachHang=" + maKhachHang + ", hoTen=" + hoTen + ", cccd=" + cccd + ", ngaySinh="
 				+ ngaySinh + ", gioiTinh=" + gioiTinh + ", soDienThoai=" + soDienThoai + ", tinh=" + tinh + ", quan="
-				+ quan + ", phuong=" + phuong + ", diaChiCuThe=" + diaChiCuThe + "]";
+				+ quan + ", phuong=" + phuong + ", diaChiCuThe=" + diaChiCuThe + ", trangThaiXoa=" + trangThaiXoa + "]";
 	}
-
 }

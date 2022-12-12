@@ -248,7 +248,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		btnCapNhat.setColor(new Color(140, 177, 180));
 		btnCapNhat.setBorderColor(new Color(203, 239, 255));
 		btnCapNhat.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnCapNhat.setBounds(-2, -2, 254, 54);
+		btnCapNhat.setBounds(320, -2, 254, 54);
 		pnlActions.add(btnCapNhat);
 
 		btnCapNhat.addMouseListener(new MouseAdapter() {
@@ -259,69 +259,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 			}
 		});
 
-		Button btnLuu = new Button("Lưu");
-		btnLuu.setUI(new MetalButtonUI() {
-			protected Color getDisabledTextColor() {
-				return Color.WHITE;
-			}
-		});
-		btnLuu.setIcon(new ImageIcon("Icon\\floppy-disk 1.png"));
-		btnLuu.setRadius(8);
-		btnLuu.setForeground(Color.WHITE);
-		btnLuu.setFont(new Font("Segoe UI", Font.PLAIN, 32));
-		btnLuu.setColorOver(new Color(140, 177, 180));
-		btnLuu.setColorClick(new Color(140, 177, 180, 204));
-		btnLuu.setColor(new Color(140, 177, 180));
-		btnLuu.setBorderColor(new Color(203, 239, 255));
-		btnLuu.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnLuu.setBounds(268, -2, 254, 54);
-		pnlActions.add(btnLuu);
 
-		btnLuu.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				String sma = txtMa.getText();
-				String sten = txtTen.getText();
-				LocalDate sngaySinh = Utils.getLocalDate(txtNgaySinh.getText());
-				Boolean gioiTinh = radNam.isSelected();
-				String sCCCD = txtCCCD.getText();
-				String sSDT = txtSDT.getText();
-				String sTinh = cmbTinh.getSelectedItem().toString();
-				String sQuan = cmbQuan.getSelectedItem().toString();
-				String sPhuong = cmbPhuong.getSelectedItem().toString();
-				String sDCCT = txtDiaChiCT.getText();
-				khachHang_DAO.themKhachHang(
-						new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, DiaChi_DAO.getTinh(sTinh),
-								DiaChi_DAO.getQuan(tinh, sQuan), DiaChi_DAO.getPhuong(quan, sPhuong), sDCCT));
-
-			}
-		});
-
-		Button btnHuy = new Button("Hủy");
-		btnHuy.setUI(new MetalButtonUI() {
-			protected Color getDisabledTextColor() {
-				return Color.WHITE;
-			}
-		});
-		btnHuy.setIcon(new ImageIcon("Icon\\cancelled 1.png"));
-		btnHuy.setRadius(8);
-		btnHuy.setForeground(Color.WHITE);
-		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 32));
-		btnHuy.setColorOver(new Color(140, 177, 180));
-		btnHuy.setColorClick(new Color(140, 177, 180, 204));
-		btnHuy.setColor(new Color(140, 177, 180));
-		btnHuy.setBorderColor(new Color(203, 239, 255));
-		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnHuy.setBounds(540, -2, 254, 54);
-		pnlActions.add(btnHuy);
-
-		btnHuy.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				main.backPanel();
-
-			}
-		});
 
 		cmbTinh.addItemListener(this);
 		cmbQuan.addItemListener(this);
@@ -344,7 +282,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		String sPhuong = cmbPhuong.getSelectedItem().toString();
 		String sDCCT = txtDiaChiCT.getText();
 		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, DiaChi_DAO.getTinh(sTinh),
-				DiaChi_DAO.getQuan(tinh, sQuan), DiaChi_DAO.getPhuong(quan, sPhuong), sDCCT);
+				DiaChi_DAO.getQuan(tinh, sQuan), DiaChi_DAO.getPhuong(quan, sPhuong), sDCCT, false);
 	}
 
 	@Override

@@ -256,7 +256,7 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 		btnLuu.setColor(new Color(140, 177, 180));
 		btnLuu.setBorderColor(new Color(203, 239, 255));
 		btnLuu.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnLuu.setBounds(444, 0, 250, 50);
+		btnLuu.setBounds(434, 0, 250, 50);
 		pnlActions.add(btnLuu);
 
 		btnLuu.addMouseListener(new MouseAdapter() {
@@ -265,9 +265,9 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 				if (khachHang_DAO.suaKhachHang(getKhachHangTuForm())) {
 					new Notification(main, components.notification.Notification.Type.SUCCESS,
 							"Cập nhật thông tin khách hàng mới thành công").showNotification();
-
-				}
-
+				} else
+					new Notification(main, components.notification.Notification.Type.ERROR,
+							"Cập nhật thông tin khách hàng thất bại").showNotification();
 			}
 		});
 
@@ -286,14 +286,13 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 		btnHuy.setColor(new Color(140, 177, 180));
 		btnHuy.setBorderColor(new Color(203, 239, 255));
 		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnHuy.setBounds(97, 0, 250, 50);
+		btnHuy.setBounds(117, 0, 250, 50);
 		pnlActions.add(btnHuy);
 
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				main.backPanel();
-
+				main.addPnlBody(new XemKhachHang_GUI(main, khachHang), "Xem khách hàng", 2, 0);
 			}
 		});
 
@@ -317,7 +316,7 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 		String sPhuong = cmbPhuong.getSelectedItem().toString();
 		String sDCCT = txtDiaChiCT.getText();
 		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, DiaChi_DAO.getTinh(sTinh),
-				DiaChi_DAO.getQuan(tinh, sQuan), DiaChi_DAO.getPhuong(quan, sPhuong), sDCCT);
+				DiaChi_DAO.getQuan(tinh, sQuan), DiaChi_DAO.getPhuong(quan, sPhuong), sDCCT, false);
 	}
 
 	@Override

@@ -359,7 +359,7 @@ public class QuanLyPhong_GUI extends JPanel {
 				}
 			}
 		});
-
+// Sự kiện nút thêm
 		btnThem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -367,7 +367,7 @@ public class QuanLyPhong_GUI extends JPanel {
 			}
 		});
 
-//		Sự kiện nút sửa thông tin dịch vụ
+//		Sự kiện nút sửa thông tin phòng
 		btnSua.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -376,10 +376,10 @@ public class QuanLyPhong_GUI extends JPanel {
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
 					new JDialogCustom(jFrame, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
-							"Vui lòng chọn dịch vụ muốn sửa");
+							"Vui lòng chọn phòng muốn sửa");
 				} else {
 					String maPhong = tableModel.getValueAt(row, 0).toString();
-					openJFrameSub(new ThongTinChiTietPhong_GUI(jFrame, phong_DAO.getPhong(maPhong), true));
+					openJFrameSub(new ThongTinChiTietPhong_GUI(_this, phong_DAO.getPhong(maPhong)));		
 				}
 			}
 		});
@@ -448,6 +448,11 @@ public class QuanLyPhong_GUI extends JPanel {
 		addRow(list);
 		pnlControl.setTbl(tbl);
 	}
+	public void loadTable() {
+		tableModel.setRowCount(0);
+		addRow(phong_DAO.getAllPhong());
+	}
+	
 
 	public void openJFrameSub(JFrame jFrame) {
 		this.jFrame.setGlassPane(glass);

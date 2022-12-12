@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -293,6 +295,68 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		cmbTinh.addItemListener(this);
 		cmbQuan.addItemListener(this);
 		cmbPhuong.addItemListener(this);
+		
+//		Sự kiện txtTen
+		txtTen.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtTen.setError(false);
+			}
+		});
+
+//		Sự kiện txtCCCD
+		txtCCCD.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtCCCD.setError(false);
+			}
+		});
+
+//		Sự kiện txtSDT
+		txtSDT.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtSDT.setError(false);
+			}
+		});
+
+//		Sự kiện txtDiaChiCT
+		txtDiaChiCT.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtDiaChiCT.setError(false);
+			}
+		});
+
+
+
+		
+//		Sự kiện nút lưu
+		btnLuu.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!validator())
+					return;
+				KhachHang khachHang = getKhachHangTuForm();
+				if (khachHang_DAO.themKhachHang(khachHang)) {
+					new Notification(main, components.notification.Notification.Type.SUCCESS,
+							"Đã thêm khách hàng mới thành công").showNotification();
+					xoaRong();
+					txtMa.setText(khachHang_DAO.getMaKhachHang());
+					repaint();
+					if (jFrameParent != null) {
+						jFrameParent.setVisible(false);
+						jFrameParent.setVisible(true);
+						main.setVisible(false);
+					}
+				}
+				else
+					new Notification(main, Type.ERROR, "Thêm khách hàng thất bại").showNotification();
+				
+
+			}
+		});
+		
 
 		addAncestorListener(new AncestorListener() {
 
@@ -347,7 +411,8 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		phuong = DiaChi_DAO.getPhuong(quan, sPhuong);
 		String sDCCT = txtDiaChiCT.getText();
 
-		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinhSelect, quan, phuong, sDCCT);
+		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinhSelect, quan, phuong,
+				sDCCT, false);
 	}
 
 	@Override
@@ -403,34 +468,15 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (!validator())
-			return;
-
-		KhachHang khachHang = getKhachHangTuForm();
-		if (khachHang_DAO.themKhachHang(khachHang)) {
-			new Notification(jFrameParent != null ? jFrameParent : main,
-					components.notification.Notification.Type.SUCCESS, "Đã thêm khách hàng mới thành công")
-					.showNotification();
-
-			if (jFrameParent != null) {
-//				System.out.println(417);
-				main.backPanel();
-//				System.out.println(419);
-				jFrameParent.setVisible(true);
-//				System.out.println(421);
-				jFrameParent.setAlwaysOnTop(true);
-//				System.out.println(423);
-				main.getGlassPane().setVisible(true);
-//				System.out.println(425);
-			}
-		}
-	}
-
+	
 	@Override
 	public void mouseEntered(MouseEvent e) {
 
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		
 	}
 
 	@Override
@@ -453,11 +499,10 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		// list.addItem((E) firstLabel);
 		return list;
 	}
-
 	private void setjFrameParent(JFrame jFrameParent) {
 		this.jFrameParent = jFrameParent;
 	}
-
+	
 	/**
 	 * Hiển thị thông báo lỗi và focus các JTextField
 	 *
@@ -485,7 +530,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		String ten = txtTen.getText().trim();
 
 		if (ten.length() <= 0)
-			return showThongBaoLoi(txtTen, "Vui lòng nhập họ tên nhân viên");
+			return showThongBaoLoi(txtTen, "Vui lòng nhập họ tên khách hàng");
 
 		if (Pattern.matches(String.format(".*[^%s%s ].*", vietNamese, vietNameseLower), ten))
 			return showThongBaoLoi(txtTen, "Họ tên chỉ chứa các ký tự chữ cái");
@@ -521,7 +566,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		boolean isDuTuoi = daysElapsed / (18 * 365) > 0;
 
 		if (!isDuTuoi) {
-			new Notification(main, Type.ERROR, "Nhân viên chưa đủ 18 tuổi").showNotification();
+			new Notification(main, Type.ERROR, "Khách hàng chưa đủ 18 tuổi").showNotification();
 			dateChoose.showPopup();
 			return false;
 		}
@@ -536,24 +581,62 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 		String tinh = (String) cmbTinh.getSelectedItem();
 
-		if (tinh.equals(Tinh.getTinhLabel())) {
+		if (tinh.equals(Tinh.getTinhLabel()) || tinh.equals(null)) {
 			new Notification(main, Type.ERROR, "Vui lòng chọn tỉnh/ thành phố").showNotification();
 			cmbTinh.showPopup();
 			return false;
 		}
 
-		String quan = (String) cmbQuan.getSelectedItem();
+		String sQuan = (String) cmbQuan.getSelectedItem();
 
-		if (quan.equals(Quan.getQuanLabel())) {
+		if ( sQuan == null || sQuan.equals(Quan.getQuanLabel()) ) {
 			new Notification(main, Type.ERROR, "Vui lòng chọn quận/ huyện").showNotification();
+			String tinhSelected = (String) cmbTinh.getSelectedItem();
+			cmbPhuong.setEnabled(false);
+			cmbQuan = resizeComboBox(cmbQuan);
+			quan = null;
+			phuong = null;
+			Tinh sTinh = DiaChi_DAO.getTinh(tinhSelected);
+			ThemKhachHang_GUI.this.tinh = sTinh;
+			ArrayList<Quan> listQuan = (ArrayList<Quan>) DiaChi_DAO.getQuan(ThemKhachHang_GUI.this.tinh);
+			listQuan.sort(new Comparator<Quan>() {
+				@Override
+				public int compare(Quan o1, Quan o2) {
+					return o1.getQuan().compareToIgnoreCase(o2.getQuan());
+				}
+			});
+			for (Quan quan : listQuan) {
+				cmbQuan.addItem(quan.getQuan());
+			}
+			cmbQuan.setSelectedItem(listQuan.get(1));
+			cmbQuan.setEnabled(true);
 			cmbQuan.showPopup();
 			return false;
 		}
 
-		String phuong = (String) cmbPhuong.getSelectedItem();
+		String sPhuong = (String) cmbPhuong.getSelectedItem();
 
-		if (phuong.equals(Phuong.getPhuongLabel())) {
+		if (sPhuong == null || sPhuong.equals(Phuong.getPhuongLabel())) {
 			new Notification(main, Type.ERROR, "Vui lòng chọn phường/ xã").showNotification();
+			String tinhSelected = (String) cmbTinh.getSelectedItem();
+			String quanSelected = (String) cmbQuan.getSelectedItem();
+			cmbPhuong = resizeComboBox(cmbPhuong);
+			phuong = null;
+			Tinh sTinh = DiaChi_DAO.getTinh(tinhSelected);
+			Quan quan = DiaChi_DAO.getQuan(sTinh, quanSelected);
+			ThemKhachHang_GUI.this.quan = quan;
+			ArrayList<Phuong> listPhuong = (ArrayList<Phuong>) DiaChi_DAO.getPhuong(ThemKhachHang_GUI.this.quan);
+			listPhuong.sort(new Comparator<Phuong>() {
+
+				@Override
+				public int compare(Phuong o1, Phuong o2) {
+					return o1.getPhuong().compareToIgnoreCase(o2.getPhuong());
+				}
+			});
+			for (Phuong phuong : listPhuong) {
+				cmbPhuong.addItem(phuong.getPhuong());
+			}
+			cmbPhuong.setEnabled(true);
 			cmbPhuong.showPopup();
 			return false;
 		}
@@ -564,5 +647,26 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 			return showThongBaoLoi(txtDiaChiCT, "Vui lòng nhập địa chỉ");
 
 		return true;
+	}
+	
+	/**
+	 * Xóa rỗng các textfield và làm mới ComboBox
+	 */
+	private void xoaRong() {
+		txtTen.setText("");
+		txtCCCD.setText("");
+		txtSDT.setText("");
+		dateChoose.toDay();
+
+		cmbPhuong.setSelectedIndex(0);
+		cmbQuan.setSelectedIndex(0);
+		cmbTinh.setSelectedIndex(0);
+		cmbPhuong.setSelectedIndex(0);
+		cmbQuan.setEnabled(false);
+		cmbPhuong.setEnabled(false);
+		txtDiaChiCT.setText("");
+		
+		txtTen.requestFocus();
+		main.repaint();
 	}
 }

@@ -50,18 +50,16 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 	 * 
 	 * @param quanLyPhong_GUI
 	 */
-	public ThongTinChiTietPhong_GUI(Main jFrame, Phong phong, boolean isCapNhat) {
+	public ThongTinChiTietPhong_GUI(QuanLyPhong_GUI quanLyPhong_GUI, Phong phong) {
 		try {
 			new ConnectDB().connect();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		quanLyPhong_GUI = new QuanLyPhong_GUI(jFrame);
 		_this = this;
 
 		phong_DAO = new Phong_DAO();
 		loaiPhong_DAO = new LoaiPhong_DAO();
-		main = jFrame;
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(0, 0, 482, 300);
 		setUndecorated(true);
@@ -84,7 +82,7 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 		pnlContainer.add(pnlHeading);
 		pnlHeading.setLayout(null);
 
-		JLabel lblTitle = new JLabel("Thêm phòng");
+		JLabel lblTitle = new JLabel("Sửa phòng");
 		lblTitle.setForeground(Color.WHITE);
 		lblTitle.setBounds(141, 9, 200, 32);
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
@@ -167,8 +165,6 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 
 		cmbSoLuong = new ComboBox<String>();
 		cmbSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		// cmbSoLuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Số lượng
-		// khách", "5", "10", "20" }));
 		cmbSoLuong.addItem("Số lượng khách");
 		cmbSoLuong.addItem("5");
 		cmbSoLuong.addItem("10");
@@ -179,8 +175,9 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 
 		List<LoaiPhong> dsLoaiPhong = loaiPhong_DAO.getAllLoaiPhong();
 		dsLoaiPhong.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));
-
+		repaint();
 		setPhongVaoForm(phong);
+		setEnabledForm(false);
 
 //		Sự kiện txtMaPhong
 		txtMaPhong.addKeyListener(new KeyAdapter() {
@@ -204,6 +201,7 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 				btnHuy.setVisible(true);
 				btnLuu.setEnabled(true);
 				setEnabledForm(true);
+				repaint();
 			}
 		});
 
@@ -211,13 +209,12 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// setErrorAllJTextField(false);
 				setPhongVaoForm(phong);
 				btnCapNhat.setVisible(true);
 				btnHuy.setVisible(false);
 				btnLuu.setEnabled(false);
 				setEnabledForm(false);
-				ThongTinChiTietPhong_GUI.this.main.repaint();
+				repaint();
 			}
 		});
 
@@ -234,15 +231,17 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 				boolean res = phong_DAO.suaPhong(phong);
 
 				if (res) {
-					new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
+					new Notification(_this, components.notification.Notification.Type.SUCCESS,
 							"Cập nhật thông tin phòng thành công").showNotification();
 					btnCapNhat.setVisible(true);
 					btnHuy.setVisible(false);
 					btnLuu.setEnabled(false);
 					setEnabledForm(false);
-					ThongTinChiTietPhong_GUI.this.main.repaint();
-//				}else {
-//					new Notification(main, Type.ERROR, "Cập nhật thông tin dịch vụ thất bại").showNotification();
+					quanLyPhong_GUI.loadTable();
+					repaint();
+				} else {
+					new Notification(_this, components.notification.Notification.Type.ERROR,
+							"Cập nhật thông tin phòng thất bại").showNotification();
 				}
 			}
 		});
@@ -252,7 +251,7 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 	/**
 	 * Get phòng từ form
 	 * 
-	 * @return dịch vụ
+	 * @return phòng
 	 */
 	private Phong getPhongTuForm() {
 		String maPhong = txtMaPhong.getText();
@@ -274,9 +273,9 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 	}
 
 	/**
-	 * Set dịch vụ vào form
+	 * Set phòng vào form
 	 * 
-	 * @param dichVu
+	 * @param phong
 	 */
 	private void setPhongVaoForm(Phong phong) {
 		txtMaPhong.setText(phong.getMaPhong());
@@ -304,9 +303,9 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 			return false;
 		}
 
-		if (phong_DAO.isMaPhongTonTai(maPhong)) {
+		if (!phong_DAO.isMaPhongTonTai(maPhong)) {
 			notification = new Notification(_this, components.notification.Notification.Type.ERROR,
-					"Mã phòng đã tồn tại");
+					"Mã phòng chưa tồn tại");
 			txtMaPhong.setError(true);
 			notification.showNotification();
 			return false;

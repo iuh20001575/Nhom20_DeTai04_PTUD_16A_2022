@@ -1,4 +1,4 @@
-﻿--USE MASTER
+﻿﻿--USE MASTER
 --DROP DATABASE [PTUD_QuanLyKaraokeNice]
 
 -- TẠO DATABASE
@@ -22847,13 +22847,13 @@ end
 go
 -- THÊM DỮ LIỆU VÀO BẢNG
 INSERT NhanVien
-VALUES ('NV111', 'Nguyen Thanh Trung', '111111111111', '0111111111', '2004-9-24', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, N'Đang làm')
+VALUES ('NV111', N'Nguyễn Thành Trung', '072302006045', '0111111111', '2002-9-24', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, N'Đang làm')
 
 INSERT NhanVien
-VALUES ('NV112', N'Trần Huỳnh Như', '111111111112', '0111111112', '2004-9-20', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, N'Đang làm')
+VALUES ('NV112', N'Trần Huỳnh Như', '072302006035', '0111111112', '2004-9-20', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Nhân viên', 10, N'Đang làm')
 
 INSERT NhanVien
-VALUES ('NV113', N'Đặng Ngọc Hoài Thương','111111111113', '0111111113', '2002-4-25', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Quản lý', 10, N'Đang làm')
+VALUES ('NV113', N'Đặng Ngọc Hoài Thương','072302006025', '0111111113', '2002-4-25', 1, '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', N'Nhân viên', 10, N'Đang làm')
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM NhanVien
@@ -22876,6 +22876,7 @@ CREATE TABLE KhachHang (
 	quan NVARCHAR(15) NOT NULL,
 	phuong NVARCHAR(15) NOT NULL,
 	diaChiCuThe NVARCHAR(55) NOT NULL,
+	trangThaiXoa BIT NOT NULL, -- true: (đã xóa)1, false:(chưa xóa) 0
 	CONSTRAINT CHK_KhachHang_maKhachHang_ThoaMau CHECK (maKhachHang LIKE 'KH[0-9][0-9][0-9]'), -- Kiểm tra mã khách hàng có dạng: KHxxx
 	CONSTRAINT CHK_KhachHang_cccd_Chua12ChuSo CHECK (cccd like '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), -- Kiểm tra căn cước công dân phải là 12 ký tự số
 	CONSTRAINT CHK_KhachHang_soDienThoai_Chua10ChuSo CHECK (soDienThoai like '0[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'), -- Kiểm tra số điện thoại phải là 10 ký tự số
@@ -22888,14 +22889,21 @@ CREATE TABLE KhachHang (
 -- THÊM DỮ LIỆU VÀO BẢNG
 go
 INSERT KhachHang
-VALUES ('KH111', 'Pham Thanh An', '111111111111', '2004-9-24', 1, '0111111111', '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An')
+VALUES ('KH111', 'Pham Thanh An', '072302006012', '2004-9-24', 1, '0111111111', '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', 0)
 INSERT KhachHang
-VALUES ('KH112', N'Phạm Tường Vy', '111111111112', '2004-9-24', 0, '0111111112', '106008781098622', '106281379506480', '106756471969301', N'Nguyễn Thái Sơn')
-
+VALUES ('KH112', N'Phạm Tường Vy', '072302006013', '2004-9-24', 0, '0111111112', '106008781098622', '106281379506480', '106756471969301', N'Nguyễn Thái Sơn', 0)
 INSERT KhachHang
-VALUES ('KH113', N'Đặng Ngọc Hoài Thương', '111111111113', '2004-9-24', 0, '0111111113', '106008781098622', '106281379506480', '106756471969301', N'Nguyễn Kiệm')
+VALUES ('KH113', N'Đặng Ngọc Hoài Thương', '072302006014', '2004-9-24', 0, '0111111113', '106008781098622', '106281379506480', '106756471969301', N'Nguyễn Kiệm',0)
+INSERT KhachHang
+VALUES ('KH114', 'Pham Hải My', '072302006015', '2004-9-24', 0, '0111111114', '106008781098622', '106281379506480', '106756471969301', N'Huỳnh Khương An', 1)
+INSERT KhachHang
+VALUES ('KH115', N'Phạm Ngọc Mỹ Loan', '072302006016', '2004-9-24', 0, '0111111115', '106008781098622', '106281379506480', '106756471969301', N'Nguyễn Thái Sơn', 1)
+INSERT KhachHang
+VALUES ('KH116', N'Đặng Hoài Phong', '072302006017', '2004-9-24', 1, '0111111116', '106008781098622', '106281379506480', '106756471969301', N'Nguyễn Kiệm',0)
 
 -- TRUY VẤN DỮ LIỆU
+
+
 SELECT * FROM KhachHang
 SELECT * FROM NhanVien
 -- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
@@ -23117,9 +23125,6 @@ CREATE TABLE DonDatPhong (
 -- THÊM DỮ LIỆU VÀO BẢNG
 --delete DatPhong where maDatPhong = 'MDP1111'
 go
---INSERT DatPhong
---VALUES ('MDP1111', 'KH111', 'NV111', GETDATE(), CONVERT(TIME(0), '15:50:00'), GETDATE(), CONVERT(TIME(0), GETDATE()), N'Đang chờ')
-
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM DonDatPhong
@@ -23156,15 +23161,7 @@ CREATE TABLE ChiTietDatPhong (
 	CONSTRAINT FK_ChiTietDatPhong_DatPhong FOREIGN KEY (donDatPhong) REFERENCES DonDatPhong(maDonDatPhong),
 	CONSTRAINT FK_ChiTietDatPhong_Phong FOREIGN KEY (phong) REFERENCES Phong(maPhong)
 )
-
--- THÊM DỮ LIỆU VÀO BẢNG
-
 go
---INSERT ChiTietDatPhong
---VALUES ('MDP1111', '01.01', CONVERT(TIME(0), GETDATE()), CONVERT(TIME(0), '23:50:00'))
-
--- TRUY VẤN DỮ LIỆU
-SELECT * FROM ChiTietDatPhong
 
 -- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
 -- DELETE ChiTietDatPhong
@@ -23185,21 +23182,7 @@ CREATE TABLE ChiTietDichVu (
 	CONSTRAINT FK_ChiTietDichVu_DichVu FOREIGN KEY (dichVu) REFERENCES DichVu(maDichVu),
 	CONSTRAINT FK_ChiTietDichVu_ChiTietDatPhong FOREIGN KEY (donDatPhong, phong, gioVao) REFERENCES ChiTietDatPhong(donDatPhong, phong, gioVao)
 )
-
--- THÊM DỮ LIỆU VÀO BẢNG
---delete ChiTietDichVu where datPhong = 'MDP1111'
 go
---INSERT ChiTietDichVu
---VALUES ('DV001', 'MDP1111', 12)
-
--- TRUY VẤN DỮ LIỆU
-SELECT * FROM ChiTietDichVu
-
--- XÓA TẤT CẢ DỮ LIỆU KHỎI BẢNG
--- DELETE ChiTietDichVu
-select * from NhanVien
-select * from TaiKhoan
-select * from KhachHang
 
 GO
 CREATE FUNCTION fnSubTime(@first time(0), @second time(0))

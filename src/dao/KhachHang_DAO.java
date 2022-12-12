@@ -27,7 +27,33 @@ public class KhachHang_DAO {
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM KhachHang WHERE hoTen LIKE ?");
+					.prepareStatement("SELECT * FROM KhachHang WHERE hoTen LIKE ? and trangThaiXoa = 0");
+
+			preparedStatement.setString(1, "%" + hoTen + "%");
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getKhachHang(resultSet));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
+	/**
+	 * Lọc khách hàng đã xóa theo họ tên
+	 * 
+	 * @param hoTen
+	 * @return
+	 */
+	public List<KhachHang> filterKhachHangDaXoa(String hoTen) {
+		List<KhachHang> list = new ArrayList<>();
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM KhachHang WHERE hoTen LIKE ? and trangThaiXoa = 1");
 
 			preparedStatement.setString(1, "%" + hoTen + "%");
 
@@ -42,8 +68,9 @@ public class KhachHang_DAO {
 		return list;
 	}
 
+
 	/**
-	 * Get danh sách tất cả các khách hàng
+	 * Get danh sách tất cả các khách hàng chưa xóa
 	 * 
 	 * @return
 	 */
@@ -52,7 +79,28 @@ public class KhachHang_DAO {
 
 		try {
 			Statement statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery(("SELECT * FROM KhachHang"));
+			ResultSet resultSet = statement.executeQuery(("SELECT * FROM KhachHang where trangThaiXoa = 0"));
+
+			while (resultSet.next())
+				list.add(getKhachHang(resultSet));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
+	 * Get danh sách tất cả các khách hàng đã xóa
+	 * 
+	 * @return
+	 */
+	public List<KhachHang> getAllKhachHangDaXoa() {
+		List<KhachHang> list = new ArrayList<KhachHang>();
+
+		try {
+			Statement statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery(("SELECT * FROM KhachHang where trangThaiXoa = 1"));
 
 			while (resultSet.next())
 				list.add(getKhachHang(resultSet));
@@ -81,9 +129,10 @@ public class KhachHang_DAO {
 		Quan quan = new Quan(resultSet.getString(8));
 		Phuong phuong = new Phuong(resultSet.getString(9));
 		String diaChiCuThe = resultSet.getString(10);
+		boolean trangThai = resultSet.getBoolean(11);
 
-		return new KhachHang(maKhachHang, hoTen, cccd, ngaySinh, gioiTinh, soDienThoai, tinh, quan, phuong,
-				diaChiCuThe);
+		return new KhachHang(maKhachHang, hoTen, cccd, ngaySinh, gioiTinh, soDienThoai, tinh, quan, phuong, diaChiCuThe,
+				trangThai);
 	}
 
 	/**
@@ -96,7 +145,7 @@ public class KhachHang_DAO {
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM KhachHang WHERE soDienThoai = ?");
+					.prepareStatement("SELECT * FROM KhachHang WHERE soDienThoai = ? and trangThaiXoa = 0");
 			preparedStatement.setString(1, soDienThoai);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -118,7 +167,7 @@ public class KhachHang_DAO {
 	public KhachHang getKhachHangTheoMa(String maKhachHang) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM KhachHang WHERE maKhachHang = ?");
+					.prepareStatement("SELECT * FROM KhachHang WHERE maKhachHang = ? and trangThaiXoa = 0");
 			preparedStatement.setString(1, maKhachHang);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -230,7 +279,7 @@ public class KhachHang_DAO {
 		PreparedStatement preparedStatement;
 		try {
 			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("INSERT KhachHang VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					.prepareStatement("INSERT KhachHang VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
 			preparedStatement.setString(1, khachHang.getMaKhachHang());
 			preparedStatement.setString(2, khachHang.getHoTen());
 			preparedStatement.setString(3, khachHang.getCccd());
@@ -259,7 +308,27 @@ public class KhachHang_DAO {
 		int res = 0;
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("DELETE KhachHang WHERE maKhachHang = ?");
+					.prepareStatement("UPDATE KhachHang SET trangThaiXoa = 1 WHERE maKhachHang  = ?");
+			preparedStatement.setString(1, maKhachHang);
+			res = preparedStatement.executeUpdate();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res > 0;
+	}
+
+	/**
+	 * Khôi phục khách hàng
+	 * 
+	 * @param maKhachHang
+	 * @return
+	 */
+	public boolean khoiPhucKhachHang(String maKhachHang) {
+		int res = 0;
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE KhachHang SET trangThaiXoa = 0 WHERE maKhachHang  = ?");
 			preparedStatement.setString(1, maKhachHang);
 			res = preparedStatement.executeUpdate();
 			preparedStatement.close();
