@@ -8,7 +8,6 @@ public class Tinh {
 	}
 
 	private String id;
-
 	private String tinh;
 
 	public Tinh() {

@@ -167,7 +167,6 @@ public class DonDatPhong_DAO extends DAO {
 
 		try {
 			Connection connection = ConnectDB.getConnection();
-			connection.setAutoCommit(false);
 
 //			[DatPhong - ChiTietDatPhong] - Get mã đơn đặt phòng của phòng cần chuyển
 			preparedStatement = connection.prepareStatement("SELECT [donDatPhong] FROM [dbo].[DonDatPhong] DP "
@@ -179,7 +178,8 @@ public class DonDatPhong_DAO extends DAO {
 
 			res = resultSet.next();
 			if (!res)
-				return rollback();
+				return false;
+			connection.setAutoCommit(false);
 
 			String donDatPhong = resultSet.getString(1);
 //			Phòng cũ - Trạng thái mới
@@ -191,6 +191,12 @@ public class DonDatPhong_DAO extends DAO {
 			if (phongCu.getTrangThai().equals(entity.Phong.TrangThai.DangThue))
 				trangThaiCu = entity.Phong.TrangThai.Trong;
 			String trangThaiMoiPhongCu = Phong.convertTrangThaiToString(trangThaiCu);
+
+//			[Phong] - Cập nhật trạng thái phòng của phòng cũ
+			res = phong_DAO.capNhatTrangThaiPhong(phongCu, trangThaiMoiPhongCu);
+			if (!res)
+				return rollback();
+			
 //			Phòng mới - Trạng thái mới
 //						+ Trống --> Đang thuê
 //						+ Đã đặt --> Phòng tạm
@@ -200,11 +206,6 @@ public class DonDatPhong_DAO extends DAO {
 			if (phongMoi.getTrangThai().equals(entity.Phong.TrangThai.Trong))
 				trangThaiMoi = entity.Phong.TrangThai.DangThue;
 			String trangThaiMoiPhongMoi = Phong.convertTrangThaiToString(trangThaiMoi);
-
-//			[Phong] - Cập nhật trạng thái phòng của phòng cũ
-			res = phong_DAO.capNhatTrangThaiPhong(phongCu, trangThaiMoiPhongCu);
-			if (!res)
-				return rollback();
 
 //			[Phong] - Cập nhật trạng thái phòng của phòng mới
 			res = phong_DAO.capNhatTrangThaiPhong(phongMoi, trangThaiMoiPhongMoi);
@@ -375,19 +376,16 @@ public class DonDatPhong_DAO extends DAO {
 	 */
 	public LocalTime getGioVao(Phong phong) {
 		try {
-			Phong phong2 = phong_DAO.getPhong(phong.getMaPhong());
-			entity.Phong.TrangThai trangThaiPhong = phong2.getTrangThai();
+			entity.Phong.TrangThai trangThaiPhong = phong_DAO.getTrangThai(phong.getMaPhong());
 
 			if (trangThaiPhong.equals(entity.Phong.TrangThai.Trong))
 				return null;
 
 			PreparedStatement preparedStatement;
-			String trangThai;
+			String trangThai = "Đang thuê";
 
 			if (trangThaiPhong.equals(entity.Phong.TrangThai.DaDat))
 				trangThai = "Đang chờ";
-			else
-				trangThai = "Đang thuê";
 
 			preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT [gioVao] FROM [dbo].[DonDatPhong] DP"
@@ -395,7 +393,7 @@ public class DonDatPhong_DAO extends DAO {
 							+ " WHERE [trangThai] = ? AND [phong] = ? AND [gioRa] IS NULL"
 							+ " ORDER BY [ngayNhanPhong], [gioNhanPhong]");
 			preparedStatement.setString(1, trangThai);
-			preparedStatement.setString(2, phong2.getMaPhong());
+			preparedStatement.setString(2, phong.getMaPhong());
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -542,11 +540,11 @@ public class DonDatPhong_DAO extends DAO {
 		try {
 			String sql = "SELECT [maPhong] FROM [dbo].[Phong] P"
 					+ "	JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai WHERE maPhong NOT IN ("
-					+ "	SELECT [phong] FROM [dbo].[DonDatPhong] DP"
+					+ "	SELECT CTDP.[phong] FROM [dbo].[DonDatPhong] DP"
 					+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong]"
-					+ "	WHERE (DP.[trangThai] = N'Đang thuê' AND [gioRa] IS NULL)"
-					+ "	OR (DP.[trangThai] = N'Đang chờ' AND [ngayNhanPhong] = CONVERT(DATE, GETDATE())"
-					+ "	AND [dbo].[fnSubTime]([gioNhanPhong], CONVERT(TIME(0), GETDATE())) < '6:00:00')"
+					+ "	WHERE (DP.[trangThai] = N'Đang thuê' AND CTDP.[gioRa] IS NULL)"
+					+ "	OR (DP.[trangThai] = N'Đang chờ' AND DP.[ngayNhanPhong] = CONVERT(DATE, GETDATE())"
+					+ "	AND [dbo].[fnSubTime](DP.[gioNhanPhong], CONVERT(TIME(0), GETDATE())) < '6:00:00')"
 					+ "	) AND [maPhong] LIKE ? AND tenLoai LIKE ?";
 
 			if (isInteger)
@@ -799,13 +797,24 @@ public class DonDatPhong_DAO extends DAO {
 //			[Phong] - Cập nhật trạng thái phòng
 			boolean res;
 			boolean isDatPhongTruoc;
+			entity.Phong.TrangThai trangThai;
 			for (String string : maPhongList) {
-				preparedStatement = connection.prepareStatement("UPDATE [dbo].[Phong] SET [trangThai] = ("
-						+ "	CASE WHEN [trangThai] = N'Đã đặt' THEN ? ELSE ? END) WHERE [maPhong] = ?");
+				trangThai = phong_DAO.getTrangThai(string);
+				preparedStatement = connection
+						.prepareStatement("UPDATE [dbo].[Phong] SET [trangThai] = ? WHERE [maPhong] = ?");
 				isDatPhongTruoc = hasDatPhongTruocHopLe(string);
-				preparedStatement.setString(1, isDatPhongTruoc ? "Đã đặt" : "Trống");
-				preparedStatement.setString(2, isDatPhongTruoc ? "Phòng tạm" : "Đang thuê");
-				preparedStatement.setString(3, string);
+				if (trangThai.equals(entity.Phong.TrangThai.DaDat)) {
+					if (isDatPhongTruoc)
+						preparedStatement.setString(1, Phong.convertTrangThaiToString(Phong.TrangThai.DaDat));
+					else
+						preparedStatement.setString(1, Phong.convertTrangThaiToString(Phong.TrangThai.Trong));
+				} else {
+					if (isDatPhongTruoc)
+						preparedStatement.setString(1, Phong.convertTrangThaiToString(Phong.TrangThai.PhongTam));
+					else
+						preparedStatement.setString(1, Phong.convertTrangThaiToString(Phong.TrangThai.DangThue));
+				}
+				preparedStatement.setString(2, string);
 				res = preparedStatement.executeUpdate() > 0;
 
 				if (!res)
@@ -994,9 +1003,9 @@ public class DonDatPhong_DAO extends DAO {
 //						+ Phòng tạm -> Đã đặt
 			sql = "UPDATE [dbo].[Phong] SET [trangThai] = (CASE "
 					+ "WHEN [trangThai] = N'Đang thuê' THEN N'Trống' ELSE N'Đã đặt' END) WHERE [maPhong] IN ("
-					+ "SELECT [phong] FROM [dbo].[ChiTietDatPhong] CTDP "
+					+ "SELECT CTDP.[phong] FROM [dbo].[ChiTietDatPhong] CTDP "
 					+ "JOIN [dbo].[DonDatPhong] DDP ON CTDP.donDatPhong = DDP.maDonDatPhong "
-					+ "WHERE [gioRa] IS NULL AND DDP.[trangThai] = N'Đang thuê' AND [donDatPhong] = ?)";
+					+ "WHERE CTDP.[gioRa] IS NULL AND DDP.[trangThai] = N'Đang thuê' AND CTDP.[donDatPhong] = ?)";
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setString(1, maDatPhong);
 

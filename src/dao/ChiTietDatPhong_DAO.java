@@ -316,12 +316,12 @@ public class ChiTietDatPhong_DAO extends DAO {
 	 */
 	public boolean setGioRa(String maDonDatPhong, String maPhong, Time gioRa) {
 		PreparedStatement preparedStatement;
+		String sql = "UPDATE [dbo].[ChiTietDatPhong] SET [gioRa] = ? WHERE [phong] IN "
+				+ "(SELECT CTDP.[phong] FROM [dbo].[DonDatPhong] DP JOIN [dbo].[ChiTietDatPhong] CTDP "
+				+ "ON DP.[maDonDatPhong] = CTDP.[donDatPhong] WHERE DP.[trangThai] = N'Đang thuê' "
+				+ "AND CTDP.[phong] = ? AND DP.maDonDatPhong = ?) AND donDatPhong = ?";
 		try {
-			preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE [dbo].[ChiTietDatPhong] SET [gioRa] = ?"
-							+ " WHERE [phong] IN (SELECT [phong] FROM [dbo].[DonDatPhong] DP"
-							+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON DP.[maDonDatPhong] = CTDP.[donDatPhong]"
-							+ "	WHERE DP.[trangThai] = N'Đang thuê' AND [phong] = ? AND maDonDatPhong = ?) AND donDatPhong = ?");
+			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setTime(1, gioRa);
 			preparedStatement.setString(2, maPhong);
 			preparedStatement.setString(3, maDonDatPhong);
@@ -385,17 +385,15 @@ public class ChiTietDatPhong_DAO extends DAO {
 //							+ Đang thuê --> X
 //							+ Phòng tạm --> X
 //							+ Phòng chờ --> Phòng tạm
-				Phong phongFull = phong_DAO.getPhong(phong.getMaPhong());
-				if (phongFull == null)
+				TrangThai trangThai = phong_DAO.getTrangThai(phong.getMaPhong());
+				if (trangThai == null)
 					return rollback();
-				TrangThai trangThaiNew;
+				TrangThai trangThaiNew = Phong.TrangThai.DangThue;
 
-				if (phongFull.getTrangThai().equals(entity.Phong.TrangThai.DaDat))
+				if (trangThai.equals(entity.Phong.TrangThai.DaDat))
 					trangThaiNew = Phong.TrangThai.PhongTam;
-				else
-					trangThaiNew = Phong.TrangThai.DangThue;
 
-				res = phong_DAO.capNhatTrangThaiPhong(phongFull, Phong.convertTrangThaiToString(trangThaiNew));
+				res = phong_DAO.capNhatTrangThaiPhong(phong, Phong.convertTrangThaiToString(trangThaiNew));
 				if (!res)
 					return rollback();
 			}

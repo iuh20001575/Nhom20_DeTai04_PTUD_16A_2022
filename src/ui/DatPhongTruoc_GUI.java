@@ -409,8 +409,12 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 //		Sự kiện window
 		this.addWindowListener(new WindowAdapter() {
 			@Override
+			public void windowOpened(WindowEvent e) {
+				setTimeComboBox(LocalTime.now().getHour());
+			}
+
+			@Override
 			public void windowActivated(WindowEvent e) {
-				System.out.println("413 windowActivated");
 				setEventFilterComboBox(false);
 				String soDienThoai = txtSoDienThoai.getText().trim();
 
@@ -424,7 +428,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				}
 
 				setEventFilterComboBox(true);
-				setTimeComboBox(LocalTime.now().getHour());
 				showDanhSachPhongDaChon();
 				repaint();
 			}
@@ -754,17 +757,14 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 		if (e.getStateChange() == ItemEvent.DESELECTED)
 			return;
 		if (o.equals(cmbGio)) {
-			System.out.println("756 itemStateChanged cmbGio");
 			setTimeComboBox(Integer.parseInt((String) cmbGio.getSelectedItem()));
 			handleChangeDateTime();
 			return;
 		}
 		if (o.equals(cmbPhut)) {
-			System.out.println("762 itemStateChanged cmbPhut");
 			handleChangeDateTime();
 			return;
 		}
-		System.out.println("766 itemStateChanged filterPhongDatTruoc");
 		filterPhongDatTruoc();
 
 		if (dsPhongDatTruoc.size() == 0) {
@@ -829,7 +829,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 						cmbPhut.addItem(j + "");
 				} else {
 					phut += (5 - phut % 5);
-					for (int i = phut; i < 60; i += 5)
+					for (int i = phut; i < (gio == 23 ? 31 : 60); i += 5)
 						cmbPhut.addItem(i + "");
 				}
 			} else
@@ -841,11 +841,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				cmbGio.addItem(Utils.convertIntToString(i));
 			for (int j = 0; j < 60; j += 5)
 				cmbPhut.addItem(Utils.convertIntToString(j));
-		}
-
-		if (gioSelect == 23) {
-			cmbPhut.removeAllItems();
-			cmbPhut.addItem("0");
 		}
 
 		cmbGio.setSelectedItem(gioSelect + "");

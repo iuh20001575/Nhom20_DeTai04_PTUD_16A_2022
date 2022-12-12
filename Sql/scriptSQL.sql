@@ -23150,7 +23150,7 @@ CREATE TABLE ChiTietDatPhong (
 	CONSTRAINT CHK_ChiTietDatPhong_gioVao_LonHonBangGioNhanPhong CHECK (gioVao >= [dbo].[fnGetGioNhanPhongTheoMaDatPhong](donDatPhong)), -- Kiểm tra giờ vào >= giờ nhận phòng
 	--CONSTRAINT CHK_ChiTietDatPhong_gioVao_BeHonBangHienTai CHECK (gioVao <= convert(time(0), getdate())), -- Kiểm tra giờ vào <= giờ hiện tại
 	CONSTRAINT CHK_ChiTietDatPhong_gioVao_LonHonBangGioMoCua CHECK (gioVao >= '7:0:0'), -- Kiểm tra giờ vào >= giờ mở cửa
-	CONSTRAINT CHK_ChiTietDatPhong_gioVao_BeHonBang23h CHECK (gioVao <= '23:0:0'), -- Kiểm tra giờ vào <= 23h
+	CONSTRAINT CHK_ChiTietDatPhong_gioVao_BeHonBang23h30 CHECK (gioVao <= '23:30:0'), -- Kiểm tra giờ vào <= 23h
 	CONSTRAINT CHK_ChiTietDatPhong_gioRa_LonHonGioVao CHECK (gioRa > gioVao), -- Kiểm tra giờ ra > giờ vào
 	CONSTRAINT CHK_ChiTietDatPhong_gioRa_BeHon24h CHECK (gioRa <= '23:59:59'), -- Kiểm tra giờ ra < 24h
 	CONSTRAINT FK_ChiTietDatPhong_DatPhong FOREIGN KEY (donDatPhong) REFERENCES DonDatPhong(maDonDatPhong),

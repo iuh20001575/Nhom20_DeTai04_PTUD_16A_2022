@@ -9,7 +9,6 @@ public class Phuong {
 
 	private String id;
 	private String phuong;
-
 	private Quan quan;
 
 	public Phuong() {
