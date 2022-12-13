@@ -272,6 +272,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 							new Notification(main, components.notification.Notification.Type.SUCCESS,
 									"Xóa thông tin khách hàng thành công").showNotification();
 							loadTable();
+							pnlControl.setTbl(tbl);
 						} else
 							new Notification(main, components.notification.Notification.Type.ERROR,
 									"Xóa thông tin khách hàng thất bại").showNotification();
@@ -365,6 +366,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnDanhSachTonTai.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				txtSearch.setText("");
 				btnKhachHangRemove.setVisible(true);
 				btnKhachHangRestore.setVisible(false);
 				btnDanhSachXoa.setVisible(true);
@@ -372,15 +374,17 @@ public class QuanLyKhachHang_GUI extends JPanel {
 				btnKhachHangAdd.setEnabled(true);
 				btnKhachHangEdit.setEnabled(true);
 				btnDanhSachTonTai.setVisible(false);
+				tableModel.setRowCount(0);
 				loadTable();
+				pnlControl.setTbl(tbl);
+				
 			}
 		});
 // sự kiện nút btnDanhSachXoa
 		btnDanhSachXoa.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setEmptyTable();
-				addRow(khachHang_DAO.getAllKhachHangDaXoa());
+				txtSearch.setText("");
 				btnKhachHangRemove.setVisible(false);
 				btnKhachHangRestore.setVisible(true);
 				btnDanhSachTonTai.setVisible(true);
@@ -388,6 +392,8 @@ public class QuanLyKhachHang_GUI extends JPanel {
 				btnKhachHangAdd.setEnabled(false);
 				btnKhachHangEdit.setEnabled(false);
 				btnDanhSachXoa.setVisible(false);
+				filterKhachHangDaXoa();
+				
 			}
 		});
 //Sự kiện nút btnLamMoi
@@ -395,6 +401,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				loadTable();
+				pnlControl.setTbl(tbl);
 				btnKhachHangRemove.setVisible(true);
 				btnKhachHangRestore.setVisible(false);
 				btnDanhSachXoa.setVisible(true);
@@ -552,6 +559,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		String hoTen = txtSearch.getText();
 		List<KhachHang> list = khachHang_DAO.filterKhachHangDaXoa(hoTen);
 		setEmptyTable();
+		tableModel.setRowCount(0);
 		addRow(list);
 		pnlControl.setTbl(tbl);
 

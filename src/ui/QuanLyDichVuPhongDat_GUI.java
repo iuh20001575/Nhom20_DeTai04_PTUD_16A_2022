@@ -191,6 +191,8 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		txtSoDienThoai.setBounds(0, 0, 380, 55);
 		pnlBody.add(txtSoDienThoai);
 		txtSoDienThoai.setColumns(10);
+		
+
 
 		Button btnSearchSoDienThoai = new Button();
 		btnSearchSoDienThoai.addMouseListener(new MouseAdapter() {
@@ -198,6 +200,21 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				String soDienThoai = txtSoDienThoai.getText().trim();
 
+				cmbLoaiDV.removeItemListener(_this);
+				cmbTenDV.removeItemListener(_this);
+				cmbDatPhong.removeItemListener(evtCmbDatPhong);
+				cmbPhongDat.removeItemListener(evtCmbPhongDat);
+				cmbLoaiDV.setSelectedIndex(0);
+				cmbTenDV.setSelectedIndex(0);
+				cmbDatPhong.setSelectedIndex(0);
+				cmbPhongDat.setSelectedIndex(0);
+				cmbLoaiDV.addItemListener(_this);
+				cmbTenDV.addItemListener(_this);
+				cmbDatPhong.addItemListener(evtCmbDatPhong);
+				cmbPhongDat.addItemListener(evtCmbPhongDat);
+				txtTongTien.setText("Tổng tiền: " + Utils.formatTienTe(0));
+				
+				
 				if (Utils.isSoDienThoai(soDienThoai)) {
 					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
 
@@ -231,13 +248,18 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 					new Notification(_this, components.notification.Notification.Type.ERROR,
 							"Số điện thoại không hợp lệ").showNotification();
 					txtSoDienThoai.setError(true);
+					
 				}
 				if (txtTenKhachHang.getText().equals("") || txtTenKhachHang == null) {
-					List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDonDatPhongDangThue();
-					emptyComboBox(cmbDatPhong, "Mã đặt phòng");
-					for (DonDatPhong datPhong : listDatPhongDangThue) {
-						cmbDatPhong.addItem(datPhong.getMaDonDatPhong());
-					}
+//					List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDonDatPhongDangThue();
+//					emptyComboBox(cmbDatPhong, "Mã đặt phòng");
+//					for (DonDatPhong datPhong : listDatPhongDangThue) {
+//						cmbDatPhong.addItem(datPhong.getMaDonDatPhong());
+//					}
+					setAllDonDatPhongDangThueToCombobox();
+					setAllMaPhongToCombobox();
+					
+					
 				} else {
 					emptyComboBox(cmbDatPhong, "Mã đặt phòng");
 					cmbDatPhong.addItem(datPhong_DAO.getDonDatPhongNgayTheoSoDienThoai(soDienThoai).getMaDonDatPhong());
@@ -247,6 +269,13 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 		});
 
+//		Sự kiện txtTen
+		txtSoDienThoai.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtSoDienThoai.setError(false);
+			}
+		});
 		btnSearchSoDienThoai.setFocusable(false);
 		btnSearchSoDienThoai.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnSearchSoDienThoai.setRadius(4);
@@ -343,8 +372,9 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 						dsDVDaChon.add(dichVuTrongChiTiet);
 					}
 					tableModel3.setRowCount(0);
-					List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
-					addRow2(listDV);
+//					List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
+//					addRow2(listDV);
+					filterDichVu();
 					loadTable3();
 					capNhatThanhTien();
 
@@ -408,8 +438,9 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 								dsDVDaChon.add(dichVuTrongChiTiet);
 							}
 							tableModel3.setRowCount(0);
-							List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
-							addRow2(listDV);
+//							List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
+//							addRow2(listDV);
+							filterDichVu();
 							loadTable3();
 							capNhatThanhTien();
 
@@ -882,8 +913,9 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 							dsDVDaChon.add(dichVuTrongChiTiet);
 						}
 						tableModel3.setRowCount(0);
-						List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
-						addRow2(listDV);
+//						List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
+//						addRow2(listDV);
+						filterDichVu();
 						loadTable3();
 						capNhatThanhTien();
 					}
