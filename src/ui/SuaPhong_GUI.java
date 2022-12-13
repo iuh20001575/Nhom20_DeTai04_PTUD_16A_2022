@@ -339,7 +339,10 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		btnQuayLai.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				tTCTPDPT_GUI.closeJFrameSub();
+				if(qLPDPT_GUI == null) {
+					tTCTPDPT_GUI.closeJFrameSub();
+					return;
+				}
 				qLPDPT_GUI.closeJFrameSub();
 			}
 		});
