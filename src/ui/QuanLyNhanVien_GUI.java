@@ -523,11 +523,22 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		cmbTrangThai.addItemListener(evtFilterNhanVien);
 	}
 
+	/**
+	 * Add danh sách nhân viên vào table
+	 * 
+	 * @param list
+	 * @return
+	 */
 	private List<NhanVien> addRow(List<NhanVien> list) {
 		list.forEach(nhanVien -> addRow(nhanVien));
 		return list;
 	}
 
+	/**
+	 * Add nhân viên vào table
+	 * 
+	 * @param nhanVien
+	 */
 	private void addRow(NhanVien nhanVien) {
 		Tinh tinh = diaChi_DAO.getTinh(nhanVien.getTinh());
 		Quan quan = diaChi_DAO.getQuan(nhanVien.getTinh(), nhanVien.getQuan());
@@ -568,6 +579,9 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		return clock;
 	}
 
+	/**
+	 * Lọc danh sách nhân viên
+	 */
 	private void filterNhanVien() {
 		String hoTen = txtSearch.getText();
 		String maNhanVien = (String) cmbMaNhanVien.getSelectedItem();
@@ -589,6 +603,12 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		}
 	}
 
+	/**
+	 * Thêm nhân viên từ file
+	 * 
+	 * @param filename
+	 * @return
+	 */
 	public List<NhanVien> readFile(String filename) {
 		List<NhanVien> list = new ArrayList<>();
 		try {
@@ -656,23 +676,34 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		}
 	}
 
+	/**
+	 * Xuất danh sách nhân viên ra file
+	 * 
+	 * @param filename
+	 */
 	public void writeFile(String filename) {
 		try {
 			WritableWorkbook workbook = Workbook.createWorkbook(new File(filename));
 			WritableSheet sheet = workbook.createSheet("sheet", 0);
 			try {
 				WritableCellFormat cellFormat = new WritableCellFormat();
+//				Tạo border cho cell
 				cellFormat.setBorder(Border.ALL, BorderLineStyle.THIN);
+//				Tạo border và căn text sang bên phải
 				WritableCellFormat cellFormatRight = new WritableCellFormat();
 				cellFormatRight.setBorder(Border.ALL, BorderLineStyle.THIN);
 				cellFormatRight.setAlignment(Alignment.RIGHT);
 
+//				Get danh sách mã nhân viên
 				List<String> dsMaNhanvien = new ArrayList<>();
 				int rowTable = tbl.getRowCount();
 				for (int i = 0; i < rowTable; i++)
 					dsMaNhanvien.add((String) tbl.getValueAt(i, 0));
 
+//				Get danh sách nhân viên theo mã nhân viên
 				List<NhanVien> list = nhanVien_DAO.getNhanVien(dsMaNhanvien);
+
+//				Xuất danh sách nhân viên ra Excel
 				int lengthList = list.size();
 				for (int i = 0; i < lengthList; i++) {
 					NhanVien nhanVien = list.get(i);
@@ -696,6 +727,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 							cellFormat));
 				}
 
+//				Thêm header cho Excel
 				int length = header.length;
 				CellView cellView = new CellView();
 				cellView.setAutosize(true);
@@ -708,8 +740,8 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 				workbook.write();
 				workbook.close();
-				new Notification(main, components.notification.Notification.Type.SUCCESS, "Xuát nhân viên thành cồng")
-						.showNotification();
+				new Notification(main, components.notification.Notification.Type.SUCCESS,
+						"Xuất danh sách nhân viên thành công").showNotification();
 				return;
 			} catch (RowsExceededException e) {
 				e.printStackTrace();
@@ -719,7 +751,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		new Notification(main, components.notification.Notification.Type.ERROR, "Xuát nhân viên thất bại")
+		new Notification(main, components.notification.Notification.Type.ERROR, "Xuất danh sách nhân viên thất bại")
 				.showNotification();
 	}
 }
