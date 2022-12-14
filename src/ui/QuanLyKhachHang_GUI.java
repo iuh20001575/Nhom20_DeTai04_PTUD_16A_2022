@@ -36,7 +36,6 @@ import components.scrollbarCustom.ScrollBarCustom;
 import dao.DiaChi_DAO;
 import dao.KhachHang_DAO;
 import entity.KhachHang;
-import entity.NhanVien;
 import entity.Phuong;
 import entity.Quan;
 import entity.Tinh;
@@ -83,9 +82,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 	private KhachHang_DAO khachHang_DAO;
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
-
 	private JTable tbl;
-
 	private JTextField txtSearch;
 
 	/**
@@ -126,7 +123,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		pnlSearchForm.setLayout(null);
 
 		Button btnSearch = new Button("Tìm");
-		
+
 		btnSearch.setFocusable(false);
 		btnSearch.setIcon(new ImageIcon("Icon\\searching.png"));
 		btnSearch.setRadius(4);
@@ -334,8 +331,6 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnLamMoi.setBounds(744, -2, 150, 40);
 		pnlActions.add(btnLamMoi);
 
-		
-
 		Button btnDanhSachXoa = new Button("DS đã xóa");
 		btnDanhSachXoa.setIcon(new ImageIcon("Icon\\listdelete.png"));
 		btnDanhSachXoa.setRadius(4);
@@ -348,7 +343,6 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		btnDanhSachXoa.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnDanhSachXoa.setBounds(904, -2, 150, 40);
 		pnlActions.add(btnDanhSachXoa);
-		
 
 		Button btnDanhSachTonTai = new Button("DS chưa xóa");
 		btnDanhSachTonTai.setIcon(new ImageIcon("Icon\\requirement.png"));
@@ -377,7 +371,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 				tableModel.setRowCount(0);
 				loadTable();
 				pnlControl.setTbl(tbl);
-				
+
 			}
 		});
 // sự kiện nút btnDanhSachXoa
@@ -393,7 +387,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 				btnKhachHangEdit.setEnabled(false);
 				btnDanhSachXoa.setVisible(false);
 				filterKhachHangDaXoa();
-				
+
 			}
 		});
 //Sự kiện nút btnLamMoi
@@ -412,15 +406,14 @@ public class QuanLyKhachHang_GUI extends JPanel {
 				txtSearch.setText("");
 			}
 		});
-		
-		//Sự kiện nút Search
+
+		// Sự kiện nút Search
 		btnSearch.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(btnDanhSachXoa.isVisible()) {
+				if (btnDanhSachXoa.isVisible()) {
 					filterKhachHang();
-				}
-				else
+				} else
 					filterKhachHangDaXoa();
 			}
 		});
@@ -501,7 +494,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 				}
 			}
 		});
-		
+
 //		Panel event
 		addAncestorListener(new AncestorListener() {
 			Thread clockThread;
@@ -555,6 +548,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 			JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng cần tìm");
 
 	}
+
 	private void filterKhachHangDaXoa() {
 		String hoTen = txtSearch.getText();
 		List<KhachHang> list = khachHang_DAO.filterKhachHangDaXoa(hoTen);
@@ -567,7 +561,6 @@ public class QuanLyKhachHang_GUI extends JPanel {
 			JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng cần tìm");
 
 	}
-
 
 	private void setEmptyTable() {
 		while (tbl.getRowCount() > 0)
