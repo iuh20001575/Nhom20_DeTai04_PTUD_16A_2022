@@ -52,7 +52,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	private Thread clock;
 	private ComboBox<String> cmbSoLuong;
 	private DonDatPhong_DAO datPhong_DAO;
-	private List<Phong> dsPhong;
 	private final int gapX = 21;
 	private final int gapY = 30;
 	private Glass glass;
@@ -879,7 +878,6 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	 */
 	private void addPhong(List<Phong> dsPhong) {
 		pnlPhongItem = null;
-		this.dsPhong = dsPhong;
 		pnlContainerDanhSachPhong.removeAll();
 
 		soPhongCho = 0;
@@ -947,7 +945,7 @@ public class QuanLyDatPhong_GUI extends JPanel implements KeyEventDispatcher {
 	}
 
 	public void capNhatTrangThaiPhong() {
-		addPhong(phong_DAO.getAllPhongTheoMa(dsPhong));
+		addPhong(filterDanhSachPhong());
 	}
 
 	/**
