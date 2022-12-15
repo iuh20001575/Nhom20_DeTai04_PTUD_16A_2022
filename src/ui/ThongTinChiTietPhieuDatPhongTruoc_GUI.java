@@ -6,6 +6,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,6 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 	private KhachHang khachHang;
 	private KhachHang_DAO khachHang_DAO;
 	private List<Phong> listPhong;
-	private ArrayList<String> listPhongString;
 	private String maDatPhong;
 	private Main main;
 	private NhanVien nhanVien;
@@ -416,7 +416,28 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 						maPhong[i++] = phong.getMaPhong();
 					}
 
-					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning","Phòng " + String.join(", ", maPhong) + " đang thuê\n");
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning","Phòng " + 
+					String.join(", ", maPhong) + " đang thuê\n");
+					return;
+				}
+				
+//				Kiểm tra ngày nhận phòng = ngày hiện tại
+				if(donDatPhong.getNgayNhanPhong().isAfter( LocalDate.now())){
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning", 
+							"Chưa đến ngày nhận phòng");
+					return;
+				}
+				
+//				Kiểm tra phòng có đơn đặt phòng trước khác không
+				List<Phong> listPhongCoDonDatTruocKhac = donDatPhong_DAO.timPhongCoDonDatTruocKhac(listPhong, donDatPhong);
+				if(listPhongCoDonDatTruocKhac.size() > 0 ) {
+					String[] maPhong = new String[listPhongCoDonDatTruocKhac.size()];
+					int i = 0;
+					for(Phong phong : listPhongCoDonDatTruocKhac) {
+						maPhong[i++] = phong.getMaPhong();
+					}
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning", "Phòng " 
+							+ String.join(", ", maPhong) + " có đơn đặt phòng trước " + donDatPhong.getGioNhanPhong());
 					return;
 				}
 
