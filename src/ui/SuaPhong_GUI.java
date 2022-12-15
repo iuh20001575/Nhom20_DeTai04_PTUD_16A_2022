@@ -339,7 +339,10 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		btnQuayLai.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				tTCTPDPT_GUI.closeJFrameSub();
+				if (qLPDPT_GUI == null) {
+					tTCTPDPT_GUI.closeJFrameSub();
+					return;
+				}
 				qLPDPT_GUI.closeJFrameSub();
 			}
 		});
@@ -461,6 +464,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	 */
 	private void addRow(List<Phong> list) {
 		tableModel.setRowCount(0);
+		Collections.sort(list);
 		list.forEach(phong -> addRow(phong));
 	}
 
@@ -536,15 +540,29 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		if (loaiPhong.equals("Loại phòng"))
 			loaiPhong = "";
 
-		if (dsPhongDaChonBanDau.contains(phong_DAO.getPhong(maPhong))) {
-			tableModel.setRowCount(0);
-			addRow(phong_DAO.getPhong(maPhong));
-			return;
-		}
-
 		dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
+
+		for (Phong pBD : dsPhongDaChonBanDau) {
+			pBD = phong_DAO.getPhong(pBD.getMaPhong());
+			if (!dsPhongDaChon.contains(pBD)) {
+				if (maPhong.equals(""))
+					maPhong = pBD.getMaPhong();
+				LoaiPhong loaiPhongBD = loaiPhong_DAO.getLoaiPhong(pBD.getLoaiPhong().getMaLoai());
+				String loaiPhongLoc = loaiPhong;
+				if (loaiPhong.equals(""))
+					loaiPhongLoc = loaiPhongBD.getTenLoai();
+				int sLBD = pBD.getSoLuongKhach();
+				if (!soLuong.equals("Số lượng"))
+					sLBD = Integer.parseInt(soLuong);
+
+				if (pBD.getMaPhong().equals(maPhong) && loaiPhongBD.getTenLoai().equals(loaiPhongLoc)
+						&& pBD.getSoLuongKhach() == sLBD) {
+					dsPhongDatTruoc.add(pBD);
+				}
+			}
+		}
 		if (dsPhongDatTruoc.size() == 0) {
-			tableModel.removeRow(0);
+			tableModel.setRowCount(0);
 			return;
 		}
 
@@ -643,6 +661,5 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 				dsPhongDatTruoc.add(phong_DAO.getPhong(phongBanDau.getMaPhong()));
 			}
 		}
-		Collections.sort(dsPhongDatTruoc);
 	}
 }

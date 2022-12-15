@@ -24,7 +24,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -397,10 +398,29 @@ public class QuanLyDichVu_GUI extends JPanel {
 		pnlControl = new ControlPanel(Utils.getLeft(286), topPnlControl, main);
 		this.add(pnlControl);
 
-		setEmptyTable();
-		List<DichVu> listDV = (List<DichVu>) dichVu_DAO.getAllDichVu();
-		addRow(listDV);
-		pnlControl.setTbl(tbl);
+		addAncestorListener(new AncestorListener() {
+			
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void ancestorAdded(AncestorEvent event) {
+				setEmptyTable();
+				List<DichVu> listDV = (List<DichVu>) dichVu_DAO.getAllDichVu();
+				addRow(listDV);
+				pnlControl.setTbl(tbl);
+				
+			}
+		});
 
 		// Sự kiện nút tìm kiếm dịch vụ
 		btnSearch.addMouseListener(new MouseAdapter() {
