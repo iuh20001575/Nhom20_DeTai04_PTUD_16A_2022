@@ -139,7 +139,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
-		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
+		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer)-50, 0, widthPnlContainer, Utils.getBodyHeight());
 		this.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
