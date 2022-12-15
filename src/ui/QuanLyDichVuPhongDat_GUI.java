@@ -191,8 +191,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		txtSoDienThoai.setBounds(0, 0, 380, 55);
 		pnlBody.add(txtSoDienThoai);
 		txtSoDienThoai.setColumns(10);
-		
-
 
 		Button btnSearchSoDienThoai = new Button();
 		btnSearchSoDienThoai.addMouseListener(new MouseAdapter() {
@@ -213,8 +211,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 				cmbDatPhong.addItemListener(evtCmbDatPhong);
 				cmbPhongDat.addItemListener(evtCmbPhongDat);
 				txtTongTien.setText("Tổng tiền: " + Utils.formatTienTe(0));
-				
-				
+
 				if (Utils.isSoDienThoai(soDienThoai)) {
 					khachHang = khachHang_DAO.getKhachHang(soDienThoai);
 
@@ -248,7 +245,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 					new Notification(_this, components.notification.Notification.Type.ERROR,
 							"Số điện thoại không hợp lệ").showNotification();
 					txtSoDienThoai.setError(true);
-					
+
 				}
 				if (txtTenKhachHang.getText().equals("") || txtTenKhachHang == null) {
 //					List<DonDatPhong> listDatPhongDangThue = datPhong_DAO.getAllDonDatPhongDangThue();
@@ -258,8 +255,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 //					}
 					setAllDonDatPhongDangThueToCombobox();
 					setAllMaPhongToCombobox();
-					
-					
+
 				} else {
 					emptyComboBox(cmbDatPhong, "Mã đặt phòng");
 					cmbDatPhong.addItem(datPhong_DAO.getDonDatPhongNgayTheoSoDienThoai(soDienThoai).getMaDonDatPhong());

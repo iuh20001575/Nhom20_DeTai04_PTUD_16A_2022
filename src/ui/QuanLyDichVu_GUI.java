@@ -85,12 +85,12 @@ public class QuanLyDichVu_GUI extends JPanel {
 	private JComboBox<String> cmbLoaiDV;
 	private JComboBox<String> cmbSoLuong;
 	private DichVu_DAO DichVu_DAO;
+	private List<DichVu> listDV;
 	private LoaiDichVu_DAO LoaiDichVu_DAO;
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
 	private JTextField txtSearch;
-	private List<DichVu> listDV;
 
 	public QuanLyDichVu_GUI(Main main) {
 		LoaiDichVu_DAO = new LoaiDichVu_DAO();

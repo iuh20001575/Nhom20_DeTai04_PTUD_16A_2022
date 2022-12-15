@@ -136,18 +136,6 @@ public class DichVu_DAO {
 		return list;
 	}
 
-	private DichVu getDichVu(ResultSet resultSet) throws SQLException {
-		String maDV = resultSet.getString(1);
-		String tenDV = resultSet.getString(2);
-		String soLuong = resultSet.getString(3);
-		String donViTinh = resultSet.getString(4);
-		String loai = resultSet.getString(5);
-		String giaMua = resultSet.getString(6);
-		LoaiDichVu loaiDichVu = loaiDichVu_DAO.getLoaiDichVu(loai);
-
-		return new DichVu(maDV, tenDV, Integer.valueOf(soLuong), donViTinh, loaiDichVu, Double.valueOf(giaMua));
-	}
-
 	public List<DichVu> getDanhSachDichVuTheoMa(List<DichVu> dsDichVu) {
 		List<DichVu> list = new ArrayList<>();
 		int length = dsDichVu.size();
@@ -178,6 +166,18 @@ public class DichVu_DAO {
 		}
 
 		return list;
+	}
+
+	private DichVu getDichVu(ResultSet resultSet) throws SQLException {
+		String maDV = resultSet.getString(1);
+		String tenDV = resultSet.getString(2);
+		String soLuong = resultSet.getString(3);
+		String donViTinh = resultSet.getString(4);
+		String loai = resultSet.getString(5);
+		String giaMua = resultSet.getString(6);
+		LoaiDichVu loaiDichVu = loaiDichVu_DAO.getLoaiDichVu(loai);
+
+		return new DichVu(maDV, tenDV, Integer.valueOf(soLuong), donViTinh, loaiDichVu, Double.valueOf(giaMua));
 	}
 
 	public DichVu getDichVuTheoMa(String maDichVu) {

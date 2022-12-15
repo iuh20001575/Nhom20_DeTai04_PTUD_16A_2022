@@ -295,7 +295,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		cmbTinh.addItemListener(this);
 		cmbQuan.addItemListener(this);
 		cmbPhuong.addItemListener(this);
-		
+
 //		Sự kiện txtTen
 		txtTen.addKeyListener(new KeyAdapter() {
 			@Override
@@ -328,9 +328,6 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 			}
 		});
 
-
-
-		
 //		Sự kiện nút lưu
 		btnLuu.addMouseListener(new MouseAdapter() {
 			@Override
@@ -349,14 +346,11 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 						jFrameParent.setVisible(true);
 						main.setVisible(false);
 					}
-				}
-				else
+				} else
 					new Notification(main, Type.ERROR, "Thêm khách hàng thất bại").showNotification();
-				
 
 			}
 		});
-		
 
 		addAncestorListener(new AncestorListener() {
 
@@ -411,8 +405,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		phuong = DiaChi_DAO.getPhuong(quan, sPhuong);
 		String sDCCT = txtDiaChiCT.getText();
 
-		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinhSelect, quan, phuong,
-				sDCCT, false);
+		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinhSelect, quan, phuong, sDCCT, false);
 	}
 
 	@Override
@@ -468,15 +461,14 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 	}
 
-	
 	@Override
-	public void mouseEntered(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) {
 
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		
+	public void mouseEntered(MouseEvent e) {
+
 	}
 
 	@Override
@@ -499,10 +491,11 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		// list.addItem((E) firstLabel);
 		return list;
 	}
+
 	private void setjFrameParent(JFrame jFrameParent) {
 		this.jFrameParent = jFrameParent;
 	}
-	
+
 	/**
 	 * Hiển thị thông báo lỗi và focus các JTextField
 	 *
@@ -589,7 +582,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 		String sQuan = (String) cmbQuan.getSelectedItem();
 
-		if ( sQuan == null || sQuan.equals(Quan.getQuanLabel()) ) {
+		if (sQuan == null || sQuan.equals(Quan.getQuanLabel())) {
 			new Notification(main, Type.ERROR, "Vui lòng chọn quận/ huyện").showNotification();
 			String tinhSelected = (String) cmbTinh.getSelectedItem();
 			cmbPhuong.setEnabled(false);
@@ -648,7 +641,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 		return true;
 	}
-	
+
 	/**
 	 * Xóa rỗng các textfield và làm mới ComboBox
 	 */
@@ -665,7 +658,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		cmbQuan.setEnabled(false);
 		cmbPhuong.setEnabled(false);
 		txtDiaChiCT.setText("");
-		
+
 		txtTen.requestFocus();
 		main.repaint();
 	}

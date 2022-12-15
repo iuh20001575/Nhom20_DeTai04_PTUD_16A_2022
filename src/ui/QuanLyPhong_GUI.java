@@ -379,7 +379,7 @@ public class QuanLyPhong_GUI extends JPanel {
 							"Vui lòng chọn phòng muốn sửa");
 				} else {
 					String maPhong = tableModel.getValueAt(row, 0).toString();
-					openJFrameSub(new ThongTinChiTietPhong_GUI(_this, phong_DAO.getPhong(maPhong)));		
+					openJFrameSub(new ThongTinChiTietPhong_GUI(_this, phong_DAO.getPhong(maPhong)));
 				}
 			}
 		});
@@ -448,11 +448,11 @@ public class QuanLyPhong_GUI extends JPanel {
 		addRow(list);
 		pnlControl.setTbl(tbl);
 	}
+
 	public void loadTable() {
 		tableModel.setRowCount(0);
 		addRow(phong_DAO.getAllPhong());
 	}
-	
 
 	public void openJFrameSub(JFrame jFrame) {
 		this.jFrame.setGlassPane(glass);

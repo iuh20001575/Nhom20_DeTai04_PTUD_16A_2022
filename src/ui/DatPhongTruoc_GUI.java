@@ -409,11 +409,6 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 //		Sự kiện window
 		this.addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowOpened(WindowEvent e) {
-				setTimeComboBox(LocalTime.now().getHour());
-			}
-
-			@Override
 			public void windowActivated(WindowEvent e) {
 				setEventFilterComboBox(false);
 				String soDienThoai = txtSoDienThoai.getText().trim();
@@ -430,6 +425,11 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				setEventFilterComboBox(true);
 				showDanhSachPhongDaChon();
 				repaint();
+			}
+
+			@Override
+			public void windowOpened(WindowEvent e) {
+				setTimeComboBox(LocalTime.now().getHour());
 			}
 		});
 
