@@ -63,52 +63,6 @@ public class PhieuDatPhongTruoc_DAO {
 	 * @param trangThai
 	 * @return
 	 */
-
-	/**
-	 * Get chi tiết phiếu đặt phòng theo mã phiếu đặt, trạng thái và số điện thoại
-	 * 
-	 * @param maPhieuDat
-	 * @param soDienThoai
-	 * @param trangThai
-	 * @return
-	 */
-	public List<DonDatPhong> filterDonDatPhong(String maDatPhong, String soDienThoai, String trangThai) {
-		List<DonDatPhong> list = new ArrayList<>();
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT DISTINCT maDonDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong, gioNhanPhong, trangThai FROM  ChiTietDatPhong INNER JOIN DonDatPhong ON ChiTietDatPhong.donDatPhong = DonDatPhong.maDonDatPhong \r\n"
-							+ "INNER JOIN KhachHang ON DonDatPhong.khachHang = KhachHang.maKhachHang\r\n"
-							+ "WHERE ChiTietDatPhong.donDatPhong LIKE ? and DonDatPhong.trangThai like ? and KhachHang.soDienThoai like ? \r\n"
-							+ "EXCEPT SELECT * FROM DonDatPhong\r\n"
-							+ "WHERE trangThai like N'Đang thuê' or trangThai like N'Đã trả'");
-
-			preparedStatement.setString(1, "%" + maDatPhong + "%");
-			preparedStatement.setString(2, "%" + trangThai + "%");
-			preparedStatement.setString(3, soDienThoai);
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-			DonDatPhong donDatPhong;
-			while (resultSet.next()) {
-				donDatPhong = getDonDatPhong(resultSet);
-				list.add(donDatPhong);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	/**
-	 * Get chi tiết phiếu đặt phòng theo mã phiếu đặt, trạng thái và số điện thoại
-	 * 
-	 * @param maPhieuDat
-	 * @param soDienThoai
-	 * @param trangThai
-	 * @return
-	 */
 	public List<DonDatPhong> filterPhieuDatPhong(String maDatPhong, String soDienThoai, String trangThai) {
 		List<DonDatPhong> list = new ArrayList<>();
 

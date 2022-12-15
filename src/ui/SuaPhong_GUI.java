@@ -94,8 +94,8 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	 *
 	 * @param parentFrame
 	 */
-	public SuaPhong_GUI(Main main, ThongTinChiTietPhieuDatPhongTruoc_GUI tTCTPDPT_GUI,
-			QuanLyPhieuDatPhongTruoc_GUI qLPDPT_GUI, DonDatPhong donDatPhong) {
+	public SuaPhong_GUI(Main main, ThongTinChiTietPhieuDatPhongTruoc_GUI tTCTPDPT_GUI, QuanLyPhieuDatPhongTruoc_GUI qLPDPT_GUI,
+			DonDatPhong donDatPhong) {
 		_this = this;
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		datPhong_DAO = new DonDatPhong_DAO();
@@ -339,7 +339,7 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 		btnQuayLai.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (qLPDPT_GUI == null) {
+				if(qLPDPT_GUI == null) {
 					tTCTPDPT_GUI.closeJFrameSub();
 					return;
 				}
@@ -410,14 +410,15 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 						boolean res = datPhong_DAO.capNhatPhongTrongPhieuDatPhongTruoc(donDatPhong.getMaDonDatPhong(),
 								gioNhanPhong, dsPhongDaChon, dsPhongDaChonBanDau);
 						if (res) {
-							if (qLPDPT_GUI == null) {
+							if(qLPDPT_GUI == null) {
 								tTCTPDPT_GUI.setPhieuDatPhongVaoForm(chiTietDatPhong_DAO
 										.getChiTietDatPhongTheoMaDatPhong(donDatPhong.getMaDonDatPhong()));
 								tTCTPDPT_GUI.closeJFrameSub();
-							} else {
+							}
+							else {
 								qLPDPT_GUI.filterPhieuDatPhong();
 								qLPDPT_GUI.closeJFrameSub();
-
+								
 							}
 							new Notification(main, components.notification.Notification.Type.SUCCESS,
 									"Cập nhật phòng thành công").showNotification();
@@ -541,30 +542,32 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 			loaiPhong = "";
 
 		dsPhongDatTruoc = datPhong_DAO.getPhongDatTruoc(ngayNhanPhong, gioNhanPhong, maPhong, loaiPhong, soLuong);
+		
+			for(Phong pBD : dsPhongDaChonBanDau) {
+				pBD = phong_DAO.getPhong(pBD.getMaPhong());
+				if(!dsPhongDaChon.contains(pBD)) {
+					if(maPhong.equals(""))
+						maPhong = pBD.getMaPhong();
+					LoaiPhong loaiPhongBD = loaiPhong_DAO.getLoaiPhong(pBD.getLoaiPhong().getMaLoai());
+					String loaiPhongLoc = loaiPhong;
+					if(loaiPhong.equals(""))
+						loaiPhongLoc = loaiPhongBD.getTenLoai();
+					int sLBD = pBD.getSoLuongKhach();
+					if(!soLuong.equals("Số lượng"))
+						sLBD = Integer.parseInt(soLuong);
 
-		for (Phong pBD : dsPhongDaChonBanDau) {
-			pBD = phong_DAO.getPhong(pBD.getMaPhong());
-			if (!dsPhongDaChon.contains(pBD)) {
-				if (maPhong.equals(""))
-					maPhong = pBD.getMaPhong();
-				LoaiPhong loaiPhongBD = loaiPhong_DAO.getLoaiPhong(pBD.getLoaiPhong().getMaLoai());
-				String loaiPhongLoc = loaiPhong;
-				if (loaiPhong.equals(""))
-					loaiPhongLoc = loaiPhongBD.getTenLoai();
-				int sLBD = pBD.getSoLuongKhach();
-				if (!soLuong.equals("Số lượng"))
-					sLBD = Integer.parseInt(soLuong);
-
-				if (pBD.getMaPhong().equals(maPhong) && loaiPhongBD.getTenLoai().equals(loaiPhongLoc)
-						&& pBD.getSoLuongKhach() == sLBD) {
-					dsPhongDatTruoc.add(pBD);
+					if(pBD.getMaPhong().equals(maPhong) && loaiPhongBD.getTenLoai().equals(loaiPhongLoc)
+						&& pBD.getSoLuongKhach() == sLBD
+							) {
+						dsPhongDatTruoc.add(pBD);
+					}
 				}
 			}
-		}
 		if (dsPhongDatTruoc.size() == 0) {
 			tableModel.setRowCount(0);
 			return;
 		}
+		
 
 		if (cmbMaPhong.getSelectedItem().toString().equals("Mã phòng")
 				&& cmbLoaiPhong.getSelectedItem().toString().equals("Loại phòng")

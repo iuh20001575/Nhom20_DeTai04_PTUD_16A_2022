@@ -80,7 +80,6 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 	private DonDatPhong donDatPhong;
 	private DonDatPhong_DAO donDatPhong_DAO;
 	private Glass glass;
-	private JDialogCustom jDialogCustom;
 	private JFrame jFrameSub;
 	private KhachHang khachHang;
 	private KhachHang_DAO khachHang_DAO;
@@ -115,7 +114,6 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		_this = this;
 		int padding = (int) Math.floor((Utils.getBodyHeight() - 428) / 5);
 		int top = padding;
-		jDialogCustom = new JDialogCustom(main, components.jDialog.JDialogCustom.Type.confirm);
 
 		donDatPhong_DAO = new DonDatPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
@@ -141,7 +139,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
-		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
+		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer)-50, 0, widthPnlContainer, Utils.getBodyHeight());
 		this.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
@@ -392,7 +390,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 			public void mouseClicked(MouseEvent e) {
 				if (!pnlSuaPhong.isEnabled())
 					return;
-				handleOpenSubFrame(pnlSuaPhong, new SuaPhong_GUI(main, _this, null, donDatPhong));
+				handleOpenSubFrame(pnlSuaPhong, new SuaPhong_GUI(main, _this,null, donDatPhong));
 
 			}
 		});
@@ -418,12 +416,13 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 						maPhong[i++] = phong.getMaPhong();
 					}
 
-					jDialogCustom.showMessage("Question", "Phòng " + String.join(", ", maPhong) + " đang thuê\n");
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning","Phòng " + String.join(", ", maPhong) + " đang thuê\n");
 					return;
 				}
 
 				res = donDatPhong_DAO.nhanPhongTrongPhieuDatPhongTruoc(donDatPhong, listPhong);
-
+				JDialogCustom jDialogCustom = new JDialogCustom(main);
+				
 				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
@@ -438,8 +437,10 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 						main.addPnlBody(quanLyPhieuDatPhong_GUI, "Quản lý đặt phòng trước", 1, 0);
 					}
 				});
+				
 				jDialogCustom.showMessage("Question",
 						"Nhận phòng thành công! \nBạn có muốn chuyển sang trang quản lý đặt phòng");
+				
 			}
 		});
 //		Sự kiện nút Huỷ phòng
@@ -483,14 +484,6 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 
 	}
 
-	public void closeJFrameSub() {
-		if (jFrameSub != null)
-			jFrameSub.setVisible(false);
-		glass.setVisible(false);
-		glass.setAlpha(0f);
-		jFrameSub = null;
-	}
-
 	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
 		if (!pnl.isEnabled())
 			return;
@@ -511,7 +504,15 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
 	}
-
+	
+	public void closeJFrameSub() {
+		if (jFrameSub != null)
+			jFrameSub.setVisible(false);
+		glass.setVisible(false);
+		glass.setAlpha(0f);
+		jFrameSub = null;
+	}
+	
 	private void setEnabledForm() {
 		if (txtTrangThai.getText().equals("Đã hủy")) {
 			pnlSuaPhong.setEnabled(false);
