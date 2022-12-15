@@ -823,18 +823,18 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			for (int i = gio; i < gioDongCua; ++i)
 				cmbGio.addItem(Utils.convertIntToString(i));
 			if (gio == gioSelect || gioSelect == -1) {
-				if (phut > 55) {
+				if (phut >= 55) {
 					cmbGio.removeItemAt(0);
 					for (int j = 0; j < 60; j += 5)
-						cmbPhut.addItem(j + "");
+						cmbPhut.addItem(Utils.convertIntToString(j));
 				} else {
 					phut += (5 - phut % 5);
 					for (int i = phut; i < (gio == 23 ? 31 : 60); i += 5)
-						cmbPhut.addItem(i + "");
+						cmbPhut.addItem(Utils.convertIntToString(i));
 				}
 			} else
 				for (int j = 0; j < 60; j += 5)
-					cmbPhut.addItem(j + "");
+					cmbPhut.addItem(Utils.convertIntToString(j);
 		} else {
 //			Ngày nhận phòng > ngày hiện tại
 			for (int i = gioMoCua; i < gioDongCua; ++i)
@@ -843,7 +843,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				cmbPhut.addItem(Utils.convertIntToString(j));
 		}
 
-		cmbGio.setSelectedItem(gioSelect + "");
+		cmbGio.setSelectedItem(Utils.convertIntToString(gioSelect));
 		cmbGio.addItemListener(_this);
 	}
 

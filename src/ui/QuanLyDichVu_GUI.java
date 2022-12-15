@@ -89,7 +89,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
-
+	private List<DichVu> listDV;
 	private JTextField txtSearch;
 
 	public QuanLyDichVu_GUI(Main main) {
@@ -402,11 +402,13 @@ public class QuanLyDichVu_GUI extends JPanel {
 
 			@Override
 			public void ancestorAdded(AncestorEvent event) {
+				if (listDV == null)
+					listDV = (List<DichVu>) dichVu_DAO.getAllDichVu();
+				else
+					listDV = dichVu_DAO.getDanhSachDichVuTheoMa(listDV);
 				setEmptyTable();
-				List<DichVu> listDV = (List<DichVu>) dichVu_DAO.getAllDichVu();
 				addRow(listDV);
 				pnlControl.setTbl(tbl);
-
 			}
 
 			@Override
@@ -611,7 +613,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 
 		tableModel.addRow(new String[] { dichVu.getMaDichVu(), dichVu.getTenDichVu(), dichVu.getDonViTinh(),
 				String.valueOf(dichVu.getSoLuong()), dichVu.getLoaiDichVu().getTenLoaiDichVu(),
-				Utils.formatTienTe(dichVu.getGiaMua()), Utils.formatTienTe(dichVu.getGiaMua() * 1.5) });
+				Utils.formatTienTe(dichVu.getGiaMua()), Utils.formatTienTe(dichVu.getGiaBan()) });
 	}
 
 	private List<DichVu> addRow(List<DichVu> list) {
@@ -629,9 +631,9 @@ public class QuanLyDichVu_GUI extends JPanel {
 			tenLoaiDV = "";
 		if (soLuong.equals("Số lượng"))
 			soLuong = "";
-		List<DichVu> list = dichVu_DAO.filterDichVu(tenDichVu, tenLoaiDV, soLuong);
+		listDV = dichVu_DAO.filterDichVu(tenDichVu, tenLoaiDV, soLuong);
 		setEmptyTable();
-		addRow(list);
+		addRow(listDV);
 	}
 
 	private void filterDichVuDaNgungKinhDoanh() {
