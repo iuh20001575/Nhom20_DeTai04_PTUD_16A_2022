@@ -45,6 +45,7 @@ public class Utils {
 	public static final String thongKeMenuItem = "Thống kê";
 	public static final String thongTinCaNhanMenuItem = "Thông tin cá nhân";
 	public static final String trangChuMenuItem = "Trang chủ";
+	public static final String troGiupItem = "Trợ giúp";
 
 	/**
 	 * Convert int to String

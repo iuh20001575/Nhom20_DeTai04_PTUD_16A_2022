@@ -156,7 +156,8 @@ public class Main extends JFrame {
 					Utils.thongKeDoanhThuMenuItem, Utils.thongKeHoaDonMenuItem, Utils.thongKeKhachHangMenuItem));
 			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("user.png"), Utils.thongTinCaNhanMenuItem));
 			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("user.png"), Utils.quanLyDichVuMenuItem));
-			menu.setPreferredSize(new Dimension(getPreferredSize().width, 473));
+			menu.addMenuItem(new ModelMenuItem(Utils.getImageIcon("user.png"), Utils.troGiupItem));
+			menu.setPreferredSize(new Dimension(getPreferredSize().width, 503));
 		}
 
 		footer.setDrawer(drawer);
@@ -178,7 +179,7 @@ public class Main extends JFrame {
 				PanelUI pnl = StackPanel.pop();
 				boolean isEmpty = StackPanel.empty();
 
-				if (pnl.getTitle().equals("Trang chủ"))
+				if (pnl.getTitle().equals(Utils.trangChuMenuItem))
 					while (!StackPanel.empty())
 						StackPanel.pop();
 
@@ -234,6 +235,15 @@ public class Main extends JFrame {
 	 * @param indexSubmenu index submenu
 	 */
 	public void addPnlBody(JPanel pnl, String title, int index, int indexSubmenu) {
+		PanelUI panelUI = new PanelUI(pnl, title, index, indexSubmenu);
+		menu.setSelectedMenu(index, indexSubmenu);
+		addPnlBody(panelUI);
+		StackPanel.push(panelUI);
+	}
+
+	public void addPnlBody(JPanel pnl, String title, int index, int indexSubmenu, boolean b) {
+		if (!b)
+			return;
 		PanelUI panelUI = new PanelUI(pnl, title, index, indexSubmenu);
 		menu.setSelectedMenu(index, indexSubmenu);
 		addPnlBody(panelUI);
@@ -346,6 +356,9 @@ public class Main extends JFrame {
 					title = "Quản lý phòng";
 					pnl = new QuanLyPhong_GUI(_this);
 					break;
+				case Utils.troGiupItem:
+					Utils.openFile(_this.getClass().getResource("/PTUD_HDSD.pdf").toString());
+					return;
 				default:
 					title = "Trang chủ";
 					pnl = new TrangChu_GUI();
