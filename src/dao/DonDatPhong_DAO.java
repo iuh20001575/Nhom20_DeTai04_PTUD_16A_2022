@@ -1177,4 +1177,30 @@ public class DonDatPhong_DAO extends DAO {
 
 		return listPhongDangThue;
 	}
+	//	Tìm phòng có đơn đặt phòng trước khác
+	public List<Phong> timPhongCoDonDatTruocKhac(List<Phong> phongs, DonDatPhong donDatPhong){
+		List<Phong> listPhongCoDonDatTruocKhac = new ArrayList<>();
+		String sql;
+		
+		sql = "SELECT TOP(1) * FROM ChiTietDatPhong CP INNER JOIN DonDatPhong DP  ON CP.donDatPhong = DP.maDonDatPhong\n"
+				+ "where CP.phong = ?  and DP.ngayNhanPhong = ? and DP.gioNhanPhong < ?   and DP.trangThai = N'Đang chờ'";
+		try {
+			for (Phong phong : phongs) {
+				PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+				preparedStatement.setString(1, phong.getMaPhong());
+				preparedStatement.setString(2, donDatPhong.getNgayNhanPhong().toString());
+				preparedStatement.setString(3, donDatPhong.getGioNhanPhong().toString());
+	
+				ResultSet resultSet = preparedStatement.executeQuery();
+	
+				while(resultSet.next())
+					listPhongCoDonDatTruocKhac.add(phong);
+						
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	
+		return listPhongCoDonDatTruocKhac;
+	}
 }
