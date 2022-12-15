@@ -1,9 +1,9 @@
 package dao;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -31,13 +31,14 @@ public class PhieuDatPhongTruoc_DAO {
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT DISTINCT maDonDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong, gioNhanPhong, trangThai FROM  ChiTietDatPhong INNER JOIN DonDatPhong ON ChiTietDatPhong.donDatPhong = DonDatPhong.maDonDatPhong \r\n"
+					"SELECT DISTINCT maDonDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong, gioNhanPhong, trangThai FROM DonDatPhong \r\n"
 							+ "INNER JOIN KhachHang ON DonDatPhong.khachHang = KhachHang.maKhachHang\r\n"
-							+ "WHERE DonDatPhong.ngayNhanPhong = ? and DonDatPhong.trangThai like ? and KhachHang.soDienThoai like ? \r\n"
+							+ "WHERE DonDatPhong.ngayNhanPhong like ? and DonDatPhong.trangThai like ? and KhachHang.soDienThoai like ? \r\n"
 							+ "EXCEPT SELECT * FROM DonDatPhong\r\n"
-							+ "WHERE trangThai like N'Đang thuê' or trangThai like N'Đã trả'");
+							+ "WHERE trangThai like N'Đang thuê' or trangThai like N'Đã trả' "
+							+ "ORDER BY ngayNhanPhong DESC, gioNhanPhong ASC");
 
-			preparedStatement.setDate(1, Date.valueOf(ngayNhanPhong));
+			preparedStatement.setDate(1, Date.valueOf(ngayNhanPhong) );
 			preparedStatement.setString(2, "%" + trangThai + "%");
 			preparedStatement.setString(3, soDienThoai);
 
@@ -46,69 +47,6 @@ public class PhieuDatPhongTruoc_DAO {
 			while (resultSet.next()) {
 				donDatPhong = getDonDatPhong(resultSet);
 				list.add(donDatPhong);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	/**
-	 * Get chi tiết phiếu đặt phòng theo mã phiếu đặt, trạng thái và số điện thoại
-	 * 
-	 * @param maPhieuDat
-	 * @param soDienThoai
-	 * @param trangThai
-	 * @return
-	 */
-	public List<DonDatPhong> filterPhieuDatPhong(String maDatPhong, String soDienThoai, String trangThai) {
-		List<DonDatPhong> list = new ArrayList<>();
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT * FROM  ChiTietDatPhong INNER JOIN DonDatPhong ON ChiTietDatPhong.donDatPhong = DonDatPhong.maDonDatPhong \r\n"
-							+ "INNER JOIN KhachHang ON DonDatPhong.khachHang = KhachHang.maKhachHang\r\n"
-							+ "WHERE ChiTietDatPhong.donDatPhong LIKE ? and DonDatPhong.trangThai like ? and KhachHang.soDienThoai like ?");
-
-			preparedStatement.setString(1, "%" + maDatPhong + "%");
-			preparedStatement.setString(2, "%" + trangThai + "%");
-			preparedStatement.setString(3, soDienThoai);
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-			DonDatPhong donDatPhong;
-			while (resultSet.next()) {
-				donDatPhong = getDonDatPhong(resultSet);
-				list.add(donDatPhong);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	/**
-	 * Get tất cả các chi tiết đặt phòng
-	 * 
-	 * @param resultSet
-	 * @return
-	 * @throws SQLException
-	 */
-	public List<ChiTietDatPhong> getAllChiTietDatPhong() {
-		List<ChiTietDatPhong> list = new ArrayList<>();
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDatPhong");
-
-			ResultSet resultSet = preparedStatement.executeQuery();
-			ChiTietDatPhong chiTietDatPhong;
-			while (resultSet.next()) {
-				chiTietDatPhong = getChiTietDatPhong(resultSet);
-				list.add(chiTietDatPhong);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -130,7 +68,8 @@ public class PhieuDatPhongTruoc_DAO {
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT DISTINCT * FROM DonDatPhong where trangThai like N'Đang chờ' or trangThai like N'Đã hủy' ");
+					"SELECT DISTINCT * FROM DonDatPhong where trangThai like N'Đang chờ' or trangThai like N'Đã hủy' "
+					+ "ORDER BY ngayNhanPhong DESC, gioNhanPhong ASC ");
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 			DonDatPhong donDatPhong;
