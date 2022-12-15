@@ -3,13 +3,13 @@ package entity;
 import java.util.Objects;
 
 public class DichVu {
-	private String maDichVu;
-	private String tenDichVu;
-	private int soLuong;
-	private String donViTinh;
-	private LoaiDichVu loaiDichVu;
-	private double giaMua;
 	private boolean daNgungKinhDoanh;
+	private String donViTinh;
+	private double giaMua;
+	private LoaiDichVu loaiDichVu;
+	private String maDichVu;
+	private int soLuong;
+	private String tenDichVu;
 
 	public DichVu() {
 		super();
@@ -44,6 +44,10 @@ public class DichVu {
 		return Objects.equals(maDichVu, other.maDichVu);
 	}
 
+	public boolean getDaNgungKinhDoanh() {
+		return daNgungKinhDoanh;
+	}
+
 	public String getDonViTinh() {
 		return donViTinh;
 	}
@@ -72,17 +76,13 @@ public class DichVu {
 		return tenDichVu;
 	}
 
-	public boolean getDaNgungKinhDoanh() {
-		return daNgungKinhDoanh;
+	@Override
+	public int hashCode() {
+		return Objects.hash(maDichVu);
 	}
 
 	public void setDaNgungKinhDoanh(boolean daNgungKinhDoanh) {
 		this.daNgungKinhDoanh = daNgungKinhDoanh;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(maDichVu);
 	}
 
 	public void setDonViTinh(String donViTinh) {
@@ -112,8 +112,8 @@ public class DichVu {
 	@Override
 	public String toString() {
 		return "DichVu [maDichVu=" + maDichVu + ", tenDichVu=" + tenDichVu + ", soLuong=" + soLuong + ", donViTinh="
-				+ donViTinh + ", loaiDichVu=" + loaiDichVu + ", giaMua=" + giaMua + ", daNgungKinhDoanh=" + daNgungKinhDoanh
-				+ "]";
+				+ donViTinh + ", loaiDichVu=" + loaiDichVu + ", giaMua=" + giaMua + ", daNgungKinhDoanh="
+				+ daNgungKinhDoanh + "]";
 	}
 
 }

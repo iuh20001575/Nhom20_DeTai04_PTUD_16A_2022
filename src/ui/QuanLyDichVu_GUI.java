@@ -399,26 +399,26 @@ public class QuanLyDichVu_GUI extends JPanel {
 		this.add(pnlControl);
 
 		addAncestorListener(new AncestorListener() {
-			
-			@Override
-			public void ancestorRemoved(AncestorEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void ancestorMoved(AncestorEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-			
+
 			@Override
 			public void ancestorAdded(AncestorEvent event) {
 				setEmptyTable();
 				List<DichVu> listDV = (List<DichVu>) dichVu_DAO.getAllDichVu();
 				addRow(listDV);
 				pnlControl.setTbl(tbl);
-				
+
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+				// TODO Auto-generated method stub
+
 			}
 		});
 

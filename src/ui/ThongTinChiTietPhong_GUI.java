@@ -39,10 +39,8 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 	private ComboBox<String> cmbLoaiPhong;
 	private ComboBox<String> cmbSoLuong;
 	private LoaiPhong_DAO loaiPhong_DAO;
-	private Main main;
 	private Phong_DAO phong_DAO;
 	private JPanel pnlContent;
-	private QuanLyPhong_GUI quanLyPhong_GUI;
 	private TextField txtMaPhong;
 
 	/**

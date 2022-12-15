@@ -59,30 +59,6 @@ public class Phong_DAO extends DAO {
 	}
 
 	/**
-	 * Get tất cả các phòng ĐÃ XÓA
-	 * 
-	 * @return
-	 */
-	public List<Phong> getAllPhongDaXoa() {
-		List<Phong> list = new ArrayList<>();
-
-		Statement statement;
-		try {
-			statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM Phong WHERE trangThaiXoa = 1");
-			Phong phong;
-			while (resultSet.next()) {
-				phong = getPhong(resultSet);
-				list.add(phong);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	/**
 	 * Get tất cả các phòng theo loại phòng
 	 * 
 	 * @param loaiPhong
@@ -155,6 +131,30 @@ public class Phong_DAO extends DAO {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT * FROM Phong WHERE trangThai IN (N'Đang thuê', N'Phòng tạm') ");
 			ResultSet resultSet = preparedStatement.executeQuery();
+			Phong phong;
+			while (resultSet.next()) {
+				phong = getPhong(resultSet);
+				list.add(phong);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
+	 * Get tất cả các phòng ĐÃ XÓA
+	 * 
+	 * @return
+	 */
+	public List<Phong> getAllPhongDaXoa() {
+		List<Phong> list = new ArrayList<>();
+
+		Statement statement;
+		try {
+			statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM Phong WHERE trangThaiXoa = 1");
 			Phong phong;
 			while (resultSet.next()) {
 				phong = getPhong(resultSet);
@@ -381,6 +381,26 @@ public class Phong_DAO extends DAO {
 		return false;
 	}
 
+	/**
+	 * Khôi phục phòng
+	 * 
+	 * @param maPhong
+	 * @return
+	 */
+	public boolean khoiPhucPhong(String maPhong) {
+		int res = 0;
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE Phong SET trangThaiXoa = 0 WHERE maPhong  = ?");
+			preparedStatement.setString(1, maPhong);
+			res = preparedStatement.executeUpdate();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res > 0;
+	}
+
 	public boolean suaPhong(Phong phong) {
 
 		try {
@@ -427,26 +447,6 @@ public class Phong_DAO extends DAO {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("UPDATE Phong SET trangThaiXoa = 1 WHERE maPhong  = ?");
-			preparedStatement.setString(1, maPhong);
-			res = preparedStatement.executeUpdate();
-			preparedStatement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return res > 0;
-	}
-
-	/**
-	 * Khôi phục phòng
-	 * 
-	 * @param maPhong
-	 * @return
-	 */
-	public boolean khoiPhucPhong(String maPhong) {
-		int res = 0;
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE Phong SET trangThaiXoa = 0 WHERE maPhong  = ?");
 			preparedStatement.setString(1, maPhong);
 			res = preparedStatement.executeUpdate();
 			preparedStatement.close();
