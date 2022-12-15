@@ -8,11 +8,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -36,18 +33,12 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
-import com.raven.datechooser.DateChooser;
-import com.raven.datechooser.EventDateChooser;
-import com.raven.datechooser.SelectedAction;
-import com.raven.datechooser.SelectedDate;
-
 import components.button.Button;
 import components.controlPanel.ControlPanel;
 import components.jDialog.Glass;
 import components.jDialog.JDialogCustom;
 import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
-import components.textField.TextField;
 import dao.ChiTietDatPhong_DAO;
 import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
@@ -100,21 +91,21 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 	private Button btnSearch;
 	private Button btnSuaPhong;
 	private Button btnXemPhong;
+	private JComboBox<String> cboMaPhieuDat;
 	private JComboBox<String> cboTrangThai;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
-	private DateChooser dateChoose;
 	private DonDatPhong_DAO donDatPhong_DAO;
 	private Glass glass;
+	private JDialogCustom jDialog;
 	private JFrame jFrameSub;
 	private KhachHang_DAO khachHang_DAO;
 	private Main main;
-
+	private DefaultComboBoxModel<String> maPhieuDatModel;
 	private PhieuDatPhongTruoc_DAO phieuDatPhongTruoc_DAO;
 
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
-	private TextField txtNgayNhanPhong;
 	private JTextField txtSoDienThoai;
 	private final int widthPnlContainer = 1086;
 
@@ -129,6 +120,8 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 		donDatPhong_DAO = new DonDatPhong_DAO();
 		this.main = main;
+
+		jDialog = new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning);
 
 		glass.addMouseListener(new MouseAdapter() {
 			@Override
@@ -161,50 +154,28 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		pnlSearch.add(lblTime);
 		clock();
 
-		JPanel pnlNgayNhanPhong = new JPanel();
-		pnlNgayNhanPhong.setBackground(Utils.secondaryColor);
-		pnlNgayNhanPhong.setBounds(0, 30, 380, 55);
-		pnlSearch.add(pnlNgayNhanPhong);
-		pnlNgayNhanPhong.setLayout(null);
+		JPanel pnlMaPhieuDat = new JPanel();
+		pnlMaPhieuDat.setBackground(Utils.secondaryColor);
+		pnlMaPhieuDat.setBounds(0, 30, 300, 36);
+		pnlSearch.add(pnlMaPhieuDat);
+		pnlMaPhieuDat.setLayout(null);
 
-		JLabel lblNgayNhanPhong = new JLabel("Ngày nhận phòng");
-		lblNgayNhanPhong.setFont(new Font("Segoe UI", Font.PLAIN, 23));
-		lblNgayNhanPhong.setBounds(0, 0, 200, 36);
-		pnlNgayNhanPhong.add(lblNgayNhanPhong);
+		JLabel lblMaPhieuDat = new JLabel("Mã phiếu đặt");
+		lblMaPhieuDat.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+		lblMaPhieuDat.setBounds(0, 0, 150, 36);
+		pnlMaPhieuDat.add(lblMaPhieuDat);
 
-		txtNgayNhanPhong = new TextField();
-		txtNgayNhanPhong.setIcon(Utils.getImageIcon("add-event 2.png"));
-		txtNgayNhanPhong.setLabelText("");
-		txtNgayNhanPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		txtNgayNhanPhong.setColumns(10);
-		txtNgayNhanPhong.setBackground(Utils.primaryColor);
-		txtNgayNhanPhong.setBounds(200, -12, 180, 50);
-		pnlNgayNhanPhong.add(txtNgayNhanPhong);
-		dateChoose = new DateChooser();
-		dateChoose.setDateFormat("dd/MM/yyyy");
-		dateChoose.setTextRefernce(txtNgayNhanPhong);
-
-		JPanel pnlTrangThai = new JPanel();
-		pnlTrangThai.setBackground(Utils.secondaryColor);
-		pnlTrangThai.setBounds(385, 30, 275, 36);
-		pnlSearch.add(pnlTrangThai);
-		pnlTrangThai.setLayout(null);
-
-		JLabel lblTrangThai = new JLabel("Trạng thái");
-		lblTrangThai.setBounds(0, 0, 115, 36);
-		lblTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-		pnlTrangThai.add(lblTrangThai);
-
-		cboTrangThai = new JComboBox<String>();
-		cboTrangThai.setModel(new DefaultComboBoxModel<String>(new String[] { "Trạng thái", "Đang chờ", "Đã hủy" }));
-		cboTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		cboTrangThai.setBackground(Utils.primaryColor);
-		cboTrangThai.setBounds(125, 0, 140, 36);
-		pnlTrangThai.add(cboTrangThai);
+		cboMaPhieuDat = new JComboBox<String>();
+		maPhieuDatModel = new DefaultComboBoxModel<String>(new String[] { "Mã phiếu đặt" });
+		cboMaPhieuDat.setModel(maPhieuDatModel);
+		cboMaPhieuDat.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		cboMaPhieuDat.setBackground(Utils.primaryColor);
+		cboMaPhieuDat.setBounds(150, 0, 150, 36);
+		pnlMaPhieuDat.add(cboMaPhieuDat);
 
 		JPanel pnlSoDienThoai = new JPanel();
 		pnlSoDienThoai.setBackground(Utils.secondaryColor);
-		pnlSoDienThoai.setBounds(665, 30, 275, 36);
+		pnlSoDienThoai.setBounds(605, 30, 275, 36);
 		pnlSearch.add(pnlSoDienThoai);
 		pnlSoDienThoai.setLayout(null);
 
@@ -228,6 +199,24 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		txtSoDienThoai.setBounds(8, 1, 134, 34);
 		pnlInputSoDienThoai.add(txtSoDienThoai);
 
+		JPanel pnlTrangThai = new JPanel();
+		pnlTrangThai.setBackground(Utils.secondaryColor);
+		pnlTrangThai.setBounds(315, 30, 275, 36);
+		pnlSearch.add(pnlTrangThai);
+		pnlTrangThai.setLayout(null);
+
+		JLabel lblTrangThai = new JLabel("Trạng thái");
+		lblTrangThai.setBounds(0, 0, 115, 36);
+		lblTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+		pnlTrangThai.add(lblTrangThai);
+
+		cboTrangThai = new JComboBox<String>();
+		cboTrangThai.setModel(new DefaultComboBoxModel<String>(new String[] { "Trạng thái", "Đang chờ", "Đã hủy" }));
+		cboTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		cboTrangThai.setBackground(Utils.primaryColor);
+		cboTrangThai.setBounds(125, 0, 150, 36);
+		pnlTrangThai.add(cboTrangThai);
+
 		btnSearch = new Button("Tìm");
 		btnSearch.setFocusable(false);
 		btnSearch.setIcon(Utils.getImageIcon("searching.png"));
@@ -235,7 +224,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		btnSearch.setForeground(Color.WHITE);
 		btnSearch.setColor(new Color(134, 229, 138));
 		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnSearch.setBounds(954, 30, 100, 40);
+		btnSearch.setBounds(904, 30, 150, 40);
 		btnSearch.setBorderColor(Utils.secondaryColor);
 		btnSearch.setColorOver(new Color(134, 229, 138));
 		btnSearch.setColorClick(new Color(59, 238, 66));
@@ -404,8 +393,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				int row = tbl.getSelectedRow();
 				if (row == -1) {
-					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
-							"Vui lòng chọn phòng");
+					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
 					return;
 				}
 
@@ -429,8 +417,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 				int row = tbl.getSelectedRow();
 
 				if (row == -1) {
-					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
-							"Vui lòng chọn phòng");
+					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
 					return;
 				}
 
@@ -450,31 +437,35 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 					for (Phong phong : listPhongDangThue) {
 						maPhong[i++] = phong.getMaPhong();
 					}
-					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
-							"Phòng " + String.join(", ", maPhong) + " đang thuê\n");
+
+					jDialog.showMessage("Question", "Phòng " + String.join(", ", maPhong) + " đang thuê\n");
 					return;
 				}
 
 				res = donDatPhong_DAO.nhanPhongTrongPhieuDatPhongTruoc(chiTietDatPhong.getDonDatPhong(), listPhong);
 
 				if (!res) {
-					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
-							"Chưa đến giờ nhận phòng");
+					new Notification(main, components.notification.Notification.Type.ERROR, "Chưa đến giờ nhận phòng")
+							.showNotification();
 					return;
 				}
 
-				JDialogCustom jDialogCustom = new JDialogCustom(main);
-
-				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+				jDialog.getBtnOK().addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						QuanLyDatPhong_GUI quanLyDatPhong_GUI = new QuanLyDatPhong_GUI(main);
 						main.addPnlBody(quanLyDatPhong_GUI, "Quản lý đặt phòng", 1, 0);
 					}
 				});
-				jDialogCustom.showMessage("Question",
+				jDialog.getBtnCancel().addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						QuanLyPhieuDatPhongTruoc_GUI quanLyPhieuDatPhong_GUI = new QuanLyPhieuDatPhongTruoc_GUI(main);
+						main.addPnlBody(quanLyPhieuDatPhong_GUI, "Quản lý đặt phòng trước", 1, 0);
+					}
+				});
+				jDialog.showMessage("Question",
 						"Nhận phòng thành công! \nBạn có muốn chuyển sang trang quản lý đặt phòng");
-
 			}
 		});
 
@@ -489,8 +480,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 				int row = tbl.getSelectedRow();
 
 				if (row == -1) {
-					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
-							"Vui lòng chọn phòng");
+					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
 					return;
 				}
 
@@ -536,8 +526,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 				int row = tbl.getSelectedRow();
 
 				if (row == -1) {
-					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
-							"Vui lòng chọn phòng");
+					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
 					return;
 				}
 				openJFrameSub(new SuaPhong_GUI(main, null, _this,
@@ -553,15 +542,15 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 			}
 		});
 
-//		Sự kiện txtNgayDat
-		dateChoose.addEventDateChooser(new EventDateChooser() {
-
+//		Sự kiện JCombobox mã phiếu đặt phòng
+		cboMaPhieuDat.addItemListener(new ItemListener() {
 			@Override
-			public void dateSelected(SelectedAction arg0, SelectedDate arg1) {
-				filterPhieuDatPhong();
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterPhieuDatPhong();
+				}
 			}
 		});
-
 //		Sự kiện JCombobox trạng thái
 		cboTrangThai.addItemListener(new ItemListener() {
 			@Override
@@ -594,7 +583,14 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 
 			public void ancestorAdded(AncestorEvent event) {
 				clockThread = clock();
-				filterPhieuDatPhong();
+
+				tableModel.setRowCount(0);
+				cboMaPhieuDat.removeAllItems();
+				cboMaPhieuDat.addItem("Mã phiếu đặt");
+				List<DonDatPhong> list = phieuDatPhongTruoc_DAO.getAllDonDatPhong();
+				list.forEach(phieuDatPhong -> cboMaPhieuDat.addItem(phieuDatPhong.getMaDonDatPhong()));
+				pnlControl.setTbl(tbl);
+
 			}
 
 			public void ancestorMoved(AncestorEvent event) {
@@ -615,20 +611,14 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		List<String> listPhong = new ArrayList<String>();
 		listChiTietDatPhong.forEach(chiTietDatPhong -> listPhong.add(chiTietDatPhong.getPhong().getMaPhong()));
 
-		DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("HH:mm");
-
 		tableModel.addRow(new String[] { maDatPhong, khachHang_DAO.getKhachHangTheoMa(maKhachHang).getSoDienThoai(),
-				String.format("%s - %s", donDatPhong.getGioDatPhong().format(formatTime),
-						donDatPhong.getNgayDatPhong().format(formatDate)),
-				String.format("%s - %s", donDatPhong.getGioNhanPhong().format(formatTime),
-						donDatPhong.getNgayNhanPhong().format(formatDate)),
+				String.format("%s - %s", donDatPhong.getGioDatPhong(), donDatPhong.getNgayDatPhong()),
+				String.format("%s - %s", donDatPhong.getGioNhanPhong(), donDatPhong.getNgayNhanPhong()),
 				String.format("%s - %s", listPhong.size(), String.join(", ", listPhong)),
 				DonDatPhong.convertTrangThaiToString(donDatPhong.getTrangThai()) });
 	}
 
 	private List<DonDatPhong> addRow(List<DonDatPhong> list) {
-		Collections.sort(list);
 		list.forEach(datPhong -> addRow(datPhong));
 		return list;
 	}
@@ -642,16 +632,18 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 	}
 
 	public void filterPhieuDatPhong() {
-		LocalDate ngayNhanPhong = Utils.getLocalDate(txtNgayNhanPhong.getText());
+		String maPhieuDat = (String) cboMaPhieuDat.getSelectedItem();
 		String trangThai = (String) cboTrangThai.getSelectedItem();
 		String soDienThoai = txtSoDienThoai.getText();
 
+		if (maPhieuDat.equals("Mã phiếu đặt"))
+			maPhieuDat = "";
 		if (trangThai.equals("Trạng thái"))
 			trangThai = "";
 		if (soDienThoai.trim().equals(""))
 			soDienThoai = "%%";
 
-		List<DonDatPhong> list = phieuDatPhongTruoc_DAO.filterDonDatPhong(ngayNhanPhong, soDienThoai, trangThai);
+		List<DonDatPhong> list = phieuDatPhongTruoc_DAO.filterDonDatPhong(maPhieuDat, soDienThoai, trangThai);
 		if (list.size() == 0) {
 			new Notification(main, components.notification.Notification.Type.ERROR, "Không tìm thấy")
 					.showNotification();
@@ -665,6 +657,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 	}
 
 	private void loadTable() {
+		cboMaPhieuDat.setSelectedIndex(0);
 		cboTrangThai.setSelectedIndex(0);
 		txtSoDienThoai.setText("");
 		tableModel.setRowCount(0);

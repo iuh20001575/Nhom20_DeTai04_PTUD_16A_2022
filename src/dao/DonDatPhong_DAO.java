@@ -196,7 +196,7 @@ public class DonDatPhong_DAO extends DAO {
 			res = phong_DAO.capNhatTrangThaiPhong(phongCu, trangThaiMoiPhongCu);
 			if (!res)
 				return rollback();
-
+			
 //			Phòng mới - Trạng thái mới
 //						+ Trống --> Đang thuê
 //						+ Đã đặt --> Phòng tạm

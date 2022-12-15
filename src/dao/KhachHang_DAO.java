@@ -41,7 +41,7 @@ public class KhachHang_DAO {
 
 		return list;
 	}
-
+	
 	/**
 	 * Lọc khách hàng đã xóa theo họ tên
 	 * 
@@ -67,6 +67,7 @@ public class KhachHang_DAO {
 
 		return list;
 	}
+
 
 	/**
 	 * Get danh sách tất cả các khách hàng chưa xóa
@@ -238,26 +239,6 @@ public class KhachHang_DAO {
 	}
 
 	/**
-	 * Khôi phục khách hàng
-	 * 
-	 * @param maKhachHang
-	 * @return
-	 */
-	public boolean khoiPhucKhachHang(String maKhachHang) {
-		int res = 0;
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("UPDATE KhachHang SET trangThaiXoa = 0 WHERE maKhachHang  = ?");
-			preparedStatement.setString(1, maKhachHang);
-			res = preparedStatement.executeUpdate();
-			preparedStatement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return res > 0;
-	}
-
-	/**
 	 * Cập nhật thông tin khách hàng
 	 * 
 	 * @param khachHang
@@ -328,6 +309,26 @@ public class KhachHang_DAO {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("UPDATE KhachHang SET trangThaiXoa = 1 WHERE maKhachHang  = ?");
+			preparedStatement.setString(1, maKhachHang);
+			res = preparedStatement.executeUpdate();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res > 0;
+	}
+
+	/**
+	 * Khôi phục khách hàng
+	 * 
+	 * @param maKhachHang
+	 * @return
+	 */
+	public boolean khoiPhucKhachHang(String maKhachHang) {
+		int res = 0;
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE KhachHang SET trangThaiXoa = 0 WHERE maKhachHang  = ?");
 			preparedStatement.setString(1, maKhachHang);
 			res = preparedStatement.executeUpdate();
 			preparedStatement.close();

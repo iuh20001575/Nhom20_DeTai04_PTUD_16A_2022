@@ -823,10 +823,10 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 			for (int i = gio; i < gioDongCua; ++i)
 				cmbGio.addItem(Utils.convertIntToString(i));
 			if (gio == gioSelect || gioSelect == -1) {
-				if (phut >= 55) {
+				if (phut > 55) {
 					cmbGio.removeItemAt(0);
 					for (int j = 0; j < 60; j += 5)
-						cmbPhut.addItem(Utils.convertIntToString(j));
+						cmbPhut.addItem(j + "");
 				} else {
 					phut += (5 - phut % 5);
 					for (int i = phut; i < (gio == 23 ? 31 : 60); i += 5)

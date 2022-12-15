@@ -55,7 +55,9 @@ public class QuanLyKhachHang_GUI extends JPanel {
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
+
 	private JTextField txtSearch;
+
 	/**
 	 * Create the frame.
 	 */

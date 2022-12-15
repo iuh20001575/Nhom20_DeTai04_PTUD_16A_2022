@@ -4,16 +4,16 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class KhachHang {
-	private String cccd;
-	private String diaChiCuThe;
-	private boolean gioiTinh;
-	private String hoTen;
 	private String maKhachHang;
+	private String hoTen;
+	private String cccd;
 	private LocalDate ngaySinh;
-	private Phuong phuong;
-	private Quan quan;
+	private boolean gioiTinh;
 	private String soDienThoai;
 	private Tinh tinh;
+	private Quan quan;
+	private Phuong phuong;
+	private String diaChiCuThe;
 	private boolean trangThaiXoa;
 
 	public KhachHang() {
@@ -89,6 +89,10 @@ public class KhachHang {
 		return tinh;
 	}
 
+	public boolean isTrangThaiXoa() {
+		return trangThaiXoa;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(maKhachHang);
@@ -96,10 +100,6 @@ public class KhachHang {
 
 	public boolean isGioiTinh() {
 		return gioiTinh;
-	}
-
-	public boolean isTrangThaiXoa() {
-		return trangThaiXoa;
 	}
 
 	public void setCccd(String cccd) {

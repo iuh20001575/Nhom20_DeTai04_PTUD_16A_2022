@@ -3,13 +3,13 @@ package entity;
 import java.util.Objects;
 
 public class DichVu {
-	private String donViTinh;
-	private double giaMua;
-	private LoaiDichVu loaiDichVu;
 	private String maDichVu;
-	private int soLuong;
 	private String tenDichVu;
-	private boolean trangThaiXoa;
+	private int soLuong;
+	private String donViTinh;
+	private LoaiDichVu loaiDichVu;
+	private double giaMua;
+	private boolean daNgungKinhDoanh;
 
 	public DichVu() {
 		super();
@@ -21,7 +21,7 @@ public class DichVu {
 	}
 
 	public DichVu(String maDichVu, String tenDichVu, int soLuong, String donViTinh, LoaiDichVu loaiDichVu,
-			double giaMua, boolean trangThaiXoa) {
+			double giaMua, boolean daNgungKinhDoanh) {
 		super();
 		this.maDichVu = maDichVu;
 		this.tenDichVu = tenDichVu;
@@ -29,7 +29,7 @@ public class DichVu {
 		this.donViTinh = donViTinh;
 		this.loaiDichVu = loaiDichVu;
 		this.giaMua = giaMua;
-		this.trangThaiXoa = trangThaiXoa;
+		this.daNgungKinhDoanh = daNgungKinhDoanh;
 	}
 
 	@Override
@@ -72,8 +72,12 @@ public class DichVu {
 		return tenDichVu;
 	}
 
-	public boolean getTrangThaiXoa() {
-		return trangThaiXoa;
+	public boolean getDaNgungKinhDoanh() {
+		return daNgungKinhDoanh;
+	}
+
+	public void setDaNgungKinhDoanh(boolean daNgungKinhDoanh) {
+		this.daNgungKinhDoanh = daNgungKinhDoanh;
 	}
 
 	@Override
@@ -105,14 +109,10 @@ public class DichVu {
 		this.tenDichVu = tenDichVu;
 	}
 
-	public void setTrangThaiXoa(boolean trangThaiXoa) {
-		this.trangThaiXoa = trangThaiXoa;
-	}
-
 	@Override
 	public String toString() {
 		return "DichVu [maDichVu=" + maDichVu + ", tenDichVu=" + tenDichVu + ", soLuong=" + soLuong + ", donViTinh="
-				+ donViTinh + ", loaiDichVu=" + loaiDichVu + ", giaMua=" + giaMua + ", trangThaiXoa=" + trangThaiXoa
+				+ donViTinh + ", loaiDichVu=" + loaiDichVu + ", giaMua=" + giaMua + ", daNgungKinhDoanh=" + daNgungKinhDoanh
 				+ "]";
 	}
 

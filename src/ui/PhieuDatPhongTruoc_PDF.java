@@ -24,7 +24,6 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.itextpdf.text.Document;
-import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -71,37 +70,37 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 
 		JLabel lblTenQuanBold = new JLabel("Tên quán:");
 		lblTenQuanBold.setBounds(10, 0, 400, 20);
-		lblTenQuanBold.setFont(new Font("Arial", Font.BOLD, 14));
+		lblTenQuanBold.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		lblTenQuanBold.setForeground(new Color(100, 100, 100));
 		pnlHeader.add(lblTenQuanBold);
 
 		JLabel lblTenQuanPlain = new JLabel("Karaoke Nice");
 		lblTenQuanPlain.setBounds(83, 0, 400, 20);
-		lblTenQuanPlain.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTenQuanPlain.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTenQuanPlain.setForeground(new Color(100, 100, 100));
 		pnlHeader.add(lblTenQuanPlain);
 
 		JLabel lblDiaChiBold = new JLabel("Địa chỉ:");
 		lblDiaChiBold.setBounds(10, 30, 400, 20);
-		lblDiaChiBold.setFont(new Font("Arial", Font.BOLD, 14));
+		lblDiaChiBold.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		lblDiaChiBold.setForeground(new Color(100, 100, 100));
 		pnlHeader.add(lblDiaChiBold);
 
 		JLabel lblDiaChiPlain = new JLabel("Lê Thị Hồng, Phường 17, Gò Vấp, T.P Hồ Chí Minh");
 		lblDiaChiPlain.setBounds(65, 30, 400, 20);
-		lblDiaChiPlain.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblDiaChiPlain.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblDiaChiPlain.setForeground(new Color(100, 100, 100));
 		pnlHeader.add(lblDiaChiPlain);
 
 		JLabel lblLienHeBold = new JLabel("Liên hệ:");
 		lblLienHeBold.setBounds(10, 60, 400, 20);
-		lblLienHeBold.setFont(new Font("Arial", Font.BOLD, 14));
+		lblLienHeBold.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		lblLienHeBold.setForeground(new Color(100, 100, 100));
 		pnlHeader.add(lblLienHeBold);
 
 		JLabel lblLienHePlain = new JLabel("033 673 5243 - 097 888 6331");
-		lblLienHePlain.setBounds(68, 60, 400, 20);
-		lblLienHePlain.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblLienHePlain.setBounds(65, 60, 400, 20);
+		lblLienHePlain.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblLienHePlain.setForeground(new Color(100, 100, 100));
 		pnlHeader.add(lblLienHePlain);
 
@@ -113,7 +112,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 
 		JLabel lblTieuDe = new JLabel("THÔNG TIN CHI TIẾT PHIẾU ĐẶT PHÒNG TRƯỚC");
 		lblTieuDe.setBounds(15, 0, 450, 28);
-		lblTieuDe.setFont(new Font("Arial", Font.BOLD, 18));
+		lblTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 19));
 		lblTieuDe.setForeground(new Color(100, 100, 100));
 		pnlContent.add(lblTieuDe);
 
@@ -130,7 +129,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		pnlThongTin.add(pnlPhieuDatPhong);
 
 		JLabel lblTitleMaPhieuDatPhong = new JLabel("Mã phiếu: ");
-		lblTitleMaPhieuDatPhong.setFont(new Font("Arial", Font.BOLD, 14));
+		lblTitleMaPhieuDatPhong.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		lblTitleMaPhieuDatPhong.setForeground(new Color(100, 100, 100));
 		lblTitleMaPhieuDatPhong.setBounds(0, 0, 75, 20);
 		pnlPhieuDatPhong.add(lblTitleMaPhieuDatPhong);
@@ -138,7 +137,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		JLabel lblMaPhieuDatPhong = new JLabel("");
 		lblMaPhieuDatPhong.setText(dDP.getMaDonDatPhong());
 		lblMaPhieuDatPhong.setBounds(77, 0, 80, 20);
-		lblMaPhieuDatPhong.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblMaPhieuDatPhong.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblMaPhieuDatPhong.setForeground(new Color(100, 100, 100));
 		pnlPhieuDatPhong.add(lblMaPhieuDatPhong);
 
@@ -149,15 +148,15 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		pnlThongTin.add(pnlNgayLap);
 
 		JLabel lblTitleNgayLap = new JLabel("Thời gian lập phiếu: ");
-		lblTitleNgayLap.setFont(new Font("Arial", Font.BOLD, 14));
+		lblTitleNgayLap.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		lblTitleNgayLap.setForeground(new Color(100, 100, 100));
-		lblTitleNgayLap.setBounds(0, 0, 145, 20);
+		lblTitleNgayLap.setBounds(0, 0, 140, 20);
 		pnlNgayLap.add(lblTitleNgayLap);
 
 		JLabel lblNgayLap = new JLabel("");
 		lblNgayLap.setText(time + " - " + date);
-		lblNgayLap.setBounds(147, 0, 300, 20);
-		lblNgayLap.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNgayLap.setBounds(142, 0, 300, 20);
+		lblNgayLap.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblNgayLap.setForeground(new Color(100, 100, 100));
 		pnlNgayLap.add(lblNgayLap);
 
@@ -167,16 +166,16 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		pnlMaNV.setLayout(null);
 		pnlThongTin.add(pnlMaNV);
 
-		JLabel lblTitleNV = new JLabel("Mã nhân viên: ");
-		lblTitleNV.setFont(new Font("Arial", Font.BOLD, 14));
+		JLabel lblTitleNV = new JLabel("Mã NV: ");
+		lblTitleNV.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		lblTitleNV.setForeground(new Color(100, 100, 100));
-		lblTitleNV.setBounds(0, 0, 110, 20);
+		lblTitleNV.setBounds(0, 0, 60, 20);
 		pnlMaNV.add(lblTitleNV);
 
 		JLabel lblNV = new JLabel("");
 		lblNV.setText(nV.getMaNhanVien());
-		lblNV.setBounds(112, 0, 150, 20);
-		lblNV.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNV.setBounds(62, 0, 150, 20);
+		lblNV.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblNV.setForeground(new Color(100, 100, 100));
 		pnlMaNV.add(lblNV);
 
@@ -186,16 +185,16 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		pnlTenNV.setLayout(null);
 		pnlThongTin.add(pnlTenNV);
 
-		JLabel lblTitleTenNV = new JLabel("Tên nhân viên: ");
-		lblTitleTenNV.setFont(new Font("Arial", Font.BOLD, 14));
+		JLabel lblTitleTenNV = new JLabel("Tên NV: ");
+		lblTitleTenNV.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		lblTitleTenNV.setForeground(new Color(100, 100, 100));
-		lblTitleTenNV.setBounds(0, 0, 110, 20);
+		lblTitleTenNV.setBounds(0, 0, 60, 20);
 		pnlTenNV.add(lblTitleTenNV);
 
 		JLabel lblTenNV = new JLabel("");
 		lblTenNV.setText(nV.getHoTen());
-		lblTenNV.setBounds(112, 0, 300, 20);
-		lblTenNV.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTenNV.setBounds(62, 0, 300, 20);
+		lblTenNV.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTenNV.setForeground(new Color(100, 100, 100));
 		pnlTenNV.add(lblTenNV);
 
@@ -218,52 +217,52 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		pnlThongTinChiTiet.add(pnlKH);
 
 		JLabel lblTitleKH = new JLabel("KHÁCH HÀNG ");
-		lblTitleKH.setFont(new Font("Arial", Font.BOLD, 15));
+		lblTitleKH.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		lblTitleKH.setForeground(new Color(100, 100, 100));
 		lblTitleKH.setBounds(2, 0, 250, 20);
 		pnlKH.add(lblTitleKH);
 
 		JLabel lblTitleMaKH = new JLabel("Mã khách hàng: ");
-		lblTitleMaKH.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitleMaKH.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleMaKH.setForeground(new Color(100, 100, 100));
-		lblTitleMaKH.setBounds(0, 30, 110, 15);
+		lblTitleMaKH.setBounds(0, 30, 105, 15);
 		pnlKH.add(lblTitleMaKH);
 
 		JLabel lblMaKH = new JLabel("");
 		lblMaKH.setText(kH.getMaKhachHang());
 		lblMaKH.setBounds(108, 30, 100, 15);
-		lblMaKH.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblMaKH.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblMaKH.setForeground(new Color(100, 100, 100));
 		pnlKH.add(lblMaKH);
 
 		JLabel lblTitleGioiTinh = new JLabel("Giới tính: ");
-		lblTitleGioiTinh.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitleGioiTinh.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleGioiTinh.setForeground(new Color(100, 100, 100));
-		lblTitleGioiTinh.setBounds(240, 30, 65, 15);
+		lblTitleGioiTinh.setBounds(240, 30, 60, 15);
 		pnlKH.add(lblTitleGioiTinh);
 
 		JLabel lblGioiTinh = new JLabel("");
 		lblGioiTinh.setText(kH.isGioiTinh() ? "Nam" : "Nữ");
-		lblGioiTinh.setBounds(307, 30, 60, 15);
-		lblGioiTinh.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblGioiTinh.setBounds(302, 30, 60, 15);
+		lblGioiTinh.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblGioiTinh.setForeground(new Color(100, 100, 100));
 		pnlKH.add(lblGioiTinh);
 
 		JLabel lblTitleTenKH = new JLabel("Tên khách hàng: ");
-		lblTitleTenKH.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitleTenKH.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleTenKH.setForeground(new Color(100, 100, 100));
 		lblTitleTenKH.setBounds(0, 50, 120, 20);
 		pnlKH.add(lblTitleTenKH);
 
 		JLabel lblTenKH = new JLabel("");
 		lblTenKH.setText(kH.getHoTen());
-		lblTenKH.setBounds(112, 50, 370, 20);
-		lblTenKH.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTenKH.setBounds(108, 50, 370, 20);
+		lblTenKH.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTenKH.setForeground(new Color(100, 100, 100));
 		pnlKH.add(lblTenKH);
 
 		JLabel lblTitleSDT = new JLabel("Số điện thoại: ");
-		lblTitleSDT.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitleSDT.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleSDT.setForeground(new Color(100, 100, 100));
 		lblTitleSDT.setBounds(0, 75, 120, 20);
 		pnlKH.add(lblTitleSDT);
@@ -271,12 +270,12 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		JLabel lblSDT = new JLabel("");
 		lblSDT.setText(kH.getSoDienThoai());
 		lblSDT.setBounds(95, 75, 150, 20);
-		lblSDT.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblSDT.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblSDT.setForeground(new Color(100, 100, 100));
 		pnlKH.add(lblSDT);
 
 		JLabel lblTitleCCCD = new JLabel("Căn cước công dân: ");
-		lblTitleCCCD.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitleCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleCCCD.setForeground(new Color(100, 100, 100));
 		lblTitleCCCD.setBounds(0, 100, 135, 20);
 		pnlKH.add(lblTitleCCCD);
@@ -284,19 +283,19 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		JLabel lblCCCD = new JLabel("");
 		lblCCCD.setText(kH.getCccd());
 		lblCCCD.setBounds(137, 100, 150, 20);
-		lblCCCD.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblCCCD.setForeground(new Color(100, 100, 100));
 		pnlKH.add(lblCCCD);
 
 		// Chi tiết phiếu đặt phòng
 		JLabel lblTitleThongTinChiTiet = new JLabel("THÔNG TIN CHI TIẾT ");
-		lblTitleThongTinChiTiet.setFont(new Font("Arial", Font.BOLD, 15));
+		lblTitleThongTinChiTiet.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		lblTitleThongTinChiTiet.setForeground(new Color(100, 100, 100));
 		lblTitleThongTinChiTiet.setBounds(12, 140, 200, 20);
 		pnlThongTinChiTiet.add(lblTitleThongTinChiTiet);
 
 		JLabel lblTitlePhong = new JLabel("Phòng: ");
-		lblTitlePhong.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitlePhong.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitlePhong.setForeground(new Color(100, 100, 100));
 		lblTitlePhong.setBounds(12, 165, 50, 20);
 		pnlThongTinChiTiet.add(lblTitlePhong);
@@ -304,12 +303,12 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		JLabel lblPhong = new JLabel("");
 		lblPhong.setText(String.join(", ", phong));
 		lblPhong.setBounds(62, 165, 300, 20);
-		lblPhong.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblPhong.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblPhong.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblPhong);
 
 		JLabel lblTitleSL = new JLabel("Số lượng: ");
-		lblTitleSL.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitleSL.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleSL.setForeground(new Color(100, 100, 100));
 		lblTitleSL.setBounds(12, 190, 70, 20);
 		pnlThongTinChiTiet.add(lblTitleSL);
@@ -317,25 +316,25 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		JLabel lblSL = new JLabel("");
 		lblSL.setText(phongs.size() + "");
 		lblSL.setBounds(80, 190, 50, 20);
-		lblSL.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblSL.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblSL.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblSL);
 
 		JLabel lblTitleTrangThai = new JLabel("Trạng thái: ");
-		lblTitleTrangThai.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitleTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleTrangThai.setForeground(new Color(100, 100, 100));
-		lblTitleTrangThai.setBounds(12, 215, 75, 20);
+		lblTitleTrangThai.setBounds(12, 215, 70, 20);
 		pnlThongTinChiTiet.add(lblTitleTrangThai);
 
 		JLabel lblTrangThai = new JLabel("");
 		lblTrangThai.setText(DonDatPhong.convertTrangThaiToString(dDP.getTrangThai()));
-		lblTrangThai.setBounds(90, 215, 70, 20);
-		lblTrangThai.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTrangThai.setBounds(84, 215, 70, 20);
+		lblTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTrangThai.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblTrangThai);
 
 		JLabel lblTitleNDP = new JLabel("Ngày đặt phòng: ");
-		lblTitleNDP.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitleNDP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleNDP.setForeground(new Color(100, 100, 100));
 		lblTitleNDP.setBounds(12, 240, 115, 20);
 		pnlThongTinChiTiet.add(lblTitleNDP);
@@ -343,12 +342,12 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		JLabel lblNDP = new JLabel("");
 		lblNDP.setText(Utils.formatDate(dDP.getNgayDatPhong()));
 		lblNDP.setBounds(128, 240, 100, 20);
-		lblNDP.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNDP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblNDP.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblNDP);
 
 		JLabel lblTitleGDP = new JLabel("Giờ đặt phòng: ");
-		lblTitleGDP.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitleGDP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleGDP.setForeground(new Color(100, 100, 100));
 		lblTitleGDP.setBounds(230, 240, 100, 20);
 		pnlThongTinChiTiet.add(lblTitleGDP);
@@ -356,12 +355,12 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		JLabel lblGDP = new JLabel("");
 		lblGDP.setText(Utils.convertLocalTimeToString(dDP.getGioDatPhong()));
 		lblGDP.setBounds(332, 240, 100, 20);
-		lblGDP.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblGDP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblGDP.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblGDP);
 
 		JLabel lblTitleNNP = new JLabel("Ngày nhận phòng: ");
-		lblTitleNNP.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitleNNP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleNNP.setForeground(new Color(100, 100, 100));
 		lblTitleNNP.setBounds(12, 265, 125, 20);
 		pnlThongTinChiTiet.add(lblTitleNNP);
@@ -369,20 +368,20 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		JLabel lblNNP = new JLabel("");
 		lblNNP.setText(Utils.formatDate(dDP.getNgayNhanPhong()));
 		lblNNP.setBounds(139, 265, 100, 20);
-		lblNNP.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNNP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblNNP.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblNNP);
 
 		JLabel lblTitleGNP = new JLabel("Giờ nhận phòng: ");
-		lblTitleGNP.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblTitleGNP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleGNP.setForeground(new Color(100, 100, 100));
-		lblTitleGNP.setBounds(230, 265, 115, 20);
+		lblTitleGNP.setBounds(230, 265, 110, 20);
 		pnlThongTinChiTiet.add(lblTitleGNP);
 
 		JLabel lblGNP = new JLabel("");
 		lblGNP.setText(Utils.convertLocalTimeToString(dDP.getGioNhanPhong()));
-		lblGNP.setBounds(347, 265, 100, 20);
-		lblGNP.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblGNP.setBounds(342, 265, 100, 20);
+		lblGNP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblGNP.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblGNP);
 
@@ -392,7 +391,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		btnBack.setColor(Utils.primaryColor);
 		btnBack.setBorderColor(Utils.primaryColor);
 		btnBack.setRadius(10);
-		btnBack.setFont(new Font("Arial", Font.BOLD, 16));
+		btnBack.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		btnBack.setBounds(40, 470, 160, 44);
 		btnBack.setColorOver(Utils.primaryColor);
 		btnBack.setColorTextOver(Color.WHITE);
@@ -407,7 +406,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		btnInHD.setColor(Utils.primaryColor);
 		btnInHD.setBorderColor(Utils.primaryColor);
 		btnInHD.setRadius(10);
-		btnInHD.setFont(new Font("Arial", Font.BOLD, 16));
+		btnInHD.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		btnInHD.setBounds(280, 470, 160, 44);
 		btnInHD.setColorOver(Utils.primaryColor);
 		btnInHD.setColorTextOver(Color.WHITE);

@@ -1,11 +1,10 @@
 package entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class DonDatPhong implements Comparable<DonDatPhong> {
+public class DonDatPhong {
 	/**
 	 * Các trạng thái đặt phòng
 	 * 
@@ -91,6 +90,8 @@ public class DonDatPhong implements Comparable<DonDatPhong> {
 	}
 
 	@Override
+=======
+>>>>>>> Bao-Truc
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -177,5 +178,4 @@ public class DonDatPhong implements Comparable<DonDatPhong> {
 				+ ", ngayDatPhong=" + ngayDatPhong + ", gioDatPhong=" + gioDatPhong + ", ngayNhanPhong=" + ngayNhanPhong
 				+ ", gioNhanPhong=" + gioNhanPhong + ", trangThai=" + trangThai + "]";
 	}
-
 }
