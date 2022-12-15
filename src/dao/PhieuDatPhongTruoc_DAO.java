@@ -3,6 +3,7 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -25,18 +26,18 @@ public class PhieuDatPhongTruoc_DAO {
 	 * @param trangThai
 	 * @return
 	 */
-	public List<DonDatPhong> filterDonDatPhong(String maDatPhong, String soDienThoai, String trangThai) {
+	public List<DonDatPhong> filterDonDatPhong(LocalDate ngayNhanPhong, String soDienThoai, String trangThai) {
 		List<DonDatPhong> list = new ArrayList<>();
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
 					"SELECT DISTINCT maDonDatPhong, khachHang, nhanVien, ngayDatPhong, gioDatPhong, ngayNhanPhong, gioNhanPhong, trangThai FROM  ChiTietDatPhong INNER JOIN DonDatPhong ON ChiTietDatPhong.donDatPhong = DonDatPhong.maDonDatPhong \r\n"
 							+ "INNER JOIN KhachHang ON DonDatPhong.khachHang = KhachHang.maKhachHang\r\n"
-							+ "WHERE ChiTietDatPhong.donDatPhong LIKE ? and DonDatPhong.trangThai like ? and KhachHang.soDienThoai like ? \r\n"
+							+ "WHERE DonDatPhong.ngayNhanPhong = ? and DonDatPhong.trangThai like ? and KhachHang.soDienThoai like ? \r\n"
 							+ "EXCEPT SELECT * FROM DonDatPhong\r\n"
 							+ "WHERE trangThai like N'Đang thuê' or trangThai like N'Đã trả'");
 
-			preparedStatement.setString(1, "%" + maDatPhong + "%");
+			preparedStatement.setDate(1, Date.valueOf(ngayNhanPhong));
 			preparedStatement.setString(2, "%" + trangThai + "%");
 			preparedStatement.setString(3, soDienThoai);
 
