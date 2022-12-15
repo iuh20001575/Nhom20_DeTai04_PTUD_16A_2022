@@ -37,29 +37,31 @@ import entity.NhanVien;
 import entity.Phong;
 import utils.Utils;
 
-public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
+public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 
-	private PanelRound pnlContent;
 	private Button btnBack;
 	private Button btnInHD;
-	public PhieuDatPhongTruoc_PDF(Main main, ThongTinChiTietPhieuDatPhongTruoc_GUI thongTinChiTietPhieuDatPhongTruoc_GUI,
-			NhanVien nV, KhachHang kH, DonDatPhong dDP, List<Phong> phongs) {
-		
+	private PanelRound pnlContent;
+
+	public PhieuDatPhongTruoc_PDF(Main main,
+			ThongTinChiTietPhieuDatPhongTruoc_GUI thongTinChiTietPhieuDatPhongTruoc_GUI, NhanVien nV, KhachHang kH,
+			DonDatPhong dDP, List<Phong> phongs) {
+
 		Time time = Time.valueOf(LocalTime.now());
 		Date date = Date.valueOf(LocalDate.now());
 		List<String> phong = new ArrayList<>();
-		for(Phong p : phongs) {
+		for (Phong p : phongs) {
 			phong.add(p.getMaPhong());
 		}
-		
+
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setUndecorated(true);
 		setLocationRelativeTo(null);
 		setTitle("Thông tin chi tiết phiếu đặt phòng trước");
 		this.getContentPane().setBackground(new Color(242, 246, 252));
-		setBounds((Utils.getScreenWidth() - 500) / 2, 100 , 500, 650);
+		setBounds((Utils.getScreenWidth() - 500) / 2, 100, 500, 650);
 		setLayout(null);
-    
+
 		PanelRound pnlHeader = new PanelRound();
 		pnlHeader.setBackground(Color.WHITE);
 		pnlHeader.setBounds(10, 10, 480, 90);
@@ -132,7 +134,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblTitleMaPhieuDatPhong.setBounds(0, 0, 75, 20);
 		pnlPhieuDatPhong.add(lblTitleMaPhieuDatPhong);
 
-		JLabel lblMaPhieuDatPhong= new JLabel("");
+		JLabel lblMaPhieuDatPhong = new JLabel("");
 		lblMaPhieuDatPhong.setText(dDP.getMaDonDatPhong());
 		lblMaPhieuDatPhong.setBounds(77, 0, 80, 20);
 		lblMaPhieuDatPhong.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -169,7 +171,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblTitleNV.setForeground(new Color(100, 100, 100));
 		lblTitleNV.setBounds(0, 0, 60, 20);
 		pnlMaNV.add(lblTitleNV);
-		
+
 		JLabel lblNV = new JLabel("");
 		lblNV.setText(nV.getMaNhanVien());
 		lblNV.setBounds(62, 0, 150, 20);
@@ -219,7 +221,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblTitleKH.setForeground(new Color(100, 100, 100));
 		lblTitleKH.setBounds(2, 0, 250, 20);
 		pnlKH.add(lblTitleKH);
-		
+
 		JLabel lblTitleMaKH = new JLabel("Mã khách hàng: ");
 		lblTitleMaKH.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleMaKH.setForeground(new Color(100, 100, 100));
@@ -232,7 +234,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblMaKH.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblMaKH.setForeground(new Color(100, 100, 100));
 		pnlKH.add(lblMaKH);
-		
+
 		JLabel lblTitleGioiTinh = new JLabel("Giới tính: ");
 		lblTitleGioiTinh.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleGioiTinh.setForeground(new Color(100, 100, 100));
@@ -258,7 +260,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblTenKH.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTenKH.setForeground(new Color(100, 100, 100));
 		pnlKH.add(lblTenKH);
-		
+
 		JLabel lblTitleSDT = new JLabel("Số điện thoại: ");
 		lblTitleSDT.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleSDT.setForeground(new Color(100, 100, 100));
@@ -271,7 +273,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblSDT.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblSDT.setForeground(new Color(100, 100, 100));
 		pnlKH.add(lblSDT);
-		
+
 		JLabel lblTitleCCCD = new JLabel("Căn cước công dân: ");
 		lblTitleCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleCCCD.setForeground(new Color(100, 100, 100));
@@ -291,7 +293,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblTitleThongTinChiTiet.setForeground(new Color(100, 100, 100));
 		lblTitleThongTinChiTiet.setBounds(12, 140, 200, 20);
 		pnlThongTinChiTiet.add(lblTitleThongTinChiTiet);
-		
+
 		JLabel lblTitlePhong = new JLabel("Phòng: ");
 		lblTitlePhong.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitlePhong.setForeground(new Color(100, 100, 100));
@@ -304,7 +306,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblPhong.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblPhong.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblPhong);
-		
+
 		JLabel lblTitleSL = new JLabel("Số lượng: ");
 		lblTitleSL.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleSL.setForeground(new Color(100, 100, 100));
@@ -312,12 +314,12 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		pnlThongTinChiTiet.add(lblTitleSL);
 
 		JLabel lblSL = new JLabel("");
-		lblSL.setText(phongs.size()+"");
+		lblSL.setText(phongs.size() + "");
 		lblSL.setBounds(80, 190, 50, 20);
 		lblSL.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblSL.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblSL);
-		
+
 		JLabel lblTitleTrangThai = new JLabel("Trạng thái: ");
 		lblTitleTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleTrangThai.setForeground(new Color(100, 100, 100));
@@ -330,7 +332,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTrangThai.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblTrangThai);
-		
+
 		JLabel lblTitleNDP = new JLabel("Ngày đặt phòng: ");
 		lblTitleNDP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleNDP.setForeground(new Color(100, 100, 100));
@@ -343,7 +345,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblNDP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblNDP.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblNDP);
-		
+
 		JLabel lblTitleGDP = new JLabel("Giờ đặt phòng: ");
 		lblTitleGDP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleGDP.setForeground(new Color(100, 100, 100));
@@ -356,7 +358,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblGDP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblGDP.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblGDP);
-		
+
 		JLabel lblTitleNNP = new JLabel("Ngày nhận phòng: ");
 		lblTitleNNP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleNNP.setForeground(new Color(100, 100, 100));
@@ -369,7 +371,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblNNP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblNNP.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblNNP);
-		
+
 		JLabel lblTitleGNP = new JLabel("Giờ nhận phòng: ");
 		lblTitleGNP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblTitleGNP.setForeground(new Color(100, 100, 100));
@@ -382,7 +384,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		lblGNP.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblGNP.setForeground(new Color(100, 100, 100));
 		pnlThongTinChiTiet.add(lblGNP);
-		
+
 		btnBack = new Button("Trở lại");
 		btnBack.setFocusable(false);
 		btnBack.setForeground(Color.WHITE);
@@ -412,21 +414,21 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 		btnInHD.setColorClick(Utils.primaryColor);
 		btnInHD.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlContent.add(btnInHD);
-		
+
 		btnBack.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				thongTinChiTietPhieuDatPhongTruoc_GUI.closeJFrameSub();
 			}
 		});
-		
+
 		btnInHD.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// print the panel to pdf
 				Document document = new Document();
 				try {
-					String path = "HoaDon"  + ".pdf";
+					String path = "HoaDon" + ".pdf";
 					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
 					document.open();
 					PdfContentByte contentByte = writer.getDirectContent();
@@ -452,15 +454,12 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener{
 			}
 		});
 
-		
-		
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
-

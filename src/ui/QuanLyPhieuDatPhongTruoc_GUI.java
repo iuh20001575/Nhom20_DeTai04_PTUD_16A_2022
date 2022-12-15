@@ -83,30 +83,31 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 
 		return clock;
 	}
+
+	private QuanLyPhieuDatPhongTruoc_GUI _this;
 	private Button btnHuyPhong;
 	private Button btnLamMoi;
 	private Button btnNhanPhong;
 	private Button btnSearch;
+	private Button btnSuaPhong;
 	private Button btnXemPhong;
 	private JComboBox<String> cboMaPhieuDat;
 	private JComboBox<String> cboTrangThai;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
 	private DonDatPhong_DAO donDatPhong_DAO;
+	private Glass glass;
 	private JDialogCustom jDialog;
+	private JFrame jFrameSub;
 	private KhachHang_DAO khachHang_DAO;
 	private Main main;
 	private DefaultComboBoxModel<String> maPhieuDatModel;
 	private PhieuDatPhongTruoc_DAO phieuDatPhongTruoc_DAO;
+
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
 	private JTextField txtSoDienThoai;
-
 	private final int widthPnlContainer = 1086;
-	private Button btnSuaPhong;
-	private JFrame jFrameSub;
-	private Glass glass;
-	private QuanLyPhieuDatPhongTruoc_GUI _this;
 
 	/**
 	 * Create the frame.
@@ -121,7 +122,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		this.main = main;
 
 		jDialog = new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning);
-		
+
 		glass.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -277,7 +278,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		btnHuyPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnHuyPhong.setBounds(440, 0, 200, 36);
 		pnlActions.add(btnHuyPhong);
-		
+
 		btnSuaPhong = new Button("Sửa phòng");
 		btnSuaPhong.setRadius(4);
 		btnSuaPhong.setIcon(Utils.getImageIcon("change-door.png"));
@@ -291,7 +292,6 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		btnSuaPhong.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnSuaPhong.setBounds(660, 0, 200, 36);
 		pnlActions.add(btnSuaPhong);
-
 
 		btnLamMoi = new Button("Làm mới");
 		btnLamMoi.setRadius(4);
@@ -410,9 +410,9 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		btnNhanPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!btnNhanPhong.isEnabled())
+				if (!btnNhanPhong.isEnabled())
 					return;
-				
+
 				boolean res = false;
 				int row = tbl.getSelectedRow();
 
@@ -473,9 +473,9 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		btnHuyPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!btnHuyPhong.isEnabled())
+				if (!btnHuyPhong.isEnabled())
 					return;
-				
+
 				boolean res = false;
 				int row = tbl.getSelectedRow();
 
@@ -484,53 +484,53 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 					return;
 				}
 
-					String maPhieuDat = (String) tableModel.getValueAt(row, 0);
-					ChiTietDatPhong chiTietDatPhong = phieuDatPhongTruoc_DAO
-							.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
-					List<Phong> listPhong = new ArrayList<>();
-					List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO
-							.getAllChiTietDatPhong(chiTietDatPhong.getDonDatPhong());
-					listChiTietDatPhong.forEach(list -> listPhong.add(list.getPhong()));
+				String maPhieuDat = (String) tableModel.getValueAt(row, 0);
+				ChiTietDatPhong chiTietDatPhong = phieuDatPhongTruoc_DAO
+						.getChiTietDatPhongTheoMa(new DonDatPhong(maPhieuDat));
+				List<Phong> listPhong = new ArrayList<>();
+				List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO
+						.getAllChiTietDatPhong(chiTietDatPhong.getDonDatPhong());
+				listChiTietDatPhong.forEach(list -> listPhong.add(list.getPhong()));
 
-					String trangThai = (String) tableModel.getValueAt(row, 5);
-					if (trangThai.equals("Đã hủy")) {
-						new Notification(main, components.notification.Notification.Type.ERROR, "Phòng đã huỷ")
-								.showNotification();
-						return;
-					}
+				String trangThai = (String) tableModel.getValueAt(row, 5);
+				if (trangThai.equals("Đã hủy")) {
+					new Notification(main, components.notification.Notification.Type.ERROR, "Phòng đã huỷ")
+							.showNotification();
+					return;
+				}
 
-					res = donDatPhong_DAO.huyPhongTrongPhieuDatPhongTruoc(donDatPhong_DAO.getDatPhong(maPhieuDat),
-							listPhong);
+				res = donDatPhong_DAO.huyPhongTrongPhieuDatPhongTruoc(donDatPhong_DAO.getDatPhong(maPhieuDat),
+						listPhong);
 
-					if (res) {
-						new Notification(main, components.notification.Notification.Type.SUCCESS,
-								"Huỷ phòng thành công").showNotification();
-						loadTable();
-						return;
-					} else {
-						new Notification(main, components.notification.Notification.Type.ERROR, "Huỷ phòng thất bại")
-								.showNotification();
-						return;
-					}
-				
+				if (res) {
+					new Notification(main, components.notification.Notification.Type.SUCCESS, "Huỷ phòng thành công")
+							.showNotification();
+					loadTable();
+					return;
+				} else {
+					new Notification(main, components.notification.Notification.Type.ERROR, "Huỷ phòng thất bại")
+							.showNotification();
+					return;
+				}
+
 			}
 		});
-		
-		
+
 //		Sự kiện nút sửa phòng
 		btnSuaPhong.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!btnSuaPhong.isEnabled())
+				if (!btnSuaPhong.isEnabled())
 					return;
-				
+
 				int row = tbl.getSelectedRow();
 
 				if (row == -1) {
 					jDialog.showMessage("Warning", "Vui lòng chọn phòng");
 					return;
 				}
-				openJFrameSub(new SuaPhong_GUI(main,null, _this, donDatPhong_DAO.getDatPhong((String) tableModel.getValueAt(row, 0))));
+				openJFrameSub(new SuaPhong_GUI(main, null, _this,
+						donDatPhong_DAO.getDatPhong((String) tableModel.getValueAt(row, 0))));
 			}
 		});
 
@@ -623,6 +623,14 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		return list;
 	}
 
+	public void closeJFrameSub() {
+		if (jFrameSub != null)
+			jFrameSub.setVisible(false);
+		glass.setVisible(false);
+		glass.setAlpha(0f);
+		jFrameSub = null;
+	}
+
 	public void filterPhieuDatPhong() {
 		String maPhieuDat = (String) cboMaPhieuDat.getSelectedItem();
 		String trangThai = (String) cboTrangThai.getSelectedItem();
@@ -656,7 +664,15 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 		filterPhieuDatPhong();
 		pnlControl.setTbl(tbl);
 	}
-	
+
+	public void openJFrameSub(JFrame jFrame) {
+		this.main.setGlassPane(glass);
+		glass.setVisible(true);
+		glass.setAlpha(0.5f);
+		jFrameSub = jFrame;
+		jFrameSub.setVisible(true);
+	}
+
 	private void setEnabledBtnActions() {
 		int row = tbl.getSelectedRow();
 		if (row == -1)
@@ -671,21 +687,5 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 			btnHuyPhong.setEnabled(true);
 			btnSuaPhong.setEnabled(true);
 		}
-	}
-	
-	public void openJFrameSub(JFrame jFrame) {
-		this.main.setGlassPane(glass);
-		glass.setVisible(true);
-		glass.setAlpha(0.5f);
-		jFrameSub = jFrame;
-		jFrameSub.setVisible(true);
-	}
-	
-	public void closeJFrameSub() {
-		if (jFrameSub != null)
-			jFrameSub.setVisible(false);
-		glass.setVisible(false);
-		glass.setAlpha(0f);
-		jFrameSub = null;
 	}
 }

@@ -259,8 +259,6 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 			}
 		});
 
-
-
 		cmbTinh.addItemListener(this);
 		cmbQuan.addItemListener(this);
 		cmbPhuong.addItemListener(this);

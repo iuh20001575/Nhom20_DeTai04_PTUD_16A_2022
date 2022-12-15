@@ -36,7 +36,6 @@ import utils.Utils;
 
 public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 	private static final long serialVersionUID = 1L;
-	private Button btnHuy;
 	private Button btnLuu;
 	private ComboBox<String> cmbPhuong;
 	private ComboBox<String> cmbQuan;
@@ -268,31 +267,6 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 				} else
 					new Notification(main, components.notification.Notification.Type.ERROR,
 							"Cập nhật thông tin khách hàng thất bại").showNotification();
-			}
-		});
-
-		btnHuy = new Button("Hủy");
-		btnHuy.setUI(new MetalButtonUI() {
-			protected Color getDisabledTextColor() {
-				return Color.WHITE;
-			}
-		});
-		btnHuy.setIcon(new ImageIcon("Icon\\cancelled 1.png"));
-		btnHuy.setRadius(8);
-		btnHuy.setForeground(Color.WHITE);
-		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 32));
-		btnHuy.setColorOver(new Color(140, 177, 180));
-		btnHuy.setColorClick(new Color(140, 177, 180, 204));
-		btnHuy.setColor(new Color(140, 177, 180));
-		btnHuy.setBorderColor(new Color(203, 239, 255));
-		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnHuy.setBounds(117, 0, 250, 50);
-		pnlActions.add(btnHuy);
-
-		btnHuy.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				main.addPnlBody(new XemKhachHang_GUI(main, khachHang), "Xem khách hàng", 2, 0);
 			}
 		});
 

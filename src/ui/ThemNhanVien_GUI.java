@@ -376,16 +376,6 @@ public class ThemNhanVien_GUI extends JPanel implements ItemListener {
 		btnLamMoi.setBounds(428, 0, 250, 48);
 		pnlActions.add(btnLamMoi);
 
-		txtMaNhanVien.setText(nhanVien_DAO.taoMaNhanVien());
-		txtMatKhau.setText("1234Abc@");
-		cmbQuan.addItem(Quan.getQuanLabel());
-		cmbPhuong.addItem(Phuong.getPhuongLabel());
-
-		setTinhToComboBox();
-		cmbQuan.setEnabled(false);
-		cmbPhuong.setEnabled(false);
-		txtMaNhanVien.setEnabled(false);
-
 		cmbTinh.addItemListener(this);
 		cmbQuan.addItemListener(this);
 		cmbPhuong.addItemListener(this);

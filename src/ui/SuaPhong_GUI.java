@@ -94,8 +94,8 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 	 *
 	 * @param parentFrame
 	 */
-	public SuaPhong_GUI(Main main, ThongTinChiTietPhieuDatPhongTruoc_GUI tTCTPDPT_GUI, QuanLyPhieuDatPhongTruoc_GUI qLPDPT_GUI,
-			DonDatPhong donDatPhong) {
+	public SuaPhong_GUI(Main main, ThongTinChiTietPhieuDatPhongTruoc_GUI tTCTPDPT_GUI,
+			QuanLyPhieuDatPhongTruoc_GUI qLPDPT_GUI, DonDatPhong donDatPhong) {
 		_this = this;
 		loaiPhong_DAO = new LoaiPhong_DAO();
 		datPhong_DAO = new DonDatPhong_DAO();
@@ -407,15 +407,14 @@ public class SuaPhong_GUI extends JFrame implements ItemListener {
 						boolean res = datPhong_DAO.capNhatPhongTrongPhieuDatPhongTruoc(donDatPhong.getMaDonDatPhong(),
 								gioNhanPhong, dsPhongDaChon, dsPhongDaChonBanDau);
 						if (res) {
-							if(qLPDPT_GUI == null) {
+							if (qLPDPT_GUI == null) {
 								tTCTPDPT_GUI.setPhieuDatPhongVaoForm(chiTietDatPhong_DAO
 										.getChiTietDatPhongTheoMaDatPhong(donDatPhong.getMaDonDatPhong()));
 								tTCTPDPT_GUI.closeJFrameSub();
-							}
-							else {
+							} else {
 								qLPDPT_GUI.filterPhieuDatPhong();
 								qLPDPT_GUI.closeJFrameSub();
-								
+
 							}
 							new Notification(main, components.notification.Notification.Type.SUCCESS,
 									"Cập nhật phòng thành công").showNotification();

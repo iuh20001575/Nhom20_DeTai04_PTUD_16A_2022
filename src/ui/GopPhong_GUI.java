@@ -523,7 +523,7 @@ public class GopPhong_GUI extends JFrame implements ItemListener {
 		LoaiPhong loaiPhong = loaiPhong_DAO.getLoaiPhongTheoTenLoai((String) tableModelPhongGop.getValueAt(row, 1));
 		int soLuongKhach = Integer.parseInt((String) tableModelPhongGop.getValueAt(row, 2));
 		TrangThai trangThai = Phong.convertStringToTrangThai((String) tableModelPhongGop.getValueAt(row, 3));
-		return new Phong(maPhong, loaiPhong, soLuongKhach, trangThai);
+		return new Phong(maPhong, loaiPhong, soLuongKhach, trangThai, false);
 	}
 
 	/**

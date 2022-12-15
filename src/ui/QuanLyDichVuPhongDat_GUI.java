@@ -820,6 +820,24 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 						// chi tiết dịch vụ trong chi tiết dịch vụ cua table3
 						ChiTietDichVu chiTietDichVuThayDoi = chiTietDichVu_DAO
 								.getChiTietDichVuTheoMa(DichVuThayDoiSoLuong.getMaDichVu(), maDonDatPhong, maPhongChon);
+						String soLuongDV = (String) tbl3.getValueAt(row3, 2);
+						if (soLuongDV.length() <= 0) {
+							JOptionPane.showMessageDialog(_this, "Vui lòng nhập số lượng", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							tableModel3.setRowCount(0);
+							loadTable3();
+							capNhatThanhTien();
+							return;
+						}
+						if (!Utils.isInteger(soLuongDV)) {
+							JOptionPane.showMessageDialog(_this, "Số lượng phải nhập số nguyên", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							tableModel3.setRowCount(0);
+							loadTable3();
+							capNhatThanhTien();
+							return;
+						}
+
 						int soLuongDichVu = Integer.parseInt((String) tbl3.getValueAt(row3, 2));
 						// Trường hợp 1: Giảm số lượng dịch vụ xuống 0
 						if (soLuongDichVu == 0) {

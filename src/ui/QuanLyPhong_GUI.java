@@ -1,3 +1,4 @@
+
 package ui;
 
 import java.awt.Color;
@@ -19,6 +20,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -40,6 +42,7 @@ import components.comboBox.ComboBox;
 import components.controlPanel.ControlPanel;
 import components.jDialog.Glass;
 import components.jDialog.JDialogCustom;
+import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
 import dao.LoaiPhong_DAO;
 import dao.Phong_DAO;
@@ -54,6 +57,7 @@ public class QuanLyPhong_GUI extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private QuanLyPhong_GUI _this;
+	private Button btnTimKiem, btnThem, btnSua, btnXoa, btnKhoiPhuc, btnDanhSachXoa, btnDanhSachTonTai;
 	private Thread clock;
 	private ComboBox<String> cmbLoaiPhong, cmbSoLuongKhach;
 	private Glass glass;
@@ -93,7 +97,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		pnlHeader.setLayout(null);
 
 		JPanel pnlTimKiem = new JPanel();
-		pnlTimKiem.setBounds(32, 9, 611, 46);
+		pnlTimKiem.setBounds(32, 9, 829, 46);
 		pnlTimKiem.setBackground(Utils.secondaryColor);
 		pnlHeader.add(pnlTimKiem);
 		pnlTimKiem.setLayout(null);
@@ -112,7 +116,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		pnlTimKiem.add(txtTimKiem);
 		txtTimKiem.setColumns(10);
 
-		Button btnTimKiem = new Button("Tìm kiếm");
+		btnTimKiem = new Button("Tìm kiếm");
 		btnTimKiem.setIcon(new ImageIcon("Icon\\search_34x34.png"));
 		btnTimKiem.setFocusable(false);
 		btnTimKiem.setRadius(9);
@@ -124,9 +128,36 @@ public class QuanLyPhong_GUI extends JPanel {
 		btnTimKiem.setBounds(471, 0, 140, 47);
 		pnlTimKiem.add(btnTimKiem);
 
+		btnDanhSachXoa = new Button("DS đã xóa");
+		btnDanhSachXoa.setIcon(new ImageIcon("Icon\\listdelete.png"));
+		btnDanhSachXoa.setRadius(9);
+		btnDanhSachXoa.setForeground(Color.WHITE);
+		btnDanhSachXoa.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnDanhSachXoa.setColorOver(Utils.primaryColor);
+		btnDanhSachXoa.setColorClick(new Color(161, 184, 186));
+		btnDanhSachXoa.setBorderColor(Utils.secondaryColor);
+		btnDanhSachXoa.setBackground(Utils.getRGBA(140, 177, 180, 0.7f), 0.9f, 0.8f);
+		btnDanhSachXoa.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnDanhSachXoa.setBounds(626, 0, 193, 47);
+		pnlTimKiem.add(btnDanhSachXoa);
+
+		btnDanhSachTonTai = new Button("DS chưa xóa");
+		btnDanhSachTonTai.setIcon(new ImageIcon("Icon\\requirement.png"));
+		btnDanhSachTonTai.setRadius(9);
+		btnDanhSachTonTai.setVisible(false);
+		btnDanhSachTonTai.setForeground(Color.WHITE);
+		btnDanhSachTonTai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnDanhSachTonTai.setColorOver(Utils.primaryColor);
+		btnDanhSachTonTai.setColorClick(new Color(161, 184, 186));
+		btnDanhSachTonTai.setBorderColor(Utils.secondaryColor);
+		btnDanhSachTonTai.setBackground(Utils.getRGBA(140, 177, 180, 0.7f), 0.9f, 0.8f);
+		btnDanhSachTonTai.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnDanhSachTonTai.setBounds(626, 0, 193, 47);
+		pnlTimKiem.add(btnDanhSachTonTai);
+
 		JPanel pnlThoiGian = new JPanel();
 		pnlThoiGian.setBackground(Utils.secondaryColor);
-		pnlThoiGian.setBounds(854, 0, 200, 64);
+		pnlThoiGian.setBounds(864, 0, 200, 64);
 		pnlHeader.add(pnlThoiGian);
 		pnlThoiGian.setLayout(null);
 
@@ -162,7 +193,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		add(pnlActions);
 		pnlActions.setLayout(null);
 
-		Button btnThem = new Button("Thêm");
+		btnThem = new Button("Thêm");
 		btnThem.setIcon(new ImageIcon("Icon\\add 1.png"));
 		btnThem.setFocusable(false);
 		btnThem.setRadius(9);
@@ -174,7 +205,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		btnThem.setBounds(32, -2, 173, 53);
 		pnlActions.add(btnThem);
 
-		Button btnSua = new Button("Thêm");
+		btnSua = new Button("Thêm");
 		btnSua.setIcon(new ImageIcon("Icon\\update 1.png"));
 		btnSua.setText("Sửa");
 		btnSua.setFocusable(false);
@@ -187,7 +218,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		btnSua.setBounds(221, -2, 173, 53);
 		pnlActions.add(btnSua);
 
-		Button btnXoa = new Button("Thêm");
+		btnXoa = new Button("Thêm");
 		btnXoa.setText("Xóa");
 		btnXoa.setIcon(new ImageIcon("Icon\\download 1.png"));
 		btnXoa.setFocusable(false);
@@ -199,6 +230,20 @@ public class QuanLyPhong_GUI extends JPanel {
 		btnXoa.setFont(new Font("Segoe UI", Font.BOLD, 27));
 		btnXoa.setBounds(410, -2, 173, 53);
 		pnlActions.add(btnXoa);
+
+		btnKhoiPhuc = new Button("Khôi phục");
+
+		btnKhoiPhuc.setFocusable(false);
+		btnKhoiPhuc.setIcon(new ImageIcon("Icon\\restore.png"));
+		btnKhoiPhuc.setRadius(9);
+		btnKhoiPhuc.setForeground(Color.WHITE);
+		btnKhoiPhuc.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnKhoiPhuc.setBounds(410, -2, 173, 53);
+		btnKhoiPhuc.setBorderColor(Utils.secondaryColor);
+		btnKhoiPhuc.setBackground(Utils.getRGBA(140, 177, 180, 0.7f), 0.9f, 0.8f);
+		btnKhoiPhuc.setColorClick(new Color(59, 238, 66));
+		btnKhoiPhuc.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnlActions.add(btnKhoiPhuc);
 
 		cmbLoaiPhong = new ComboBox<String>();
 		cmbLoaiPhong.setFocusable(false);
@@ -295,7 +340,6 @@ public class QuanLyPhong_GUI extends JPanel {
 		this.add(pnlControl);
 
 		addRow(phong_DAO.getAllPhong());
-		pnlControl.setTbl(tbl);
 
 		clock = new Thread() {
 			@Override
@@ -334,12 +378,64 @@ public class QuanLyPhong_GUI extends JPanel {
 				}
 			}
 		};
+		// sự kiện nút xoá phòng
+		btnXoa.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = tbl.getSelectedRow();
+				if (row == -1) {
+					new JDialogCustom(jFrame, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+							"Vui lòng chọn phòng muốn xóa");
+				} else {
+					int res = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn xóa phòng này", "Xóa phòng",
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if (res == JOptionPane.OK_OPTION) {
+						String maPhong = tbl.getValueAt(row, 0).toString();
+						if (phong_DAO.xoaPhong(maPhong)) {
+							new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
+									"Xóa thông tin phòng thành công").showNotification();
+							filterPhong();
+						} else
+							new Notification(jFrame, components.notification.Notification.Type.ERROR,
+									"Xóa thông tin phòng thất bại").showNotification();
+					}
+				}
+			}
+		});
 
-//	 	Sự kiện nút tìm kiếm dịch vụ
+		// sự kiện nút khôi phục
+		btnKhoiPhuc.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = tbl.getSelectedRow();
+				if (row == -1) {
+					new JDialogCustom(jFrame, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+							"Vui lòng chọn phòng muốn khôi phục");
+				} else {
+					int res = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn khôi phục phòng này",
+							"Khôi phục phòng", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if (res == JOptionPane.OK_OPTION) {
+						String maPhong = tbl.getValueAt(row, 0).toString();
+						if (phong_DAO.khoiPhucPhong(maPhong)) {
+							new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
+									"Khôi phục thông tin phòng thành công").showNotification();
+							filterPhongDaXoa();
+						} else
+							new Notification(jFrame, components.notification.Notification.Type.ERROR,
+									"Khôi phục thông tin phòng thất bại").showNotification();
+					}
+				}
+			}
+		});
+
+//	 	Sự kiện nút tìm kiếm phòng
 		btnTimKiem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				filterPhong();
+				if (btnDanhSachXoa.isVisible()) {
+					filterPhong();
+				} else
+					filterPhongDaXoa();
 			}
 		});
 
@@ -347,7 +443,10 @@ public class QuanLyPhong_GUI extends JPanel {
 		cmbLoaiPhong.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterPhong();
+					if (btnDanhSachXoa.isVisible()) {
+						filterPhong();
+					} else
+						filterPhongDaXoa();
 				}
 			}
 		});
@@ -355,10 +454,48 @@ public class QuanLyPhong_GUI extends JPanel {
 		cmbSoLuongKhach.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterPhong();
+					if (btnDanhSachXoa.isVisible()) {
+						filterPhong();
+					} else
+						filterPhongDaXoa();
 				}
 			}
 		});
+
+//		sự kiện nút btnDanhSachTonTai
+		btnDanhSachTonTai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				txtTimKiem.setText("");
+				btnXoa.setVisible(true);
+				btnKhoiPhuc.setVisible(false);
+				btnDanhSachXoa.setVisible(true);
+				btnThem.setEnabled(true);
+				btnSua.setEnabled(true);
+				btnDanhSachTonTai.setVisible(false);
+				filterPhong();
+				cmbLoaiPhong.setSelectedIndex(0);
+				cmbSoLuongKhach.setSelectedIndex(0);
+
+			}
+		});
+// sự kiện nút btnDanhSachXoa
+		btnDanhSachXoa.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				txtTimKiem.setText("");
+				btnXoa.setVisible(false);
+				btnKhoiPhuc.setVisible(true);
+				btnDanhSachTonTai.setVisible(true);
+				btnThem.setEnabled(false);
+				btnSua.setEnabled(false);
+				btnDanhSachXoa.setVisible(false);
+				cmbLoaiPhong.setSelectedIndex(0);
+				cmbSoLuongKhach.setSelectedIndex(0);
+				filterPhongDaXoa();
+			}
+		});
+
 // Sự kiện nút thêm
 		btnThem.addMouseListener(new MouseAdapter() {
 			@Override
@@ -379,7 +516,7 @@ public class QuanLyPhong_GUI extends JPanel {
 							"Vui lòng chọn phòng muốn sửa");
 				} else {
 					String maPhong = tableModel.getValueAt(row, 0).toString();
-					openJFrameSub(new ThongTinChiTietPhong_GUI(_this, phong_DAO.getPhong(maPhong)));		
+					openJFrameSub(new ThongTinChiTietPhong_GUI(_this, phong_DAO.getPhong(maPhong)));
 				}
 			}
 		});
@@ -412,10 +549,12 @@ public class QuanLyPhong_GUI extends JPanel {
 				closeJFrameSub();
 			}
 		});
+
 	}
 
 	private List<Phong> addRow(List<Phong> list) {
 		list.forEach(phong -> addRow(phong));
+		pnlControl.setTbl(tbl);
 		return list;
 	}
 
@@ -446,13 +585,31 @@ public class QuanLyPhong_GUI extends JPanel {
 
 		setEmptyTable();
 		addRow(list);
-		pnlControl.setTbl(tbl);
+
 	}
+
+	private void filterPhongDaXoa() {
+		String maPhong = txtTimKiem.getText();
+		String tenLoaiPhong = cmbLoaiPhong.getSelectedItem().toString();
+		String soLuongKhach = cmbSoLuongKhach.getSelectedItem().toString();
+		if (tenLoaiPhong.equals("Loại phòng"))
+			tenLoaiPhong = "";
+		if (soLuongKhach.equals("Số lượng khách"))
+			soLuongKhach = "";
+
+		List<Phong> list = new ArrayList<Phong>();
+		list = phong_DAO.getPhongTheoLoaiVaSoLuongKhachDaXoa(maPhong, tenLoaiPhong, soLuongKhach);
+
+		setEmptyTable();
+		addRow(list);
+
+	}
+
 	public void loadTable() {
 		tableModel.setRowCount(0);
 		addRow(phong_DAO.getAllPhong());
+
 	}
-	
 
 	public void openJFrameSub(JFrame jFrame) {
 		this.jFrame.setGlassPane(glass);
@@ -469,4 +626,5 @@ public class QuanLyPhong_GUI extends JPanel {
 		while (tbl.getRowCount() > 0)
 			tableModel.removeRow(0);
 	}
+
 }

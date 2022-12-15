@@ -392,7 +392,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 			public void mouseClicked(MouseEvent e) {
 				if (!pnlSuaPhong.isEnabled())
 					return;
-				handleOpenSubFrame(pnlSuaPhong, new SuaPhong_GUI(main, _this,null, donDatPhong));
+				handleOpenSubFrame(pnlSuaPhong, new SuaPhong_GUI(main, _this, null, donDatPhong));
 
 			}
 		});
@@ -483,6 +483,14 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 
 	}
 
+	public void closeJFrameSub() {
+		if (jFrameSub != null)
+			jFrameSub.setVisible(false);
+		glass.setVisible(false);
+		glass.setAlpha(0f);
+		jFrameSub = null;
+	}
+
 	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
 		if (!pnl.isEnabled())
 			return;
@@ -503,15 +511,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
 	}
-	
-	public void closeJFrameSub() {
-		if (jFrameSub != null)
-			jFrameSub.setVisible(false);
-		glass.setVisible(false);
-		glass.setAlpha(0f);
-		jFrameSub = null;
-	}
-	
+
 	private void setEnabledForm() {
 		if (txtTrangThai.getText().equals("Đã hủy")) {
 			pnlSuaPhong.setEnabled(false);

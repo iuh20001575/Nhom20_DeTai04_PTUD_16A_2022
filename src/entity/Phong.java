@@ -31,6 +31,7 @@ public class Phong implements Comparable<Phong> {
 	private String maPhong;
 	private int soLuongKhach;
 	private TrangThai trangThai;
+	private boolean trangThaiXoa;
 
 	public Phong() {
 		super();
@@ -41,12 +42,13 @@ public class Phong implements Comparable<Phong> {
 		this.maPhong = maPhong;
 	}
 
-	public Phong(String maPhong, LoaiPhong loaiPhong, int soLuongKhach, TrangThai trangThai) {
+	public Phong(String maPhong, LoaiPhong loaiPhong, int soLuongKhach, TrangThai trangThai, boolean trangThaiXoa) {
 		super();
 		this.maPhong = maPhong;
 		this.loaiPhong = loaiPhong;
 		this.soLuongKhach = soLuongKhach;
 		this.trangThai = trangThai;
+		this.trangThaiXoa = trangThaiXoa;
 	}
 
 	@Override
@@ -103,6 +105,10 @@ public class Phong implements Comparable<Phong> {
 		return Objects.hash(maPhong);
 	}
 
+	public boolean isTrangThaiXoa() {
+		return trangThaiXoa;
+	}
+
 	public void setLoaiPhong(LoaiPhong loaiPhong) {
 		this.loaiPhong = loaiPhong;
 	}
@@ -119,10 +125,14 @@ public class Phong implements Comparable<Phong> {
 		this.trangThai = trangThai;
 	}
 
+	public void setTrangThaiXoa(boolean trangThaiXoa) {
+		this.trangThaiXoa = trangThaiXoa;
+	}
+
 	@Override
 	public String toString() {
-		return "Phong [maPhong=" + maPhong + ", loaiPhong=" + loaiPhong + ", soLuongKhach=" + soLuongKhach
-				+ ", trangThai=" + trangThai + "]";
+		return "Phong [loaiPhong=" + loaiPhong + ", maPhong=" + maPhong + ", soLuongKhach=" + soLuongKhach
+				+ ", trangThai=" + trangThai + ", trangThaiXoa=" + trangThaiXoa + "]";
 	}
 
 }
