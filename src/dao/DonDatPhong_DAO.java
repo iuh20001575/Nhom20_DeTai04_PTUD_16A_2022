@@ -545,7 +545,7 @@ public class DonDatPhong_DAO extends DAO {
 					+ "	WHERE (DP.[trangThai] = N'Đang thuê' AND CTDP.[gioRa] IS NULL)"
 					+ "	OR (DP.[trangThai] = N'Đang chờ' AND DP.[ngayNhanPhong] = CONVERT(DATE, GETDATE())"
 					+ "	AND [dbo].[fnSubTime](DP.[gioNhanPhong], CONVERT(TIME(0), GETDATE())) < '6:00:00')"
-					+ "	) AND [maPhong] LIKE ? AND tenLoai LIKE ?";
+					+ "	) AND [maPhong] LIKE ? AND tenLoai LIKE ? AND [trangThaiXoa] = 0";
 
 			if (isInteger)
 				sql += " AND soLuongKhach = ?";
@@ -601,7 +601,7 @@ public class DonDatPhong_DAO extends DAO {
 
 			String sql = String.format(
 					"SELECT maPhong FROM [dbo].[Phong] P JOIN [dbo].[LoaiPhong] LP ON P.loaiPhong = LP.maLoai "
-							+ "WHERE [maPhong] NOT IN (SELECT [maPhong] FROM [dbo].[Phong] P"
+							+ "WHERE[trangThaiXoa] = 0 AND [maPhong] NOT IN (SELECT [maPhong] FROM [dbo].[Phong] P"
 							+ "	JOIN [dbo].[ChiTietDatPhong] CTDP ON P.maPhong = CTDP.phong"
 							+ "	JOIN [dbo].[DonDatPhong] DP ON DP.maDonDatPhong = CTDP.donDatPhong"
 							+ "	WHERE (P.trangThai IN (N'Đã đặt'%s) AND [ngayNhanPhong] = ?"
