@@ -49,10 +49,9 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 	@SuppressWarnings("unused")
 	private Phuong phuong;
 	private Quan quan;
-	RadioButtonCustom radNam, radNu;
-
+	private RadioButtonCustom radNam, radNu;
 	private Tinh tinh;
-	TextField txtMa, txtTen, txtCCCD, txtSDT, txtNgaySinh, txtTinh, txtQuan, txtPhuong, txtDiaChiCT;
+	private TextField txtMa, txtTen, txtCCCD, txtSDT, txtNgaySinh, txtDiaChiCT;
 
 	public XemKhachHang_GUI(Main jFrame, KhachHang khachHang) {
 		main = jFrame;

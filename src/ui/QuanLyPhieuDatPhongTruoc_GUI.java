@@ -108,7 +108,6 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 	private JFrame jFrameSub;
 	private KhachHang_DAO khachHang_DAO;
 	private Main main;
-
 	private PhieuDatPhongTruoc_DAO phieuDatPhongTruoc_DAO;
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;

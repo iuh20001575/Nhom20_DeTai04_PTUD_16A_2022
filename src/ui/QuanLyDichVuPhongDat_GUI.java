@@ -135,9 +135,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 	private DefaultTableModel tableModel2, tableModel3;
 	private JTable tbl2, tbl3;
 	private TextField txtSoDienThoai;
-
 	private TextField txtTenKhachHang;
-
 	private JTextField txtTongTien;
 
 	public QuanLyDichVuPhongDat_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {

@@ -28,7 +28,6 @@ import utils.Utils;
 
 public class ThemDichVu_GUI extends JPanel implements ItemListener {
 	private static final long serialVersionUID = 1L;
-
 	private JComboBox<String> cmbLoaiDichVu;
 	private DichVu_DAO dichVu_DAO;
 	private LoaiDichVu_DAO loaiDichVu_DAO;

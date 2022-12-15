@@ -96,7 +96,6 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 	private TextField txtTGLP;
 	private TextField txtTGNP;
 	private TextField txtTrangThai;
-
 	private final int widthPnlContainer = 948;
 
 	/**

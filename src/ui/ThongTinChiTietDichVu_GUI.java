@@ -26,7 +26,6 @@ import utils.Utils;
 
 public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 	private static final long serialVersionUID = 1L;
-
 	private ComboBox<String> cmbLoaiDichVu;
 	@SuppressWarnings("unused")
 	private DichVu dichVu;

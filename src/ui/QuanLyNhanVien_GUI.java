@@ -702,7 +702,7 @@ public class QuanLyNhanVien_GUI extends JPanel {
 
 //				Get danh sách nhân viên theo mã nhân viên
 				List<NhanVien> list = nhanVien_DAO.getNhanVien(dsMaNhanvien);
-				
+
 //				Xuất danh sách nhân viên ra Excel
 				int lengthList = list.size();
 				for (int i = 0; i < lengthList; i++) {

@@ -48,14 +48,11 @@ public class QuanLyKhachHang_GUI extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
 	private DiaChi_DAO diaChi_DAO;
-
 	private KhachHang_DAO khachHang_DAO;
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
-
 	private JTextField txtSearch;
 
 	/**
