@@ -179,7 +179,7 @@ public class ThemPhong_GUI extends JFrame {
 					String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
 					int soLuong = Integer.parseInt((String) cmbSoLuong.getSelectedItem());
 					LoaiPhong lp = loaiPhong_DAO.getLoaiPhongTheoTenLoai(loaiPhong);
-					Phong phong = new Phong(maPhong, lp, soLuong, TrangThai.Trong);
+					Phong phong = new Phong(maPhong, lp, soLuong, TrangThai.Trong, false);
 
 					if (phong_DAO.themPhong(phong)) {
 						xoaRong();

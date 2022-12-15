@@ -4,23 +4,21 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.metal.MetalButtonUI;
 
 import components.button.Button;
 import components.notification.Notification;
+import components.notification.Notification.Type;
 import components.textField.TextField;
 import dao.DichVu_DAO;
 import dao.LoaiDichVu_DAO;
@@ -33,11 +31,10 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 
 	private JComboBox<String> cmbLoaiDichVu;
 	private DichVu_DAO dichVu_DAO;
-	private JLabel lblDate;
-	private JLabel lblThu;
-	private JLabel lblTime;
 	private LoaiDichVu_DAO loaiDichVu_DAO;
 	private Main main;
+	private TextField txtMa, txtTen, txtDonViTinh, txtSoLuong, txtGiaMua;
+	private final int widthPnlContainer = 948;
 
 	public ThemDichVu_GUI(Main jFrame) {
 		main = jFrame;
@@ -45,37 +42,38 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		loaiDichVu_DAO = new LoaiDichVu_DAO();
 
 		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(new Color(203, 239, 255));
-		pnlContainer.setBounds(0, 0, 1100, 500);
+		// pnlContainer.setBounds(0, 0, 1100, 500);
+		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
 		this.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
-		TextField txtMa = new TextField();
+		txtMa = new TextField();
 		txtMa.setLabelText("Mã dịch vụ");
 		txtMa.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtMa.setBackground(new Color(203, 239, 255));
 		txtMa.setBounds(44, 25, 842, 55);
 		pnlContainer.add(txtMa);
 
-		TextField txtTen = new TextField();
+		txtTen = new TextField();
 		txtTen.setLabelText("Tên dịch vụ");
 		txtTen.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtTen.setBackground(new Color(203, 239, 255));
 		txtTen.setBounds(44, 105, 842, 55);
 		pnlContainer.add(txtTen);
 
-		TextField txtDonViTinh = new TextField();
+		txtDonViTinh = new TextField();
 		txtDonViTinh.setLabelText("Đơn vị tính");
 		txtDonViTinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtDonViTinh.setBackground(new Color(203, 239, 255));
 		txtDonViTinh.setBounds(44, 195, 371, 55);
 		pnlContainer.add(txtDonViTinh);
 
-		TextField txtSoLuong = new TextField();
+		txtSoLuong = new TextField();
 		txtSoLuong.setLabelText("Số lượng");
 		txtSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtSoLuong.setBackground(new Color(203, 239, 255));
@@ -92,46 +90,12 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		cmbLoaiDichVu.setBounds(44, 290, 371, 45);
 		pnlContainer.add(cmbLoaiDichVu);
 
-		TextField txtGiaMua = new TextField();
+		txtGiaMua = new TextField();
 		txtGiaMua.setLabelText("Giá mua");
 		txtGiaMua.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		txtGiaMua.setBackground(new Color(203, 239, 255));
 		txtGiaMua.setBounds(516, 285, 371, 50);
 		pnlContainer.add(txtGiaMua);
-
-//		Date time
-
-		JPanel pnlDateTime = new JPanel();
-		pnlDateTime.setBackground(Utils.secondaryColor);
-		pnlDateTime.setBounds(949, 5, 105, 58);
-		pnlContainer.add(pnlDateTime);
-		pnlDateTime.setLayout(null);
-
-		lblTime = new JLabel("10:30");
-		lblTime.setForeground(new Color(0, 0, 0, 115));
-		lblTime.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTime.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblTime.setBounds(0, 0, 105, 19);
-		pnlDateTime.add(lblTime);
-
-		lblThu = new JLabel("T2");
-		lblThu.setHorizontalAlignment(SwingConstants.CENTER);
-		lblThu.setForeground(new Color(0, 0, 0, 115));
-		lblThu.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblThu.setBounds(0, 19, 105, 19);
-		pnlDateTime.add(lblThu);
-
-		lblDate = new JLabel("29-09-2022");
-		lblDate.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDate.setForeground(new Color(0, 0, 0, 115));
-		lblDate.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblDate.setBounds(0, 38, 105, 19);
-		pnlDateTime.add(lblDate);
-
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon("Icon\\clock (1) 1.png"));
-		lblNewLabel.setBounds(885, 2, 64, 64);
-		pnlContainer.add(lblNewLabel);
 
 		Button btnLuu = new Button("Lưu");
 		btnLuu.setUI(new MetalButtonUI() {
@@ -154,6 +118,8 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		btnLuu.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if (!validator())
+					return;
 				String sma = txtMa.getText();
 				String sten = txtTen.getText();
 				int sSoLuong = Integer.valueOf(txtSoLuong.getText());
@@ -161,9 +127,15 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 				double sGiaMua = Double.valueOf(txtGiaMua.getText());
 				String sLoaiDichVu = cmbLoaiDichVu.getSelectedItem().toString();
 				LoaiDichVu loaiDichVuSelect = loaiDichVu_DAO.getLoaiDichVuTheoTen(sLoaiDichVu);
-				if (dichVu_DAO.themDichVu(new DichVu(sma, sten, sSoLuong, sDonViTinh, loaiDichVuSelect, sGiaMua))) {
+				if (dichVu_DAO
+						.themDichVu(new DichVu(sma, sten, sSoLuong, sDonViTinh, loaiDichVuSelect, sGiaMua, false))) {
 					new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
 							"Đã thêm dịch vụ mới thành công").showNotification();
+					xoaRong();
+
+				} else {
+					new Notification(jFrame, components.notification.Notification.Type.ERROR,
+							"Đã thêm dịch vụ mới thất bại").showNotification();
 				}
 			}
 		});
@@ -185,7 +157,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
 		btnHuy.setBounds(570, 420, 250, 50);
 		pnlContainer.add(btnHuy);
-
+// sự kiện nút hủy
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -193,52 +165,37 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 
 			}
 		});
-
-		clock();
-
-	}
-
-	public void clock() {
-		Thread clock = new Thread() {
+//		Sự kiện txtTen
+		txtTen.addKeyListener(new KeyAdapter() {
 			@Override
-			public void run() {
-				for (;;) {
-					try {
-						LocalDateTime currTime = LocalDateTime.now();
-						int day = currTime.getDayOfMonth();
-						int month = currTime.getMonthValue();
-						int year = currTime.getYear();
-						int hour = currTime.getHour();
-						int minute = currTime.getMinute();
-						lblTime.setText(String.format("%s:%s", hour < 10 ? "0" + hour : hour,
-								minute < 10 ? "0" + minute : minute));
-						LocalDate date = LocalDate.now();
-						DayOfWeek dayNow = date.getDayOfWeek();
-						String thu = "T2";
-						if (dayNow.getValue() == DayOfWeek.TUESDAY.getValue())
-							thu = "T3";
-						else if (dayNow.getValue() == DayOfWeek.WEDNESDAY.getValue())
-							thu = "T4";
-						else if (dayNow.getValue() == DayOfWeek.THURSDAY.getValue())
-							thu = "T5";
-						else if (dayNow.getValue() == DayOfWeek.FRIDAY.getValue())
-							thu = "T6";
-						else if (dayNow.getValue() == DayOfWeek.SATURDAY.getValue())
-							thu = "T7";
-						else if (dayNow.getValue() == DayOfWeek.SUNDAY.getValue())
-							thu = "CN";
-						lblThu.setText(thu);
-						lblDate.setText(String.format("%s-%s-%d", day < 10 ? "0" + day : day,
-								month < 10 ? "0" + month : month, year));
-						sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+			public void keyPressed(KeyEvent e) {
+				txtTen.setError(false);
 			}
-		};
+		});
+//		Sự kiện txtGiaMua
+		txtGiaMua.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtGiaMua.setError(false);
+			}
+		});
+//		Sự kiện txtDonViTinh
+		txtDonViTinh.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtDonViTinh.setError(false);
+			}
+		});
+//		Sự kiện txtSoLuong
+		txtSoLuong.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				txtSoLuong.setError(false);
+			}
+		});
+		txtMa.setEnabled(false);
+		txtMa.setText(dichVu_DAO.getMaDichVu());
 
-		clock.start();
 	}
 
 	@Override
@@ -246,6 +203,71 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		if (e.getStateChange() != ItemEvent.SELECTED) {
 			return;
 		}
+	}
+
+	/**
+	 * Hiển thị thông báo lỗi và focus các JTextField
+	 *
+	 * @param txt     JtextField cần focus
+	 * @param message thông báo lỗi
+	 * @return false
+	 */
+	private boolean showThongBaoLoi(TextField txt, String message) {
+		new Notification(main, Type.ERROR, message).showNotification();
+		txt.setError(true);
+		txt.selectAll();
+		txt.requestFocus();
+		return false;
+	}
+
+	/**
+	 * Kiểm tra thông tin dịch vụ
+	 *
+	 * @return true nếu thông tin dịch vụ hợp lệ
+	 */
+	private boolean validator() {
+
+		String ten = txtTen.getText().trim();
+
+		if (ten.length() <= 0)
+			return showThongBaoLoi(txtTen, "Vui lòng nhập tên dịch vụ");
+
+		String donViTinh = txtDonViTinh.getText().trim();
+
+		if (donViTinh.length() <= 0)
+			return showThongBaoLoi(txtDonViTinh, "Vui lòng nhập đơn vị tính");
+
+		String soLuong = txtSoLuong.getText().trim();
+
+		if (soLuong.length() <= 0)
+			return showThongBaoLoi(txtSoLuong, "Vui lòng nhập số lượng");
+
+		if (!Utils.isInteger(soLuong))
+			return showThongBaoLoi(txtSoLuong, "Số lượng phải là số nguyên");
+
+		String giaMua = txtGiaMua.getText().trim();
+
+		if (giaMua.length() <= 0)
+			return showThongBaoLoi(txtGiaMua, "Vui lòng nhập giá mua");
+
+		if (!Utils.isDouble(giaMua))
+			return showThongBaoLoi(txtGiaMua, "Giá mua phải là số");
+
+		return true;
+	}
+
+	/**
+	 * Xóa rỗng các textfield và làm mới ComboBox
+	 */
+	private void xoaRong() {
+		txtTen.setText("");
+		txtDonViTinh.setText("");
+		txtSoLuong.setText("");
+		txtGiaMua.setText("");
+		txtTen.requestFocus();
+		txtMa.setText(dichVu_DAO.getMaDichVu());
+		cmbLoaiDichVu.setSelectedIndex(0);
+		main.repaint();
 	}
 
 }

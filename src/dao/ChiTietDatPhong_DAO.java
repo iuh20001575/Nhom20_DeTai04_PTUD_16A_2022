@@ -105,7 +105,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 				maPhong = resultSet.getString("maPhong");
 				loaiPhong = resultSet.getString("loaiPhong");
 				soLuongKhach = resultSet.getInt("soLuongKhach");
-				phong = new Phong(maPhong, new LoaiPhong(loaiPhong), soLuongKhach, TrangThai.DangThue);
+				phong = new Phong(maPhong, new LoaiPhong(loaiPhong), soLuongKhach, TrangThai.DangThue, false);
 				chiTietDatPhong.setPhong(phong);
 
 				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();

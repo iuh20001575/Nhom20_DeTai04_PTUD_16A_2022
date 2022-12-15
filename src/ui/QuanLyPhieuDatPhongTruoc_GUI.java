@@ -110,6 +110,7 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 	private Main main;
 
 	private PhieuDatPhongTruoc_DAO phieuDatPhongTruoc_DAO;
+
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
@@ -694,5 +695,4 @@ public class QuanLyPhieuDatPhongTruoc_GUI extends JPanel {
 			btnSuaPhong.setEnabled(true);
 		}
 	}
-
 }

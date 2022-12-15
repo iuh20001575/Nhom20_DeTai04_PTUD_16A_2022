@@ -131,31 +131,6 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 		btnLuu.setBounds(350, -2, 100, 38);
 		pnlActions.add(btnLuu);
 
-		Button btnHuy = new Button("Hủy");
-		btnHuy.setVisible(false);
-		btnHuy.setText("Hủy");
-		btnHuy.setRadius(4);
-		btnHuy.setForeground(Color.BLACK);
-		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		btnHuy.setFocusable(false);
-		btnHuy.setColor(Color.WHITE);
-		btnHuy.setBorderColor(new Color(203, 239, 255));
-		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnHuy.setBounds(234, -2, 100, 38);
-		pnlActions.add(btnHuy);
-
-		Button btnCapNhat = new Button("Cập nhật");
-		btnCapNhat.setText("Cập nhật");
-		btnCapNhat.setRadius(4);
-		btnCapNhat.setForeground(Color.BLACK);
-		btnCapNhat.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		btnCapNhat.setFocusable(false);
-		btnCapNhat.setColor(Color.WHITE);
-		btnCapNhat.setBorderColor(new Color(203, 239, 255));
-		btnCapNhat.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnCapNhat.setBounds(234, -2, 100, 38);
-		pnlActions.add(btnCapNhat);
-
 		cmbLoaiPhong = new ComboBox<String>();
 		cmbLoaiPhong.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		cmbLoaiPhong.setModel(new DefaultComboBoxModel<String>(new String[] { "Loại phòng" }));
@@ -177,7 +152,6 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 		dsLoaiPhong.forEach(loaiPhong -> cmbLoaiPhong.addItem(loaiPhong.getTenLoai()));
 		repaint();
 		setPhongVaoForm(phong);
-		setEnabledForm(false);
 
 //		Sự kiện txtMaPhong
 		txtMaPhong.addKeyListener(new KeyAdapter() {
@@ -191,31 +165,6 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 			public void mouseClicked(java.awt.event.MouseEvent e) {
 				quanLyPhong_GUI.closeJFrameSub();
 			};
-		});
-
-//		Sự kiện nút cập nhật
-		btnCapNhat.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				btnCapNhat.setVisible(false);
-				btnHuy.setVisible(true);
-				btnLuu.setEnabled(true);
-				setEnabledForm(true);
-				repaint();
-			}
-		});
-
-//		Sự kiện nút hủy
-		btnHuy.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				setPhongVaoForm(phong);
-				btnCapNhat.setVisible(true);
-				btnHuy.setVisible(false);
-				btnLuu.setEnabled(false);
-				setEnabledForm(false);
-				repaint();
-			}
 		});
 
 //		Sự kiện nút lưu
@@ -233,10 +182,6 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 				if (res) {
 					new Notification(_this, components.notification.Notification.Type.SUCCESS,
 							"Cập nhật thông tin phòng thành công").showNotification();
-					btnCapNhat.setVisible(true);
-					btnHuy.setVisible(false);
-					btnLuu.setEnabled(false);
-					setEnabledForm(false);
 					quanLyPhong_GUI.loadTable();
 					repaint();
 				} else {
@@ -258,18 +203,7 @@ public class ThongTinChiTietPhong_GUI extends JFrame {
 		String soLuongKhach = cmbSoLuong.getSelectedItem().toString();
 		String tenLoai = cmbLoaiPhong.getSelectedItem().toString();
 		LoaiPhong loaiPhong = loaiPhong_DAO.getLoaiPhongTheoTenLoai(tenLoai);
-		return new Phong(maPhong, loaiPhong, Integer.parseInt(soLuongKhach), TrangThai.Trong);
-	}
-
-	/**
-	 * set Enabled input form
-	 * 
-	 * @param b
-	 */
-	private void setEnabledForm(boolean b) {
-		txtMaPhong.setEnabled(b);
-		cmbSoLuong.setEnabled(b);
-		cmbLoaiPhong.setEnabled(b);
+		return new Phong(maPhong, loaiPhong, Integer.parseInt(soLuongKhach), TrangThai.Trong, false);
 	}
 
 	/**

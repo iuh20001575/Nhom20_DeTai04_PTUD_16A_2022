@@ -114,7 +114,7 @@ public class ChiTietDichVu_DAO extends DAO {
 
 				loaiDichVu = new LoaiDichVu(resultSet.getString(10));
 				dichVu = new DichVu(resultSet.getString(6), resultSet.getString(7), resultSet.getInt(8),
-						resultSet.getString(9), loaiDichVu, resultSet.getDouble(11));
+						resultSet.getString(9), loaiDichVu, resultSet.getDouble(11), false);
 				chiTietDichVu.setDichVu(dichVu);
 
 				list.add(chiTietDichVu);
@@ -186,7 +186,7 @@ public class ChiTietDichVu_DAO extends DAO {
 				donViTinh = resultSet.getString("donViTinh");
 				loaiDichVu = resultSet.getString("loaiDichVu");
 				giaMua = resultSet.getDouble("giaMua");
-				dichVu = new DichVu(maDichVu, tenDichVu, soLuong, donViTinh, new LoaiDichVu(loaiDichVu), giaMua);
+				dichVu = new DichVu(maDichVu, tenDichVu, soLuong, donViTinh, new LoaiDichVu(loaiDichVu), giaMua, false);
 				chiTietDichVu.setDichVu(dichVu);
 
 				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();

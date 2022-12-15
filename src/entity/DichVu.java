@@ -9,6 +9,7 @@ public class DichVu {
 	private String maDichVu;
 	private int soLuong;
 	private String tenDichVu;
+	private boolean trangThaiXoa;
 
 	public DichVu() {
 		super();
@@ -20,7 +21,7 @@ public class DichVu {
 	}
 
 	public DichVu(String maDichVu, String tenDichVu, int soLuong, String donViTinh, LoaiDichVu loaiDichVu,
-			double giaMua) {
+			double giaMua, boolean trangThaiXoa) {
 		super();
 		this.maDichVu = maDichVu;
 		this.tenDichVu = tenDichVu;
@@ -28,6 +29,7 @@ public class DichVu {
 		this.donViTinh = donViTinh;
 		this.loaiDichVu = loaiDichVu;
 		this.giaMua = giaMua;
+		this.trangThaiXoa = trangThaiXoa;
 	}
 
 	@Override
@@ -70,6 +72,10 @@ public class DichVu {
 		return tenDichVu;
 	}
 
+	public boolean getTrangThaiXoa() {
+		return trangThaiXoa;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(maDichVu);
@@ -99,9 +105,15 @@ public class DichVu {
 		this.tenDichVu = tenDichVu;
 	}
 
+	public void setTrangThaiXoa(boolean trangThaiXoa) {
+		this.trangThaiXoa = trangThaiXoa;
+	}
+
 	@Override
 	public String toString() {
 		return "DichVu [maDichVu=" + maDichVu + ", tenDichVu=" + tenDichVu + ", soLuong=" + soLuong + ", donViTinh="
-				+ donViTinh + ", loaiDichVu=" + loaiDichVu + ", giaMua=" + giaMua + "]";
+				+ donViTinh + ", loaiDichVu=" + loaiDichVu + ", giaMua=" + giaMua + ", trangThaiXoa=" + trangThaiXoa
+				+ "]";
 	}
+
 }

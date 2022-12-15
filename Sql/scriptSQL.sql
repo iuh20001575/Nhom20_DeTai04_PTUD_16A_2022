@@ -22940,6 +22940,7 @@ CREATE TABLE Phong (
 	loaiPhong CHAR(4) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
 	soLuongKhach INT NOT NULL,
 	trangThai NVARCHAR(15) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
+	trangThaiXoa BIT NOT NULL, -- true: (đã xóa)1, false:(chưa xóa) 0
 	CONSTRAINT CHK_Phong_maPhong_ThoaMau CHECK (maPhong LIKE '[0-9][0-9].[0-9][0-9]'), -- Kiểm tra mã phòng theo mẫu: XX.YY
 	CONSTRAINT CHK_Phong_loaiPhong_ThoaMau CHECK (loaiPhong LIKE 'L[0-9][0-9][0-9]'), -- Kiểm tra loại phòng theo mẫu LXXX
 	CONSTRAINT CHK_Phong_soLuongKhach_oneOf CHECK (soLuongKhach IN (5, 10, 20)), -- Kiểm tra số lượng khách là 5, 10 hoặc 20 người
@@ -22950,33 +22951,33 @@ CREATE TABLE Phong (
 -- THÊM DỮ LIỆU VÀO BẢNG
 go
 INSERT Phong
-VALUES ('01.01', 'L001', 10, N'Trống')
+VALUES ('01.01', 'L001', 10, N'Trống',0)
 INSERT Phong
-VALUES ('01.02', 'L001', 10, N'Trống')
+VALUES ('01.02', 'L001', 10, N'Trống',0)
 INSERT Phong
-VALUES ('02.01', 'L002', 10, N'Trống')
+VALUES ('02.01', 'L002', 10, N'Trống',0)
 INSERT Phong
-VALUES ('02.02', 'L002', 10, N'Trống')
+VALUES ('02.02', 'L002', 10, N'Trống',0)
 INSERT Phong
-VALUES ('02.03', 'L001', 5, N'Trống')
+VALUES ('02.03', 'L001', 5, N'Trống',0)
 INSERT Phong
-VALUES ('03.01', 'L002', 20, N'Trống')
+VALUES ('03.01', 'L002', 20, N'Trống',0)
 INSERT Phong
-VALUES ('03.02', 'L001', 20, N'Trống')
+VALUES ('03.02', 'L001', 20, N'Trống',0)
 INSERT Phong
-VALUES ('04.01', 'L001', 10, N'Trống')
+VALUES ('04.01', 'L001', 10, N'Trống',0)
 INSERT Phong
-VALUES ('04.02', 'L001', 10, N'Trống')
+VALUES ('04.02', 'L001', 10, N'Trống',0)
 INSERT Phong
-VALUES ('04.03', 'L002', 10, N'Trống')
+VALUES ('04.03', 'L002', 10, N'Trống',0)
 INSERT Phong
-VALUES ('04.04', 'L002', 10, N'Trống')
+VALUES ('04.04', 'L002', 10, N'Trống',0)
 INSERT Phong
-VALUES ('05.01', 'L001', 5, N'Trống')
+VALUES ('05.01', 'L001', 5, N'Trống',0)
 INSERT Phong
-VALUES ('05.03', 'L002', 20, N'Trống')
+VALUES ('05.03', 'L002', 20, N'Trống',0)
 INSERT Phong
-VALUES ('05.02', 'L001', 20, N'Trống')
+VALUES ('05.02', 'L001', 20, N'Trống',0)
 
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM Phong
@@ -23020,6 +23021,7 @@ CREATE TABLE DichVu (
 	donViTinh NVARCHAR(15) NOT NULL,
 	loaiDichVu CHAR(6) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
 	giaMua FLOAT NOT NULL,
+	daNgungKinhDoanh BIT NOT  NULL, -- true: (đã xóa)1, false:(chưa xóa) 0
 	CONSTRAINT CHK_DichVu_maDichVu_ThoaMau check (maDichVu LIKE 'DV[0-9][0-9][0-9]'), -- Kiểm tra mã dịch vụ theo mẫu: DVXXX
 	CONSTRAINT CHK_DichVu_tenDichVu_KhacRong check (tenDichVu LIKE '[^ ]%'), -- Kiểm tra tên dịch vụ khác rỗng
 	CONSTRAINT CHK_DichVu_soLuong_LonHonBang0 check (soLuong >= 0), -- Kiểm tra số lượng dịch vụ >= 0
@@ -23032,68 +23034,68 @@ CREATE TABLE DichVu (
 -- THÊM DỮ LIỆU VÀO BẢNG
 go
 INSERT DichVu
-VALUES ('DV001', '7 Up', 10, N'Lon', 'LDV001', 20)
+VALUES ('DV001', '7 Up', 10, N'Lon', 'LDV001', 20, 0)
 INSERT DichVu
-VALUES ('DV002', 'Trái cây size L', 140, N'Phần', 'LDV002', 170000)
+VALUES ('DV002', 'Trái cây size L', 140, N'Phần', 'LDV002', 170000,0)
 INSERT DichVu
-VALUES ('DV003', 'Snack tôm', 70, N'Bịch', 'LDV003', 10000)
+VALUES ('DV003', 'Snack tôm', 70, N'Bịch', 'LDV003', 10000,0)
 INSERT DichVu
-VALUES ('DV004', 'Pepsi', 240, N'Lon', 'LDV001', 15000)
+VALUES ('DV004', 'Pepsi', 240, N'Lon', 'LDV001', 15000,0)
 
 INSERT DichVu
-VALUES ('DV005', N'Thịt trâu khô', 500, N'Phần', 'LDV004', 120000)
+VALUES ('DV005', N'Thịt trâu khô', 500, N'Phần', 'LDV004', 120000,0)
 INSERT DichVu
-VALUES ('DV006', N'Gà xé là chanh', 450, N'Phần', 'LDV004', 65000)
+VALUES ('DV006', N'Gà xé là chanh', 450, N'Phần', 'LDV004', 65000,0)
 INSERT DichVu
-VALUES ('DV007', N'Chân gà muối', 250, N'Phần', 'LDV004', 102000)
+VALUES ('DV007', N'Chân gà muối', 250, N'Phần', 'LDV004', 102000,0)
 INSERT DichVu
-VALUES ('DV008', N'Hạt dẻ cười', 500, N'Phần', 'LDV004', 62000)
+VALUES ('DV008', N'Hạt dẻ cười', 500, N'Phần', 'LDV004', 62000,0)
 INSERT DichVu
-VALUES ('DV009', N'Hạt macca', 150, N'Phần', 'LDV004', 68000)
+VALUES ('DV009', N'Hạt macca', 150, N'Phần', 'LDV004', 68000,0)
 INSERT DichVu
-VALUES ('DV010', N'Hoa quả thập cẩm', 100, N'Phần', 'LDV002', 400000)
+VALUES ('DV010', N'Hoa quả thập cẩm', 100, N'Phần', 'LDV002', 400000,0)
 INSERT DichVu
-VALUES ('DV011', N'Hoa quả đặc biệt', 80, N'Phần', 'LDV002', 500000)
+VALUES ('DV011', N'Hoa quả đặc biệt', 80, N'Phần', 'LDV002', 500000,0)
 INSERT DichVu
-VALUES ('DV012', N'Mận', 150, N'Phần', 'LDV002', 150000)
+VALUES ('DV012', N'Mận', 150, N'Phần', 'LDV002', 150000,0)
 INSERT DichVu
-VALUES ('DV013', N'BUDWEISER Chai', 500, N'Chai', 'LDV001', 50000)
+VALUES ('DV013', N'BUDWEISER Chai', 500, N'Chai', 'LDV001', 50000,0)
 INSERT DichVu
-VALUES ('DV014', N'BUDWEISER Nhôm', 450, N'Lon', 'LDV001', 98000)
+VALUES ('DV014', N'BUDWEISER Nhôm', 450, N'Lon', 'LDV001', 98000,0)
 INSERT DichVu
-VALUES ('DV015', N'Corona Nhỏ', 300, N'Lon', 'LDV001', 60000)
+VALUES ('DV015', N'Corona Nhỏ', 300, N'Lon', 'LDV001', 60000,0)
 INSERT DichVu
-VALUES ('DV016', N'Corona lớn', 300, N'Lon', 'LDV001', 92000)
+VALUES ('DV016', N'Corona lớn', 300, N'Lon', 'LDV001', 92000,0)
 INSERT DichVu
-VALUES ('DV017', N'Heineken nhôm', 700, N'Lon', 'LDV001', 98000)
+VALUES ('DV017', N'Heineken nhôm', 700, N'Lon', 'LDV001', 98000,0)
 INSERT DichVu
-VALUES ('DV018', N'Heineken chai', 700, N'Chai', 'LDV001', 45000)
+VALUES ('DV018', N'Heineken chai', 700, N'Chai', 'LDV001', 45000,0)
 INSERT DichVu
-VALUES ('DV019', N'MACCALAN 12', 150, N'Chai', 'LDV001', 2799000)
+VALUES ('DV019', N'MACCALAN 12', 150, N'Chai', 'LDV001', 2799000,0)
 INSERT DichVu
-VALUES ('DV020', N'CHIVAS 12', 100, N'Chai', 'LDV001', 1499000)
+VALUES ('DV020', N'CHIVAS 12', 100, N'Chai', 'LDV001', 1499000,0)
 INSERT DichVu
-VALUES ('DV021', N'BALANTINES 12', 200, N'Chai', 'LDV001', 1599000)
+VALUES ('DV021', N'BALANTINES 12', 200, N'Chai', 'LDV001', 1599000,0)
 INSERT DichVu
-VALUES ('DV022', N'MOSCATO TRẮNG', 80, N'Chai', 'LDV001', 2068000)
+VALUES ('DV022', N'MOSCATO TRẮNG', 80, N'Chai', 'LDV001', 2068000,0)
 INSERT DichVu
-VALUES ('DV023', N'CORTE BALDA ĐỎ', 100, N'Chai', 'LDV001', 1668000)
+VALUES ('DV023', N'CORTE BALDA ĐỎ', 100, N'Chai', 'LDV001', 1668000,0)
 INSERT DichVu
-VALUES ('DV024', N'MASSERIA TRAJONE NEGROAMARO PRIMITIVO IGP 2017(Vang đỏ 13％)', 140, N'Chai', 'LDV001', 1168000)
+VALUES ('DV024', N'MASSERIA TRAJONE NEGROAMARO PRIMITIVO IGP 2017(Vang đỏ 13％)', 140, N'Chai', 'LDV001', 1168000,0)
 INSERT DichVu
-VALUES ('DV025', N'LES PORTES De Bordeaux 2016（Vang do 13%)', 180, N'Chai', 'LDV001', 768000)
+VALUES ('DV025', N'LES PORTES De Bordeaux 2016（Vang do 13%)', 180, N'Chai', 'LDV001', 768000,0)
 INSERT DichVu
-VALUES ('DV026', N'Bưởi-Ổi', 300, N'Phần', 'LDV002', 450000)
+VALUES ('DV026', N'Bưởi-Ổi', 300, N'Phần', 'LDV002', 450000,0)
 INSERT DichVu
-VALUES ('DV027', N'Bưởi-Xoài', 330, N'Phần', 'LDV002', 450000)
+VALUES ('DV027', N'Bưởi-Xoài', 330, N'Phần', 'LDV002', 450000,0)
 INSERT DichVu
-VALUES ('DV028', 'Fanta', 90, N'Lon', 'LDV001', 28000)
+VALUES ('DV028', 'Fanta', 90, N'Lon', 'LDV001', 28000,0)
 INSERT DichVu
-VALUES ('DV029', 'Soda', 190, N'Lon', 'LDV001', 28000)
+VALUES ('DV029', 'Soda', 190, N'Lon', 'LDV001', 28000,0)
 INSERT DichVu
-VALUES ('DV030', 'Strongbow CIDER (táo)', 220, N'Chai', 'LDV001', 45000)
+VALUES ('DV030', 'Strongbow CIDER (táo)', 220, N'Chai', 'LDV001', 45000,0)
 INSERT DichVu
-VALUES ('DV031', 'Strongbow CIDER (Mix)', 210, N'Chai', 'LDV001', 48000)
+VALUES ('DV031', 'Strongbow CIDER (Mix)', 210, N'Chai', 'LDV001', 48000,0)
 -- TRUY VẤN DỮ LIỆU
 SELECT * FROM DichVu
 

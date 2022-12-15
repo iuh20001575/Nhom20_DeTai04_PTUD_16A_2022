@@ -45,7 +45,7 @@ public class Phong_DAO extends DAO {
 		Statement statement;
 		try {
 			statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM Phong");
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM Phong WHERE trangThaiXoa = 0");
 			Phong phong;
 			while (resultSet.next()) {
 				phong = getPhong(resultSet);
@@ -70,7 +70,7 @@ public class Phong_DAO extends DAO {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
 					.prepareStatement("SELECT * FROM Phong WHERE loaiPhong IN ("
-							+ "SELECT [maLoai] FROM [dbo].[LoaiPhong] WHERE [tenLoai] LIKE ?)");
+							+ "SELECT [maLoai] FROM [dbo].[LoaiPhong] WHERE [tenLoai] LIKE ?) AND trangThaiXoa = 0");
 			preparedStatement.setString(1, "%" + loaiPhong + "%");
 
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -98,7 +98,7 @@ public class Phong_DAO extends DAO {
 		List<Phong> list = new ArrayList<>();
 		boolean isInteger = Utils.isInteger(soLuong);
 		String sql = "SELECT * FROM Phong JOIN LoaiPhong ON Phong.loaiPhong = LoaiPhong.maLoai "
-				+ "WHERE trangThai like ? and tenLoai like ?";
+				+ "WHERE trangThai like ? and tenLoai like ? AND trangThaiXoa = 0";
 
 		if (isInteger)
 			sql += " AND soLuongKhach = ?";
@@ -129,8 +129,32 @@ public class Phong_DAO extends DAO {
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM Phong WHERE trangThai IN (N'Đang thuê', N'Phòng tạm')");
+					.prepareStatement("SELECT * FROM Phong WHERE trangThai IN (N'Đang thuê', N'Phòng tạm') ");
 			ResultSet resultSet = preparedStatement.executeQuery();
+			Phong phong;
+			while (resultSet.next()) {
+				phong = getPhong(resultSet);
+				list.add(phong);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
+	 * Get tất cả các phòng ĐÃ XÓA
+	 * 
+	 * @return
+	 */
+	public List<Phong> getAllPhongDaXoa() {
+		List<Phong> list = new ArrayList<>();
+
+		Statement statement;
+		try {
+			statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM Phong WHERE trangThaiXoa = 1");
 			Phong phong;
 			while (resultSet.next()) {
 				phong = getPhong(resultSet);
@@ -153,7 +177,7 @@ public class Phong_DAO extends DAO {
 		for (int i = 1; i < length; ++i)
 			q += ", ?";
 
-		String sql = String.format("SELECT * FROM Phong WHERE maPhong IN (%s)", q);
+		String sql = String.format("SELECT * FROM Phong WHERE maPhong IN (%s) AND trangThaiXoa = 0", q);
 
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
@@ -183,7 +207,7 @@ public class Phong_DAO extends DAO {
 		List<Phong> list = new ArrayList<>();
 
 		try {
-			String sql = "SELECT * FROM Phong WHERE trangThai LIKE ?";
+			String sql = "SELECT * FROM Phong WHERE trangThai LIKE ? AND trangThaiXoa = 0";
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setString(1, "%" + trangThai + "%");
 
@@ -206,7 +230,7 @@ public class Phong_DAO extends DAO {
 		int soLuongKhach = resultSet.getInt(3);
 		String trangThai = resultSet.getString(4);
 		return new Phong(maPhong, loaiPhong_DAO.getLoaiPhong(loaiPhong), soLuongKhach,
-				Phong.convertStringToTrangThai(trangThai));
+				Phong.convertStringToTrangThai(trangThai), false);
 	}
 
 	/**
@@ -239,7 +263,7 @@ public class Phong_DAO extends DAO {
 				PreparedStatement preparedStatement = ConnectDB.getConnection()
 						.prepareStatement("SELECT * FROM   Phong INNER JOIN "
 								+ " LoaiPhong ON Phong.loaiPhong = LoaiPhong.maLoai "
-								+ "WHERE maPhong like ? and tenLoai like ? ");
+								+ "WHERE maPhong like ? and tenLoai like ? AND trangThaiXoa = 0 ");
 
 				preparedStatement.setString(1, "%" + maPhong + "%");
 				preparedStatement.setString(2, "%" + tenLoaiPhong + "%");
@@ -255,7 +279,54 @@ public class Phong_DAO extends DAO {
 				PreparedStatement preparedStatement = ConnectDB.getConnection()
 						.prepareStatement("SELECT * FROM   Phong INNER JOIN "
 								+ " LoaiPhong ON Phong.loaiPhong = LoaiPhong.maLoai "
-								+ "WHERE maPhong like ? and tenLoai like ? and soLuongKhach = ?");
+								+ "WHERE maPhong like ? and tenLoai like ? and soLuongKhach = ? AND trangThaiXoa = 0");
+
+				preparedStatement.setString(1, "%" + maPhong + "%");
+				preparedStatement.setString(2, "%" + tenLoaiPhong + "%");
+				preparedStatement.setInt(3, Integer.parseInt(soLuongKhach));
+				ResultSet resultSet = preparedStatement.executeQuery();
+				Phong phong;
+				while (resultSet.next()) {
+					phong = getPhong(resultSet);
+					list.add(phong);
+				}
+
+				resultSet.close();
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	public List<Phong> getPhongTheoLoaiVaSoLuongKhachDaXoa(String maPhong, String tenLoaiPhong, String soLuongKhach) {
+		List<Phong> list = new ArrayList<>();
+
+		try {
+			if (soLuongKhach.equals("")) {
+				PreparedStatement preparedStatement = ConnectDB.getConnection()
+						.prepareStatement("SELECT * FROM   Phong INNER JOIN "
+								+ " LoaiPhong ON Phong.loaiPhong = LoaiPhong.maLoai "
+								+ "WHERE maPhong like ? and tenLoai like ? AND trangThaiXoa = 1 ");
+
+				preparedStatement.setString(1, "%" + maPhong + "%");
+				preparedStatement.setString(2, "%" + tenLoaiPhong + "%");
+				ResultSet resultSet = preparedStatement.executeQuery();
+				Phong phong;
+				while (resultSet.next()) {
+					phong = getPhong(resultSet);
+					list.add(phong);
+				}
+
+				resultSet.close();
+			} else {
+				PreparedStatement preparedStatement = ConnectDB.getConnection()
+						.prepareStatement("SELECT * FROM   Phong INNER JOIN "
+								+ " LoaiPhong ON Phong.loaiPhong = LoaiPhong.maLoai "
+								+ "WHERE maPhong like ? and tenLoai like ? and soLuongKhach = ? AND trangThaiXoa = 1");
 
 				preparedStatement.setString(1, "%" + maPhong + "%");
 				preparedStatement.setString(2, "%" + tenLoaiPhong + "%");
@@ -310,6 +381,26 @@ public class Phong_DAO extends DAO {
 		return false;
 	}
 
+	/**
+	 * Khôi phục phòng
+	 * 
+	 * @param maPhong
+	 * @return
+	 */
+	public boolean khoiPhucPhong(String maPhong) {
+		int res = 0;
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE Phong SET trangThaiXoa = 0 WHERE maPhong  = ?");
+			preparedStatement.setString(1, maPhong);
+			res = preparedStatement.executeUpdate();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res > 0;
+	}
+
 	public boolean suaPhong(Phong phong) {
 
 		try {
@@ -329,11 +420,12 @@ public class Phong_DAO extends DAO {
 	public boolean themPhong(Phong phong) {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("INSERT Phong VALUES (?, ?, ?, ?)");
+					.prepareStatement("INSERT Phong VALUES (?, ?, ?, ?,?)");
 			preparedStatement.setString(1, phong.getMaPhong());
 			preparedStatement.setString(2, phong.getLoaiPhong().getMaLoai());
 			preparedStatement.setInt(3, phong.getSoLuongKhach());
 			preparedStatement.setString(4, Phong.convertTrangThaiToString(Phong.TrangThai.Trong));
+			preparedStatement.setBoolean(5, false);
 
 			return preparedStatement.executeUpdate() > 0;
 		} catch (SQLException e) {
@@ -342,5 +434,25 @@ public class Phong_DAO extends DAO {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Xóa phòng
+	 * 
+	 * @param maPhong
+	 * @return
+	 */
+	public boolean xoaPhong(String maPhong) {
+		int res = 0;
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("UPDATE Phong SET trangThaiXoa = 1 WHERE maPhong  = ?");
+			preparedStatement.setString(1, maPhong);
+			res = preparedStatement.executeUpdate();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res > 0;
 	}
 }

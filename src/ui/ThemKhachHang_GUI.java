@@ -8,16 +8,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,6 +27,7 @@ import javax.swing.plaf.metal.MetalButtonUI;
 import com.raven.datechooser.DateChooser;
 
 import components.button.Button;
+import components.comboBox.ComboBox;
 import components.notification.Notification;
 import components.notification.Notification.Type;
 import components.radio.RadioButtonCustom;
@@ -41,14 +40,16 @@ import entity.Quan;
 import entity.Tinh;
 import utils.Utils;
 
-public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseListener {
+public class ThemKhachHang_GUI extends JPanel implements ItemListener {
 	private static final long serialVersionUID = 1L;
-
-	private JComboBox<String> cmbPhuong;
-	private JComboBox<String> cmbQuan;
-	private JComboBox<String> cmbTinh;
+	private ComboBox<String> cmbPhuong;
+	private ComboBox<String> cmbQuan;
+	private ComboBox<String> cmbTinh;
 	private DateChooser dateChoose;
-	private DiaChi_DAO DiaChi_DAO;
+	private DiaChi_DAO diaChi_DAO;
+	private boolean isEnabledEventPhuong = false;
+	private boolean isEnabledEventQuan = false;
+	private boolean isEnabledEventTinh = false;
 	private JFrame jFrameParent = null;
 	private KhachHang_DAO khachHang_DAO;
 	private Main main;
@@ -69,12 +70,12 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 	public ThemKhachHang_GUI(Main main) {
 		this.main = main;
 		khachHang_DAO = new KhachHang_DAO();
-		DiaChi_DAO = new DiaChi_DAO();
+		diaChi_DAO = new DiaChi_DAO();
 		int padding = (int) Math.floor((Utils.getBodyHeight() - 371) * 1.0 / 7);
 		int top = padding;
 		int left = Utils.getLeft(792);
 
-		setBackground(new Color(203, 239, 255));
+		setBackground(Utils.secondaryColor);
 		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
 		setLayout(null);
 
@@ -192,41 +193,30 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		lblDiaChi.setForeground(Utils.labelTextField);
 		pnlRow4.add(lblDiaChi);
 
-		cmbTinh = new JComboBox<String>();
-		ArrayList<Tinh> listTinh = (ArrayList<Tinh>) DiaChi_DAO.getTinh();
-		for (Tinh tinh : listTinh) {
-			cmbTinh.addItem(tinh.getTinh());
-		}
+		cmbTinh = new ComboBox<>();
+
+		cmbTinh.setModel(new DefaultComboBoxModel<String>());
 		cmbTinh.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbTinh.setBackground(Utils.primaryColor);
 		cmbTinh.setBounds(0, 35, 220, 36);
 		pnlRow4.add(cmbTinh);
 
-		cmbQuan = new JComboBox<String>();
-		String tinhSelected = (String) cmbTinh.getSelectedItem();
-		Tinh tinh = DiaChi_DAO.getTinh(tinhSelected);
-		ThemKhachHang_GUI.this.tinh = tinh;
-		ArrayList<Quan> listQuan = (ArrayList<Quan>) DiaChi_DAO.getQuan(ThemKhachHang_GUI.this.tinh);
-		for (Quan quan : listQuan) {
-			cmbQuan.addItem(quan.getQuan());
-		}
-
+		cmbQuan = new ComboBox<>();
+		cmbQuan.setModel(new DefaultComboBoxModel<String>());
 		cmbQuan.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbQuan.setBackground(new Color(140, 177, 180));
 		cmbQuan.setBounds(250, 35, 220, 36);
 		pnlRow4.add(cmbQuan);
 
-		cmbPhuong = new JComboBox<String>();
-		cmbQuan.setModel(new DefaultComboBoxModel<String>());
-		// cmbPhuong.setModel(new DefaultComboBoxModel<String>(new String[] { "Phong
-		// Điền" }));
+		cmbPhuong = new ComboBox<>();
+		cmbPhuong.setModel(new DefaultComboBoxModel<String>());
 		cmbPhuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbPhuong.setBackground(new Color(140, 177, 180));
 		cmbPhuong.setBounds(500, 35, 220, 36);
 		pnlRow4.add(cmbPhuong);
 
 		JPanel pnlRow5 = new JPanel();
-		pnlRow5.setBackground(Utils.secondaryColor);
+		pnlRow5.setBackground(new Color(203, 239, 255));
 		pnlRow5.setBounds(left, top, 792, 55);
 		top += padding + 55;
 		add(pnlRow5);
@@ -240,6 +230,21 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		txtDiaChiCT.setBackground(new Color(203, 239, 255));
 		txtDiaChiCT.setBounds(0, 0, 371, 55);
 		pnlRow5.add(txtDiaChiCT);
+		txtMa.setText(khachHang_DAO.getMaKhachHang());
+		cmbQuan.addItem(Quan.getQuanLabel());
+		cmbPhuong.addItem(Phuong.getPhuongLabel());
+
+		cmbQuan.addItem("");
+		cmbPhuong.addItem(Phuong.getPhuongLabel());
+
+		setTinhToComboBox();
+		cmbQuan.setEnabled(false);
+		cmbPhuong.setEnabled(false);
+		txtMa.setEnabled(false);
+
+		cmbTinh.addItemListener(this);
+		cmbQuan.addItemListener(this);
+		cmbPhuong.addItemListener(this);
 
 		JPanel pnlActions = new JPanel();
 		pnlActions.setBackground(Utils.secondaryColor);
@@ -265,8 +270,6 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		btnLuu.setBounds(421, 0, 250, 50);
 		pnlActions.add(btnLuu);
 
-		btnLuu.addMouseListener(this);
-
 		Button btnHuy = new Button("Hủy");
 		btnHuy.setUI(new MetalButtonUI() {
 			protected Color getDisabledTextColor() {
@@ -291,10 +294,6 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 				main.backPanel();
 			}
 		});
-
-		cmbTinh.addItemListener(this);
-		cmbQuan.addItemListener(this);
-		cmbPhuong.addItemListener(this);
 
 //		Sự kiện txtTen
 		txtTen.addKeyListener(new KeyAdapter() {
@@ -356,25 +355,19 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 			@Override
 			public void ancestorAdded(AncestorEvent event) {
-				// TODO Auto-generated method stub
 				dateChoose.showPopup();
 				dateChoose.hidePopup();
 			}
 
 			@Override
 			public void ancestorMoved(AncestorEvent event) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void ancestorRemoved(AncestorEvent event) {
-				// TODO Auto-generated method stub
-
 			}
 		});
 
-		txtMa.setText(khachHang_DAO.getMaKhachHang());
 	}
 
 	public ThemKhachHang_GUI(Main main, JFrame jFrameParent, String soDienThoai) {
@@ -385,9 +378,9 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 	}
 
 	/**
-	 * Get nhân viên từ form
+	 * Get dịch vụ từ form
 	 *
-	 * @return nhanVien
+	 * @return dichVu
 	 */
 	private KhachHang getKhachHangTuForm() {
 		String sma = txtMa.getText();
@@ -396,104 +389,170 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		Boolean gioiTinh = radNam.isSelected();
 		String sCCCD = txtCCCD.getText();
 		String sSDT = txtSDT.getText();
-		String sTinh = cmbTinh.getSelectedItem().toString();
-		String sQuan = cmbQuan.getSelectedItem().toString();
-
-		String sPhuong = cmbPhuong.getSelectedItem().toString();
-		Tinh tinhSelect = DiaChi_DAO.getTinh(sTinh);
-		quan = DiaChi_DAO.getQuan(tinhSelect, sQuan);
-		phuong = DiaChi_DAO.getPhuong(quan, sPhuong);
 		String sDCCT = txtDiaChiCT.getText();
 
-		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinhSelect, quan, phuong, sDCCT, false);
+		return new KhachHang(sma, sten, sCCCD, sngaySinh, gioiTinh, sSDT, tinh, quan, phuong, sDCCT, false);
 	}
 
+	/**
+	 * Lắng nghe sự kiện JComboBox
+	 */
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		Object object = e.getSource();
-		if (e.getStateChange() != ItemEvent.SELECTED) {
+		if (e.getStateChange() != ItemEvent.SELECTED)
 			return;
-		}
 		if (cmbTinh.equals(object)) {
-
+			if (!isEnabledEventTinh)
+				return;
+			isEnabledEventQuan = false;
+			isEnabledEventPhuong = false;
 			String tinhSelected = (String) cmbTinh.getSelectedItem();
+
+			cmbPhuong.setSelectedIndex(0);
 			cmbPhuong.setEnabled(false);
-			cmbQuan = resizeComboBox(cmbQuan);
+			cmbQuan = resizeComboBox(cmbQuan, Quan.getQuanLabel());
 			quan = null;
 			phuong = null;
-			Tinh tinh = DiaChi_DAO.getTinh(tinhSelected);
+
+			if (tinhSelected.equals(Tinh.getTinhLabel())) {
+				cmbQuan.setSelectedIndex(0);
+				cmbQuan.setEnabled(false);
+				tinh = null;
+				return;
+			}
+			Tinh tinh = diaChi_DAO.getTinh(tinhSelected);
 			ThemKhachHang_GUI.this.tinh = tinh;
-			ArrayList<Quan> listQuan = (ArrayList<Quan>) DiaChi_DAO.getQuan(ThemKhachHang_GUI.this.tinh);
-			listQuan.sort(new Comparator<Quan>() {
-				@Override
-				public int compare(Quan o1, Quan o2) {
-					return o1.getQuan().compareToIgnoreCase(o2.getQuan());
-				}
-			});
-			for (Quan quan : listQuan) {
-				cmbQuan.addItem(quan.getQuan());
-			}
-			cmbQuan.setSelectedItem(listQuan.get(1));
+			setQuanToComboBox(ThemKhachHang_GUI.this.tinh);
+			repaint();
 			cmbQuan.setEnabled(true);
-
-		}
-		if (cmbQuan.equals(object)) {
-			String tinhSelected = (String) cmbTinh.getSelectedItem();
+			isEnabledEventQuan = true;
+			isEnabledEventPhuong = true;
+		} else if (cmbQuan.equals(object)) {
+			if (!isEnabledEventQuan)
+				return;
+			isEnabledEventPhuong = false;
+			isEnabledEventQuan = false;
 			String quanSelected = (String) cmbQuan.getSelectedItem();
-			cmbPhuong = resizeComboBox(cmbPhuong);
+			cmbPhuong = resizeComboBox(cmbPhuong, Quan.getQuanLabel());
 			phuong = null;
-			Tinh tinh = DiaChi_DAO.getTinh(tinhSelected);
-			Quan quan = DiaChi_DAO.getQuan(tinh, quanSelected);
-			ThemKhachHang_GUI.this.quan = quan;
-			ArrayList<Phuong> listPhuong = (ArrayList<Phuong>) DiaChi_DAO.getPhuong(ThemKhachHang_GUI.this.quan);
-			listPhuong.sort(new Comparator<Phuong>() {
 
-				@Override
-				public int compare(Phuong o1, Phuong o2) {
-					return o1.getPhuong().compareToIgnoreCase(o2.getPhuong());
-				}
-			});
-			for (Phuong phuong : listPhuong) {
-				cmbPhuong.addItem(phuong.getPhuong());
+			if (quanSelected.equals(Quan.getQuanLabel())) {
+				cmbPhuong.setSelectedIndex(0);
+				cmbPhuong.setEnabled(false);
+				quan = null;
+			} else {
+				Quan quan = diaChi_DAO.getQuan(tinh, quanSelected);
+				ThemKhachHang_GUI.this.quan = quan;
+				cmbPhuong.setEnabled(true);
+				setPhuongToComboBox(this.quan);
 			}
-			cmbPhuong.setEnabled(true);
+
+			isEnabledEventPhuong = true;
+			isEnabledEventQuan = true;
+		} else if (cmbPhuong.equals(object)) {
+			if (!isEnabledEventPhuong)
+				return;
+			isEnabledEventPhuong = false;
+			String phuongSelect = (String) cmbPhuong.getSelectedItem();
+
+			if (phuongSelect.equals(Phuong.getPhuongLabel())) {
+				phuong = null;
+				return;
+			}
+
+			Phuong phuong = diaChi_DAO.getPhuong(quan, phuongSelect);
+			ThemKhachHang_GUI.this.phuong = phuong;
+			isEnabledEventPhuong = false;
 		}
 
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-
-	}
-
-	private <E> JComboBox<E> resizeComboBox(JComboBox<E> list) {
+	/**
+	 * Xóa tất cả các items của JComboBox và thêm chuỗi vào JComboBox
+	 *
+	 * @param <E>
+	 * @param list       JComboBox cần xóa
+	 * @param firstLabel chuỗi cần thêm
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private <E> ComboBox<E> resizeComboBox(ComboBox<E> list, String firstLabel) {
 		list.removeAllItems();
-		// list.addItem((E) firstLabel);
+		list.addItem((E) firstLabel);
 		return list;
 	}
 
 	private void setjFrameParent(JFrame jFrameParent) {
 		this.jFrameParent = jFrameParent;
+	}
+
+	/**
+	 * Set danh sách phường của quận vào JComboBox
+	 *
+	 * @param quan quận cần lấy phường
+	 */
+	private void setPhuongToComboBox(Quan quan) {
+		isEnabledEventPhuong = false;
+
+		resizeComboBox(cmbPhuong, Phuong.getPhuongLabel());
+
+		List<Phuong> phuongs = diaChi_DAO.getPhuong(quan);
+
+		phuongs.sort(new Comparator<Phuong>() {
+
+			@Override
+			public int compare(Phuong o1, Phuong o2) {
+				return o1.getPhuong().compareToIgnoreCase(o2.getPhuong());
+			}
+		});
+
+		phuongs.forEach(phuong -> cmbPhuong.addItem(phuong.getPhuong()));
+
+		isEnabledEventPhuong = true;
+	}
+
+	/**
+	 * Set danh sách quận của tỉnh vào JComboBox
+	 *
+	 * @param tinh tỉnh cần lấy quận
+	 */
+	private void setQuanToComboBox(Tinh tinh) {
+		isEnabledEventQuan = false;
+
+		resizeComboBox(cmbQuan, Quan.getQuanLabel());
+		List<Quan> quans = diaChi_DAO.getQuan(tinh);
+		quans.sort(new Comparator<Quan>() {
+			@Override
+			public int compare(Quan o1, Quan o2) {
+				return o1.getQuan().compareToIgnoreCase(o2.getQuan());
+			}
+		});
+		quans.forEach(quan -> cmbQuan.addItem(quan.getQuan()));
+
+		isEnabledEventQuan = true;
+	}
+
+	/**
+	 * Set danh sách tỉnh vào JComboBox
+	 */
+	private void setTinhToComboBox() {
+		isEnabledEventTinh = false;
+
+		resizeComboBox(cmbTinh, Tinh.getTinhLabel());
+
+		List<Tinh> tinhs = diaChi_DAO.getTinh();
+
+		tinhs.sort(new Comparator<Tinh>() {
+			@Override
+			public int compare(Tinh o1, Tinh o2) {
+				return o1.getTinh().compareToIgnoreCase(o2.getTinh());
+			}
+		});
+
+		tinhs.forEach(tinh -> cmbTinh.addItem(tinh.getTinh()));
+
+		isEnabledEventTinh = true;
 	}
 
 	/**
@@ -512,9 +571,9 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 	}
 
 	/**
-	 * Kiểm tra thông tin nhân viên
+	 * Kiểm tra thông tin khách hàng
 	 *
-	 * @return true nếu thông tin nhân viên hợp lệ
+	 * @return true nếu thông tin khách hàng hợp lệ
 	 */
 	private boolean validator() {
 		String vietNamese = Utils.getVietnameseDiacriticCharacters() + "A-Z";
@@ -574,62 +633,24 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 
 		String tinh = (String) cmbTinh.getSelectedItem();
 
-		if (tinh.equals(Tinh.getTinhLabel()) || tinh.equals(null)) {
+		if (tinh.equals(Tinh.getTinhLabel())) {
 			new Notification(main, Type.ERROR, "Vui lòng chọn tỉnh/ thành phố").showNotification();
 			cmbTinh.showPopup();
 			return false;
 		}
 
-		String sQuan = (String) cmbQuan.getSelectedItem();
+		String quan = (String) cmbQuan.getSelectedItem();
 
-		if (sQuan == null || sQuan.equals(Quan.getQuanLabel())) {
+		if (quan.equals(Quan.getQuanLabel())) {
 			new Notification(main, Type.ERROR, "Vui lòng chọn quận/ huyện").showNotification();
-			String tinhSelected = (String) cmbTinh.getSelectedItem();
-			cmbPhuong.setEnabled(false);
-			cmbQuan = resizeComboBox(cmbQuan);
-			quan = null;
-			phuong = null;
-			Tinh sTinh = DiaChi_DAO.getTinh(tinhSelected);
-			ThemKhachHang_GUI.this.tinh = sTinh;
-			ArrayList<Quan> listQuan = (ArrayList<Quan>) DiaChi_DAO.getQuan(ThemKhachHang_GUI.this.tinh);
-			listQuan.sort(new Comparator<Quan>() {
-				@Override
-				public int compare(Quan o1, Quan o2) {
-					return o1.getQuan().compareToIgnoreCase(o2.getQuan());
-				}
-			});
-			for (Quan quan : listQuan) {
-				cmbQuan.addItem(quan.getQuan());
-			}
-			cmbQuan.setSelectedItem(listQuan.get(1));
-			cmbQuan.setEnabled(true);
 			cmbQuan.showPopup();
 			return false;
 		}
 
-		String sPhuong = (String) cmbPhuong.getSelectedItem();
+		String phuong = (String) cmbPhuong.getSelectedItem();
 
-		if (sPhuong == null || sPhuong.equals(Phuong.getPhuongLabel())) {
+		if (phuong.equals(Phuong.getPhuongLabel())) {
 			new Notification(main, Type.ERROR, "Vui lòng chọn phường/ xã").showNotification();
-			String tinhSelected = (String) cmbTinh.getSelectedItem();
-			String quanSelected = (String) cmbQuan.getSelectedItem();
-			cmbPhuong = resizeComboBox(cmbPhuong);
-			phuong = null;
-			Tinh sTinh = DiaChi_DAO.getTinh(tinhSelected);
-			Quan quan = DiaChi_DAO.getQuan(sTinh, quanSelected);
-			ThemKhachHang_GUI.this.quan = quan;
-			ArrayList<Phuong> listPhuong = (ArrayList<Phuong>) DiaChi_DAO.getPhuong(ThemKhachHang_GUI.this.quan);
-			listPhuong.sort(new Comparator<Phuong>() {
-
-				@Override
-				public int compare(Phuong o1, Phuong o2) {
-					return o1.getPhuong().compareToIgnoreCase(o2.getPhuong());
-				}
-			});
-			for (Phuong phuong : listPhuong) {
-				cmbPhuong.addItem(phuong.getPhuong());
-			}
-			cmbPhuong.setEnabled(true);
 			cmbPhuong.showPopup();
 			return false;
 		}
@@ -650,15 +671,12 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener, MouseList
 		txtCCCD.setText("");
 		txtSDT.setText("");
 		dateChoose.toDay();
-
-		cmbPhuong.setSelectedIndex(0);
+		setTinhToComboBox();
 		cmbQuan.setSelectedIndex(0);
-		cmbTinh.setSelectedIndex(0);
 		cmbPhuong.setSelectedIndex(0);
 		cmbQuan.setEnabled(false);
 		cmbPhuong.setEnabled(false);
 		txtDiaChiCT.setText("");
-
 		txtTen.requestFocus();
 		main.repaint();
 	}

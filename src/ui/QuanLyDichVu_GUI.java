@@ -81,7 +81,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		clock.start();
 	}
 
-	private Button btnXem, btnThem, btnSua, btnXoa;
+	private Button btnXem, btnThem, btnSua, btnXoa, btnKhoiPhuc, btnDanhSachXoa, btnDanhSachTonTai;
 	private JComboBox<String> cmbLoaiDV;
 	private JComboBox<String> cmbSoLuong;
 	private DichVu_DAO DichVu_DAO;
@@ -93,8 +93,8 @@ public class QuanLyDichVu_GUI extends JPanel {
 	private JTextField txtSearch;
 
 	public QuanLyDichVu_GUI(Main main) {
-		LoaiDichVu_DAO = new LoaiDichVu_DAO();
-		DichVu_DAO = new DichVu_DAO();
+		loaiDichVu_DAO = new LoaiDichVu_DAO();
+		dichVu_DAO = new DichVu_DAO();
 		int left = Utils.getLeft(1054);
 
 		setBackground(Utils.secondaryColor);
@@ -133,7 +133,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnSearch.setForeground(Color.WHITE);
 		btnSearch.setColor(new Color(134, 229, 138));
 		btnSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-		btnSearch.setBounds(902, -4, 154, 44);
+		btnSearch.setBounds(660, -4, 154, 44);
 		btnSearch.setBorderColor(Utils.secondaryColor);
 		btnSearch.setColorOver(new Color(134, 229, 138));
 		btnSearch.setColorClick(new Color(59, 238, 66));
@@ -143,7 +143,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		PanelRound pnlSearchInput = new PanelRound();
 		pnlSearchInput.setRounded(4);
 		pnlSearchInput.setBackground(Utils.secondaryColor);
-		pnlSearchInput.setBounds(0, 0, 894, 36);
+		pnlSearchInput.setBounds(0, 0, 631, 36);
 		pnlSearchInput.setBorder(new LineBorder(Color.BLACK));
 		pnlSearchInput.setRounded(4);
 		pnlSearchForm.add(pnlSearchInput);
@@ -153,9 +153,35 @@ public class QuanLyDichVu_GUI extends JPanel {
 		txtSearch.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		txtSearch.setBackground(Utils.secondaryColor);
 		txtSearch.setBorder(new EmptyBorder(0, 0, 0, 0));
-		txtSearch.setBounds(9, 1, 876, 34);
+		txtSearch.setBounds(9, 1, 620, 34);
 		pnlSearchInput.add(txtSearch);
 		txtSearch.setColumns(10);
+
+		btnDanhSachXoa = new Button("DS ngừng KD");
+		btnDanhSachXoa.setIcon(new ImageIcon("Icon\\listdelete.png"));
+		btnDanhSachXoa.setRadius(4);
+		btnDanhSachXoa.setForeground(Color.WHITE);
+		btnDanhSachXoa.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnDanhSachXoa.setColorOver(Utils.primaryColor);
+		btnDanhSachXoa.setColorClick(new Color(161, 184, 186));
+		btnDanhSachXoa.setColor(Utils.primaryColor);
+		btnDanhSachXoa.setBorderColor(Utils.secondaryColor);
+		btnDanhSachXoa.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnDanhSachXoa.setBounds(844, -4, 210, 44);
+		pnlSearchForm.add(btnDanhSachXoa);
+
+		btnDanhSachTonTai = new Button("DS còn KD");
+		btnDanhSachTonTai.setIcon(new ImageIcon("Icon\\requirement.png"));
+		btnDanhSachTonTai.setVisible(false);
+		btnDanhSachTonTai.setForeground(Color.WHITE);
+		btnDanhSachTonTai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnDanhSachTonTai.setColorOver(Utils.primaryColor);
+		btnDanhSachTonTai.setColorClick(new Color(161, 184, 186));
+		btnDanhSachTonTai.setColor(Utils.primaryColor);
+		btnDanhSachTonTai.setBorderColor(Utils.secondaryColor);
+		btnDanhSachTonTai.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnDanhSachTonTai.setBounds(844, -4, 210, 44);
+		pnlSearchForm.add(btnDanhSachTonTai);
 
 		JPanel pnlButton = new JPanel();
 		pnlButton.setBackground(Utils.secondaryColor);
@@ -219,9 +245,63 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnXoa.setBorder(new EmptyBorder(0, 0, 0, 0));
 		pnlButton.add(btnXoa);
 
+		btnKhoiPhuc = new Button("Khôi phục");
+
+		btnKhoiPhuc.setFocusable(false);
+		btnKhoiPhuc.setIcon(new ImageIcon("Icon\\restore.png"));
+		btnKhoiPhuc.setRadius(4);
+		btnKhoiPhuc.setForeground(Color.WHITE);
+		btnKhoiPhuc.setColor(new Color(134, 229, 138));
+		btnKhoiPhuc.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		btnKhoiPhuc.setBounds(546, -2, 154, 44);
+		btnKhoiPhuc.setBorderColor(Utils.secondaryColor);
+		btnKhoiPhuc.setColorOver(new Color(134, 229, 138));
+		btnKhoiPhuc.setColorClick(new Color(59, 238, 66));
+		btnKhoiPhuc.setBorder(new EmptyBorder(0, 0, 0, 0));
+		pnlButton.add(btnKhoiPhuc);
+		btnKhoiPhuc.setVisible(false);
+
+//		sự kiện nút btnDanhSachTonTai
+		btnDanhSachTonTai.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				txtSearch.setText("");
+				btnXoa.setVisible(true);
+				btnKhoiPhuc.setVisible(false);
+				btnDanhSachXoa.setVisible(true);
+				btnXem.setEnabled(true);
+				btnThem.setEnabled(true);
+				btnSua.setEnabled(true);
+				btnDanhSachTonTai.setVisible(false);
+				tableModel.setRowCount(0);
+				filterDichVu();
+				pnlControl.setTbl(tbl);
+				cmbLoaiDV.setSelectedIndex(0);
+				cmbSoLuong.setSelectedIndex(0);
+
+			}
+		});
+// sự kiện nút btnDanhSachXoa
+		btnDanhSachXoa.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				txtSearch.setText("");
+				btnXoa.setVisible(false);
+				btnKhoiPhuc.setVisible(true);
+				btnDanhSachTonTai.setVisible(true);
+				btnXem.setEnabled(false);
+				btnThem.setEnabled(false);
+				btnSua.setEnabled(false);
+				btnDanhSachXoa.setVisible(false);
+				filterDichVuDaNgungKinhDoanh();
+				cmbLoaiDV.setSelectedIndex(0);
+				cmbSoLuong.setSelectedIndex(0);
+			}
+		});
+
 		cmbLoaiDV = new JComboBox<String>();
 		cmbLoaiDV.addItem("Phân loại");
-		ArrayList<LoaiDichVu> listLoaiDV = (ArrayList<LoaiDichVu>) LoaiDichVu_DAO.getAllLoaiDichVu();
+		ArrayList<LoaiDichVu> listLoaiDV = (ArrayList<LoaiDichVu>) loaiDichVu_DAO.getAllLoaiDichVu();
 		for (LoaiDichVu loaiDV : listLoaiDV) {
 			cmbLoaiDV.addItem(loaiDV.getTenLoaiDichVu());
 		}
@@ -237,7 +317,6 @@ public class QuanLyDichVu_GUI extends JPanel {
 		cmbSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbSoLuong.setBackground(Utils.primaryColor);
 		cmbSoLuong.setBounds(904, 0, 150, 40);
-		cmbSoLuong.setSelectedItem("Loa");
 		pnlButton.add(cmbSoLuong);
 
 		int topPnlControl = Utils.getBodyHeight() - 80;
@@ -337,10 +416,13 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnSearch.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				filterDichVu();
+				if (btnDanhSachXoa.isVisible()) {
+					filterDichVu();
+				} else
+					filterDichVuDaNgungKinhDoanh();
 			}
 		});
-//		Sự kiện nút thêm nhân viên
+//		Sự kiện nút thêm dịch vụ
 		btnThem.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				main.addPnlBody(new ThemDichVu_GUI(main), "Thêm dịch vụ", 1, 0);
@@ -358,10 +440,11 @@ public class QuanLyDichVu_GUI extends JPanel {
 							"Vui lòng chọn dịch vụ muốn xem");
 				} else {
 					String maDichVu = tableModel.getValueAt(row, 0).toString();
-					main.addPnlBody(new ThongTinChiTietDichVu_GUI(main, DichVu_DAO.getDichVuTheoMa(maDichVu), false),
+					main.addPnlBody(new ThongTinChiTietDichVu_GUI(main, dichVu_DAO.getDichVuTheoMa(maDichVu), false),
 							"Thông tin chi tiết dịch vụ", 1, 0);
 					setEmptyTable();
-					addRow(DichVu_DAO.getAllDichVu());
+					// addRow(DichVu_DAO.getAllDichVu());
+					filterDichVu();
 				}
 			}
 		});
@@ -378,7 +461,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 							"Vui lòng chọn dịch vụ muốn sửa");
 				} else {
 					String maDichVu = tableModel.getValueAt(row, 0).toString();
-					main.addPnlBody(new ThongTinChiTietDichVu_GUI(main, DichVu_DAO.getDichVuTheoMa(maDichVu), true),
+					main.addPnlBody(new ThongTinChiTietDichVu_GUI(main, dichVu_DAO.getDichVuTheoMa(maDichVu), true),
 							"Thông tin chi tiết dịch vụ", 1, 0);
 				}
 			}
@@ -399,7 +482,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 
 					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent e) {
-							boolean res = DichVu_DAO.xoaDichVu(tbl.getValueAt(row, 0).toString());
+							boolean res = dichVu_DAO.xoaDichVu(tbl.getValueAt(row, 0).toString());
 							if (res)
 								new Notification(main, components.notification.Notification.Type.SUCCESS,
 										"Xóa dịch vụ thành công");
@@ -407,7 +490,8 @@ public class QuanLyDichVu_GUI extends JPanel {
 								new Notification(main, components.notification.Notification.Type.ERROR,
 										"Xóa dịch vụ thất bại");
 							setEmptyTable();
-							addRow(DichVu_DAO.getAllDichVu());
+							// addRow(DichVu_DAO.getAllDichVu());
+							filterDichVu();
 						};
 					});
 
@@ -425,11 +509,55 @@ public class QuanLyDichVu_GUI extends JPanel {
 			}
 		});
 
+// sự kiện nút khôi phục dịch vụ
+		btnKhoiPhuc.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (!btnKhoiPhuc.isEnabled())
+					return;
+
+				int row = tbl.getSelectedRow();
+
+				if (row != -1) {
+
+					JDialogCustom jDialogCustom = new JDialogCustom(main);
+
+					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+							boolean res = dichVu_DAO.khoiPhucDichVu(tbl.getValueAt(row, 0).toString());
+							if (res)
+								new Notification(main, components.notification.Notification.Type.SUCCESS,
+										"Khôi phục dịch vụ thành công");
+							else
+								new Notification(main, components.notification.Notification.Type.ERROR,
+										"Khôi phục dịch vụ thất bại");
+							setEmptyTable();
+
+							filterDichVuDaNgungKinhDoanh();
+						};
+					});
+
+					jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+							return;
+						};
+					});
+					jDialogCustom.showMessage("Warning", "Bạn chắc chắn muốn khôi phục dịch vụ này");
+
+				} else {
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+							"Vui lòng chọn dịch vụ muốn khôi phục");
+				}
+			}
+		});
 //		Sự kiện JComboBox loại dịch vụ
 		cmbLoaiDV.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterDichVu();
+					if (btnDanhSachXoa.isVisible()) {
+						filterDichVu();
+					} else
+						filterDichVuDaNgungKinhDoanh();
 				}
 			}
 		});
@@ -438,7 +566,10 @@ public class QuanLyDichVu_GUI extends JPanel {
 		cmbSoLuong.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					filterDichVu();
+					if (btnDanhSachXoa.isVisible()) {
+						filterDichVu();
+					} else
+						filterDichVuDaNgungKinhDoanh();
 				}
 			}
 		});
@@ -470,6 +601,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 
 	private List<DichVu> addRow(List<DichVu> list) {
 		list.forEach(dichVu -> addRow(dichVu));
+		pnlControl.setTbl(tbl);
 		return list;
 	}
 
@@ -482,9 +614,28 @@ public class QuanLyDichVu_GUI extends JPanel {
 			tenLoaiDV = "";
 		if (soLuong.equals("Số lượng"))
 			soLuong = "";
-		listDV = DichVu_DAO.filterDichVu(tenDichVu, tenLoaiDV, soLuong);
+		List<DichVu> list = dichVu_DAO.filterDichVu(tenDichVu, tenLoaiDV, soLuong);
 		setEmptyTable();
-		addRow(listDV);
+		addRow(list);
+	}
+
+	private void filterDichVuDaNgungKinhDoanh() {
+		String tenDichVu = txtSearch.getText();
+		String tenLoaiDV = cmbLoaiDV.getSelectedItem().toString();
+		String soLuong = cmbSoLuong.getSelectedItem().toString();
+
+		if (tenLoaiDV.equals("Phân loại"))
+			tenLoaiDV = "";
+		if (soLuong.equals("Số lượng"))
+			soLuong = "";
+		List<DichVu> list = dichVu_DAO.filterDichVuNgungKinhDoanh(tenDichVu, tenLoaiDV, soLuong);
+		setEmptyTable();
+		addRow(list);
+	}
+
+	public void loadTable() {
+		setEmptyTable();
+		addRow(dichVu_DAO.getAllDichVu());
 	}
 
 	private void setEmptyTable() {
@@ -495,15 +646,13 @@ public class QuanLyDichVu_GUI extends JPanel {
 	private void setEnabledBtnActions() {
 		int row = tbl.getSelectedRow();
 
-		if (row == -1) {
+		if (row == -1 || !btnDanhSachXoa.isVisible()) {
 			btnXem.setEnabled(false);
-			btnThem.setEnabled(false);
 			btnSua.setEnabled(false);
 			btnXoa.setEnabled(false);
 		} else {
 			btnXem.setEnabled(true);
 			btnSua.setEnabled(true);
-			btnThem.setEnabled(true);
 			btnXoa.setEnabled(true);
 		}
 	}

@@ -6,15 +6,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.metal.MetalButtonUI;
 
@@ -36,26 +31,25 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 	@SuppressWarnings("unused")
 	private DichVu dichVu;
 	private DichVu_DAO dichVu_DAO;
-	private JLabel lblDate;
-	private JLabel lblThu;
-	private JLabel lblTime;
 	private LoaiDichVu_DAO loaiDichVu_DAO;
 	private Main main;
 	private TextField txtMa, txtTen, txtDonViTinh, txtSoLuong, txtGiaMua;
+	private final int widthPnlContainer = 948;
 
 	public ThongTinChiTietDichVu_GUI(Main jFrame, DichVu dichVu, boolean isCapNhat) {
 
 		main = jFrame;
 		dichVu_DAO = new DichVu_DAO();
 		loaiDichVu_DAO = new LoaiDichVu_DAO();
-
 		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
+
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
+
 		setLayout(null);
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(new Color(203, 239, 255));
-		pnlContainer.setBounds(0, 0, 1100, 500);
+		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
 		this.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
@@ -104,40 +98,6 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		txtGiaMua.setBounds(516, 285, 371, 50);
 		pnlContainer.add(txtGiaMua);
 
-//		Date time
-
-		JPanel pnlDateTime = new JPanel();
-		pnlDateTime.setBackground(Utils.secondaryColor);
-		pnlDateTime.setBounds(949, 5, 105, 58);
-		pnlContainer.add(pnlDateTime);
-		pnlDateTime.setLayout(null);
-
-		lblTime = new JLabel("10:30");
-		lblTime.setForeground(new Color(0, 0, 0, 115));
-		lblTime.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTime.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblTime.setBounds(0, 0, 105, 19);
-		pnlDateTime.add(lblTime);
-
-		lblThu = new JLabel("T2");
-		lblThu.setHorizontalAlignment(SwingConstants.CENTER);
-		lblThu.setForeground(new Color(0, 0, 0, 115));
-		lblThu.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblThu.setBounds(0, 19, 105, 19);
-		pnlDateTime.add(lblThu);
-
-		lblDate = new JLabel("29-09-2022");
-		lblDate.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDate.setForeground(new Color(0, 0, 0, 115));
-		lblDate.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblDate.setBounds(0, 38, 105, 19);
-		pnlDateTime.add(lblDate);
-
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon("Icon\\clock (1) 1.png"));
-		lblNewLabel.setBounds(885, 2, 64, 64);
-		pnlContainer.add(lblNewLabel);
-
 		Button btnCapNhat = new Button("Cập nhật");
 		btnCapNhat.setIcon(new ImageIcon("Icon\\edit 1.png"));
 		btnCapNhat.setFocusable(false);
@@ -153,7 +113,6 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		pnlContainer.add(btnCapNhat);
 
 		Button btnHuy = new Button("Hủy");
-		btnHuy.setVisible(false);
 		btnHuy.setIcon(new ImageIcon("Icon\\cancelled 1.png"));
 		btnHuy.setFocusable(false);
 		btnHuy.setRadius(8);
@@ -184,10 +143,22 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		btnLuu.setBounds(500, 420, 250, 50);
 		pnlContainer.add(btnLuu);
 
-		setEnabledForm(false);
 		txtMa.setEnabled(false);
 		this.dichVu = dichVu;
 		setDichVuVaoForm(dichVu);
+		if (!isCapNhat) {
+			btnCapNhat.setVisible(true);
+			btnHuy.setVisible(false);
+			btnLuu.setEnabled(false);
+			setEnabledForm(false);
+			ThongTinChiTietDichVu_GUI.this.main.repaint();
+		} else {
+			btnCapNhat.setVisible(false);
+			btnHuy.setVisible(true);
+			btnLuu.setEnabled(true);
+			setEnabledForm(true);
+			ThongTinChiTietDichVu_GUI.this.main.repaint();
+		}
 
 //		Sự kiện nút cập nhật
 		btnCapNhat.addMouseListener(new MouseAdapter() {
@@ -240,51 +211,6 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 			}
 		});
 
-		clock();
-
-	}
-
-	public void clock() {
-		Thread clock = new Thread() {
-			@Override
-			public void run() {
-				for (;;) {
-					try {
-						LocalDateTime currTime = LocalDateTime.now();
-						int day = currTime.getDayOfMonth();
-						int month = currTime.getMonthValue();
-						int year = currTime.getYear();
-						int hour = currTime.getHour();
-						int minute = currTime.getMinute();
-						lblTime.setText(String.format("%s:%s", hour < 10 ? "0" + hour : hour,
-								minute < 10 ? "0" + minute : minute));
-						LocalDate date = LocalDate.now();
-						DayOfWeek dayNow = date.getDayOfWeek();
-						String thu = "T2";
-						if (dayNow.getValue() == DayOfWeek.TUESDAY.getValue())
-							thu = "T3";
-						else if (dayNow.getValue() == DayOfWeek.WEDNESDAY.getValue())
-							thu = "T4";
-						else if (dayNow.getValue() == DayOfWeek.THURSDAY.getValue())
-							thu = "T5";
-						else if (dayNow.getValue() == DayOfWeek.FRIDAY.getValue())
-							thu = "T6";
-						else if (dayNow.getValue() == DayOfWeek.SATURDAY.getValue())
-							thu = "T7";
-						else if (dayNow.getValue() == DayOfWeek.SUNDAY.getValue())
-							thu = "CN";
-						lblThu.setText(thu);
-						lblDate.setText(String.format("%s-%s-%d", day < 10 ? "0" + day : day,
-								month < 10 ? "0" + month : month, year));
-						sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-
-		clock.start();
 	}
 
 	/**
@@ -301,7 +227,7 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		String tenLoaiDichVu = cmbLoaiDichVu.getSelectedItem().toString();
 		LoaiDichVu loaiDichVu = loaiDichVu_DAO.getLoaiDichVuTheoTen(tenLoaiDichVu);
 		return new DichVu(maDichVu, tenDichVu, Integer.parseInt(soLuong), donViTinh, loaiDichVu,
-				Double.parseDouble(giaMua));
+				Double.parseDouble(giaMua), false);
 	}
 
 	@Override
