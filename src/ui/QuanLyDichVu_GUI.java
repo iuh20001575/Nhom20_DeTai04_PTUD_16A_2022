@@ -84,9 +84,9 @@ public class QuanLyDichVu_GUI extends JPanel {
 	private Button btnXem, btnThem, btnSua, btnXoa, btnKhoiPhuc, btnDanhSachXoa, btnDanhSachTonTai;
 	private JComboBox<String> cmbLoaiDV;
 	private JComboBox<String> cmbSoLuong;
-	private DichVu_DAO DichVu_DAO;
+	private DichVu_DAO dichVu_DAO;
 	private List<DichVu> listDV;
-	private LoaiDichVu_DAO LoaiDichVu_DAO;
+	private LoaiDichVu_DAO loaiDichVu_DAO;
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
@@ -397,9 +397,9 @@ public class QuanLyDichVu_GUI extends JPanel {
 		addAncestorListener(new AncestorListener() {
 			public void ancestorAdded(AncestorEvent event) {
 				if (listDV == null)
-					listDV = (List<DichVu>) DichVu_DAO.getAllDichVu();
+					listDV = (List<DichVu>) dichVu_DAO.getAllDichVu();
 				else
-					listDV = DichVu_DAO.getDanhSachDichVuTheoMa(listDV);
+					listDV = dichVu_DAO.getDanhSachDichVuTheoMa(listDV);
 				setEmptyTable();
 				addRow(listDV);
 				pnlControl.setTbl(tbl);
@@ -614,9 +614,9 @@ public class QuanLyDichVu_GUI extends JPanel {
 			tenLoaiDV = "";
 		if (soLuong.equals("Số lượng"))
 			soLuong = "";
-		List<DichVu> list = dichVu_DAO.filterDichVu(tenDichVu, tenLoaiDV, soLuong);
+		listDV = dichVu_DAO.filterDichVu(tenDichVu, tenLoaiDV, soLuong);
 		setEmptyTable();
-		addRow(list);
+		addRow(listDV);
 	}
 
 	private void filterDichVuDaNgungKinhDoanh() {
