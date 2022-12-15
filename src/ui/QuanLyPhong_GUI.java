@@ -391,6 +391,12 @@ public class QuanLyPhong_GUI extends JPanel {
 							JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 					if (res == JOptionPane.OK_OPTION) {
 						String maPhong = tbl.getValueAt(row, 0).toString();
+						Phong phong = phong_DAO.getPhong(maPhong);
+						if (!Phong.convertTrangThaiToString(phong.getTrangThai()).equals("Trống")) {
+							new JDialogCustom(jFrame, components.jDialog.JDialogCustom.Type.warning)
+									.showMessage("Thông báo", "Phòng này không thể xóa");
+							return;
+						}
 						if (phong_DAO.xoaPhong(maPhong)) {
 							new Notification(jFrame, components.notification.Notification.Type.SUCCESS,
 									"Xóa thông tin phòng thành công").showNotification();
@@ -500,6 +506,8 @@ public class QuanLyPhong_GUI extends JPanel {
 		btnThem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if (!btnThem.isEnabled())
+					return;
 				openJFrameSub(new ThemPhong_GUI(_this));
 			}
 		});

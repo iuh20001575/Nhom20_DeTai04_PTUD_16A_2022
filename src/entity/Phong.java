@@ -26,9 +26,8 @@ public class Phong implements Comparable<Phong> {
 			return "Phòng tạm";
 		return "Trống";
 	}
-
-	private LoaiPhong loaiPhong;
 	private String maPhong;
+	private LoaiPhong loaiPhong;
 	private int soLuongKhach;
 	private TrangThai trangThai;
 	private boolean trangThaiXoa;
@@ -41,6 +40,8 @@ public class Phong implements Comparable<Phong> {
 		super();
 		this.maPhong = maPhong;
 	}
+
+
 
 	public Phong(String maPhong, LoaiPhong loaiPhong, int soLuongKhach, TrangThai trangThai, boolean trangThaiXoa) {
 		super();
@@ -105,10 +106,6 @@ public class Phong implements Comparable<Phong> {
 		return Objects.hash(maPhong);
 	}
 
-	public boolean isTrangThaiXoa() {
-		return trangThaiXoa;
-	}
-
 	public void setLoaiPhong(LoaiPhong loaiPhong) {
 		this.loaiPhong = loaiPhong;
 	}
@@ -123,6 +120,10 @@ public class Phong implements Comparable<Phong> {
 
 	public void setTrangThai(TrangThai trangThai) {
 		this.trangThai = trangThai;
+	}
+
+	public boolean isTrangThaiXoa() {
+		return trangThaiXoa;
 	}
 
 	public void setTrangThaiXoa(boolean trangThaiXoa) {

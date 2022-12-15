@@ -24,8 +24,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
+
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -85,11 +84,11 @@ public class QuanLyDichVu_GUI extends JPanel {
 	private JComboBox<String> cmbLoaiDV;
 	private JComboBox<String> cmbSoLuong;
 	private DichVu_DAO dichVu_DAO;
-	private List<DichVu> listDV;
 	private LoaiDichVu_DAO loaiDichVu_DAO;
 	private ControlPanel pnlControl;
 	private DefaultTableModel tableModel;
 	private JTable tbl;
+
 	private JTextField txtSearch;
 
 	public QuanLyDichVu_GUI(Main main) {
@@ -190,6 +189,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		pnlButton.setLayout(null);
 
 		btnXem = new Button("Xem");
+
 		btnXem.setFocusable(false);
 		btnXem.setIcon(new ImageIcon("Icon\\searching.png"));
 		btnXem.setRadius(4);
@@ -204,6 +204,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		pnlButton.add(btnXem);
 
 		btnThem = new Button("Thêm");
+
 		btnThem.setFocusable(false);
 		btnThem.setIcon(new ImageIcon("Icon\\add 1.png"));
 		btnThem.setRadius(4);
@@ -218,6 +219,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		pnlButton.add(btnThem);
 
 		btnSua = new Button("Sửa");
+
 		btnSua.setFocusable(false);
 		btnSua.setIcon(new ImageIcon("Icon\\update 1.png"));
 		btnSua.setRadius(4);
@@ -232,6 +234,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		pnlButton.add(btnSua);
 
 		btnXoa = new Button("Xóa");
+
 		btnXoa.setFocusable(false);
 		btnXoa.setIcon(new ImageIcon("Icon\\download 1.png"));
 		btnXoa.setRadius(4);
@@ -312,6 +315,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		pnlButton.add(cmbLoaiDV);
 
 		cmbSoLuong = new JComboBox<String>();
+
 		cmbSoLuong.setModel(
 				new DefaultComboBoxModel<String>(new String[] { "Số lượng", "<50", "50-100", "100-200", ">200" }));
 		cmbSoLuong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -393,24 +397,10 @@ public class QuanLyDichVu_GUI extends JPanel {
 		pnlControl = new ControlPanel(Utils.getLeft(286), topPnlControl, main);
 		this.add(pnlControl);
 
-//		Sự kiện window
-		addAncestorListener(new AncestorListener() {
-			public void ancestorAdded(AncestorEvent event) {
-				if (listDV == null)
-					listDV = (List<DichVu>) dichVu_DAO.getAllDichVu();
-				else
-					listDV = dichVu_DAO.getDanhSachDichVuTheoMa(listDV);
-				setEmptyTable();
-				addRow(listDV);
-				pnlControl.setTbl(tbl);
-			}
-
-			public void ancestorMoved(AncestorEvent event) {
-			}
-
-			public void ancestorRemoved(AncestorEvent event) {
-			}
-		});
+		setEmptyTable();
+		List<DichVu> listDV = (List<DichVu>) dichVu_DAO.getAllDichVu();
+		addRow(listDV);
+		pnlControl.setTbl(tbl);
 
 		// Sự kiện nút tìm kiếm dịch vụ
 		btnSearch.addMouseListener(new MouseAdapter() {
@@ -425,7 +415,10 @@ public class QuanLyDichVu_GUI extends JPanel {
 //		Sự kiện nút thêm dịch vụ
 		btnThem.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
+				if (!btnThem.isEnabled())
+					return;
 				main.addPnlBody(new ThemDichVu_GUI(main), "Thêm dịch vụ", 1, 0);
+
 			};
 		});
 //		Sự kiện nút xem dịch vụ
@@ -591,12 +584,14 @@ public class QuanLyDichVu_GUI extends JPanel {
 				}
 			}
 		});
+
 	}
 
 	private void addRow(DichVu dichVu) {
+
 		tableModel.addRow(new String[] { dichVu.getMaDichVu(), dichVu.getTenDichVu(), dichVu.getDonViTinh(),
 				String.valueOf(dichVu.getSoLuong()), dichVu.getLoaiDichVu().getTenLoaiDichVu(),
-				Utils.formatTienTe(dichVu.getGiaMua()), Utils.formatTienTe(dichVu.getGiaBan()) });
+				Utils.formatTienTe(dichVu.getGiaMua()), Utils.formatTienTe(dichVu.getGiaMua() * 1.5) });
 	}
 
 	private List<DichVu> addRow(List<DichVu> list) {
@@ -614,9 +609,9 @@ public class QuanLyDichVu_GUI extends JPanel {
 			tenLoaiDV = "";
 		if (soLuong.equals("Số lượng"))
 			soLuong = "";
-		listDV = dichVu_DAO.filterDichVu(tenDichVu, tenLoaiDV, soLuong);
+		List<DichVu> list = dichVu_DAO.filterDichVu(tenDichVu, tenLoaiDV, soLuong);
 		setEmptyTable();
-		addRow(listDV);
+		addRow(list);
 	}
 
 	private void filterDichVuDaNgungKinhDoanh() {

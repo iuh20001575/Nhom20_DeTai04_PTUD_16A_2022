@@ -1,11 +1,10 @@
 package entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class DonDatPhong implements Comparable<DonDatPhong> {
+public class DonDatPhong {
 	/**
 	 * Các trạng thái đặt phòng
 	 * 
@@ -77,17 +76,6 @@ public class DonDatPhong implements Comparable<DonDatPhong> {
 		this.ngayNhanPhong = ngayNhanPhong;
 		this.gioNhanPhong = gioNhanPhong;
 		this.trangThai = trangThai;
-	}
-
-	@Override
-	public int compareTo(DonDatPhong o) {
-		LocalDateTime dateTimeOfThis = LocalDateTime.of(this.getNgayNhanPhong(), this.getGioNhanPhong());
-		LocalDateTime dateTimeOfO = LocalDateTime.of(o.getNgayNhanPhong(), o.getGioNhanPhong());
-		if (dateTimeOfThis.isEqual(dateTimeOfO))
-			return 0;
-		if (dateTimeOfThis.isAfter(dateTimeOfO))
-			return -1;
-		return 1;
 	}
 
 	@Override
@@ -177,5 +165,4 @@ public class DonDatPhong implements Comparable<DonDatPhong> {
 				+ ", ngayDatPhong=" + ngayDatPhong + ", gioDatPhong=" + gioDatPhong + ", ngayNhanPhong=" + ngayNhanPhong
 				+ ", gioNhanPhong=" + gioNhanPhong + ", trangThai=" + trangThai + "]";
 	}
-
 }

@@ -80,6 +80,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 	private DonDatPhong donDatPhong;
 	private DonDatPhong_DAO donDatPhong_DAO;
 	private Glass glass;
+	private JDialogCustom jDialogCustom;
 	private JFrame jFrameSub;
 	private KhachHang khachHang;
 	private KhachHang_DAO khachHang_DAO;
@@ -114,6 +115,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		_this = this;
 		int padding = (int) Math.floor((Utils.getBodyHeight() - 428) / 5);
 		int top = padding;
+		jDialogCustom = new JDialogCustom(main, components.jDialog.JDialogCustom.Type.confirm);
 
 		donDatPhong_DAO = new DonDatPhong_DAO();
 		khachHang_DAO = new KhachHang_DAO();
@@ -139,7 +141,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 
 		JPanel pnlContainer = new JPanel();
 		pnlContainer.setBackground(Utils.secondaryColor);
-		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer) - 50, 0, widthPnlContainer, Utils.getBodyHeight());
+		pnlContainer.setBounds(Utils.getLeft(widthPnlContainer), 0, widthPnlContainer, Utils.getBodyHeight());
 		this.add(pnlContainer);
 		pnlContainer.setLayout(null);
 
@@ -416,13 +418,11 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 						maPhong[i++] = phong.getMaPhong();
 					}
 
-					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
-							"Phòng " + String.join(", ", maPhong) + " đang thuê\n");
+					jDialogCustom.showMessage("Question", "Phòng " + String.join(", ", maPhong) + " đang thuê\n");
 					return;
 				}
 
 				res = donDatPhong_DAO.nhanPhongTrongPhieuDatPhongTruoc(donDatPhong, listPhong);
-				JDialogCustom jDialogCustom = new JDialogCustom(main);
 
 				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
 					@Override
@@ -438,10 +438,8 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 						main.addPnlBody(quanLyPhieuDatPhong_GUI, "Quản lý đặt phòng trước", 1, 0);
 					}
 				});
-
 				jDialogCustom.showMessage("Question",
 						"Nhận phòng thành công! \nBạn có muốn chuyển sang trang quản lý đặt phòng");
-
 			}
 		});
 //		Sự kiện nút Huỷ phòng
