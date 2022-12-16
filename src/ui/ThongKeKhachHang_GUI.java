@@ -1,331 +1,604 @@
-package dao;
+package ui;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Time;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
-import connectDB.ConnectDB;
+import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+
+import components.button.Button;
+import components.panelRound.PanelRound;
+import components.scrollbarCustom.ScrollBarCustom;
+import dao.ChiTietDatPhong_DAO;
+import dao.ChiTietDichVu_DAO;
+import dao.KhachHang_DAO;
+import dao.LoaiPhong_DAO;
+import dao.NhanVien_DAO;
 import entity.ChiTietDatPhong;
 import entity.ChiTietDichVu;
-import entity.DichVu;
-import entity.DonDatPhong;
-import entity.LoaiDichVu;
+import entity.KhachHang;
+import entity.LoaiPhong;
 import entity.Phong;
+import utils.NhanVien;
+import utils.Utils;
 
-public class ChiTietDichVu_DAO extends DAO {
+public class ThongKeKhachHang_GUI extends JPanel {
+	private static JLabel lblTime;
 	/**
-	 * Cập nhật số lượng dịch vụ
 	 * 
-	 * @param chiTietDichVu
-	 * @param isSoLuongTang
-	 * @return
 	 */
-	public boolean capNhatSoLuongDichVu(ChiTietDichVu chiTietDichVu, boolean isSoLuongTang) {
-		Connection connection = ConnectDB.getConnection();
-		PreparedStatement preparedStatement;
-		boolean res;
-		try {
-			connection.setAutoCommit(false);
-			preparedStatement = connection.prepareStatement(
-					"UPDATE [dbo].[DichVu] SET [soLuong] " + (isSoLuongTang ? "-" : "+") + "= ? WHERE [maDichVu] = ?");
-			preparedStatement.setInt(1, chiTietDichVu.getSoLuong());
-			preparedStatement.setString(2, chiTietDichVu.getDichVu().getMaDichVu());
-			res = preparedStatement.executeUpdate() > 0;
-			if (!res)
-				return rollback();
+	private static final long serialVersionUID = 1L;
 
-			ChiTietDatPhong chiTietDatPhong = chiTietDichVu.getChiTietDatPhong();
-			preparedStatement = connection
-					.prepareStatement("UPDATE [dbo].[ChiTietDichVu] SET [soLuong] " + (isSoLuongTang ? "+" : "-")
-							+ "= ? WHERE [dichVu] = ? AND [donDatPhong] = ? AND [phong] = ? AND [gioVao] = ?");
-			preparedStatement.setInt(1, chiTietDichVu.getSoLuong());
-			preparedStatement.setString(2, chiTietDichVu.getDichVu().getMaDichVu());
-			preparedStatement.setString(3, chiTietDatPhong.getDonDatPhong().getMaDonDatPhong());
-			preparedStatement.setString(4, chiTietDatPhong.getPhong().getMaPhong());
-			preparedStatement.setString(5, Time.valueOf(chiTietDatPhong.getGioVao()).toString());
-			res = preparedStatement.executeUpdate() > 0;
-			if (!res)
-				return rollback();
-			return commit();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	/**
-	 * Cập nhật số lượng dịch vụ
-	 * 
-	 * @param maDV
-	 * @param maDP
-	 * @param maPhong
-	 * @param soLuongMua
-	 * @return
-	 */
-	public boolean capNhatSoLuongDichVu(String maDV, String maDP, String maPhong, int soLuongMua) {
-		boolean res = false;
-		PreparedStatement preparedStatement;
-		String sql = "UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ? and phong = ?";
-		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setInt(1, soLuongMua);
-			preparedStatement.setString(2, maDV);
-			preparedStatement.setString(3, maDP);
-			preparedStatement.setString(4, maPhong);
-			res = preparedStatement.executeUpdate() > 0;
-			preparedStatement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return res;
-	}
-
-	/**
-	 * Get tất cả chi tiết dịch vụ theo mã đơn đặt phòng và mã phòng
-	 * 
-	 * @param maDonDatPhong
-	 * @param maPhong
-	 * @return
-	 */
-	public List<ChiTietDichVu> getAllChiTietDichVu(String maDonDatPhong, String maPhong) {
-		List<ChiTietDichVu> list = new ArrayList<>();
-		String sql = "SELECT CTDV.*, DV.*, CTDV.soLuong AS SOLUONGBAN FROM [dbo].[ChiTietDichVu] CTDV "
-				+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON CTDV.donDatPhong = CTDP.donDatPhong "
-				+ "AND CTDV.PHONG = CTDP.phong AND CTDV.gioVao = CTDP.gioVao "
-				+ "JOIN [dbo].[DichVu] DV ON DV.maDichVu = CTDV.dichVu "
-				+ "WHERE CTDV.[phong] = ? AND CTDV.[donDatPhong] = ? AND [gioRa] IS NULL";
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setString(1, maPhong);
-			preparedStatement.setString(2, maDonDatPhong);
-			ResultSet resultSet = preparedStatement.executeQuery();
-			ChiTietDichVu chiTietDichVu;
-			DichVu dichVu;
-			LoaiDichVu loaiDichVu;
-			while (resultSet.next()) {
-				chiTietDichVu = getChiTietDichVu(resultSet);
-
-				loaiDichVu = new LoaiDichVu(resultSet.getString(10));
-				dichVu = new DichVu(resultSet.getString(6), resultSet.getString(7), resultSet.getInt(8),
-						resultSet.getString(9), loaiDichVu, resultSet.getDouble(11), false);
-				chiTietDichVu.setDichVu(dichVu);
-
-				list.add(chiTietDichVu);
+	public static Thread clock() {
+		Thread clock = new Thread() {
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						LocalDateTime currTime = LocalDateTime.now();
+						int day = currTime.getDayOfMonth();
+						int month = currTime.getMonthValue();
+						int year = currTime.getYear();
+						int hour = currTime.getHour();
+						int minute = currTime.getMinute();
+						int second = currTime.getSecond();
+						lblTime.setText(String.format("%s/%s/%s | %s:%s:%s", day < 10 ? "0" + day : day,
+								month < 10 ? "0" + month : month, year, hour < 10 ? "0" + hour : hour,
+								minute < 10 ? "0" + minute : minute, second < 10 ? "0" + second : second));
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		};
 
-		return list;
+		clock.start();
+
+		return clock;
 	}
 
-	public List<ChiTietDichVu> getAllChiTietDichVuTheoMaDatPhong(String maDP, String maPhong) {
-		List<ChiTietDichVu> list = new ArrayList<>();
+	private Main main;
+	private JTextField txtSDT;
+	private JComboBox<String> cmbDay;
+	private JComboBox<String> cmbMonth;
+	private JComboBox<String> cmbYear;
+	private int top;
+	private JTable tblKhachHang;
+	private DefaultTableModel tableModel;
+	private KhachHang_DAO khachHang_DAO;
+	private LoaiPhong_DAO loaiPhong_DAO;
+	private Button btnDay;
+	private Button btnYear;
+	private Button btnMonth;
+	private NhanVien_DAO nhanVien_DAO;
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private ChiTietDichVu_DAO chiTietDichVu_DAO;
+	private String maNhanVien;
+	private boolean isPhongVIP;
+	private List<LoaiPhong> dsLoaiPhong;
 
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDichVu INNER JOIN DonDatPhong ON "
-							+ "ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
-							+ "WHERE  maDonDatPhong = ? and phong = ?");
+	/**
+	 * Create the frame.
+	 */
+	public ThongKeKhachHang_GUI(Main main) {
+		this.main = main;
+		int padding = (int) Math.floor((Utils.getBodyHeight() - 509) * 1.0 / 3);
+		top = padding - 30;
 
-			preparedStatement.setString(1, maDP);
-			preparedStatement.setString(2, maPhong);
-			ResultSet resultSet = preparedStatement.executeQuery();
+		khachHang_DAO = new KhachHang_DAO();
+		nhanVien_DAO = new NhanVien_DAO();
+		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		chiTietDichVu_DAO = new ChiTietDichVu_DAO();
+		loaiPhong_DAO = new LoaiPhong_DAO();
 
-			while (resultSet.next())
-				list.add(getChiTietDichVu(resultSet));
-			resultSet.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
+		dsLoaiPhong = loaiPhong_DAO.getAllLoaiPhong();
 
-	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year, String maNhanVien) {
-		return getChiTietDichVu(day, month, year, maNhanVien, "");
-	}
+		entity.NhanVien nhanVien = NhanVien.getNhanVien();
+		maNhanVien = nhanVien.getChucVu().equals(entity.NhanVien.ChucVu.QuanLy) ? "" : nhanVien.getMaNhanVien();
 
-	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year, String maNhanVien, String maKhachHang) {
-		List<ChiTietDichVu> list = new ArrayList<>();
-		String sql = "SELECT CTDV.*, DV.*, ngayNhanPhong FROM [dbo].[DonDatPhong] DDP "
-				+ "JOIN [dbo].[ChiTietDichVu] CTDV ON DDP.maDonDatPhong = CTDV.donDatPhong "
-				+ "JOIN [dbo].[DichVu] DV ON DV.maDichVu = CTDV.dichVu "
-				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ? AND [khachHang] LIKE ?";
+		setBackground(new Color(242, 246, 252));
+		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
+		setLayout(null);
 
-		if (month > 0)
-			sql += " AND MONTH([ngayNhanPhong]) = ?";
-		if (day > 0)
-			sql += " AND DAY([ngayNhanPhong]) = ?";
+		PanelRound pnlContainerAction = new PanelRound();
+		pnlContainerAction.setBackground(Color.WHITE);
+		pnlContainerAction.setBounds(Utils.getLeft(1052), top, 1052, 200);
+		top += 137 + padding;
+		pnlContainerAction.setRoundBottomRight(20);
+		pnlContainerAction.setRoundTopLeft(20);
+		pnlContainerAction.setRoundTopRight(20);
+		pnlContainerAction.setRoundBottomLeft(20);
+		this.add(pnlContainerAction);
+		pnlContainerAction.setLayout(null);
 
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setInt(1, year);
-			preparedStatement.setString(2, "%" + maNhanVien + "%");
-			preparedStatement.setString(3, "%" + maKhachHang + "%");
-			if (month > 0)
-				preparedStatement.setInt(4, month);
-			if (day > 0)
-				preparedStatement.setInt(5, day);
+		lblTime = new JLabel("");
+		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
+		lblTime.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		lblTime.setBounds(1110, 0, 180, 24);
+		this.add(lblTime);
+		clock();
 
-			ResultSet resultSet = preparedStatement.executeQuery();
-			ChiTietDichVu chiTietDichVu;
-			DichVu dichVu;
-			String maDichVu, tenDichVu, donViTinh, loaiDichVu;
-			int soLuong;
-			double giaMua;
-			LocalDate ngayNhanPhong;
-			while (resultSet.next()) {
-				chiTietDichVu = getChiTietDichVu(resultSet);
+//		TÃ¬m kiáº¿m khÃ¡ch hÃ ng theo tÃªn vÃ  sá»‘ Ä‘iá»‡n thoáº¡i
 
-				maDichVu = resultSet.getString("maDichVu");
-				tenDichVu = resultSet.getString("tenDichVu");
-				soLuong = resultSet.getInt("soLuong");
-				donViTinh = resultSet.getString("donViTinh");
-				loaiDichVu = resultSet.getString("loaiDichVu");
-				giaMua = resultSet.getDouble("giaMua");
-				dichVu = new DichVu(maDichVu, tenDichVu, soLuong, donViTinh, new LoaiDichVu(loaiDichVu), giaMua, false);
-				chiTietDichVu.setDichVu(dichVu);
+		JLabel lblTimKiemKH = new JLabel("TÃ¬m kiáº¿m khÃ¡ch hÃ ng theo:");
+		lblTimKiemKH.setBounds(20, 15, 299, 28);
+		lblTimKiemKH.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		lblTimKiemKH.setForeground(new Color(100, 100, 100));
+		pnlContainerAction.add(lblTimKiemKH);
 
-				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
-				chiTietDichVu.getChiTietDatPhong().getDonDatPhong().setNgayNhanPhong(ngayNhanPhong);
+		JPanel pnlRow1 = new JPanel();
+		pnlRow1.setBackground(Color.WHITE);
+		pnlRow1.setBounds(20, 60, Utils.getScreenWidth() - 90, 30);
+		pnlContainerAction.add(pnlRow1);
+		pnlRow1.setLayout(null);
 
-				list.add(chiTietDichVu);
+		JLabel lblSDT = new JLabel("Sá»‘ Ä‘iá»‡n thoáº¡i: ");
+		lblSDT.setBounds(10, 1, 120, 28);
+		lblSDT.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		lblSDT.setForeground(new Color(100, 100, 100));
+		pnlRow1.add(lblSDT);
+
+		txtSDT = new JTextField("");
+		txtSDT.setText("");
+		txtSDT.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		txtSDT.setBounds(125, 0, 250, 30);
+		txtSDT.setBorder(new LineBorder(Utils.primaryColor, 1));
+		pnlRow1.add(txtSDT);
+		txtSDT.setColumns(10);
+
+//		Button tÃ¬m kiáº¿m theo ngÃ y, thÃ¡ng, nÄƒm
+		JPanel pnlRow2 = new JPanel();
+		pnlRow2.setBackground(Color.WHITE);
+		pnlRow2.setBounds(20, 100, Utils.getScreenWidth() - 90, 35);
+		pnlContainerAction.add(pnlRow2);
+		pnlRow2.setLayout(null);
+
+		btnDay = new Button("NgÃ y");
+		btnDay.setFocusable(false);
+		btnDay.setForeground(new Color(100, 100, 100));
+		btnDay.setColor(new Color(242, 246, 252));
+		btnDay.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnDay.setBounds(470, 1, 118, 35);
+		btnDay.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnDay.setBorderColor(new Color(242, 246, 252));
+		btnDay.setColorOver(new Color(242, 246, 252));
+		btnDay.setColorClick(Utils.primaryColor);
+		btnDay.setRadius(10);
+		pnlRow2.add(btnDay);
+
+		btnDay.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				btnDay.setColor(Utils.primaryColor);
+				btnDay.setBorderColor(Utils.primaryColor);
+				btnDay.setColorOver(Utils.primaryColor);
+				btnDay.setForeground(Color.WHITE);
+
+				btnMonth.setColor(new Color(242, 246, 252));
+				btnMonth.setForeground(new Color(100, 100, 100));
+				btnMonth.setColorTextOut(new Color(100, 100, 100));
+				btnMonth.setBorderColor(new Color(242, 246, 252));
+				btnMonth.setColorOver(new Color(242, 246, 252));
+
+				btnYear.setColor(new Color(242, 246, 252));
+				btnYear.setForeground(new Color(100, 100, 100));
+				btnYear.setColorTextOut(new Color(100, 100, 100));
+				btnYear.setBorderColor(new Color(242, 246, 252));
+				btnYear.setColorOver(new Color(242, 246, 252));
+
+				cmbDay.setEnabled(true);
+				cmbMonth.setEnabled(true);
+				setDaysToCmb();
+			}
+		});
+
+		btnMonth = new Button("ThÃ¡ng");
+		btnMonth.setFocusable(false);
+		btnMonth.setForeground(Color.WHITE);
+		btnMonth.setColor(Utils.primaryColor);
+		btnMonth.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnMonth.setBounds(670, 1, 118, 35);
+		btnMonth.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnMonth.setBorderColor(Utils.primaryColor);
+		btnMonth.setColorOver(Utils.primaryColor);
+		btnMonth.setColorClick(Utils.primaryColor);
+		btnMonth.setRadius(10);
+		pnlRow2.add(btnMonth);
+
+		btnMonth.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				btnMonth.setColor(Utils.primaryColor);
+				btnMonth.setBorderColor(Utils.primaryColor);
+				btnMonth.setColorOver(Utils.primaryColor);
+				btnMonth.setForeground(Color.WHITE);
+
+				btnYear.setColor(new Color(242, 246, 252));
+				btnYear.setForeground(new Color(100, 100, 100));
+				btnYear.setColorTextOut(new Color(100, 100, 100));
+				btnYear.setBorderColor(new Color(242, 246, 252));
+				btnYear.setColorOver(new Color(242, 246, 252));
+
+				btnDay.setColor(new Color(242, 246, 252));
+				btnDay.setForeground(new Color(100, 100, 100));
+				btnDay.setColorTextOut(new Color(100, 100, 100));
+				btnDay.setBorderColor(new Color(242, 246, 252));
+				btnDay.setColorOver(new Color(242, 246, 252));
+
+				cmbDay.setEnabled(false);
+				cmbMonth.setEnabled(true);
+			}
+		});
+
+		btnYear = new Button("NÄƒm");
+		btnYear.setFocusable(false);
+		btnYear.setForeground(new Color(100, 100, 100));
+		btnYear.setColor(new Color(242, 246, 252));
+		btnYear.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnYear.setBounds(870, 1, 118, 35);
+		btnYear.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnYear.setBorderColor(new Color(242, 246, 252));
+		btnYear.setColorOver(Utils.primaryColor);
+		btnYear.setColorClick(Utils.primaryColor);
+		btnYear.setRadius(10);
+		pnlRow2.add(btnYear);
+
+		btnYear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				btnYear.setColor(Utils.primaryColor);
+				btnYear.setBorderColor(Utils.primaryColor);
+				btnYear.setColorOver(Utils.primaryColor);
+				btnYear.setForeground(Color.WHITE);
+
+				btnMonth.setColor(new Color(242, 246, 252));
+				btnMonth.setForeground(new Color(100, 100, 100));
+				btnMonth.setColorTextOut(new Color(100, 100, 100));
+				btnMonth.setBorderColor(new Color(242, 246, 252));
+				btnMonth.setColorOver(new Color(242, 246, 252));
+
+				btnDay.setColor(new Color(242, 246, 252));
+				btnDay.setForeground(new Color(100, 100, 100));
+				btnDay.setColorTextOut(new Color(100, 100, 100));
+				btnDay.setBorderColor(new Color(242, 246, 252));
+				btnDay.setColorOver(new Color(242, 246, 252));
+
+				cmbDay.setEnabled(false);
+				cmbMonth.setEnabled(false);
+
+			}
+		});
+
+//		TÃ¬m kiáº¿m theo ngÃ y, thÃ¡ng, nÄƒm khÃ¡ch hÃ ng thuÃª phÃ²ng
+
+		JPanel pnlRow3 = new JPanel();
+		pnlRow3.setBackground(Color.WHITE);
+		pnlRow3.setBounds(30, 150, Utils.getScreenWidth() - 90, 45);
+		pnlContainerAction.add(pnlRow3);
+		pnlRow3.setLayout(null);
+
+		JLabel lblDay = new JLabel("NgÃ y: ");
+		lblDay.setForeground(new Color(100, 100, 100));
+		lblDay.setBounds(0, 9, 70, 28);
+		lblDay.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		pnlRow3.add(lblDay);
+
+		cmbDay = new JComboBox<String>();
+		cmbDay.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		cmbDay.setBackground(Color.WHITE);
+		cmbDay.setBounds(70, 3, 100, 40);
+		cmbDay.setBorder(new EmptyBorder(0, 0, 0, 0));
+		cmbDay.setEnabled(false);
+		pnlRow3.add(cmbDay);
+
+		JLabel lblMonth = new JLabel("ThÃ¡ng: ");
+		lblMonth.setForeground(new Color(100, 100, 100));
+		lblMonth.setBounds(269, 9, 70, 28);
+		lblMonth.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		pnlRow3.add(lblMonth);
+
+		cmbMonth = new JComboBox<String>();
+		cmbMonth.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		cmbMonth.setBackground(Color.WHITE);
+		cmbMonth.setAlignmentX(CENTER_ALIGNMENT);
+		cmbMonth.setBounds(339, 3, 100, 40);
+		cmbMonth.setBorder(new EmptyBorder(0, 0, 0, 0));
+		cmbMonth.setSelectedItem("11");
+		cmbMonth.addItemListener(e -> setDaysToCmb());
+		pnlRow3.add(cmbMonth);
+
+		for (int i = 1; i < 13; i++)
+			cmbMonth.addItem(Utils.convertIntToString(i));
+
+		JLabel lblYear = new JLabel("NÄƒm: ");
+		lblYear.setForeground(new Color(100, 100, 100));
+		lblYear.setBounds(538, 9, 70, 28);
+		lblYear.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		pnlRow3.add(lblYear);
+
+		cmbYear = new JComboBox<String>();
+		cmbYear.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		cmbYear.setBackground(Color.WHITE);
+		cmbYear.setAlignmentX(CENTER_ALIGNMENT);
+		cmbYear.setBounds(608, 3, 100, 40);
+		cmbYear.setBorder(new EmptyBorder(0, 0, 0, 0));
+		cmbYear.addItemListener(e -> setDaysToCmb());
+		pnlRow3.add(cmbYear);
+
+		int yearNow = LocalDate.now().getYear();
+		for (int i = 2015; i <= yearNow; ++i)
+			cmbYear.addItem(i + "");
+
+		Button btnTimKiem = new Button("TÃ¬m");
+		btnTimKiem.setFocusable(false);
+		btnTimKiem.setForeground(Color.WHITE);
+		btnTimKiem.setColor(Utils.primaryColor);
+		btnTimKiem.setBorderColor(Utils.primaryColor);
+		btnTimKiem.setRadius(10);
+		btnTimKiem.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnTimKiem.setBounds(820, 0, 160, 44);
+		btnTimKiem.setColorOver(Utils.primaryColor);
+		btnTimKiem.setColorTextOver(Color.WHITE);
+		btnTimKiem.setColorTextOut(Color.WHITE);
+		btnTimKiem.setColorClick(Utils.primaryColor);
+		btnTimKiem.setBorder(new EmptyBorder(0, 0, 0, 0));
+		btnTimKiem.setIcon(new ImageIcon("Icon\\searchIcon.png"));
+		pnlRow3.add(btnTimKiem);
+
+//		Table
+
+		PanelRound pnlTable = new PanelRound();
+		pnlTable.setBackground(Color.WHITE);
+		pnlTable.setBounds(Utils.getLeft(1052), 270, 1052, 450);
+		pnlTable.setRoundBottomRight(20);
+		pnlTable.setRoundTopLeft(20);
+		pnlTable.setRoundTopRight(20);
+		pnlTable.setRoundBottomLeft(20);
+		this.add(pnlTable);
+		pnlTable.setLayout(null);
+
+		JScrollPane scr = new JScrollPane();
+		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scr.setBounds(0, 0, 1052, 450);
+		scr.setBackground(Utils.primaryColor);
+		ScrollBarCustom scp = new ScrollBarCustom();
+		scp.setScrollbarColor(new Color(203, 203, 203));
+		scr.setVerticalScrollBar(scp);
+		pnlTable.add(scr);
+
+		tblKhachHang = new JTable() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
 			}
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			@Override
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+				Component c = super.prepareRenderer(renderer, row, column);
+				if (isRowSelected(row))
+					c.setBackground(Utils.getOpacity(Utils.primaryColor, 0.5f));
+				else if (row % 2 == 0)
+					c.setBackground(Color.WHITE);
+				else
+					c.setBackground(new Color(232, 232, 232));
+				return c;
+			}
+		};
 
-		return list;
+		tableModel = new DefaultTableModel(
+				new String[] { "MÃ£ khÃ¡ch hÃ ng", "Há» vÃ  tÃªn", "SDT", "Giá»›i tÃ­nh", "Tá»•ng Tiá»n" }, 0);
+		tblKhachHang.setModel(tableModel);
+		tblKhachHang.getColumnModel().getColumn(0).setPreferredWidth(210);
+		tblKhachHang.getColumnModel().getColumn(1).setPreferredWidth(210);
+		tblKhachHang.getColumnModel().getColumn(2).setPreferredWidth(210);
+		tblKhachHang.getColumnModel().getColumn(3).setPreferredWidth(210);
+		tblKhachHang.getColumnModel().getColumn(4).setPreferredWidth(210);
+
+		tblKhachHang.getTableHeader().setBackground(Utils.primaryColor);
+		tblKhachHang.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		tblKhachHang.getTableHeader().setForeground(Color.WHITE);
+		tblKhachHang.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblKhachHang.getTableHeader()
+				.setPreferredSize(new Dimension((int) tblKhachHang.getTableHeader().getPreferredSize().getWidth(), 36));
+		tblKhachHang.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
+		tblKhachHang.setRowHeight(36);
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		tblKhachHang.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+		tblKhachHang.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+		scr.setViewportView(tblKhachHang);
+
+		addAncestorListener(new AncestorListener() {
+			Thread clockThread;
+
+			public void ancestorAdded(AncestorEvent event) {
+				clockThread = clock();
+
+				cmbMonth.setSelectedIndex(LocalDate.now().getMonthValue() - 1);
+				cmbYear.setSelectedItem(yearNow + "");
+			}
+
+			public void ancestorMoved(AncestorEvent event) {
+			}
+
+			@SuppressWarnings("deprecation")
+			public void ancestorRemoved(AncestorEvent event) {
+				clockThread.stop();
+			}
+		});
+
+		cmbDay.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterThongKe();
+				}
+			}
+		});
+
+		cmbMonth.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterThongKe();
+				}
+			}
+		});
+
+		cmbYear.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					filterThongKe();
+				}
+			}
+		});
 	}
 
-	private ChiTietDichVu getChiTietDichVu(ResultSet resultSet) throws SQLException {
-		String maDV = resultSet.getString("dichVu");
-		String maDP = resultSet.getString("donDatPhong");
-		String phong = resultSet.getString("phong");
-		Time gioVao = resultSet.getTime("gioVao");
-		int soLuong = resultSet.getInt(5);
-
-		return new ChiTietDichVu(new DichVu(maDV),
-				new ChiTietDatPhong(new DonDatPhong(maDP), new Phong(phong), gioVao.toLocalTime()), soLuong);
-	}
-
-	public ChiTietDichVu getChiTietDichVuTheoMa(String maDichVu, String maDatPhong, String maPhong) {
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT * FROM ChiTietDichVu INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu INNER JOIN "
-							+ "DonDatPhong ON ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
-							+ "WHERE maDichVu = ? and maDonDatPhong = ? and phong = ?");
-			preparedStatement.setString(1, maDichVu);
-			preparedStatement.setString(2, maDatPhong);
-			preparedStatement.setString(3, maPhong);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return getChiTietDichVu(resultSet);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+	private LoaiPhong getLoaiPhong(LoaiPhong lp) {
+		for (LoaiPhong loaiPhong : dsLoaiPhong)
+			if (loaiPhong.equals(lp)) {
+				if (loaiPhong.getTenLoai().toUpperCase().contains("VIP"))
+					isPhongVIP = true;
+				else
+					isPhongVIP = false;
+				return loaiPhong;
+			}
 		return null;
 	}
 
-	public List<ChiTietDichVu> getDichVuTheoPhieuDatPhong(String datPhong) {
-		List<ChiTietDichVu> list = new ArrayList<>();
-		String sql = "SELECT * FROM [dbo].[ChiTietDichVu] WHERE [donDatPhong] = ?";
+	private void filterThongKe() {
+		String soDienThoai = txtSDT.getText();
+		String maKhachHang = "", maKH = "";
+		int ngay = 0, thang = 0, nam = 0;
+		KhachHang khachHang = khachHang_DAO.getKhachHang(soDienThoai);
+		if (khachHang != null)
+			maKhachHang = khachHang.getMaKhachHang();
 
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setString(1, datPhong);
-			ResultSet resultSet = preparedStatement.executeQuery();
+		if (cmbDay.isEnabled())
+			ngay = Integer.parseInt(cmbDay.getSelectedItem().toString());
+		if (cmbMonth.isEnabled())
+			thang = Integer.parseInt(cmbMonth.getSelectedItem().toString());
+		nam = Integer.parseInt(cmbYear.getSelectedItem().toString());
 
-			while (resultSet.next())
-				list.add(getChiTietDichVu(resultSet));
-		} catch (SQLException e) {
-			e.printStackTrace();
+		System.out.println(ngay + " " + thang + " " + nam);
+		List<ChiTietDatPhong> dsChiTietDatPhong = chiTietDatPhong_DAO.getChiTietDatPhong(ngay, thang, nam, maNhanVien,
+				maKhachHang);
+		List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO.getChiTietDichVu(ngay, thang, nam, maNhanVien,
+				maKhachHang);
+
+		Phong phong;
+		LocalTime gioVao, gioThuePhong;
+		double tongTienPhongThuong = 0, tongTienPhongVIP = 0, tongTien = 0, giaPhong;
+		int tongGioHat = 0, tongPhutHat = 0, gio = 0, phut = 0, index;
+		List<String> dsKhachHang = new ArrayList<>();
+		List<Double> dsTongTien = new ArrayList<>();
+
+		for (ChiTietDatPhong chiTietDatPhong : dsChiTietDatPhong) {
+			phong = chiTietDatPhong.getPhong();
+			isPhongVIP = false;
+			phong.setLoaiPhong(getLoaiPhong(phong.getLoaiPhong()));
+
+			gioVao = chiTietDatPhong.getGioVao();
+			gioThuePhong = chiTietDatPhong.getGioRa().minusHours(gioVao.getHour()).minusMinutes(gioVao.getMinute())
+					.minusSeconds(gioVao.getSecond());
+
+			gio = gioThuePhong.getHour();
+			phut = gioThuePhong.getMinute();
+
+			tongGioHat += gio;
+			tongPhutHat += phut;
+			giaPhong = (gio + phut * 1.0 / 60) * phong.getGiaTien();
+
+			maKH = chiTietDatPhong.getDonDatPhong().getKhachHang().getMaKhachHang();
+			if (dsKhachHang.contains(maKH)) {
+				index = dsKhachHang.indexOf(maKH);
+				dsTongTien.set(index, dsTongTien.get(index) + giaPhong);
+			} else {
+				dsKhachHang.add(maKH);
+				dsTongTien.add(giaPhong);
+			}
+			
+			for(ChiTietDichVu chiTietDichVu : dsChiTietDichVu) {
+				
+			}
 		}
 
+		dsChiTietDichVu.forEach(chiTietDichVu -> {
+			System.out.println(chiTietDichVu);
+		});
+
+		for (int i = 0; i < dsKhachHang.size(); i++) {
+			addRow(new KhachHang(dsKhachHang.get(i)), dsTongTien.get(i));
+		}
+	}
+
+	private void setDaysToCmb() {
+		if (!cmbDay.isEnabled())
+			return;
+
+		int month = Integer.parseInt(cmbMonth.getSelectedItem().toString());
+		int year = Integer.parseInt(cmbYear.getSelectedItem().toString());
+		int daysOfMonth = getNumberOfDaysInMonth(year, month);
+		LocalDate dateNow = LocalDate.now();
+
+		if (month == dateNow.getMonthValue() && year == dateNow.getYear())
+			daysOfMonth = dateNow.getDayOfMonth();
+
+		cmbDay.removeAllItems();
+		for (int i = 1; i <= daysOfMonth; ++i)
+			if (i < 10)
+				cmbDay.addItem("0" + i);
+			else
+				cmbDay.addItem(i + "");
+		cmbDay.setSelectedIndex(-1);
+	}
+
+	private int getNumberOfDaysInMonth(int year, int month) {
+		YearMonth yearMonthObject = YearMonth.of(year, month);
+		int daysInMonth = yearMonthObject.lengthOfMonth();
+		return daysInMonth;
+	}
+
+	private List<KhachHang> addRow(List<KhachHang> list, double tongTien) {
+		list.forEach(khachHang -> addRow(khachHang, tongTien));
 		return list;
 	}
 
-	public List<ChiTietDichVu> getDichVuTheoPhieuDatPhongVaPhong(String datPhong, String maPhong) {
-		List<ChiTietDichVu> list = new ArrayList<>();
-		String sql = "SELECT * FROM ChiTietDichVu WHERE donDatPhong = ? and phong = ? ";
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setString(1, datPhong);
-			preparedStatement.setString(2, maPhong);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getChiTietDichVu(resultSet));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	public boolean themChiTietDichVu(ChiTietDichVu chiTietDichVu) {
-		int res = 0;
-		PreparedStatement preparedStatement;
-		Connection connection = ConnectDB.getConnection();
-		try {
-			connection.setAutoCommit(false);
-			preparedStatement = connection
-					.prepareStatement("UPDATE [dbo].[DichVu] SET [soLuong] -= ? WHERE [maDichVu] = ?");
-			preparedStatement.setInt(1, chiTietDichVu.getSoLuong());
-			preparedStatement.setString(2, chiTietDichVu.getDichVu().getMaDichVu());
-			res = preparedStatement.executeUpdate();
-			if (res <= 0)
-				return rollback();
-
-			preparedStatement = connection.prepareStatement("INSERT ChiTietDichVu VALUES (?, ?, ?, ?, ?)");
-			preparedStatement.setString(1, chiTietDichVu.getDichVu().getMaDichVu());
-			preparedStatement.setString(2, chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getMaDonDatPhong());
-			preparedStatement.setString(3, chiTietDichVu.getChiTietDatPhong().getPhong().getMaPhong());
-			preparedStatement.setTime(4, Time.valueOf(chiTietDichVu.getChiTietDatPhong().getGioVao()));
-			preparedStatement.setInt(5, chiTietDichVu.getSoLuong());
-			res = preparedStatement.executeUpdate();
-			if (res <= 0)
-				return rollback();
-
-			preparedStatement.close();
-			return commit();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	public boolean xoaChiTietDichVu(String maDichVu, String maDatPhong, String maPhong) {
-		int res = 0;
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement("DELETE ChiTietDichVu "
-					+ "FROM   ChiTietDatPhong INNER JOIN ChiTietDichVu ON ChiTietDatPhong.donDatPhong = ChiTietDichVu.donDatPhong "
-					+ "AND ChiTietDatPhong.phong = ChiTietDichVu.phong AND ChiTietDatPhong.gioVao = ChiTietDichVu.gioVao "
-					+ "INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu "
-					+ "WHERE dichVu =  ? and ChiTietDichVu.donDatPhong = ? and ChiTietDichVu.phong = ?");
-			preparedStatement.setString(1, maDichVu);
-			preparedStatement.setString(2, maDatPhong);
-			preparedStatement.setString(3, maPhong);
-			res = preparedStatement.executeUpdate();
-			preparedStatement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return res > 0;
+	private void addRow(KhachHang khachHang, double tongTien) {
+		khachHang = khachHang_DAO.getKhachHangTheoMa(khachHang.getMaKhachHang());
+		tableModel.addRow(new String[] { khachHang.getMaKhachHang(), khachHang.getHoTen(), khachHang.getSoDienThoai(),
+				khachHang.isGioiTinh() ? "Nam" : "Ná»¯", Utils.formatTienTe(tongTien) });
 	}
 }
