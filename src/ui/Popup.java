@@ -79,6 +79,8 @@ public class Popup extends PanelRound {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				quanLyDatPhongGUI.handleClickOutsidePnlPhong();
+				quanLyDatPhongGUI.handleOpenSubFrame(pnlDichVu, new QuanLyDichVuPhongDat_GUI(quanLyDatPhongGUI,
+						quanLyDatPhongGUI.getjFrame(), phong.getMaPhong()));
 			}
 		});
 	}

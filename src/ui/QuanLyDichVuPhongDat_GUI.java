@@ -36,6 +36,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import components.button.Button;
+import components.comboBox.ComboBox;
 import components.jDialog.JDialogCustom;
 import components.notification.Notification;
 import components.scrollbarCustom.ScrollBarCustom;
@@ -61,9 +62,9 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 	private QuanLyDichVuPhongDat_GUI _this;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
 	private ChiTietDichVu_DAO chiTietDichVu_DAO;
-	private JComboBox<String> cmbDatPhong;
+	private ComboBox<String> cmbDatPhong;
 	private JComboBox<String> cmbLoaiDV;
-	private JComboBox<String> cmbPhongDat;
+	private ComboBox<String> cmbPhongDat;
 	private JComboBox<String> cmbTenDV;
 	private DonDatPhong_DAO datPhong_DAO;
 	private DichVu_DAO dichVu_DAO;
@@ -138,10 +139,15 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 	private DefaultTableModel tableModel2, tableModel3;
 	private JTable tbl2, tbl3;
 	private TextField txtSoDienThoai;
-
 	private TextField txtTenKhachHang;
-
 	private JTextField txtTongTien;
+
+	public QuanLyDichVuPhongDat_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame, String maPhong) {
+		this(quanLyDatPhongGUI, parentFrame);
+		cmbPhongDat.setSelectedItem(maPhong);
+		cmbPhongDat.setEnabled(false);
+		cmbDatPhong.setEnabled(false);
+	}
 
 	public QuanLyDichVuPhongDat_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
@@ -529,7 +535,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		pnlBody.add(pnlFilter);
 		pnlFilter.setLayout(null);
 
-		cmbDatPhong = new JComboBox<>();
+		cmbDatPhong = new ComboBox<>();
 		setAllDonDatPhongDangThueToCombobox();
 		cmbDatPhong.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbDatPhong.setBackground(Utils.primaryColor);
@@ -537,7 +543,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 
 		pnlFilter.add(cmbDatPhong);
 
-		cmbPhongDat = new JComboBox<>();
+		cmbPhongDat = new ComboBox<>();
 		setAllMaPhongToCombobox();
 		cmbPhongDat.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 		cmbPhongDat.setBackground(Utils.primaryColor);
