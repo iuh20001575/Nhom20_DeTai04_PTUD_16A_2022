@@ -67,6 +67,21 @@ public class ChiTietDatPhong_DAO extends DAO {
 	 * @return
 	 */
 	public List<ChiTietDatPhong> getChiTietDatPhong(int day, int month, int year, String maNhanVien) {
+		return getChiTietDatPhong(day, month, year, maNhanVien, "");
+	}
+	
+	
+	
+	/**
+	 * Get chi tiết đặt phòng theo ngày, tháng năm, nhân viên và khách hàng
+	 * 
+	 * @param day
+	 * @param month
+	 * @param year
+	 * @param maNhanVien
+	 * @return
+	 */
+	public List<ChiTietDatPhong> getChiTietDatPhong(int day, int month, int year, String maNhanVien, String maKhachHang) {
 		List<ChiTietDatPhong> list = new ArrayList<>();
 		String sql = "SELECT CTDP.*, P.*, ngayNhanPhong, [maKhachHang], KH.[hoTen] AS HOTENKHACHHANG, "
 				+ "[maNhanVien], NV.[hoTen] AS HOTENNHANVIEN FROM [dbo].[DonDatPhong] DDP "
@@ -74,7 +89,8 @@ public class ChiTietDatPhong_DAO extends DAO {
 				+ "JOIN [dbo].[Phong] P ON CTDP.phong = P.maPhong "
 				+ "JOIN [dbo].[KhachHang] KH ON DDP.[khachHang] = KH.[maKhachHang] "
 				+ "JOIN [dbo].[NhanVien] NV ON DDP.NHANVIEN = NV.MANHANVIEN "
-				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ?";
+				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ?"
+				+ " AND KH.maKhachHang like ? ";
 
 		if (month > 0)
 			sql += " AND MONTH([ngayNhanPhong]) = ?";
@@ -85,10 +101,11 @@ public class ChiTietDatPhong_DAO extends DAO {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setInt(1, year);
 			preparedStatement.setString(2, "%" + maNhanVien + "%");
+			preparedStatement.setString(3, "%" + maKhachHang + "%");
 			if (month > 0)
-				preparedStatement.setInt(3, month);
+				preparedStatement.setInt(4, month);
 			if (day > 0)
-				preparedStatement.setInt(4, day);
+				preparedStatement.setInt(5, day);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 			ChiTietDatPhong chiTietDatPhong;
@@ -189,6 +206,73 @@ public class ChiTietDatPhong_DAO extends DAO {
 
 			if (resultSet.next())
 				chiTietDatPhong = getChiTietDatPhong(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(preparedStatement, resultSet);
+		}
+
+		return chiTietDatPhong;
+	}
+
+	/**
+	 * Get chi tiết đặt phòng của phòng đang thuê theo mã phong
+	 * 
+	 * @param phong
+	 * @return
+	 */
+	public ChiTietDatPhong getChiTietDatPhongTheoMaPhong(String phong) {
+		ChiTietDatPhong chiTietDatPhong = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			preparedStatement = ConnectDB.getConnection().prepareStatement(
+					"SELECT donDatPhong, phong, gioVao FROM ChiTietDatPhong WHERE phong = ? and gioRa is null");
+			preparedStatement.setString(1, phong);
+
+			resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next()) {
+				String datPhong = resultSet.getString(1);
+				String maPhong = resultSet.getString(2);
+				LocalTime gioVao = resultSet.getTime(3).toLocalTime();
+				chiTietDatPhong = new ChiTietDatPhong(new DonDatPhong(datPhong), new Phong(maPhong), gioVao);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(preparedStatement, resultSet);
+		}
+
+		return chiTietDatPhong;
+	}
+
+	/**
+	 * Get chi tiết đặt phòng của phòng đang thuê theo mã phong
+	 * 
+	 * @param phong
+	 * @return
+	 */
+	public ChiTietDatPhong getChiTietDatPhongTheoMaPhongvaMaDonDatPhong(String phong, String donDatPhong) {
+		ChiTietDatPhong chiTietDatPhong = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			preparedStatement = ConnectDB.getConnection().prepareStatement(
+					"SELECT donDatPhong, phong, gioVao FROM ChiTietDatPhong WHERE phong = ? and donDatPhong = ? and gioRa is null");
+			preparedStatement.setString(1, phong);
+			preparedStatement.setString(2, donDatPhong);
+
+			resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next()) {
+				String datPhong = resultSet.getString(1);
+				String maPhong = resultSet.getString(2);
+				LocalTime gioVao = resultSet.getTime(3).toLocalTime();
+				chiTietDatPhong = new ChiTietDatPhong(new DonDatPhong(datPhong), new Phong(maPhong), gioVao);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -366,4 +450,6 @@ public class ChiTietDatPhong_DAO extends DAO {
 
 		return res;
 	}
+	
+
 }
