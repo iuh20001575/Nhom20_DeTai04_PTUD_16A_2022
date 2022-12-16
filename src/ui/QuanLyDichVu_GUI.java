@@ -236,7 +236,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnXoa = new Button("Xóa");
 
 		btnXoa.setFocusable(false);
-		btnXoa.setIcon(Utils.getImageIcon ("download 1.png"));
+		btnXoa.setIcon(Utils.getImageIcon("download 1.png"));
 		btnXoa.setRadius(4);
 		btnXoa.setForeground(Color.WHITE);
 		btnXoa.setColor(new Color(134, 229, 138));
@@ -277,7 +277,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 				btnSua.setEnabled(true);
 				btnDanhSachTonTai.setVisible(false);
 				tableModel.setRowCount(0);
-				filterDichVu();
+				filterDichVu(false);
 				pnlControl.setTbl(tbl);
 				cmbLoaiDV.setSelectedIndex(0);
 				cmbSoLuong.setSelectedIndex(0);
@@ -296,7 +296,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 				btnThem.setEnabled(false);
 				btnSua.setEnabled(false);
 				btnDanhSachXoa.setVisible(false);
-				filterDichVuDaNgungKinhDoanh();
+				filterDichVu(true);
 				cmbLoaiDV.setSelectedIndex(0);
 				cmbSoLuong.setSelectedIndex(0);
 			}
@@ -405,7 +405,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 					listDV = (List<DichVu>) dichVu_DAO.getAllDichVu();
 				else
 					listDV = dichVu_DAO.getDanhSachDichVuTheoMa(listDV);
-				setEmptyTable();
+				tableModel.setRowCount(0);
 				addRow(listDV);
 				pnlControl.setTbl(tbl);
 			}
@@ -427,10 +427,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnSearch.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (btnDanhSachXoa.isVisible()) {
-					filterDichVu();
-				} else
-					filterDichVuDaNgungKinhDoanh();
+				filterDichVu(!btnDanhSachXoa.isVisible());
 			}
 		});
 //		Sự kiện nút thêm dịch vụ
@@ -456,9 +453,8 @@ public class QuanLyDichVu_GUI extends JPanel {
 					String maDichVu = tableModel.getValueAt(row, 0).toString();
 					main.addPnlBody(new ThongTinChiTietDichVu_GUI(main, dichVu_DAO.getDichVuTheoMa(maDichVu), false),
 							"Thông tin chi tiết dịch vụ", 1, 0);
-					setEmptyTable();
-					// addRow(DichVu_DAO.getAllDichVu());
-					filterDichVu();
+					tableModel.setRowCount(0);
+					filterDichVu(false);
 				}
 			}
 		});
@@ -503,9 +499,8 @@ public class QuanLyDichVu_GUI extends JPanel {
 							else
 								new Notification(main, components.notification.Notification.Type.ERROR,
 										"Xóa dịch vụ thất bại");
-							setEmptyTable();
-							// addRow(DichVu_DAO.getAllDichVu());
-							filterDichVu();
+							tableModel.setRowCount(0);
+							filterDichVu(false);
 						};
 					});
 
@@ -545,9 +540,9 @@ public class QuanLyDichVu_GUI extends JPanel {
 							else
 								new Notification(main, components.notification.Notification.Type.ERROR,
 										"Khôi phục dịch vụ thất bại");
-							setEmptyTable();
+							tableModel.setRowCount(0);
 
-							filterDichVuDaNgungKinhDoanh();
+							filterDichVu(true);
 						};
 					});
 
@@ -568,10 +563,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		cmbLoaiDV.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if (btnDanhSachXoa.isVisible()) {
-						filterDichVu();
-					} else
-						filterDichVuDaNgungKinhDoanh();
+					filterDichVu(!btnDanhSachXoa.isVisible());
 				}
 			}
 		});
@@ -580,10 +572,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		cmbSoLuong.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					if (btnDanhSachXoa.isVisible()) {
-						filterDichVu();
-					} else
-						filterDichVuDaNgungKinhDoanh();
+					filterDichVu(!btnDanhSachXoa.isVisible());
 				}
 			}
 		});
@@ -609,7 +598,6 @@ public class QuanLyDichVu_GUI extends JPanel {
 	}
 
 	private void addRow(DichVu dichVu) {
-
 		tableModel.addRow(new String[] { dichVu.getMaDichVu(), dichVu.getTenDichVu(), dichVu.getDonViTinh(),
 				String.valueOf(dichVu.getSoLuong()), dichVu.getLoaiDichVu().getTenLoaiDichVu(),
 				Utils.formatTienTe(dichVu.getGiaMua()), Utils.formatTienTe(dichVu.getGiaBan()) });
@@ -621,7 +609,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		return list;
 	}
 
-	private void filterDichVu() {
+	private void filterDichVu(boolean daNgungKinhDoanh) {
 		String tenDichVu = txtSearch.getText();
 		String tenLoaiDV = cmbLoaiDV.getSelectedItem().toString();
 		String soLuong = cmbSoLuong.getSelectedItem().toString();
@@ -630,33 +618,14 @@ public class QuanLyDichVu_GUI extends JPanel {
 			tenLoaiDV = "";
 		if (soLuong.equals("Số lượng"))
 			soLuong = "";
-		listDV = dichVu_DAO.filterDichVu(tenDichVu, tenLoaiDV, soLuong);
-		setEmptyTable();
+		listDV = dichVu_DAO.filterDichVu(tenDichVu, tenLoaiDV, soLuong, daNgungKinhDoanh);
+		tableModel.setRowCount(0);
 		addRow(listDV);
 	}
 
-	private void filterDichVuDaNgungKinhDoanh() {
-		String tenDichVu = txtSearch.getText();
-		String tenLoaiDV = cmbLoaiDV.getSelectedItem().toString();
-		String soLuong = cmbSoLuong.getSelectedItem().toString();
-
-		if (tenLoaiDV.equals("Phân loại"))
-			tenLoaiDV = "";
-		if (soLuong.equals("Số lượng"))
-			soLuong = "";
-		List<DichVu> list = dichVu_DAO.filterDichVuNgungKinhDoanh(tenDichVu, tenLoaiDV, soLuong);
-		setEmptyTable();
-		addRow(list);
-	}
-
 	public void loadTable() {
-		setEmptyTable();
+		tableModel.setRowCount(0);
 		addRow(dichVu_DAO.getAllDichVu());
-	}
-
-	private void setEmptyTable() {
-		while (tbl.getRowCount() > 0)
-			tableModel.removeRow(0);
 	}
 
 	private void setEnabledBtnActions() {

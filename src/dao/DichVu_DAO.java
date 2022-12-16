@@ -35,116 +35,41 @@ public class DichVu_DAO {
 		return res;
 	}
 
-// filter dịch vụ còn kinh doanh
-	public List<DichVu> filterDichVu(String tenDichVu, String tenLoaiDichVu, String soLuong) {
+	/**
+	 * Filter dịch vụ theo tên, loại và số lượng
+	 * 
+	 * @param tenDichVu
+	 * @param tenLoaiDichVu
+	 * @param soLuong
+	 * @return danh sách dịch vụ
+	 */
+	public List<DichVu> filterDichVu(String tenDichVu, String tenLoaiDichVu, String soLuong, boolean isDaNgungKinhDoanh) {
 		List<DichVu> list = new ArrayList<>();
 		PreparedStatement preparedStatement = null;
+		String sql = "SELECT * FROM   DichVu INNER JOIN LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
+				+ "WHERE tenDichVu like ? and tenLoaiDichVu like ? and daNgungKinhDoanh = ?";
 		try {
-			if (soLuong == "") {
-				preparedStatement = ConnectDB.getConnection()
-						.prepareStatement("SELECT * FROM   DichVu INNER JOIN "
-								+ "       LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
-								+ "WHERE tenDichVu like ? and tenLoaiDichVu like ? and daNgungKinhDoanh = 0");
+			if (soLuong.equals("<50"))
+				sql += " and soLuong <= 50";
+			else if (soLuong.equals("50-100"))
+				sql += " and soLuong > 50 and soLuong <= 100";
+			else if (soLuong.equals("100-200"))
+				sql += " and soLuong > 100 and soLuong <= 200";
+			else if (soLuong.equals(">200"))
+				sql += " and soLuong > 200";
 
-				preparedStatement.setString(1, "%" + tenDichVu + "%");
-				preparedStatement.setString(2, "%" + tenLoaiDichVu + "%");
-				ResultSet resultSet = preparedStatement.executeQuery();
-				DichVu dichVu;
-				while (resultSet.next()) {
-					dichVu = getDichVu(resultSet);
-					list.add(dichVu);
-				}
-
-				resultSet.close();
-			} else {
-				if (soLuong.equals("<50")) {
-					preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM   DichVu INNER JOIN "
-							+ "       LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
-							+ "WHERE tenDichVu like ? and tenLoaiDichVu like ? and soLuong <= 50 and daNgungKinhDoanh = 0");
-				} else if (soLuong.equals("50-100")) {
-					preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM   DichVu INNER JOIN "
-							+ "       LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
-							+ "WHERE tenDichVu like ? and tenLoaiDichVu like ? and soLuong > 50 and soLuong <= 100 and daNgungKinhDoanh = 0");
-				} else if (soLuong.equals("100-200")) {
-					preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM   DichVu INNER JOIN "
-							+ "       LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
-							+ "WHERE tenDichVu like ? and tenLoaiDichVu like ?  and soLuong > 100 and soLuong <= 200 and daNgungKinhDoanh = 0");
-				} else if (soLuong.equals(">200")) {
-					preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM   DichVu INNER JOIN "
-							+ "       LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
-							+ "WHERE tenDichVu like ? and tenLoaiDichVu like ? and soLuong > 200 and daNgungKinhDoanh = 0");
-				}
-				preparedStatement.setString(1, "%" + tenDichVu + "%");
-				preparedStatement.setString(2, "%" + tenLoaiDichVu + "%");
-				ResultSet resultSet = preparedStatement.executeQuery();
-				DichVu dichVu;
-				while (resultSet.next()) {
-					dichVu = getDichVu(resultSet);
-					list.add(dichVu);
-				}
-
-				resultSet.close();
+			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, "%" + tenDichVu + "%");
+			preparedStatement.setString(2, "%" + tenLoaiDichVu + "%");
+			preparedStatement.setBoolean(3, isDaNgungKinhDoanh);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			DichVu dichVu;
+			while (resultSet.next()) {
+				dichVu = getDichVu(resultSet);
+				list.add(dichVu);
 			}
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	// filter dịch vụ ngừng kinh doanh
-	public List<DichVu> filterDichVuNgungKinhDoanh(String tenDichVu, String tenLoaiDichVu, String soLuong) {
-		List<DichVu> list = new ArrayList<>();
-		PreparedStatement preparedStatement = null;
-		try {
-			if (soLuong == "") {
-				preparedStatement = ConnectDB.getConnection()
-						.prepareStatement("SELECT * FROM   DichVu INNER JOIN "
-								+ "       LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
-								+ "WHERE tenDichVu like ? and tenLoaiDichVu like ? and daNgungKinhDoanh = 1");
-
-				preparedStatement.setString(1, "%" + tenDichVu + "%");
-				preparedStatement.setString(2, "%" + tenLoaiDichVu + "%");
-				ResultSet resultSet = preparedStatement.executeQuery();
-				DichVu dichVu;
-				while (resultSet.next()) {
-					dichVu = getDichVu(resultSet);
-					list.add(dichVu);
-				}
-
-				resultSet.close();
-			} else {
-				if (soLuong.equals("<50")) {
-					preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM   DichVu INNER JOIN "
-							+ "       LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
-							+ "WHERE tenDichVu like ? and tenLoaiDichVu like ? and soLuong <= 50 and daNgungKinhDoanh = 1");
-				} else if (soLuong.equals("50-100")) {
-					preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM   DichVu INNER JOIN "
-							+ "       LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
-							+ "WHERE tenDichVu like ? and tenLoaiDichVu like ? and soLuong > 50 and soLuong <= 100 and daNgungKinhDoanh = 1");
-				} else if (soLuong.equals("100-200")) {
-					preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM   DichVu INNER JOIN "
-							+ "       LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
-							+ "WHERE tenDichVu like ? and tenLoaiDichVu like ?  and soLuong > 100 and soLuong <= 200 and daNgungKinhDoanh = 1");
-				} else if (soLuong.equals(">200")) {
-					preparedStatement = ConnectDB.getConnection().prepareStatement("SELECT * FROM   DichVu INNER JOIN "
-							+ "       LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "
-							+ "WHERE tenDichVu like ? and tenLoaiDichVu like ? and soLuong > 200 and daNgungKinhDoanh = 1");
-				}
-				preparedStatement.setString(1, "%" + tenDichVu + "%");
-				preparedStatement.setString(2, "%" + tenLoaiDichVu + "%");
-				ResultSet resultSet = preparedStatement.executeQuery();
-				DichVu dichVu;
-				while (resultSet.next()) {
-					dichVu = getDichVu(resultSet);
-					list.add(dichVu);
-				}
-
-				resultSet.close();
-			}
-
+			resultSet.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

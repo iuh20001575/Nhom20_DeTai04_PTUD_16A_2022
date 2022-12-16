@@ -35,7 +35,7 @@ public class PhieuDatPhongTruoc_DAO {
 							+ "WHERE DonDatPhong.ngayNhanPhong like ? and DonDatPhong.trangThai like ? and KhachHang.soDienThoai like ? \r\n"
 							+ "EXCEPT SELECT * FROM DonDatPhong\r\n"
 							+ "WHERE trangThai like N'Đang thuê' or trangThai like N'Đã trả' "
-							+ "ORDER BY trangThai DESC, ngayNhanPhong DESC, gioNhanPhong ASC");
+							+ "ORDER BY trangThai DESC, ngayNhanPhong ASC, gioNhanPhong ASC");
 
 			preparedStatement.setString(1, "%" + ngayNhanPhong + "%");
 			preparedStatement.setString(2, "%" + trangThai + "%");
@@ -68,7 +68,7 @@ public class PhieuDatPhongTruoc_DAO {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
 					"SELECT DISTINCT * FROM DonDatPhong where trangThai like N'Đang chờ' or trangThai like N'Đã hủy' "
-							+ "ORDER BY trangThai DESC, ngayNhanPhong DESC, gioNhanPhong ASC ");
+							+ "ORDER BY trangThai DESC, ngayNhanPhong ASC, gioNhanPhong ASC ");
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 			DonDatPhong donDatPhong;
