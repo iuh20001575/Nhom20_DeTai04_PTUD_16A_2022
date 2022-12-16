@@ -8,7 +8,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.ThreadLocalRandom;
+import java.time.LocalTime;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -18,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -32,17 +34,48 @@ import components.button.Button;
 import components.jDialog.JDialogCustom;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
+import dao.ChiTietDatPhong_DAO;
+import dao.ChiTietDichVu_DAO;
+import dao.DichVu_DAO;
+import dao.DonDatPhong_DAO;
+import dao.KhachHang_DAO;
+import dao.NhanVien_DAO;
+import dao.Phong_DAO;
+import entity.ChiTietDatPhong;
+import entity.ChiTietDichVu;
+import entity.DichVu;
+import entity.DonDatPhong;
+import entity.KhachHang;
+import entity.NhanVien;
+import entity.Phong;
 import utils.Utils;
 
 public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 
 	private static final long serialVersionUID = 1L;
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private ChiTietDichVu_DAO chiTietDichVu_DAO;
+	private DichVu_DAO dichVu_DAO;
+	private DonDatPhong_DAO donDatPhong_DAO;
+	private List<ChiTietDichVu> dsChiTietDichVu;
+	private String gioVaoPhong, gioRaPhong, thoiGianSuDung;
+	private KhachHang_DAO khachHang_DAO;
 	private Main main;
+	private NhanVien_DAO nhanVien_DAO;
+	private Phong_DAO phong_DAO;
 	private DefaultTableModel tableModel;
 	private JTable tblThongKe;
+	private double tienPhong, tienDichVu, tongTienPhong = 0;
 	private JTextField txtMaHD, txtTenKhach, txtTenNhanVien, txtNgayLap;
 
 	public ThongKeHoaDon_GUI(Main jFrame) {
+		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		chiTietDichVu_DAO = new ChiTietDichVu_DAO();
+		donDatPhong_DAO = new DonDatPhong_DAO();
+		khachHang_DAO = new KhachHang_DAO();
+		nhanVien_DAO = new NhanVien_DAO();
+		phong_DAO = new Phong_DAO();
+		dichVu_DAO = new DichVu_DAO();
 		main = jFrame;
 		setBackground(new Color(242, 246, 252));
 		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
@@ -188,14 +221,14 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 			}
 		};
 
-		tableModel = new DefaultTableModel(new String[] { "Mã Hoá Đơn", "Mã Phòng", "Tên Khách", "Tên Nhân Viên",
+		tableModel = new DefaultTableModel(new String[] { "Mã Hoá Đơn", "Phòng", "Tên Khách", "Tên Nhân Viên",
 				"Ngày Lập", "Tiền Phòng", "Tiền Dịch Vụ", "Tổng Tiền" }, 0);
 		tblThongKe.setModel(tableModel);
-		tblThongKe.getColumnModel().getColumn(0).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
+		tblThongKe.getColumnModel().getColumn(0).setPreferredWidth((Utils.getScreenWidth() - 215) / 8 - 40);
 		tblThongKe.getColumnModel().getColumn(1).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
-		tblThongKe.getColumnModel().getColumn(2).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
-		tblThongKe.getColumnModel().getColumn(3).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
-		tblThongKe.getColumnModel().getColumn(4).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
+		tblThongKe.getColumnModel().getColumn(2).setPreferredWidth((Utils.getScreenWidth() - 215) / 8 + 30);
+		tblThongKe.getColumnModel().getColumn(3).setPreferredWidth((Utils.getScreenWidth() - 215) / 8 + 30);
+		tblThongKe.getColumnModel().getColumn(4).setPreferredWidth((Utils.getScreenWidth() - 215) / 8 - 20);
 		tblThongKe.getColumnModel().getColumn(5).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
 		tblThongKe.getColumnModel().getColumn(6).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
 		tblThongKe.getColumnModel().getColumn(7).setPreferredWidth((Utils.getScreenWidth() - 215) / 8 - 8);
@@ -211,8 +244,14 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		tblThongKe.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-		tblThongKe.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 		scr.setViewportView(tblThongKe);
+
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
+		tblThongKe.getColumnModel().getColumn(4).setCellRenderer(dtcr);
+		tblThongKe.getColumnModel().getColumn(5).setCellRenderer(dtcr);
+		tblThongKe.getColumnModel().getColumn(6).setCellRenderer(dtcr);
+		tblThongKe.getColumnModel().getColumn(7).setCellRenderer(dtcr);
 
 		addRowRandomData();
 
@@ -255,12 +294,22 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
 							"Vui lòng chọn hoá đơn muốn xem chi tiết!");
 				} else {
+
 					String maHoaDon = (String) tableModel.getValueAt(row, 0);
+					String maDatPhong = maHoaDon.replace("HD", "MDP");
+					System.out.println(maDatPhong);
+					System.out.println(donDatPhong_DAO.getDatPhong(maDatPhong));
 					String ngayLap = (String) tableModel.getValueAt(row, 4);
 					String tenKhach = (String) tableModel.getValueAt(row, 2);
 					String tenNV = (String) tableModel.getValueAt(row, 3);
-					HoaDon_GUI jFrame = new HoaDon_GUI(maHoaDon, ngayLap, tenKhach, tenNV);
+					List<ChiTietDatPhong> dsChiTietDatPhong = chiTietDatPhong_DAO
+							.getAllChiTietDatPhong(donDatPhong_DAO.getDatPhong(maDatPhong));
+					List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO.getDichVuTheoPhieuDatPhong(maDatPhong);
+
+					HoaDon_GUI jFrame = new HoaDon_GUI(maHoaDon, ngayLap, tenKhach, tenNV, gioVaoPhong, gioRaPhong,
+							thoiGianSuDung, tongTienPhong + "", tienDichVu + "", dsChiTietDatPhong, dsChiTietDichVu);
 					jFrame.setVisible(true);
+
 				}
 			}
 		});
@@ -284,22 +333,164 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 
 	}
 
-	private void addRowRandomData() {
-		for (int i = 1; i < 15; i++) {
-			String maHD = i < 10 ? "HD000" + i : "HD00" + i;
-			String maPhong = i < 10 ? "P000" + i : "P00" + i;
-			String tenKhach[] = { "Phạm Thanh An", "Phạm Tường Vy", "Đặng Ngọc Hoài Thương" };
-			String tenKH = tenKhach[ThreadLocalRandom.current().nextInt(0, 2 + 1)];
-			String tenNhanVien[] = { "Nguyen Thanh Trung", "Trần Huỳnh Như", "Đặng Ngọc Hoài Thương" };
-			String tenNV = tenNhanVien[ThreadLocalRandom.current().nextInt(1, 2 + 1)];
-			String ngayLap = ThreadLocalRandom.current().nextInt(1, 31 + 1) + "/"
-					+ ThreadLocalRandom.current().nextInt(1, 12 + 1) + "/" + "2022";
-			long tienPhong = ThreadLocalRandom.current().nextInt(1, 15 + 1) * 100000;
-			long tienDichVu = ThreadLocalRandom.current().nextInt(1, 7 + 1) * 100000;
+	private void addRowRandomData1() {
 
-			tableModel.addRow(new String[] { maHD, maPhong, tenKH, tenNV, ngayLap, tienPhong + " VNĐ",
-					tienDichVu + " VNĐ", tienPhong + tienDichVu + " VNĐ" });
+		List<ChiTietDatPhong> dsChiTietDatPhongThanhToan = chiTietDatPhong_DAO.getAllChiTietDatPhongThanhToan();
+		int i = 1;
+		for (ChiTietDatPhong chiTietDatPhong : dsChiTietDatPhongThanhToan) {
+			// Mã hoá đơn
+			String maHD = i < 10 ? "HD000" + i : "HD00" + i;
+
+			// Phòng
+			String maPhong = chiTietDatPhong.getPhong().getMaPhong();
+
+			// Mã đơn đặt phòng
+			String madondatphong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
+
+			// Mã khách
+			DonDatPhong_DAO dondatphongdao = new DonDatPhong_DAO();
+			String makhach = dondatphongdao.getDatPhong(madondatphong).getKhachHang().getMaKhachHang();
+
+			// Tên khách
+			KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(makhach);
+			String tenKhach = khachHang.getHoTen();
+
+			// Mã nhân viên
+			String manhanvien = dondatphongdao.getDatPhong(madondatphong).getNhanVien().getMaNhanVien();
+
+			// Tên nhân viên
+			NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(manhanvien);
+			String tenNhanVien = nhanVien.getHoTen();
+
+			// Ngày lập
+			Phong phong = phong_DAO.getPhong(maPhong);
+			String ngayLap = Utils.formatDate(donDatPhong_DAO.getDatPhong(madondatphong).getNgayNhanPhong()).toString();
+
+			// Tiền phòng
+			LocalTime timeNow = LocalTime.now();
+
+			double donGia = phong.getGiaTien();
+			LocalTime gioRa = chiTietDatPhong.getGioRa() == null ? timeNow : chiTietDatPhong.getGioRa();
+			LocalTime gioVao = chiTietDatPhong.getGioVao();
+			int hours, minutes, hieu = 0;
+
+			hours = gioRa.getHour();
+			hours -= gioVao.getHour();
+			minutes = gioRa.getMinute() - gioVao.getMinute();
+			hieu = hours * 60 + minutes;
+
+			tienPhong = hieu;
+			tienPhong *= donGia;
+			tienPhong *= 1.0 / 60;
+
+			// Tiền dịch vụ
+			dsChiTietDichVu = chiTietDichVu_DAO.getAllChiTietDichVu();
+			int n = dsChiTietDichVu.size();
+
+			ChiTietDichVu chiTietDichVu;
+			DichVu dichVu;
+			double tienHang;
+			tienDichVu = 0;
+			for (int j = 0; j < n; ++j) {
+				chiTietDichVu = dsChiTietDichVu.get(j);
+				dichVu = dichVu_DAO.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu());
+				tienHang = dichVu.getGiaBan() * chiTietDichVu.getSoLuong();
+				tienDichVu += tienHang;
+			}
+
+			// Giờ vào
+			int hourIn = gioVao.getHour();
+			int minuteIn = gioVao.getMinute();
+			int secondIn = gioVao.getSecond();
+
+			gioVaoPhong = String.format("%s:%s:%s", hourIn < 10 ? "0" + hourIn : hourIn,
+					minuteIn < 10 ? "0" + minuteIn : minuteIn, secondIn < 10 ? "0" + secondIn : secondIn) + " "
+					+ Utils.formatDate(dondatphongdao.getDatPhong(madondatphong).getNgayNhanPhong()).toString()
+							.replaceAll("-", "/");
+
+			// Giờ ra
+			int hourOut = gioRa.getHour();
+			int minuteOut = gioRa.getMinute();
+			int secondOut = gioRa.getSecond();
+
+			gioRaPhong = String.format("%s:%s:%s", hourOut < 10 ? "0" + hourOut : hourOut,
+					minuteOut < 10 ? "0" + minuteOut : minuteOut, secondOut < 10 ? "0" + secondOut : secondOut) + " "
+					+ Utils.formatDate(dondatphongdao.getDatPhong(madondatphong).getNgayNhanPhong()).toString()
+							.replaceAll("-", "/");
+
+			// Thời gian sử dụng
+			thoiGianSuDung = hieu + " phút";
+
+			i++;
+			tableModel.addRow(
+					new String[] { maHD, maPhong, tenKhach, tenNhanVien, ngayLap + "", Utils.formatTienTe(tienPhong),
+							Utils.formatTienTe(tienDichVu), Utils.formatTienTe(tienPhong + tienDichVu) });
 		}
+	}
+
+	private void addRowRandomData() {
+		List<ChiTietDatPhong> dsChiTietDatPhongThanhToan = chiTietDatPhong_DAO.getAllChiTietDatPhongThanhToan();
+		List<DonDatPhong> dsDonDatPhongDaTra = donDatPhong_DAO.getAllDonDatPhongDaTra();
+		int i = 1;
+		for (DonDatPhong donDatPhong : dsDonDatPhongDaTra) {
+			// Mã hoá đơn
+			String maHD = donDatPhong.getMaDonDatPhong().replace("MDP", "HD");
+			String maPhong = "";
+			double donGia = 0;
+			Phong phong;
+			tongTienPhong = 0;
+			int tongGio = 0;
+			LocalTime timeNow = LocalTime.now();
+			int hours, minutes, hieu = 0;
+
+			for (ChiTietDatPhong chiTietDatPhong : dsChiTietDatPhongThanhToan) {
+				if (chiTietDatPhong.getDonDatPhong().getMaDonDatPhong().equals(donDatPhong.getMaDonDatPhong())) {
+					if (maPhong == "") {
+						maPhong += chiTietDatPhong.getPhong().getMaPhong();
+
+					} else {
+						maPhong += ", " + chiTietDatPhong.getPhong().getMaPhong();
+					}
+					phong = phong_DAO.getPhong(chiTietDatPhong.getPhong().getMaPhong());
+					donGia = phong.getGiaTien();
+					LocalTime gioRa = chiTietDatPhong.getGioRa() == null ? timeNow : chiTietDatPhong.getGioRa();
+					LocalTime gioVao = chiTietDatPhong.getGioVao();
+					hours = gioRa.getHour() - gioVao.getHour();
+					minutes = gioRa.getMinute() - gioVao.getMinute();
+					hieu = hours * 60 + minutes;
+					tongGio += hieu;
+					tienPhong = hieu;
+					tienPhong *= donGia;
+					tienPhong *= 1.0 / 60;
+					tongTienPhong += tienPhong;
+
+				}
+			}
+
+			// Tiền dịch vụ
+			tienDichVu = 0;
+			List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO.getAllChiTietDichVu();
+			for (ChiTietDichVu chiTietDichVu : dsChiTietDichVu) {
+				if (chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getMaDonDatPhong()
+						.equals(donDatPhong.getMaDonDatPhong())) {
+					tienDichVu += dichVu_DAO.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu()).getGiaBan()
+							* chiTietDichVu.getSoLuong();
+
+				}
+			}
+			String tenKhach = khachHang_DAO.getKhachHangTheoMa(donDatPhong.getKhachHang().getMaKhachHang()).getHoTen();
+			String tenNhanVien = nhanVien_DAO.getNhanVienTheoMa(donDatPhong.getNhanVien().getMaNhanVien()).getHoTen();
+			String ngayLap = Utils
+					.formatDate(donDatPhong_DAO.getDatPhong(donDatPhong.getMaDonDatPhong()).getNgayNhanPhong())
+					.toString();
+
+			i++;
+			tableModel.addRow(new String[] { maHD, maPhong, tenKhach, tenNhanVien, ngayLap + "",
+					Utils.formatTienTe(tongTienPhong), Utils.formatTienTe(tienDichVu),
+					Utils.formatTienTe((tongTienPhong + tienDichVu) * 1.1) });
+
+		}
+
 	}
 
 	@Override

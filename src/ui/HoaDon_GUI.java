@@ -13,7 +13,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.concurrent.ThreadLocalRandom;
+import java.time.LocalTime;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -34,66 +36,78 @@ import com.itextpdf.text.pdf.PdfWriter;
 import components.button.Button;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
+import dao.DichVu_DAO;
+import dao.Phong_DAO;
+import entity.ChiTietDatPhong;
+import entity.ChiTietDichVu;
+import entity.DichVu;
+import entity.Phong;
 import utils.Utils;
 
 public class HoaDon_GUI extends JFrame implements ItemListener {
 	private static final long serialVersionUID = 1L;
+	private DichVu_DAO dichVu_DAO;
+	private Phong_DAO phong_DAO;
 	private PanelRound pnlContent;
-	private DefaultTableModel tableModel;
-	private JTable tblTienDV;
+	private DefaultTableModel tableModel, tableModel1;
+	private JTable tblTienPhong, tblTienDV;
 
-	public HoaDon_GUI(String maHoaDon, String ngayLap, String tenKhach, String tenNV) {
+	public HoaDon_GUI(String maHoaDon, String ngayLap, String tenKhach, String tenNV, String gioVaoPhong,
+			String gioRaPhong, String thoiGianSuDung, String tongTienPhong, String tongTienDV,
+			List<ChiTietDatPhong> dsChiTietDatPhong, List<ChiTietDichVu> dsChiTietDichVu) {
 		setTitle("Hoá đơn tính tiền");
 		this.getContentPane().setBackground(new Color(242, 246, 252));
-		setBounds((Utils.getScreenWidth() - 500) / 2, 0, 500, Utils.getBodyHeight());
+		setBounds((Utils.getScreenWidth() - 500) / 2, 0, 500, Utils.getBodyHeight() + 40);
 		setLayout(null);
+		dichVu_DAO = new DichVu_DAO();
+		phong_DAO = new Phong_DAO();
+
+		PanelRound pnlContainer = new PanelRound();
+		pnlContainer.setBackground(new Color(242, 246, 252));
+		pnlContainer.setBounds(0, 0, 500, Utils.getBodyHeight() - 60);
+		this.add(pnlContainer);
+		pnlContainer.setLayout(null);
 
 		PanelRound pnlHeader = new PanelRound();
 		pnlHeader.setBackground(Color.WHITE);
 		pnlHeader.setBounds(0, 0, 485, 70);
-		this.add(pnlHeader);
+		pnlContainer.add(pnlHeader);
 		pnlHeader.setLayout(null);
 
-		JLabel lblTenQuanBold = new JLabel("Tên quán:");
-		lblTenQuanBold.setBounds(10, 0, 400, 20);
-		lblTenQuanBold.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		lblTenQuanBold.setForeground(new Color(100, 100, 100));
-		pnlHeader.add(lblTenQuanBold);
-
-		JLabel lblTenQuanPlain = new JLabel("Karaoke Nice");
-		lblTenQuanPlain.setBounds(75, 0, 400, 20);
-		lblTenQuanPlain.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		JLabel lblTenQuanPlain = new JLabel("Rome Karaoke");
+		lblTenQuanPlain.setBounds((Utils.getScreenWidth() - 500) * 1 / 4 - 40, 0, 400, 36);
+		lblTenQuanPlain.setFont(new Font("Segoe UI", Font.BOLD, 30));
 		lblTenQuanPlain.setForeground(new Color(100, 100, 100));
 		pnlHeader.add(lblTenQuanPlain);
 
 		JLabel lblDiaChiBold = new JLabel("Địa chỉ:");
-		lblDiaChiBold.setBounds(10, 20, 400, 20);
-		lblDiaChiBold.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		lblDiaChiBold.setBounds(10, 36, 400, 18);
+		lblDiaChiBold.setFont(new Font("Segoe UI", Font.BOLD, 12));
 		lblDiaChiBold.setForeground(new Color(100, 100, 100));
 		pnlHeader.add(lblDiaChiBold);
 
 		JLabel lblDiaChiPlain = new JLabel("Lê Thị Hồng, Phường 17, Gò Vấp, T.P Hồ Chí Minh");
-		lblDiaChiPlain.setBounds(60, 20, 400, 20);
-		lblDiaChiPlain.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		lblDiaChiPlain.setBounds(60, 36, 400, 18);
+		lblDiaChiPlain.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		lblDiaChiPlain.setForeground(new Color(100, 100, 100));
 		pnlHeader.add(lblDiaChiPlain);
 
 		JLabel lblLienHeBold = new JLabel("Liên hệ:");
-		lblLienHeBold.setBounds(10, 40, 400, 20);
-		lblLienHeBold.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		lblLienHeBold.setBounds(10, 52, 400, 18);
+		lblLienHeBold.setFont(new Font("Segoe UI", Font.BOLD, 12));
 		lblLienHeBold.setForeground(new Color(100, 100, 100));
 		pnlHeader.add(lblLienHeBold);
 
 		JLabel lblLienHePlain = new JLabel("033 673 5243 - 097 888 6331");
-		lblLienHePlain.setBounds(65, 40, 400, 20);
-		lblLienHePlain.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		lblLienHePlain.setBounds(65, 52, 400, 18);
+		lblLienHePlain.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		lblLienHePlain.setForeground(new Color(100, 100, 100));
 		pnlHeader.add(lblLienHePlain);
 
 		pnlContent = new PanelRound();
 		pnlContent.setBackground(new Color(242, 246, 252));
-		pnlContent.setBounds(10, 80, 465, 450);
-		this.add(pnlContent);
+		pnlContent.setBounds(10, 80, 465, 500);
+		pnlContainer.add(pnlContent);
 		pnlContent.setLayout(null);
 
 		JLabel lblTieuDe = new JLabel("HOÁ ĐƠN TÍNH TIỀN");
@@ -121,8 +135,8 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		pnlHoaDon.add(lblHoaDon, BorderLayout.WEST);
 
 		JLabel lblHoaDonKQ = new JLabel("");
-		lblHoaDonKQ.setText(maHoaDon);
-		lblHoaDonKQ.setBounds(-1, 0, 299, 28);
+		lblHoaDonKQ.setText(maHoaDon + " ");
+		lblHoaDonKQ.setBounds(0, 0, 299, 28);
 		lblHoaDonKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblHoaDonKQ.setForeground(new Color(100, 100, 100));
 		pnlHoaDon.add(lblHoaDonKQ, BorderLayout.EAST);
@@ -139,8 +153,8 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		pnlNgayLap.add(lblNgayLap, BorderLayout.WEST);
 
 		JLabel lblNgayLapKQ = new JLabel("");
-		lblNgayLapKQ.setText(ngayLap);
-		lblNgayLapKQ.setBounds(-1, 0, 299, 28);
+		lblNgayLapKQ.setText(ngayLap + " ");
+		lblNgayLapKQ.setBounds(0, 0, 299, 28);
 		lblNgayLapKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblNgayLapKQ.setForeground(new Color(100, 100, 100));
 		pnlNgayLap.add(lblNgayLapKQ, BorderLayout.EAST);
@@ -158,7 +172,7 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 
 		JLabel lblKHKQ = new JLabel("");
 		lblKHKQ.setText(tenKhach);
-		lblKHKQ.setBounds(-1, 0, 299, 28);
+		lblKHKQ.setBounds(0, 0, 299, 28);
 		lblKHKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblKHKQ.setForeground(new Color(100, 100, 100));
 		pnlTenKH.add(lblKHKQ, BorderLayout.EAST);
@@ -176,14 +190,14 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 
 		JLabel lblNVKQ = new JLabel("");
 		lblNVKQ.setText(tenNV);
-		lblNVKQ.setBounds(-1, 0, 299, 28);
+		lblNVKQ.setBounds(0, 0, 299, 28);
 		lblNVKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblNVKQ.setForeground(new Color(100, 100, 100));
 		pnlTenNV.add(lblNVKQ, BorderLayout.EAST);
 
 		PanelRound pnlTienPhong = new PanelRound();
 		pnlTienPhong.setBackground(Color.WHITE);
-		pnlTienPhong.setBounds(0, 100, 465, 85);
+		pnlTienPhong.setBounds(0, 100, 465, 180);
 		pnlTienPhong.setRoundBottomRight(10);
 		pnlTienPhong.setRoundTopLeft(10);
 		pnlTienPhong.setRoundTopRight(10);
@@ -203,8 +217,9 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		lblTongTienPhong.setForeground(new Color(100, 100, 100));
 		pnlTongTienPhong.add(lblTongTienPhong, BorderLayout.WEST);
 
-		JLabel lblTongTienPhongKQ = new JLabel("333330000 VND");
-		lblTongTienPhongKQ.setBounds(-1, 0, 299, 28);
+		JLabel lblTongTienPhongKQ = new JLabel("");
+		lblTongTienPhongKQ.setText(Utils.formatTienTe(Double.parseDouble(tongTienPhong)));
+		lblTongTienPhongKQ.setBounds(0, 0, 299, 28);
 		lblTongTienPhongKQ.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		lblTongTienPhongKQ.setForeground(new Color(100, 100, 100));
 		pnlTongTienPhong.add(lblTongTienPhongKQ, BorderLayout.EAST);
@@ -215,90 +230,91 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		line.setBackground(new Color(100, 100, 100));
 		pnlTienPhong.add(line);
 
-		// Giờ bắt đầu
-		JPanel pnlGioBD = new JPanel();
-		pnlGioBD.setBounds(10, 35, 445 / 2 - 10, 28);
-		pnlGioBD.setBackground(Color.WHITE);
-		pnlGioBD.setLayout(new BorderLayout());
-		pnlTienPhong.add(pnlGioBD);
+		JScrollPane scr = new JScrollPane();
+		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scr.setBounds(10, 40, 445, 130);
+		scr.setBackground(Utils.primaryColor);
+		ScrollBarCustom scp = new ScrollBarCustom();
+		scp.setScrollbarColor(new Color(203, 203, 203));
+		scr.setVerticalScrollBar(scp);
+		pnlTienPhong.add(scr);
 
-		JLabel lblGioBD = new JLabel("Giờ bắt đầu: ");
-		lblGioBD.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		lblGioBD.setForeground(new Color(100, 100, 100));
-		pnlGioBD.add(lblGioBD, BorderLayout.WEST);
+		tblTienPhong = new JTable() {
+			private static final long serialVersionUID = 1L;
 
-		JLabel lblGioBDKQ = new JLabel("22:02:19 22/08/2022");
-		lblGioBDKQ.setBounds(-1, 0, 299, 28);
-		lblGioBDKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		lblGioBDKQ.setForeground(new Color(100, 100, 100));
-		pnlGioBD.add(lblGioBDKQ, BorderLayout.EAST);
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
 
-		JPanel pnlGioKT = new JPanel();
-		pnlGioKT.setBounds(230, 35, 445 / 2, 28);
-		pnlGioKT.setBackground(Color.WHITE);
-		pnlGioKT.setLayout(new BorderLayout());
-		pnlTienPhong.add(pnlGioKT);
+			@Override
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+				Component c = super.prepareRenderer(renderer, row, column);
+				if (row % 2 == 0)
+					c.setBackground(Color.WHITE);
+				else
+					c.setBackground(new Color(232, 232, 232));
+				return c;
+			}
+		};
 
-		JLabel lblGioKT = new JLabel("Giờ kết thúc: ");
-		lblGioKT.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		lblGioKT.setForeground(new Color(100, 100, 100));
-		pnlGioKT.add(lblGioKT, BorderLayout.WEST);
+		tableModel = new DefaultTableModel(
+				new String[] { "Mã phòng", "Loại phòng", "Thời gian thuê", "Giá phòng", "Tổng tiền" }, 0);
+		tblTienPhong.setModel(tableModel);
+		tblTienPhong.getColumnModel().getColumn(0).setPreferredWidth(445 / 5 - 20);
+		tblTienPhong.getColumnModel().getColumn(1).setPreferredWidth(445 / 5 + 20);
+		tblTienPhong.getColumnModel().getColumn(2).setPreferredWidth(445 / 5 - 10);
+		tblTienPhong.getColumnModel().getColumn(3).setPreferredWidth(445 / 5);
+		tblTienPhong.getColumnModel().getColumn(4).setPreferredWidth(445 / 5);
 
-		JLabel lblGioKTKQ = new JLabel("22:02:19 22/08/2022");
-		lblGioKTKQ.setBounds(-1, 0, 299, 28);
-		lblGioKTKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		lblGioKTKQ.setForeground(new Color(100, 100, 100));
-		pnlGioKT.add(lblGioKTKQ, BorderLayout.EAST);
+		tblTienPhong.getTableHeader().setBackground(Utils.primaryColor);
+		tblTienPhong.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		tblTienPhong.getTableHeader().setForeground(Color.WHITE);
+		tblTienPhong.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblTienPhong.getTableHeader()
+				.setPreferredSize(new Dimension((int) tblTienPhong.getTableHeader().getPreferredSize().getWidth(), 25));
+		tblTienPhong.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+		tblTienPhong.setRowHeight(25);
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		tblTienPhong.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+		tblTienPhong.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+		scr.setViewportView(tblTienPhong);
 
-		JPanel pnlThoiGian = new JPanel();
-		pnlThoiGian.setBounds(10, 55, 445 / 2 - 10, 28);
-		pnlThoiGian.setBackground(Color.WHITE);
-		pnlThoiGian.setLayout(new BorderLayout());
-		pnlTienPhong.add(pnlThoiGian);
-
-		JLabel lblThoiGian = new JLabel("Thời gian sử dụng: ");
-		lblThoiGian.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		lblThoiGian.setForeground(new Color(100, 100, 100));
-		pnlThoiGian.add(lblThoiGian, BorderLayout.WEST);
-
-		JLabel lblThoiGianKQ = new JLabel("2 giờ 7 phút");
-		lblThoiGianKQ.setBounds(-1, 0, 299, 28);
-		lblThoiGianKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		lblThoiGianKQ.setForeground(new Color(100, 100, 100));
-		pnlThoiGian.add(lblThoiGianKQ, BorderLayout.EAST);
-
-		JPanel pnlGiaGio = new JPanel();
-		pnlGiaGio.setBounds(230, 55, 445 / 2, 28);
-		pnlGiaGio.setBackground(Color.WHITE);
-		pnlGiaGio.setLayout(new BorderLayout());
-		pnlTienPhong.add(pnlGiaGio);
-
-		JLabel lblGiaGio = new JLabel("Giá giờ: ");
-		lblGiaGio.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		lblGiaGio.setForeground(new Color(100, 100, 100));
-		pnlGiaGio.add(lblGiaGio, BorderLayout.WEST);
-
-		JLabel lblGiaGioKQ = new JLabel("60.000 VND/giờ");
-		lblGiaGioKQ.setBounds(-1, 0, 299, 28);
-		lblGiaGioKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		lblGiaGioKQ.setForeground(new Color(100, 100, 100));
-		pnlGiaGio.add(lblGiaGioKQ, BorderLayout.EAST);
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
+		tblTienPhong.getColumnModel().getColumn(2).setCellRenderer(dtcr);
+		tblTienPhong.getColumnModel().getColumn(3).setCellRenderer(dtcr);
+		tblTienPhong.getColumnModel().getColumn(4).setCellRenderer(dtcr);
 
 		PanelRound pnlTienDV = new PanelRound();
 		pnlTienDV.setBackground(Color.WHITE);
-		pnlTienDV.setBounds(0, 205, 465, 250);
+		pnlTienDV.setBounds(0, 280, 465, 220);
 		pnlTienDV.setRoundBottomRight(10);
 		pnlTienDV.setRoundTopLeft(10);
 		pnlTienDV.setRoundTopRight(10);
 		pnlTienDV.setRoundBottomLeft(10);
-		pnlContent.add(pnlTienDV);
 		pnlTienDV.setLayout(null);
+		pnlContent.add(pnlTienDV);
 
-		JLabel lblTongTienDV = new JLabel("Tổng tiền dịch vụ: 244000 VND");
-		lblTongTienDV.setBounds(10, 0, 400, 28);
+		JPanel pnlTongTienDV = new JPanel();
+		pnlTongTienDV.setBounds(10, 0, 445, 28);
+		pnlTongTienDV.setBackground(Color.WHITE);
+		pnlTongTienDV.setLayout(new BorderLayout());
+		pnlTienDV.add(pnlTongTienDV);
+
+		JLabel lblTongTienDV = new JLabel("Tổng tiền dịch vụ: ");
 		lblTongTienDV.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		lblTongTienDV.setForeground(new Color(100, 100, 100));
-		pnlTienDV.add(lblTongTienDV);
+		pnlTongTienDV.add(lblTongTienDV, BorderLayout.WEST);
+
+		JLabel lblTongTienDVKQ = new JLabel("");
+		lblTongTienDVKQ.setText(Utils.formatTienTe(Double.parseDouble(tongTienDV)));
+		lblTongTienDVKQ.setBounds(0, 0, 299, 28);
+		lblTongTienDVKQ.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		lblTongTienDVKQ.setForeground(new Color(100, 100, 100));
+		pnlTongTienDV.add(lblTongTienDVKQ, BorderLayout.EAST);
 
 		JPanel line2 = new JPanel();
 		line2.setBounds(10, 30, 445, 1);
@@ -306,15 +322,15 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		line2.setBackground(new Color(100, 100, 100));
 		pnlTienDV.add(line2);
 
-		JScrollPane scr = new JScrollPane();
-		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(10, 40, 445, 180);
-		scr.setBackground(Utils.primaryColor);
-		ScrollBarCustom scp = new ScrollBarCustom();
-		scp.setScrollbarColor(new Color(203, 203, 203));
-		scr.setVerticalScrollBar(scp);
-		pnlTienDV.add(scr);
+		JScrollPane scr1 = new JScrollPane();
+		scr1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scr1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scr1.setBounds(10, 40, 445, 130);
+		scr1.setBackground(Utils.primaryColor);
+		ScrollBarCustom scp1 = new ScrollBarCustom();
+		scp1.setScrollbarColor(new Color(203, 203, 203));
+		scr1.setVerticalScrollBar(scp1);
+		pnlTienDV.add(scr1);
 
 		tblTienDV = new JTable() {
 			private static final long serialVersionUID = 1L;
@@ -335,10 +351,10 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 			}
 		};
 
-		tableModel = new DefaultTableModel(new String[] { "Tên", "Số lượng", "Giá", "Tổng tiền" }, 0);
-		tblTienDV.setModel(tableModel);
-		tblTienDV.getColumnModel().getColumn(0).setPreferredWidth(445 / 4);
-		tblTienDV.getColumnModel().getColumn(1).setPreferredWidth(445 / 4 - 10);
+		tableModel1 = new DefaultTableModel(new String[] { "Tên", "Số lượng", "Giá", "Tổng tiền" }, 0);
+		tblTienDV.setModel(tableModel1);
+		tblTienDV.getColumnModel().getColumn(0).setPreferredWidth(445 / 4 + 30);
+		tblTienDV.getColumnModel().getColumn(1).setPreferredWidth(445 / 4 - 40);
 		tblTienDV.getColumnModel().getColumn(2).setPreferredWidth(445 / 4);
 		tblTienDV.getColumnModel().getColumn(3).setPreferredWidth(445 / 4);
 
@@ -350,15 +366,35 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 				.setPreferredSize(new Dimension((int) tblTienDV.getTableHeader().getPreferredSize().getWidth(), 25));
 		tblTienDV.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
 		tblTienDV.setRowHeight(25);
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-		tblTienDV.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-		tblTienDV.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
-		scr.setViewportView(tblTienDV);
-		addRowRandomData();
+		scr1.setViewportView(tblTienDV);
+
+		DefaultTableCellRenderer dtcr1 = new DefaultTableCellRenderer();
+		dtcr1.setHorizontalAlignment(SwingConstants.RIGHT);
+		tblTienDV.getColumnModel().getColumn(1).setCellRenderer(dtcr1);
+		tblTienDV.getColumnModel().getColumn(2).setCellRenderer(dtcr1);
+		tblTienDV.getColumnModel().getColumn(3).setCellRenderer(dtcr1);
+		addRowRandomData(dsChiTietDatPhong, dsChiTietDichVu);
+
+		JPanel pnlTongTien = new JPanel();
+		pnlTongTien.setBounds(10, 180, 445, 28);
+		pnlTongTien.setBackground(Color.WHITE);
+		pnlTongTien.setLayout(new BorderLayout());
+		pnlTienDV.add(pnlTongTien);
+
+		JLabel lblTongTien = new JLabel("Tổng tiền: ");
+		lblTongTien.setFont(new Font("Segoe UI", Font.BOLD, 15));
+		lblTongTien.setForeground(new Color(100, 100, 100));
+		pnlTongTien.add(lblTongTien, BorderLayout.WEST);
+
+		JLabel lblTongTienKQ = new JLabel("");
+		lblTongTienKQ.setText(Utils.formatTienTe(Double.parseDouble(tongTienDV) + Double.parseDouble(tongTienPhong)));
+		lblTongTienKQ.setBounds(0, 0, 299, 28);
+		lblTongTienKQ.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		lblTongTienKQ.setForeground(new Color(100, 100, 100));
+		pnlTongTien.add(lblTongTienKQ, BorderLayout.EAST);
 
 		PanelRound pnlFooter = new PanelRound();
-		pnlFooter.setBounds(10, Utils.getBodyHeight() - 100, 465, 50);
+		pnlFooter.setBounds(10, Utils.getBodyHeight() - 60, 465, 50);
 		pnlFooter.setBackground(new Color(242, 246, 252));
 		this.add(pnlFooter);
 		pnlFooter.setLayout(null);
@@ -370,7 +406,7 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		btnInHD.setBorderColor(Utils.primaryColor);
 		btnInHD.setRadius(10);
 		btnInHD.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		btnInHD.setBounds(465 - 160, 5, 160, 44);
+		btnInHD.setBounds(465 - 160, 0, 160, 44);
 		btnInHD.setColorOver(Utils.primaryColor);
 		btnInHD.setColorTextOver(Color.WHITE);
 		btnInHD.setColorTextOut(Color.WHITE);
@@ -387,13 +423,16 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 					String path = "HoaDon" + maHoaDon + ".pdf";
 					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
 					document.open();
-					PdfContentByte contentByte = writer.getDirectContent();
-					PdfTemplate template = contentByte.createTemplate(500, 500);
+
+					PdfContentByte cb = writer.getDirectContent();
+					PdfTemplate tp = cb.createTemplate(485, Utils.getBodyHeight());
 					@SuppressWarnings("deprecation")
-					Graphics2D g2 = template.createGraphics(500, 500);
-					pnlContent.print(g2);
+					Graphics2D g2 = tp.createGraphicsShapes(485, Utils.getBodyHeight());
+					java.awt.Font font = new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14);
+					g2.setFont(font);
+					pnlContainer.print(g2);
 					g2.dispose();
-					contentByte.addTemplate(template, 30, 300);
+					cb.addTemplate(tp, 50, 100);
 
 					File pdfFile = new File(path);
 					if (Desktop.isDesktopSupported()) {
@@ -412,16 +451,37 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 
 	}
 
-	private void addRowRandomData() {
-		for (int i = 0; i < 4; i++) {
-			String tenHH[] = { "7 Up", "Trái cây size L", "Snack tôm", "Pepsi" };
-			String ten = tenHH[i];
-			int soLuong = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-			int giaHH[] = { 16000, 25000, 5000, 16000 };
-			int gia = giaHH[i];
-			long tongTien = soLuong * gia;
-			tableModel.addRow(new String[] { ten, soLuong + "", gia + " VND", tongTien + " VND" });
+	private void addRowRandomData(List<ChiTietDatPhong> dsChiTietDatPhong, List<ChiTietDichVu> dsChiTietDichVu) {
+
+		DichVu dichVu;
+		for (ChiTietDichVu chiTietDichVu : dsChiTietDichVu) {
+			dichVu = dichVu_DAO.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu());
+			String ten = dichVu.getTenDichVu();
+			int soLuong = chiTietDichVu.getSoLuong();
+			double gia = dichVu.getGiaBan();
+			double thanhTien = soLuong * gia;
+			tableModel1
+					.addRow(new String[] { ten, soLuong + "", Utils.formatTienTe(gia), Utils.formatTienTe(thanhTien) });
+
 		}
+		Phong phong;
+		int hours, minutes, hieu = 0;
+		LocalTime timeNow = LocalTime.now();
+		double tienPhong = 0;
+		for (ChiTietDatPhong chiTietDatPhong : dsChiTietDatPhong) {
+			String maPhong = chiTietDatPhong.getPhong().getMaPhong();
+			phong = phong_DAO.getPhong(maPhong);
+			String loaiPhong = phong.getLoaiPhong().getTenLoai();
+			LocalTime gioRa = chiTietDatPhong.getGioRa() == null ? timeNow : chiTietDatPhong.getGioRa();
+			LocalTime gioVao = chiTietDatPhong.getGioVao();
+			hours = gioRa.getHour() - gioVao.getHour();
+			minutes = gioRa.getMinute() - gioVao.getMinute();
+			hieu = hours * 60 + minutes;
+			tienPhong = hieu * phong.getGiaTien() * 1.0 / 60;
+			tableModel.addRow(new String[] { maPhong, loaiPhong, hieu + " phút", Utils.formatTienTe(phong.getGiaTien()),
+					Utils.formatTienTe(tienPhong) });
+		}
+
 	}
 
 	@Override
