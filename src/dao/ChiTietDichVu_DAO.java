@@ -14,6 +14,7 @@ import entity.ChiTietDatPhong;
 import entity.ChiTietDichVu;
 import entity.DichVu;
 import entity.DonDatPhong;
+import entity.KhachHang;
 import entity.LoaiDichVu;
 import entity.Phong;
 
@@ -127,35 +128,13 @@ public class ChiTietDichVu_DAO extends DAO {
 		return list;
 	}
 
-	public List<ChiTietDichVu> getAllChiTietDichVuTheoMaDatPhong(String maDP, String maPhong) {
-		List<ChiTietDichVu> list = new ArrayList<>();
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM ChiTietDichVu INNER JOIN DonDatPhong ON "
-							+ "ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
-							+ "WHERE  maDonDatPhong = ? and phong = ?");
-
-			preparedStatement.setString(1, maDP);
-			preparedStatement.setString(2, maPhong);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getChiTietDichVu(resultSet));
-			resultSet.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-
 	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year, String maNhanVien) {
 		return getChiTietDichVu(day, month, year, maNhanVien, "");
 	}
 
 	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year, String maNhanVien, String maKhachHang) {
 		List<ChiTietDichVu> list = new ArrayList<>();
-		String sql = "SELECT CTDV.*, DV.*, ngayNhanPhong FROM [dbo].[DonDatPhong] DDP "
+		String sql = "SELECT CTDV.*, DV.*, ngayNhanPhong, DDP.khachHang FROM [dbo].[DonDatPhong] DDP "
 				+ "JOIN [dbo].[ChiTietDichVu] CTDV ON DDP.maDonDatPhong = CTDV.donDatPhong "
 				+ "JOIN [dbo].[DichVu] DV ON DV.maDichVu = CTDV.dichVu "
 				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ? AND [khachHang] LIKE ?";
@@ -182,6 +161,7 @@ public class ChiTietDichVu_DAO extends DAO {
 			int soLuong;
 			double giaMua;
 			LocalDate ngayNhanPhong;
+			DonDatPhong donDatPhong;
 			while (resultSet.next()) {
 				chiTietDichVu = getChiTietDichVu(resultSet);
 
@@ -194,8 +174,11 @@ public class ChiTietDichVu_DAO extends DAO {
 				dichVu = new DichVu(maDichVu, tenDichVu, soLuong, donViTinh, new LoaiDichVu(loaiDichVu), giaMua, false);
 				chiTietDichVu.setDichVu(dichVu);
 
+				donDatPhong = chiTietDichVu.getChiTietDatPhong().getDonDatPhong();
 				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
-				chiTietDichVu.getChiTietDatPhong().getDonDatPhong().setNgayNhanPhong(ngayNhanPhong);
+				donDatPhong.setNgayNhanPhong(ngayNhanPhong);
+
+				donDatPhong.setKhachHang(new KhachHang(resultSet.getString("khachHang")));
 
 				list.add(chiTietDichVu);
 			}
@@ -247,25 +230,6 @@ public class ChiTietDichVu_DAO extends DAO {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setString(1, datPhong);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next())
-				list.add(getChiTietDichVu(resultSet));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	public List<ChiTietDichVu> getDichVuTheoPhieuDatPhongVaPhong(String datPhong, String maPhong) {
-		List<ChiTietDichVu> list = new ArrayList<>();
-		String sql = "SELECT * FROM ChiTietDichVu WHERE donDatPhong = ? and phong = ? ";
-
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-			preparedStatement.setString(1, datPhong);
-			preparedStatement.setString(2, maPhong);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next())

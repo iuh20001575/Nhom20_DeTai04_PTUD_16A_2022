@@ -3,7 +3,6 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class PhieuDatPhongTruoc_DAO {
 	 * @param trangThai
 	 * @return
 	 */
-	public List<DonDatPhong> filterDonDatPhong(String  ngayNhanPhong, String soDienThoai, String trangThai) {
+	public List<DonDatPhong> filterDonDatPhong(String ngayNhanPhong, String soDienThoai, String trangThai) {
 		List<DonDatPhong> list = new ArrayList<>();
 
 		try {
@@ -38,7 +37,7 @@ public class PhieuDatPhongTruoc_DAO {
 							+ "WHERE trangThai like N'Đang thuê' or trangThai like N'Đã trả' "
 							+ "ORDER BY trangThai DESC, ngayNhanPhong DESC, gioNhanPhong ASC");
 
-			preparedStatement.setString(1, "%" + ngayNhanPhong + "%" );
+			preparedStatement.setString(1, "%" + ngayNhanPhong + "%");
 			preparedStatement.setString(2, "%" + trangThai + "%");
 			preparedStatement.setString(3, soDienThoai);
 
@@ -69,7 +68,7 @@ public class PhieuDatPhongTruoc_DAO {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
 					"SELECT DISTINCT * FROM DonDatPhong where trangThai like N'Đang chờ' or trangThai like N'Đã hủy' "
-					+ "ORDER BY trangThai DESC, ngayNhanPhong DESC, gioNhanPhong ASC ");
+							+ "ORDER BY trangThai DESC, ngayNhanPhong DESC, gioNhanPhong ASC ");
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 			DonDatPhong donDatPhong;

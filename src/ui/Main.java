@@ -333,7 +333,7 @@ public class Main extends JFrame {
 					break;
 				case Utils.thongKeKhachHangMenuItem:
 					title = "Thống kê khách hàng";
-					pnl = new ThongKeKhachHang_GUI();
+					pnl = new ThongKeKhachHang_GUI(_this);
 					break;
 				case Utils.thongTinCaNhanMenuItem:
 					title = "Thông tin cá nhân";

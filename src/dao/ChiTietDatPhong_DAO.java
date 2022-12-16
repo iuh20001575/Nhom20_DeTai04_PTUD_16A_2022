@@ -69,9 +69,7 @@ public class ChiTietDatPhong_DAO extends DAO {
 	public List<ChiTietDatPhong> getChiTietDatPhong(int day, int month, int year, String maNhanVien) {
 		return getChiTietDatPhong(day, month, year, maNhanVien, "");
 	}
-	
-	
-	
+
 	/**
 	 * Get chi tiết đặt phòng theo ngày, tháng năm, nhân viên và khách hàng
 	 * 
@@ -81,7 +79,8 @@ public class ChiTietDatPhong_DAO extends DAO {
 	 * @param maNhanVien
 	 * @return
 	 */
-	public List<ChiTietDatPhong> getChiTietDatPhong(int day, int month, int year, String maNhanVien, String maKhachHang) {
+	public List<ChiTietDatPhong> getChiTietDatPhong(int day, int month, int year, String maNhanVien,
+			String maKhachHang) {
 		List<ChiTietDatPhong> list = new ArrayList<>();
 		String sql = "SELECT CTDP.*, P.*, ngayNhanPhong, [maKhachHang], KH.[hoTen] AS HOTENKHACHHANG, "
 				+ "[maNhanVien], NV.[hoTen] AS HOTENNHANVIEN FROM [dbo].[DonDatPhong] DDP "
@@ -206,73 +205,6 @@ public class ChiTietDatPhong_DAO extends DAO {
 
 			if (resultSet.next())
 				chiTietDatPhong = getChiTietDatPhong(resultSet);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close(preparedStatement, resultSet);
-		}
-
-		return chiTietDatPhong;
-	}
-
-	/**
-	 * Get chi tiết đặt phòng của phòng đang thuê theo mã phong
-	 * 
-	 * @param phong
-	 * @return
-	 */
-	public ChiTietDatPhong getChiTietDatPhongTheoMaPhong(String phong) {
-		ChiTietDatPhong chiTietDatPhong = null;
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-
-		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT donDatPhong, phong, gioVao FROM ChiTietDatPhong WHERE phong = ? and gioRa is null");
-			preparedStatement.setString(1, phong);
-
-			resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next()) {
-				String datPhong = resultSet.getString(1);
-				String maPhong = resultSet.getString(2);
-				LocalTime gioVao = resultSet.getTime(3).toLocalTime();
-				chiTietDatPhong = new ChiTietDatPhong(new DonDatPhong(datPhong), new Phong(maPhong), gioVao);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close(preparedStatement, resultSet);
-		}
-
-		return chiTietDatPhong;
-	}
-
-	/**
-	 * Get chi tiết đặt phòng của phòng đang thuê theo mã phong
-	 * 
-	 * @param phong
-	 * @return
-	 */
-	public ChiTietDatPhong getChiTietDatPhongTheoMaPhongvaMaDonDatPhong(String phong, String donDatPhong) {
-		ChiTietDatPhong chiTietDatPhong = null;
-		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
-
-		try {
-			preparedStatement = ConnectDB.getConnection().prepareStatement(
-					"SELECT donDatPhong, phong, gioVao FROM ChiTietDatPhong WHERE phong = ? and donDatPhong = ? and gioRa is null");
-			preparedStatement.setString(1, phong);
-			preparedStatement.setString(2, donDatPhong);
-
-			resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next()) {
-				String datPhong = resultSet.getString(1);
-				String maPhong = resultSet.getString(2);
-				LocalTime gioVao = resultSet.getTime(3).toLocalTime();
-				chiTietDatPhong = new ChiTietDatPhong(new DonDatPhong(datPhong), new Phong(maPhong), gioVao);
-			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -450,6 +382,5 @@ public class ChiTietDatPhong_DAO extends DAO {
 
 		return res;
 	}
-	
 
 }
