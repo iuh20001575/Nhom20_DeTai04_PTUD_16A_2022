@@ -13,7 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,24 +34,40 @@ import com.itextpdf.text.pdf.PdfWriter;
 import components.button.Button;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
+import dao.ChiTietDichVu_DAO;
+import dao.DichVu_DAO;
+import entity.ChiTietDichVu;
+import entity.DichVu;
 import utils.Utils;
 
 public class HoaDon_GUI extends JFrame implements ItemListener {
 	private static final long serialVersionUID = 1L;
+	private ChiTietDichVu_DAO chiTietDichVu_DAO;
+	private DichVu_DAO dichVu_DAO;
 	private PanelRound pnlContent;
 	private DefaultTableModel tableModel;
 	private JTable tblTienDV;
 
-	public HoaDon_GUI(String maHoaDon, String ngayLap, String tenKhach, String tenNV) {
+	public HoaDon_GUI(String maHoaDon, String ngayLap, String tenKhach, String tenNV, String gioVaoPhong,
+			String gioRaPhong, String thoiGianSuDung, String tongTienPhong, String tongTienDV,
+			List<ChiTietDichVu> dsChiTietDichVu) {
 		setTitle("Hoá đơn tính tiền");
 		this.getContentPane().setBackground(new Color(242, 246, 252));
 		setBounds((Utils.getScreenWidth() - 500) / 2, 0, 500, Utils.getBodyHeight());
 		setLayout(null);
+		chiTietDichVu_DAO = new ChiTietDichVu_DAO();
+		dichVu_DAO = new DichVu_DAO();
+
+		PanelRound pnlContainer = new PanelRound();
+		pnlContainer.setBackground(new Color(242, 246, 252));
+		pnlContainer.setBounds(0, 0, 500, Utils.getBodyHeight() - 100);
+		this.add(pnlContainer);
+		pnlContainer.setLayout(null);
 
 		PanelRound pnlHeader = new PanelRound();
 		pnlHeader.setBackground(Color.WHITE);
 		pnlHeader.setBounds(0, 0, 485, 70);
-		this.add(pnlHeader);
+		pnlContainer.add(pnlHeader);
 		pnlHeader.setLayout(null);
 
 		JLabel lblTenQuanBold = new JLabel("Tên quán:");
@@ -93,7 +109,7 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		pnlContent = new PanelRound();
 		pnlContent.setBackground(new Color(242, 246, 252));
 		pnlContent.setBounds(10, 80, 465, 450);
-		this.add(pnlContent);
+		pnlContainer.add(pnlContent);
 		pnlContent.setLayout(null);
 
 		JLabel lblTieuDe = new JLabel("HOÁ ĐƠN TÍNH TIỀN");
@@ -122,7 +138,7 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 
 		JLabel lblHoaDonKQ = new JLabel("");
 		lblHoaDonKQ.setText(maHoaDon);
-		lblHoaDonKQ.setBounds(-1, 0, 299, 28);
+		lblHoaDonKQ.setBounds(0, 0, 299, 28);
 		lblHoaDonKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblHoaDonKQ.setForeground(new Color(100, 100, 100));
 		pnlHoaDon.add(lblHoaDonKQ, BorderLayout.EAST);
@@ -140,7 +156,7 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 
 		JLabel lblNgayLapKQ = new JLabel("");
 		lblNgayLapKQ.setText(ngayLap);
-		lblNgayLapKQ.setBounds(-1, 0, 299, 28);
+		lblNgayLapKQ.setBounds(0, 0, 299, 28);
 		lblNgayLapKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblNgayLapKQ.setForeground(new Color(100, 100, 100));
 		pnlNgayLap.add(lblNgayLapKQ, BorderLayout.EAST);
@@ -158,7 +174,7 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 
 		JLabel lblKHKQ = new JLabel("");
 		lblKHKQ.setText(tenKhach);
-		lblKHKQ.setBounds(-1, 0, 299, 28);
+		lblKHKQ.setBounds(0, 0, 299, 28);
 		lblKHKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblKHKQ.setForeground(new Color(100, 100, 100));
 		pnlTenKH.add(lblKHKQ, BorderLayout.EAST);
@@ -176,7 +192,7 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 
 		JLabel lblNVKQ = new JLabel("");
 		lblNVKQ.setText(tenNV);
-		lblNVKQ.setBounds(-1, 0, 299, 28);
+		lblNVKQ.setBounds(0, 0, 299, 28);
 		lblNVKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblNVKQ.setForeground(new Color(100, 100, 100));
 		pnlTenNV.add(lblNVKQ, BorderLayout.EAST);
@@ -203,8 +219,9 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		lblTongTienPhong.setForeground(new Color(100, 100, 100));
 		pnlTongTienPhong.add(lblTongTienPhong, BorderLayout.WEST);
 
-		JLabel lblTongTienPhongKQ = new JLabel("333330000 VND");
-		lblTongTienPhongKQ.setBounds(-1, 0, 299, 28);
+		JLabel lblTongTienPhongKQ = new JLabel("");
+		lblTongTienPhongKQ.setText(tongTienPhong);
+		lblTongTienPhongKQ.setBounds(0, 0, 299, 28);
 		lblTongTienPhongKQ.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		lblTongTienPhongKQ.setForeground(new Color(100, 100, 100));
 		pnlTongTienPhong.add(lblTongTienPhongKQ, BorderLayout.EAST);
@@ -227,8 +244,9 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		lblGioBD.setForeground(new Color(100, 100, 100));
 		pnlGioBD.add(lblGioBD, BorderLayout.WEST);
 
-		JLabel lblGioBDKQ = new JLabel("22:02:19 22/08/2022");
-		lblGioBDKQ.setBounds(-1, 0, 299, 28);
+		JLabel lblGioBDKQ = new JLabel("");
+		lblGioBDKQ.setText(gioVaoPhong);
+		lblGioBDKQ.setBounds(0, 0, 299, 28);
 		lblGioBDKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblGioBDKQ.setForeground(new Color(100, 100, 100));
 		pnlGioBD.add(lblGioBDKQ, BorderLayout.EAST);
@@ -244,8 +262,9 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		lblGioKT.setForeground(new Color(100, 100, 100));
 		pnlGioKT.add(lblGioKT, BorderLayout.WEST);
 
-		JLabel lblGioKTKQ = new JLabel("22:02:19 22/08/2022");
-		lblGioKTKQ.setBounds(-1, 0, 299, 28);
+		JLabel lblGioKTKQ = new JLabel("");
+		lblGioKTKQ.setText(gioRaPhong);
+		lblGioKTKQ.setBounds(0, 0, 299, 28);
 		lblGioKTKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblGioKTKQ.setForeground(new Color(100, 100, 100));
 		pnlGioKT.add(lblGioKTKQ, BorderLayout.EAST);
@@ -262,7 +281,8 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		pnlThoiGian.add(lblThoiGian, BorderLayout.WEST);
 
 		JLabel lblThoiGianKQ = new JLabel("2 giờ 7 phút");
-		lblThoiGianKQ.setBounds(-1, 0, 299, 28);
+		lblThoiGianKQ.setText(thoiGianSuDung);
+		lblThoiGianKQ.setBounds(0, 0, 299, 28);
 		lblThoiGianKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblThoiGianKQ.setForeground(new Color(100, 100, 100));
 		pnlThoiGian.add(lblThoiGianKQ, BorderLayout.EAST);
@@ -278,8 +298,8 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		lblGiaGio.setForeground(new Color(100, 100, 100));
 		pnlGiaGio.add(lblGiaGio, BorderLayout.WEST);
 
-		JLabel lblGiaGioKQ = new JLabel("60.000 VND/giờ");
-		lblGiaGioKQ.setBounds(-1, 0, 299, 28);
+		JLabel lblGiaGioKQ = new JLabel("400.000 VND/giờ");
+		lblGiaGioKQ.setBounds(0, 0, 299, 28);
 		lblGiaGioKQ.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		lblGiaGioKQ.setForeground(new Color(100, 100, 100));
 		pnlGiaGio.add(lblGiaGioKQ, BorderLayout.EAST);
@@ -291,14 +311,26 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		pnlTienDV.setRoundTopLeft(10);
 		pnlTienDV.setRoundTopRight(10);
 		pnlTienDV.setRoundBottomLeft(10);
-		pnlContent.add(pnlTienDV);
 		pnlTienDV.setLayout(null);
+		pnlContent.add(pnlTienDV);
 
-		JLabel lblTongTienDV = new JLabel("Tổng tiền dịch vụ: 244000 VND");
-		lblTongTienDV.setBounds(10, 0, 400, 28);
+		JPanel pnlTongTienDV = new JPanel();
+		pnlTongTienDV.setBounds(10, 0, 445, 28);
+		pnlTongTienDV.setBackground(Color.WHITE);
+		pnlTongTienDV.setLayout(new BorderLayout());
+		pnlTienDV.add(pnlTongTienDV);
+
+		JLabel lblTongTienDV = new JLabel("Tổng tiền dịch vụ: ");
 		lblTongTienDV.setFont(new Font("Segoe UI", Font.BOLD, 15));
 		lblTongTienDV.setForeground(new Color(100, 100, 100));
-		pnlTienDV.add(lblTongTienDV);
+		pnlTongTienDV.add(lblTongTienDV, BorderLayout.WEST);
+
+		JLabel lblTongTienDVKQ = new JLabel("");
+		lblTongTienDVKQ.setText(tongTienDV);
+		lblTongTienDVKQ.setBounds(0, 0, 299, 28);
+		lblTongTienDVKQ.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		lblTongTienDVKQ.setForeground(new Color(100, 100, 100));
+		pnlTongTienDV.add(lblTongTienDVKQ, BorderLayout.EAST);
 
 		JPanel line2 = new JPanel();
 		line2.setBounds(10, 30, 445, 1);
@@ -355,7 +387,7 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		tblTienDV.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
 		tblTienDV.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 		scr.setViewportView(tblTienDV);
-		addRowRandomData();
+		addRowRandomData(dsChiTietDichVu);
 
 		PanelRound pnlFooter = new PanelRound();
 		pnlFooter.setBounds(10, Utils.getBodyHeight() - 100, 465, 50);
@@ -387,13 +419,16 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 					String path = "HoaDon" + maHoaDon + ".pdf";
 					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
 					document.open();
-					PdfContentByte contentByte = writer.getDirectContent();
-					PdfTemplate template = contentByte.createTemplate(500, 500);
+
+					PdfContentByte cb = writer.getDirectContent();
+					PdfTemplate tp = cb.createTemplate(485, Utils.getBodyHeight());
 					@SuppressWarnings("deprecation")
-					Graphics2D g2 = template.createGraphics(500, 500);
-					pnlContent.print(g2);
+					Graphics2D g2 = tp.createGraphicsShapes(485, Utils.getBodyHeight());
+					java.awt.Font font = new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14);
+					g2.setFont(font);
+					pnlContainer.print(g2);
 					g2.dispose();
-					contentByte.addTemplate(template, 30, 300);
+					cb.addTemplate(tp, 50, 100);
 
 					File pdfFile = new File(path);
 					if (Desktop.isDesktopSupported()) {
@@ -412,15 +447,22 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 
 	}
 
-	private void addRowRandomData() {
-		for (int i = 0; i < 4; i++) {
-			String tenHH[] = { "7 Up", "Trái cây size L", "Snack tôm", "Pepsi" };
-			String ten = tenHH[i];
-			int soLuong = ThreadLocalRandom.current().nextInt(1, 10 + 1);
-			int giaHH[] = { 16000, 25000, 5000, 16000 };
-			int gia = giaHH[i];
-			long tongTien = soLuong * gia;
-			tableModel.addRow(new String[] { ten, soLuong + "", gia + " VND", tongTien + " VND" });
+	private void addRowRandomData(List<ChiTietDichVu> dsChiTietDichVu) {
+		dsChiTietDichVu = chiTietDichVu_DAO.getAllChiTietDichVu();
+		int n = dsChiTietDichVu.size();
+
+		ChiTietDichVu chiTietDichVu;
+		DichVu dichVu;
+
+		for (int j = 0; j < n; ++j) {
+			chiTietDichVu = dsChiTietDichVu.get(j);
+			dichVu = dichVu_DAO.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu());
+			String ten = dichVu.getTenDichVu();
+			int soLuong = chiTietDichVu.getSoLuong();
+			double gia = dichVu.getGiaBan();
+			double thanhTien = soLuong * gia;
+			tableModel
+					.addRow(new String[] { ten, soLuong + "", Utils.formatTienTe(gia), Utils.formatTienTe(thanhTien) });
 		}
 	}
 

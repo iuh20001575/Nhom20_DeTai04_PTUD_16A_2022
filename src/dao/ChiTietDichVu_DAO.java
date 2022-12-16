@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -57,6 +58,23 @@ public class ChiTietDichVu_DAO extends DAO {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public List<ChiTietDichVu> getAllChiTietDichVu() {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		Statement statement;
+
+		try {
+			statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM ChiTietDichVu");
+			while (resultSet.next())
+				list.add(getChiTietDichVu(resultSet));
+			resultSet.close();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	/**

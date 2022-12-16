@@ -8,7 +8,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.ThreadLocalRandom;
+import java.time.LocalTime;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -32,17 +33,47 @@ import components.button.Button;
 import components.jDialog.JDialogCustom;
 import components.panelRound.PanelRound;
 import components.scrollbarCustom.ScrollBarCustom;
+import dao.ChiTietDatPhong_DAO;
+import dao.ChiTietDichVu_DAO;
+import dao.DichVu_DAO;
+import dao.DonDatPhong_DAO;
+import dao.KhachHang_DAO;
+import dao.NhanVien_DAO;
+import dao.Phong_DAO;
+import entity.ChiTietDatPhong;
+import entity.ChiTietDichVu;
+import entity.DichVu;
+import entity.KhachHang;
+import entity.NhanVien;
+import entity.Phong;
 import utils.Utils;
 
 public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 
 	private static final long serialVersionUID = 1L;
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private ChiTietDichVu_DAO chiTietDichVu_DAO;
+	private DichVu_DAO dichVu_DAO;
+	private DonDatPhong_DAO donDatPhong_DAO;
+	private List<ChiTietDichVu> dsChiTietDichVu;
+	private String gioVaoPhong, gioRaPhong, thoiGianSuDung;
+	private KhachHang_DAO khachHang_DAO;
 	private Main main;
+	private NhanVien_DAO nhanVien_DAO;
+	private Phong_DAO phong_DAO;
 	private DefaultTableModel tableModel;
 	private JTable tblThongKe;
+	private double tienPhong, tienDichVu;
 	private JTextField txtMaHD, txtTenKhach, txtTenNhanVien, txtNgayLap;
 
 	public ThongKeHoaDon_GUI(Main jFrame) {
+		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		chiTietDichVu_DAO = new ChiTietDichVu_DAO();
+		donDatPhong_DAO = new DonDatPhong_DAO();
+		khachHang_DAO = new KhachHang_DAO();
+		nhanVien_DAO = new NhanVien_DAO();
+		phong_DAO = new Phong_DAO();
+		dichVu_DAO = new DichVu_DAO();
 		main = jFrame;
 		setBackground(new Color(242, 246, 252));
 		setBounds(0, 0, Utils.getScreenWidth(), Utils.getBodyHeight());
@@ -188,7 +219,7 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 			}
 		};
 
-		tableModel = new DefaultTableModel(new String[] { "Mã Hoá Đơn", "Mã Phòng", "Tên Khách", "Tên Nhân Viên",
+		tableModel = new DefaultTableModel(new String[] { "Mã Hoá Đơn", "Phòng", "Tên Khách", "Tên Nhân Viên",
 				"Ngày Lập", "Tiền Phòng", "Tiền Dịch Vụ", "Tổng Tiền" }, 0);
 		tblThongKe.setModel(tableModel);
 		tblThongKe.getColumnModel().getColumn(0).setPreferredWidth((Utils.getScreenWidth() - 215) / 8);
@@ -259,7 +290,9 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 					String ngayLap = (String) tableModel.getValueAt(row, 4);
 					String tenKhach = (String) tableModel.getValueAt(row, 2);
 					String tenNV = (String) tableModel.getValueAt(row, 3);
-					HoaDon_GUI jFrame = new HoaDon_GUI(maHoaDon, ngayLap, tenKhach, tenNV);
+					HoaDon_GUI jFrame = new HoaDon_GUI(maHoaDon, ngayLap, tenKhach, tenNV, gioVaoPhong, gioRaPhong,
+							thoiGianSuDung, Utils.formatTienTe(tienPhong), Utils.formatTienTe(tienDichVu),
+							dsChiTietDichVu);
 					jFrame.setVisible(true);
 				}
 			}
@@ -285,20 +318,97 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 	}
 
 	private void addRowRandomData() {
-		for (int i = 1; i < 15; i++) {
-			String maHD = i < 10 ? "HD000" + i : "HD00" + i;
-			String maPhong = i < 10 ? "P000" + i : "P00" + i;
-			String tenKhach[] = { "Phạm Thanh An", "Phạm Tường Vy", "Đặng Ngọc Hoài Thương" };
-			String tenKH = tenKhach[ThreadLocalRandom.current().nextInt(0, 2 + 1)];
-			String tenNhanVien[] = { "Nguyen Thanh Trung", "Trần Huỳnh Như", "Đặng Ngọc Hoài Thương" };
-			String tenNV = tenNhanVien[ThreadLocalRandom.current().nextInt(1, 2 + 1)];
-			String ngayLap = ThreadLocalRandom.current().nextInt(1, 31 + 1) + "/"
-					+ ThreadLocalRandom.current().nextInt(1, 12 + 1) + "/" + "2022";
-			long tienPhong = ThreadLocalRandom.current().nextInt(1, 15 + 1) * 100000;
-			long tienDichVu = ThreadLocalRandom.current().nextInt(1, 7 + 1) * 100000;
 
-			tableModel.addRow(new String[] { maHD, maPhong, tenKH, tenNV, ngayLap, tienPhong + " VNĐ",
-					tienDichVu + " VNĐ", tienPhong + tienDichVu + " VNĐ" });
+		List<ChiTietDatPhong> dsChiTietDatPhongThanhToan = chiTietDatPhong_DAO.getAllChiTietDatPhongThanhToan();
+		int i = 1;
+		for (ChiTietDatPhong chiTietDatPhong : dsChiTietDatPhongThanhToan) {
+			// Mã hoá đơn
+			String maHD = i < 10 ? "HD000" + i : "HD00" + i;
+
+			// Phòng
+			String maPhong = chiTietDatPhong.getPhong().getMaPhong();
+
+			// Mã đơn đặt phòng
+			String madondatphong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
+
+			// Mã khách
+			DonDatPhong_DAO dondatphongdao = new DonDatPhong_DAO();
+			String makhach = dondatphongdao.getDatPhong(madondatphong).getKhachHang().getMaKhachHang();
+
+			// Tên khách
+			KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(makhach);
+			String tenKhach = khachHang.getHoTen();
+
+			// Mã nhân viên
+			String manhanvien = dondatphongdao.getDatPhong(madondatphong).getNhanVien().getMaNhanVien();
+
+			// Tên nhân viên
+			NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(manhanvien);
+			String tenNhanVien = nhanVien.getHoTen();
+
+			// Ngày lập
+			Phong phong = phong_DAO.getPhong(maPhong);
+			String ngayLap = Utils.formatDate(donDatPhong_DAO.getDatPhong(madondatphong).getNgayNhanPhong()).toString();
+
+			// Tiền phòng
+			LocalTime timeNow = LocalTime.now();
+
+			double donGia = phong.getGiaTien();
+			LocalTime gioRa = chiTietDatPhong.getGioRa() == null ? timeNow : chiTietDatPhong.getGioRa();
+			LocalTime gioVao = chiTietDatPhong.getGioVao();
+			int hours, minutes, hieu = 0;
+
+			hours = gioRa.getHour();
+			hours -= gioVao.getHour();
+			minutes = gioRa.getMinute() - gioVao.getMinute();
+			hieu = hours * 60 + minutes;
+
+			tienPhong = hieu;
+			tienPhong *= donGia;
+			tienPhong *= 1.0 / 60;
+
+			// Tiền dịch vụ
+			dsChiTietDichVu = chiTietDichVu_DAO.getAllChiTietDichVu();
+			int n = dsChiTietDichVu.size();
+
+			ChiTietDichVu chiTietDichVu;
+			DichVu dichVu;
+			double tienHang;
+			tienDichVu = 0;
+			for (int j = 0; j < n; ++j) {
+				chiTietDichVu = dsChiTietDichVu.get(j);
+				dichVu = dichVu_DAO.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu());
+				tienHang = dichVu.getGiaBan() * chiTietDichVu.getSoLuong();
+				tienDichVu += tienHang;
+			}
+
+			// Giờ vào
+			int hourIn = gioVao.getHour();
+			int minuteIn = gioVao.getMinute();
+			int secondIn = gioVao.getSecond();
+
+			gioVaoPhong = String.format("%s:%s:%s", hourIn < 10 ? "0" + hourIn : hourIn,
+					minuteIn < 10 ? "0" + minuteIn : minuteIn, secondIn < 10 ? "0" + secondIn : secondIn) + " "
+					+ Utils.formatDate(dondatphongdao.getDatPhong(madondatphong).getNgayNhanPhong()).toString()
+							.replaceAll("-", "/");
+
+			// Giờ ra
+			int hourOut = gioRa.getHour();
+			int minuteOut = gioRa.getMinute();
+			int secondOut = gioRa.getSecond();
+
+			gioRaPhong = String.format("%s:%s:%s", hourOut < 10 ? "0" + hourOut : hourOut,
+					minuteOut < 10 ? "0" + minuteOut : minuteOut, secondOut < 10 ? "0" + secondOut : secondOut) + " "
+					+ Utils.formatDate(dondatphongdao.getDatPhong(madondatphong).getNgayNhanPhong()).toString()
+							.replaceAll("-", "/");
+
+			// Thời gian sử dụng
+			thoiGianSuDung = hieu + " phút";
+
+			i++;
+			tableModel.addRow(
+					new String[] { maHD, maPhong, tenKhach, tenNhanVien, ngayLap + "", Utils.formatTienTe(tienPhong),
+							Utils.formatTienTe(tienDichVu), Utils.formatTienTe(tienPhong + tienDichVu) });
 		}
 	}
 
