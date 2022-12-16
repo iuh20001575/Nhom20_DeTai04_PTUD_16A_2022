@@ -6,7 +6,11 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -284,15 +288,22 @@ public class Utils {
 	 * 
 	 * @param pathname
 	 */
-	public static void openFile(URL url) {
+	public static void openFile(String pathname) {
+		InputStream manualAsStream = _class.getClassLoader().getResourceAsStream(pathname);
+
+		Path tempOutput;
 		try {
-			File file = new File(url.toURI());
-			if (!Desktop.isDesktopSupported())
-				return;
-			Desktop desktop = Desktop.getDesktop();
-			if (file.exists())
-				desktop.open(file);
-		} catch (Exception e) {
+			tempOutput = Files.createTempFile("PTUD_HDSD", ".pdf");
+			tempOutput.toFile().deleteOnExit();
+
+			Files.copy(manualAsStream, tempOutput, StandardCopyOption.REPLACE_EXISTING);
+
+			File userManual = new File(tempOutput.toFile().getPath());
+			if (userManual.exists()) {
+				Desktop.getDesktop().open(userManual);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

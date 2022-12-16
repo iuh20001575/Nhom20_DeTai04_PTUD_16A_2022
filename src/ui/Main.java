@@ -15,7 +15,6 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
@@ -349,8 +348,7 @@ public class Main extends JFrame {
 					pnl = new QuanLyPhong_GUI(_this);
 					break;
 				case Utils.troGiupItem:
-					JOptionPane.showMessageDialog(null, _this.getClass().getResource("/PTUD_HDSD.pdf").toString());
-					Utils.openFile(_this.getClass().getResource("/bin/PTUD_HDSD.pdf"));
+					Utils.openFile("PTUD_HDSD.pdf");
 					return;
 				default:
 					title = "Trang chủ";
