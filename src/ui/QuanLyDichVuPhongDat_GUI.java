@@ -142,13 +142,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 	private TextField txtTenKhachHang;
 	private JTextField txtTongTien;
 
-	public QuanLyDichVuPhongDat_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame, String maPhong) {
-		this(quanLyDatPhongGUI, parentFrame);
-		cmbPhongDat.setSelectedItem(maPhong);
-		cmbPhongDat.setEnabled(false);
-		cmbDatPhong.setEnabled(false);
-	}
-
 	public QuanLyDichVuPhongDat_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
 		_this = this;
 		khachHang_DAO = new KhachHang_DAO();
@@ -417,8 +410,6 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 								dsDVDaChon.add(dichVuTrongChiTiet);
 							}
 							tableModel3.setRowCount(0);
-							// List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
-							// addRow2(listDV);
 
 							loadTable3();
 							capNhatThanhTien();
@@ -636,6 +627,13 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 				cmbPhongDat.addItemListener(evtCmbPhongDat);
 			}
 		});
+	}
+
+	public QuanLyDichVuPhongDat_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame, String maPhong) {
+		this(quanLyDatPhongGUI, parentFrame);
+		cmbPhongDat.setSelectedItem(maPhong);
+		cmbPhongDat.setEnabled(false);
+		cmbDatPhong.setEnabled(false);
 	}
 
 	/**

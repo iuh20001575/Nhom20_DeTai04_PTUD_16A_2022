@@ -61,23 +61,6 @@ public class ChiTietDichVu_DAO extends DAO {
 		return false;
 	}
 
-	public List<ChiTietDichVu> getAllChiTietDichVu() {
-		List<ChiTietDichVu> list = new ArrayList<>();
-		Statement statement;
-
-		try {
-			statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM ChiTietDichVu");
-			while (resultSet.next())
-				list.add(getChiTietDichVu(resultSet));
-			resultSet.close();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-
 	/**
 	 * Cập nhật số lượng dịch vụ
 	 * 
@@ -103,6 +86,23 @@ public class ChiTietDichVu_DAO extends DAO {
 			e.printStackTrace();
 		}
 		return res;
+	}
+
+	public List<ChiTietDichVu> getAllChiTietDichVu() {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		Statement statement;
+
+		try {
+			statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM ChiTietDichVu");
+			while (resultSet.next())
+				list.add(getChiTietDichVu(resultSet));
+			resultSet.close();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	/**

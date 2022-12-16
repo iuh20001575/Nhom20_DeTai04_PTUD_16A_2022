@@ -43,10 +43,7 @@ import dao.NhanVien_DAO;
 import dao.Phong_DAO;
 import entity.ChiTietDatPhong;
 import entity.ChiTietDichVu;
-import entity.DichVu;
 import entity.DonDatPhong;
-import entity.KhachHang;
-import entity.NhanVien;
 import entity.Phong;
 import utils.Utils;
 
@@ -57,19 +54,9 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 	private ChiTietDichVu_DAO chiTietDichVu_DAO;
 	private DichVu_DAO dichVu_DAO;
 	private DonDatPhong_DAO donDatPhong_DAO;
-	private List<ChiTietDichVu> dsChiTietDichVu;
-	private String gioVaoPhong, gioRaPhong, thoiGianSuDung;
-	private KhachHang_DAO khachHang_DAO;
-	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
-	private ChiTietDichVu_DAO chiTietDichVu_DAO;
-	private DichVu_DAO dichVu_DAO;
-	private DonDatPhong_DAO donDatPhong_DAO;
-	private List<ChiTietDichVu> dsChiTietDichVu;
 	private String gioVaoPhong, gioRaPhong, thoiGianSuDung;
 	private KhachHang_DAO khachHang_DAO;
 	private Main main;
-	private NhanVien_DAO nhanVien_DAO;
-	private Phong_DAO phong_DAO;
 	private NhanVien_DAO nhanVien_DAO;
 	private Phong_DAO phong_DAO;
 	private DefaultTableModel tableModel;
@@ -313,8 +300,6 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 
 					String maHoaDon = (String) tableModel.getValueAt(row, 0);
 					String maDatPhong = maHoaDon.replace("HD", "MDP");
-					System.out.println(maDatPhong);
-					System.out.println(donDatPhong_DAO.getDatPhong(maDatPhong));
 					String ngayLap = (String) tableModel.getValueAt(row, 4);
 					String tenKhach = (String) tableModel.getValueAt(row, 2);
 					String tenNV = (String) tableModel.getValueAt(row, 3);
@@ -346,108 +331,11 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 				}
 			}
 		});
-
-	}
-
-	private void addRowRandomData1() {
-
-		List<ChiTietDatPhong> dsChiTietDatPhongThanhToan = chiTietDatPhong_DAO.getAllChiTietDatPhongThanhToan();
-		int i = 1;
-		for (ChiTietDatPhong chiTietDatPhong : dsChiTietDatPhongThanhToan) {
-			// Mã hoá đơn
-			String maHD = i < 10 ? "HD000" + i : "HD00" + i;
-
-			// Phòng
-			String maPhong = chiTietDatPhong.getPhong().getMaPhong();
-
-			// Mã đơn đặt phòng
-			String madondatphong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
-
-			// Mã khách
-			DonDatPhong_DAO dondatphongdao = new DonDatPhong_DAO();
-			String makhach = dondatphongdao.getDatPhong(madondatphong).getKhachHang().getMaKhachHang();
-
-			// Tên khách
-			KhachHang khachHang = khachHang_DAO.getKhachHangTheoMa(makhach);
-			String tenKhach = khachHang.getHoTen();
-
-			// Mã nhân viên
-			String manhanvien = dondatphongdao.getDatPhong(madondatphong).getNhanVien().getMaNhanVien();
-
-			// Tên nhân viên
-			NhanVien nhanVien = nhanVien_DAO.getNhanVienTheoMa(manhanvien);
-			String tenNhanVien = nhanVien.getHoTen();
-
-			// Ngày lập
-			Phong phong = phong_DAO.getPhong(maPhong);
-			String ngayLap = Utils.formatDate(donDatPhong_DAO.getDatPhong(madondatphong).getNgayNhanPhong()).toString();
-
-			// Tiền phòng
-			LocalTime timeNow = LocalTime.now();
-
-			double donGia = phong.getGiaTien();
-			LocalTime gioRa = chiTietDatPhong.getGioRa() == null ? timeNow : chiTietDatPhong.getGioRa();
-			LocalTime gioVao = chiTietDatPhong.getGioVao();
-			int hours, minutes, hieu = 0;
-
-			hours = gioRa.getHour();
-			hours -= gioVao.getHour();
-			minutes = gioRa.getMinute() - gioVao.getMinute();
-			hieu = hours * 60 + minutes;
-
-			tienPhong = hieu;
-			tienPhong *= donGia;
-			tienPhong *= 1.0 / 60;
-
-			// Tiền dịch vụ
-			dsChiTietDichVu = chiTietDichVu_DAO.getAllChiTietDichVu();
-			int n = dsChiTietDichVu.size();
-
-			ChiTietDichVu chiTietDichVu;
-			DichVu dichVu;
-			double tienHang;
-			tienDichVu = 0;
-			for (int j = 0; j < n; ++j) {
-				chiTietDichVu = dsChiTietDichVu.get(j);
-				dichVu = dichVu_DAO.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu());
-				tienHang = dichVu.getGiaBan() * chiTietDichVu.getSoLuong();
-				tienDichVu += tienHang;
-			}
-
-			// Giờ vào
-			int hourIn = gioVao.getHour();
-			int minuteIn = gioVao.getMinute();
-			int secondIn = gioVao.getSecond();
-
-			gioVaoPhong = String.format("%s:%s:%s", hourIn < 10 ? "0" + hourIn : hourIn,
-					minuteIn < 10 ? "0" + minuteIn : minuteIn, secondIn < 10 ? "0" + secondIn : secondIn) + " "
-					+ Utils.formatDate(dondatphongdao.getDatPhong(madondatphong).getNgayNhanPhong()).toString()
-							.replaceAll("-", "/");
-
-			// Giờ ra
-			int hourOut = gioRa.getHour();
-			int minuteOut = gioRa.getMinute();
-			int secondOut = gioRa.getSecond();
-
-			gioRaPhong = String.format("%s:%s:%s", hourOut < 10 ? "0" + hourOut : hourOut,
-					minuteOut < 10 ? "0" + minuteOut : minuteOut, secondOut < 10 ? "0" + secondOut : secondOut) + " "
-					+ Utils.formatDate(dondatphongdao.getDatPhong(madondatphong).getNgayNhanPhong()).toString()
-							.replaceAll("-", "/");
-
-			// Thời gian sử dụng
-			thoiGianSuDung = hieu + " phút";
-
-			i++;
-			tableModel.addRow(
-					new String[] { maHD, maPhong, tenKhach, tenNhanVien, ngayLap + "", Utils.formatTienTe(tienPhong),
-							Utils.formatTienTe(tienDichVu), Utils.formatTienTe(tienPhong + tienDichVu) });
-		}
 	}
 
 	private void addRowRandomData() {
 		List<ChiTietDatPhong> dsChiTietDatPhongThanhToan = chiTietDatPhong_DAO.getAllChiTietDatPhongThanhToan();
 		List<DonDatPhong> dsDonDatPhongDaTra = donDatPhong_DAO.getAllDonDatPhongDaTra();
-		int i = 1;
 		for (DonDatPhong donDatPhong : dsDonDatPhongDaTra) {
 			// Mã hoá đơn
 			String maHD = donDatPhong.getMaDonDatPhong().replace("MDP", "HD");
@@ -455,7 +343,6 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 			double donGia = 0;
 			Phong phong;
 			tongTienPhong = 0;
-			int tongGio = 0;
 			LocalTime timeNow = LocalTime.now();
 			int hours, minutes, hieu = 0;
 
@@ -474,7 +361,6 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 					hours = gioRa.getHour() - gioVao.getHour();
 					minutes = gioRa.getMinute() - gioVao.getMinute();
 					hieu = hours * 60 + minutes;
-					tongGio += hieu;
 					tienPhong = hieu;
 					tienPhong *= donGia;
 					tienPhong *= 1.0 / 60;
@@ -500,7 +386,6 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 					.formatDate(donDatPhong_DAO.getDatPhong(donDatPhong.getMaDonDatPhong()).getNgayNhanPhong())
 					.toString();
 
-			i++;
 			tableModel.addRow(new String[] { maHD, maPhong, tenKhach, tenNhanVien, ngayLap + "",
 					Utils.formatTienTe(tongTienPhong), Utils.formatTienTe(tienDichVu),
 					Utils.formatTienTe((tongTienPhong + tienDichVu) * 1.1) });

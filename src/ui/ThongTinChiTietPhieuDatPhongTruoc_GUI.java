@@ -431,16 +431,16 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 					for (Phong phong : listPhongCoDonDatTruocKhac) {
 						maPhong[i++] = phong.getMaPhong();
 					}
-					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning", 
-							"Phòng " + String.join(", ", maPhong) + " có đơn đặt phòng trước " 
+					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
+							"Phòng " + String.join(", ", maPhong) + " có đơn đặt phòng trước "
 									+ donDatPhong.getGioNhanPhong());
 					return;
 				}
 
 				res = donDatPhong_DAO.nhanPhongTrongPhieuDatPhongTruoc(donDatPhong, listPhong);
-				if(res) {
+				if (res) {
 					JDialogCustom jDialogCustom = new JDialogCustom(main);
-					
+
 					jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
@@ -451,15 +451,16 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 					jDialogCustom.getBtnCancel().addMouseListener(new MouseAdapter() {
 						@Override
 						public void mouseClicked(MouseEvent e) {
-							QuanLyPhieuDatPhongTruoc_GUI quanLyPhieuDatPhong_GUI = new QuanLyPhieuDatPhongTruoc_GUI(main);
+							QuanLyPhieuDatPhongTruoc_GUI quanLyPhieuDatPhong_GUI = new QuanLyPhieuDatPhongTruoc_GUI(
+									main);
 							main.addPnlBody(quanLyPhieuDatPhong_GUI, "Quản lý đặt phòng trước", 1, 0);
 						}
 					});
-					
+
 					jDialogCustom.showMessage("Question",
 							"Nhận phòng thành công! \nBạn có muốn chuyển sang trang quản lý đặt phòng");
 				}
-				
+
 			}
 		});
 //		Sự kiện nút Huỷ phòng
@@ -503,6 +504,14 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 
 	}
 
+	public void closeJFrameSub() {
+		if (jFrameSub != null)
+			jFrameSub.setVisible(false);
+		glass.setVisible(false);
+		glass.setAlpha(0f);
+		jFrameSub = null;
+	}
+
 	public void handleOpenSubFrame(JPanel pnl, JFrame jFrame) {
 		if (!pnl.isEnabled())
 			return;
@@ -523,15 +532,7 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		jFrameSub = jFrame;
 		jFrameSub.setVisible(true);
 	}
-	
-	public void closeJFrameSub() {
-		if (jFrameSub != null)
-			jFrameSub.setVisible(false);
-		glass.setVisible(false);
-		glass.setAlpha(0f);
-		jFrameSub = null;
-	}
-	
+
 	private void setEnabledForm() {
 		if (txtTrangThai.getText().equals("Đã hủy")) {
 			pnlSuaPhong.setEnabled(false);

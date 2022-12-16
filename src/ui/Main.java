@@ -329,11 +329,7 @@ public class Main extends JFrame {
 					break;
 				case Utils.thongKeHoaDonMenuItem:
 					title = "Thống kê hóa đơn";
-					final long startTime = System.currentTimeMillis();
 					pnl = new ThongKeHoaDon_GUI(_this);
-					final long endTime = System.currentTimeMillis();
-
-					System.out.println("Total execution time: " + (endTime - startTime));
 					break;
 				case Utils.thongKeKhachHangMenuItem:
 					title = "Thống kê khách hàng";

@@ -255,6 +255,30 @@ public class DonDatPhong_DAO extends DAO {
 	}
 
 	/**
+	 * Get tất cả đơn đặt phòng đã trả
+	 * 
+	 * @return
+	 */
+	public List<DonDatPhong> getAllDonDatPhongDaTra() {
+		List<DonDatPhong> list = new ArrayList<>();
+
+		String sql = "SELECT * FROM [dbo].[DonDatPhong] WHERE [trangThai] = N'Đã trả'";
+		try {
+			Statement statement = ConnectDB.getConnection().createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			DonDatPhong donDatPhong;
+			while (resultSet.next()) {
+				donDatPhong = getDatPhong(resultSet);
+				list.add(donDatPhong);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	/**
 	 * Get đặt phòng từ resultSet
 	 * 
 	 * @param resultSet
@@ -1181,5 +1205,5 @@ public class DonDatPhong_DAO extends DAO {
 
 		return listPhongDangThue;
 	}
-	
+
 }

@@ -43,7 +43,8 @@ public class DichVu_DAO {
 	 * @param soLuong
 	 * @return danh sách dịch vụ
 	 */
-	public List<DichVu> filterDichVu(String tenDichVu, String tenLoaiDichVu, String soLuong, boolean isDaNgungKinhDoanh) {
+	public List<DichVu> filterDichVu(String tenDichVu, String tenLoaiDichVu, String soLuong,
+			boolean isDaNgungKinhDoanh) {
 		List<DichVu> list = new ArrayList<>();
 		PreparedStatement preparedStatement = null;
 		String sql = "SELECT * FROM   DichVu INNER JOIN LoaiDichVu ON DichVu.loaiDichVu = LoaiDichVu.maLoaiDichVu "

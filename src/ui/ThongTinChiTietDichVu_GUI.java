@@ -173,8 +173,6 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		btnHuy.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// setErrorAllJTextField(false);
-				// setDichVuVaoForm(dichVu);
 				btnCapNhat.setVisible(true);
 				btnHuy.setVisible(false);
 				btnLuu.setEnabled(false);
@@ -189,8 +187,6 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 			public void mouseClicked(MouseEvent e) {
 				if (!btnLuu.isEnabled())
 					return;
-//				if (!validator())
-//					return;
 
 				DichVu dichVu = getDichVuTuForm();
 				boolean res = dichVu_DAO.suaDichVu(dichVu);
