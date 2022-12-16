@@ -78,7 +78,7 @@ public class DonDatPhong {
 		this.gioNhanPhong = gioNhanPhong;
 		this.trangThai = trangThai;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

@@ -17,7 +17,6 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -96,8 +95,12 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 			// Làm sạch table3 và danh sách dịch vụ chọn
 			tableModel3.setRowCount(0);
 
-			if (maPhongChon.equals(labelCmbPhongDat))
+			if (maPhongChon.equals(labelCmbPhongDat)) {
+				dsDVDaChon.clear();
+				capNhatThanhTien();
 				return;
+			}
+
 			String maDonDatPhong = (String) cmbDatPhong.getSelectedItem();
 			if (maDonDatPhong.equals(labelCmbDatPhong))
 				maDonDatPhong = datPhong_DAO.getDonDatPhong(maPhongChon).getMaDonDatPhong();
@@ -135,7 +138,9 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 	private DefaultTableModel tableModel2, tableModel3;
 	private JTable tbl2, tbl3;
 	private TextField txtSoDienThoai;
+
 	private TextField txtTenKhachHang;
+
 	private JTextField txtTongTien;
 
 	public QuanLyDichVuPhongDat_GUI(QuanLyDatPhong_GUI quanLyDatPhongGUI, JFrame parentFrame) {
@@ -252,7 +257,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		btnSearchSoDienThoai.setColor(Utils.primaryColor);
 		btnSearchSoDienThoai.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.9f));
 		btnSearchSoDienThoai.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
-		btnSearchSoDienThoai.setIcon(new ImageIcon("Icon\\user_searching.png"));
+		btnSearchSoDienThoai.setIcon(Utils.getImageIcon("user_searching.png"));
 		btnSearchSoDienThoai.setBounds(410, 2, 50, 50);
 		pnlBody.add(btnSearchSoDienThoai);
 
@@ -341,15 +346,15 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 						dsDVDaChon.add(dichVuTrongChiTiet);
 					}
 					tableModel3.setRowCount(0);
-					List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
-					addRow2(listDV);
+
+					filterDichVu();
 					loadTable3();
 					capNhatThanhTien();
 
 				}
 			}
 		});
-		btnChonDichVu.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
+		btnChonDichVu.setIcon(Utils.getImageIcon("rightArrow_32x32.png"));
 		btnChonDichVu.setBounds(0, 70, 36, 36);
 		pnlActions.add(btnChonDichVu);
 
@@ -406,10 +411,12 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 								dsDVDaChon.add(dichVuTrongChiTiet);
 							}
 							tableModel3.setRowCount(0);
-							List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
-							addRow2(listDV);
+							// List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
+							// addRow2(listDV);
+
 							loadTable3();
 							capNhatThanhTien();
+							filterDichVu();
 
 						}
 					});
@@ -424,7 +431,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 				}
 			}
 		});
-		btnXoaDichVu.setIcon(new ImageIcon("Icon\\bin.png"));
+		btnXoaDichVu.setIcon(Utils.getImageIcon("bin.png"));
 		btnXoaDichVu.setBounds(0, 130, 36, 36);
 		pnlActions.add(btnXoaDichVu);
 
@@ -573,7 +580,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 				cmbTenDV.addItemListener(_this);
 				cmbDatPhong.addItemListener(evtCmbDatPhong);
 				cmbPhongDat.addItemListener(evtCmbPhongDat);
-
+				txtTongTien.setText("Tổng tiền: " + Utils.formatTienTe(0));
 			}
 		});
 		btnLamMoi.setFocusable(false);
@@ -602,11 +609,10 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
-				List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
 
 				cmbTenDV.removeItemListener(_this);
 
-				addRow2(listDV);
+				filterDichVu();
 
 				String soDienThoai = txtSoDienThoai.getText().trim();
 
@@ -672,6 +678,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		if (dsDVDaChon == null)
 			txtTongTien.setText("Tổng tiền: " + Utils.formatTienTe(0));
 		double tongTien = 0;
+
 		for (DichVu dichVu : dsDVDaChon)
 			tongTien += dichVu.getGiaBan() * dichVu.getSoLuong();
 		txtTongTien.setText("Tổng tiền: " + Utils.formatTienTe(tongTien));
@@ -814,10 +821,10 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 						if (maDonDatPhong.equals(labelCmbDatPhong))
 							maDonDatPhong = datPhong_DAO.getDonDatPhong(maPhongChon).getMaDonDatPhong();
 						// Dịch vụ thay đổi trong table3
-						DichVu DichVuThayDoiSoLuong = new DichVu((String) tableModel3.getValueAt(row3, 0));
+						DichVu dichVuThayDoiSoLuong = new DichVu((String) tableModel3.getValueAt(row3, 0));
 						// chi tiết dịch vụ trong chi tiết dịch vụ cua table3
 						ChiTietDichVu chiTietDichVuThayDoi = chiTietDichVu_DAO
-								.getChiTietDichVuTheoMa(DichVuThayDoiSoLuong.getMaDichVu(), maDonDatPhong, maPhongChon);
+								.getChiTietDichVuTheoMa(dichVuThayDoiSoLuong.getMaDichVu(), maDonDatPhong, maPhongChon);
 						String soLuongDV = (String) tbl3.getValueAt(row3, 2);
 						if (soLuongDV.length() <= 0) {
 							JOptionPane.showMessageDialog(_this, "Vui lòng nhập số lượng", "Error",
@@ -839,9 +846,9 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 						int soLuongDichVu = Integer.parseInt((String) tbl3.getValueAt(row3, 2));
 						// Trường hợp 1: Giảm số lượng dịch vụ xuống 0
 						if (soLuongDichVu == 0) {
-							if (chiTietDichVu_DAO.xoaChiTietDichVu(DichVuThayDoiSoLuong.getMaDichVu(), maDonDatPhong,
+							if (chiTietDichVu_DAO.xoaChiTietDichVu(dichVuThayDoiSoLuong.getMaDichVu(), maDonDatPhong,
 									maPhongChon)) {
-								if (dichVu_DAO.capNhatSoLuongDichVuTang(DichVuThayDoiSoLuong.getMaDichVu(),
+								if (dichVu_DAO.capNhatSoLuongDichVuTang(dichVuThayDoiSoLuong.getMaDichVu(),
 										chiTietDichVuThayDoi.getSoLuong())) {
 									new Notification(_this, components.notification.Notification.Type.SUCCESS,
 											"Cập nhật số lượng dịch vụ thành công").showNotification();
@@ -870,7 +877,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 						}
 						// Trường hợp 3: Tăng số lượng dịch vụ
 						else if (chiTietDichVuThayDoi.getSoLuong() < soLuongDichVu) {
-							DichVu dichVuThayDoi = dichVu_DAO.getDichVuTheoMa(DichVuThayDoiSoLuong.getMaDichVu());
+							DichVu dichVuThayDoi = dichVu_DAO.getDichVuTheoMa(dichVuThayDoiSoLuong.getMaDichVu());
 							if (dichVuThayDoi.getSoLuong() < (soLuongDichVu - chiTietDichVuThayDoi.getSoLuong())) {
 								JOptionPane.showMessageDialog(_this, "Số lượng tồn không đủ", "Error",
 										JOptionPane.ERROR_MESSAGE);
@@ -898,8 +905,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 							dsDVDaChon.add(dichVuTrongChiTiet);
 						}
 						tableModel3.setRowCount(0);
-						List<DichVu> listDV = dichVu_DAO.getAllDichVuCoSoLuongLonHon0();
-						addRow2(listDV);
+						filterDichVu();
 						loadTable3();
 						capNhatThanhTien();
 					}

@@ -153,38 +153,6 @@ public class DichVu_DAO {
 		return list;
 	}
 
-	public List<DichVu> getDanhSachDichVuTheoMa(List<DichVu> dsDichVu) {
-		List<DichVu> list = new ArrayList<>();
-		int length = dsDichVu.size();
-
-		if (dsDichVu == null || length == 0)
-			return list;
-		try {
-			String q = "''";
-			for (int i = 0; i < length; ++i) {
-				q += ", ?";
-			}
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement(String.format("SELECT * FROM [dbo].[DichVu] WHERE [maDichVu] IN (%s)", q));
-			DichVu dichVu;
-			for (int i = 0; i < length; i++) {
-				dichVu = dsDichVu.get(i);
-				preparedStatement.setString(i + 1, dichVu.getMaDichVu());
-			}
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			while (resultSet.next()) {
-				dichVu = getDichVu(resultSet);
-				list.add(dichVu);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
 	public List<DichVu> getAllDichVu() {
 		List<DichVu> list = new ArrayList<>();
 		Statement statement;
@@ -224,6 +192,38 @@ public class DichVu_DAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return list;
+	}
+
+	public List<DichVu> getDanhSachDichVuTheoMa(List<DichVu> dsDichVu) {
+		List<DichVu> list = new ArrayList<>();
+		int length = dsDichVu.size();
+
+		if (dsDichVu == null || length == 0)
+			return list;
+		try {
+			String q = "''";
+			for (int i = 0; i < length; ++i) {
+				q += ", ?";
+			}
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement(String.format("SELECT * FROM [dbo].[DichVu] WHERE [maDichVu] IN (%s)", q));
+			DichVu dichVu;
+			for (int i = 0; i < length; i++) {
+				dichVu = dsDichVu.get(i);
+				preparedStatement.setString(i + 1, dichVu.getMaDichVu());
+			}
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				dichVu = getDichVu(resultSet);
+				list.add(dichVu);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return list;
 	}
 
@@ -283,23 +283,6 @@ public class DichVu_DAO {
 		}
 
 		return list;
-	}
-
-	public DichVu getDichVuTheoTen(String tenDichVu) {
-		try {
-			PreparedStatement preparedStatement = ConnectDB.getConnection()
-					.prepareStatement("SELECT * FROM DichVu WHERE tenDichVu = ? ");
-			preparedStatement.setString(1, tenDichVu);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next())
-				return getDichVu(resultSet);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 
 	public String getMaDichVu() {

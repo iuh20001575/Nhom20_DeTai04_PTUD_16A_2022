@@ -255,29 +255,6 @@ public class DonDatPhong_DAO extends DAO {
 	}
 
 	/**
-	 * Get tất cả các mã đặt phòng của phiếu đặt phòng có trạng thái đang thuê
-	 * 
-	 * @return danh sách các mã đặt phòng
-	 */
-	public List<String> getAllMaDatPhongDangThue() {
-		List<String> list = new ArrayList<>();
-		String sql = "SELECT maDonDatPhong FROM [dbo].[DonDatPhong] WHERE [trangThai] = N'Đang thuê'";
-		try {
-			Statement statement = ConnectDB.getConnection().createStatement();
-			ResultSet resultSet = statement.executeQuery(sql);
-			String maDonDatPhong;
-			while (resultSet.next()) {
-				maDonDatPhong = resultSet.getString(1);
-				list.add(maDonDatPhong);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return list;
-	}
-
-	/**
 	 * Get đặt phòng từ resultSet
 	 * 
 	 * @param resultSet
@@ -1156,6 +1133,33 @@ public class DonDatPhong_DAO extends DAO {
 		return false;
 	}
 
+	// Tìm phòng có đơn đặt phòng trước khác
+	public List<Phong> timPhongCoDonDatTruocKhac(List<Phong> phongs, DonDatPhong donDatPhong) {
+		List<Phong> listPhongCoDonDatTruocKhac = new ArrayList<>();
+		String sql;
+
+		sql = "SELECT TOP(1) * FROM ChiTietDatPhong CP INNER JOIN DonDatPhong DP  ON CP.donDatPhong = DP.maDonDatPhong\n"
+				+ "where CP.phong = ?  and DP.ngayNhanPhong = ? and DP.gioNhanPhong < ?   and DP.trangThai = N'Đang chờ'";
+		try {
+			for (Phong phong : phongs) {
+				PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+				preparedStatement.setString(1, phong.getMaPhong());
+				preparedStatement.setString(2, donDatPhong.getNgayNhanPhong().toString());
+				preparedStatement.setString(3, donDatPhong.getGioNhanPhong().toString());
+
+				ResultSet resultSet = preparedStatement.executeQuery();
+
+				while (resultSet.next())
+					listPhongCoDonDatTruocKhac.add(phong);
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return listPhongCoDonDatTruocKhac;
+	}
+
 	// Tìm phòng có trạng thái đang thuê
 	public List<Phong> timPhongDangThue(List<Phong> phongs) {
 		List<Phong> listPhongDangThue = new ArrayList<>();
@@ -1176,31 +1180,5 @@ public class DonDatPhong_DAO extends DAO {
 		}
 
 		return listPhongDangThue;
-	}
-	//	Tìm phòng có đơn đặt phòng trước khác
-	public List<Phong> timPhongCoDonDatTruocKhac(List<Phong> phongs, DonDatPhong donDatPhong){
-		List<Phong> listPhongCoDonDatTruocKhac = new ArrayList<>();
-		String sql;
-		
-		sql = "SELECT TOP(1) * FROM ChiTietDatPhong CP INNER JOIN DonDatPhong DP  ON CP.donDatPhong = DP.maDonDatPhong\n"
-				+ "where CP.phong = ?  and DP.ngayNhanPhong = ? and DP.gioNhanPhong < ?   and DP.trangThai = N'Đang chờ'";
-		try {
-			for (Phong phong : phongs) {
-				PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
-				preparedStatement.setString(1, phong.getMaPhong());
-				preparedStatement.setString(2, donDatPhong.getNgayNhanPhong().toString());
-				preparedStatement.setString(3, donDatPhong.getGioNhanPhong().toString());
-	
-				ResultSet resultSet = preparedStatement.executeQuery();
-	
-				while(resultSet.next())
-					listPhongCoDonDatTruocKhac.add(phong);
-						
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	
-		return listPhongCoDonDatTruocKhac;
 	}
 }

@@ -1,9 +1,9 @@
 package dao;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class PhieuDatPhongTruoc_DAO {
 							+ "WHERE trangThai like N'Đang thuê' or trangThai like N'Đã trả' "
 							+ "ORDER BY ngayNhanPhong DESC, gioNhanPhong ASC");
 
-			preparedStatement.setDate(1, Date.valueOf(ngayNhanPhong) );
+			preparedStatement.setDate(1, Date.valueOf(ngayNhanPhong));
 			preparedStatement.setString(2, "%" + trangThai + "%");
 			preparedStatement.setString(3, soDienThoai);
 
@@ -69,7 +69,7 @@ public class PhieuDatPhongTruoc_DAO {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
 					"SELECT DISTINCT * FROM DonDatPhong where trangThai like N'Đang chờ' or trangThai like N'Đã hủy' "
-					+ "ORDER BY ngayNhanPhong DESC, gioNhanPhong ASC ");
+							+ "ORDER BY ngayNhanPhong DESC, gioNhanPhong ASC ");
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 			DonDatPhong donDatPhong;
