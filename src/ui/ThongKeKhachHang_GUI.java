@@ -1,218 +1,331 @@
-package ui;
+package dao;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import connectDB.ConnectDB;
+import entity.ChiTietDatPhong;
+import entity.ChiTietDichVu;
+import entity.DichVu;
+import entity.DonDatPhong;
+import entity.LoaiDichVu;
+import entity.Phong;
 
-import components.button.Button;
-import components.scrollbarCustom.ScrollBarCustom;
-import utils.Utils;
-
-public class ThongKeKhachHang_GUI extends JPanel {
-
+public class ChiTietDichVu_DAO extends DAO {
 	/**
+	 * Cập nhật số lượng dịch vụ
 	 * 
+	 * @param chiTietDichVu
+	 * @param isSoLuongTang
+	 * @return
 	 */
-	private static final long serialVersionUID = 1L;
-	private JTable tblThongKe;
+	public boolean capNhatSoLuongDichVu(ChiTietDichVu chiTietDichVu, boolean isSoLuongTang) {
+		Connection connection = ConnectDB.getConnection();
+		PreparedStatement preparedStatement;
+		boolean res;
+		try {
+			connection.setAutoCommit(false);
+			preparedStatement = connection.prepareStatement(
+					"UPDATE [dbo].[DichVu] SET [soLuong] " + (isSoLuongTang ? "-" : "+") + "= ? WHERE [maDichVu] = ?");
+			preparedStatement.setInt(1, chiTietDichVu.getSoLuong());
+			preparedStatement.setString(2, chiTietDichVu.getDichVu().getMaDichVu());
+			res = preparedStatement.executeUpdate() > 0;
+			if (!res)
+				return rollback();
 
-	/**
-	 * Create the frame.
-	 */
-	public ThongKeKhachHang_GUI() {
-		setBackground(Utils.secondaryColor);
-		setBounds(0, 0, 1086, 508);
-		setLayout(null);
-
-		JPanel pnlChonNTN = new JPanel();
-		pnlChonNTN.setBorder(new LineBorder(Utils.secondaryColor));
-		pnlChonNTN.setForeground(new Color(0, 0, 0));
-		pnlChonNTN.setBounds(0, 0, 1100, 146);
-		pnlChonNTN.setBackground(Utils.secondaryColor);
-		this.add(pnlChonNTN);
-		pnlChonNTN.setLayout(null);
-
-		JTextPane lblTKKH = new JTextPane();
-		lblTKKH.setBounds(73, 20, 262, 33);
-		lblTKKH.setText("Thống kê khách hàng theo:");
-		lblTKKH.setForeground(Color.GRAY);
-		lblTKKH.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblTKKH.setBackground(new Color(203, 239, 255));
-		pnlChonNTN.add(lblTKKH);
-
-		Button btnNgay = new Button("Ngày");
-		btnNgay.setBounds(358, 85, 102, 39);
-		pnlChonNTN.add(btnNgay);
-		btnNgay.setForeground(Color.GRAY);
-		btnNgay.setBackground(Color.WHITE);
-		btnNgay.setRadius(8);
-		btnNgay.setColor(new Color(255, 255, 255));
-		btnNgay.setFont(new Font("Segoe UI", Font.BOLD, 20));
-
-		Button btnThang = new Button("Tháng");
-		btnThang.setBounds(500, 85, 102, 39);
-		btnThang.setFocusable(false);
-		btnThang.setText("Tháng");
-		btnThang.setRadius(8);
-		btnThang.setForeground(Color.WHITE);
-		btnThang.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		btnThang.setColor(new Color(140, 177, 180));
-		btnThang.setColorOver(new Color(140, 177, 180));
-		btnThang.setColorClick(new Color(140, 177, 180));
-		btnThang.setBorderColor(new Color(140, 177, 180));
-		btnThang.setBackground(new Color(140, 177, 180));
-		pnlChonNTN.add(btnThang);
-
-		Button btnNam = new Button("Ngày");
-		btnNam.setBounds(639, 85, 102, 39);
-		pnlChonNTN.add(btnNam);
-		btnNam.setText("Năm");
-		btnNam.setRadius(8);
-		btnNam.setForeground(Color.GRAY);
-		btnNam.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		btnNam.setColor(Color.WHITE);
-		btnNam.setBackground(Color.WHITE);
-
-		JTextPane lblNgay = new JTextPane();
-		lblNgay.setBounds(358, 20, 61, 33);
-		pnlChonNTN.add(lblNgay);
-		lblNgay.setText("Ngày:");
-		lblNgay.setForeground(Color.GRAY);
-		lblNgay.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblNgay.setBackground(new Color(203, 239, 255));
-
-		JComboBox<String> cboNgay = new JComboBox<String>();
-		cboNgay.setBounds(451, 20, 113, 38);
-		pnlChonNTN.add(cboNgay);
-		cboNgay.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		cboNgay.setBackground(Color.WHITE);
-
-		JTextPane lblThang = new JTextPane();
-		lblThang.setBounds(606, 20, 71, 33);
-		pnlChonNTN.add(lblThang);
-		lblThang.setText("Tháng:");
-		lblThang.setForeground(Color.GRAY);
-		lblThang.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblThang.setBackground(new Color(203, 239, 255));
-
-		JComboBox<String> cboThang = new JComboBox<String>();
-		cboThang.setBounds(706, 20, 113, 38);
-		pnlChonNTN.add(cboThang);
-		cboThang.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-
-		JTextPane lblNam = new JTextPane();
-		lblNam.setBounds(867, 20, 69, 38);
-		pnlChonNTN.add(lblNam);
-		lblNam.setText("Năm:");
-		lblNam.setForeground(Color.GRAY);
-		lblNam.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblNam.setBackground(new Color(203, 239, 255));
-
-		JComboBox<String> cboNam = new JComboBox<String>();
-		cboNam.setBounds(956, 20, 113, 38);
-		pnlChonNTN.add(cboNam);
-		cboNam.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-
-		Button btnThongKe = new Button("Ngày");
-		btnThongKe.setBounds(771, 85, 298, 39);
-		pnlChonNTN.add(btnThongKe);
-		btnThongKe.setIcon(new ImageIcon("Icon\\statistics.png"));
-		btnThongKe.setForeground(Color.WHITE);
-		btnThongKe.setText("Thống kê khách hàng:");
-		btnThongKe.setRadius(8);
-		btnThongKe.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		btnThongKe.setColor(new Color(140, 177, 180, 127));
-		btnThongKe.setColorClick(new Color(140, 177, 180, 127));
-		btnThongKe.setColorOver(new Color(140, 177, 180, 127));
-		btnThongKe.setBorderColor(new Color(140, 177, 180));
-		btnThongKe.setBackground(new Color(140, 177, 180));
-
-		JPanel pnlThongKe = new JPanel();
-		pnlThongKe.setBounds(0, 144, 1100, 364);
-		this.add(pnlThongKe);
-		pnlThongKe.setBackground(Utils.secondaryColor);
-		pnlThongKe.setBorder(new LineBorder(Utils.secondaryColor));
-		pnlThongKe.setLayout(null);
-
-		JTextPane lblTitleTable = new JTextPane();
-		lblTitleTable.setBounds(33, 0, 366, 33);
-		pnlThongKe.add(lblTitleTable);
-		lblTitleTable.setText("Thông tin khách hàng trong: 2/2022");
-		lblTitleTable.setForeground(Color.GRAY);
-		lblTitleTable.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		lblTitleTable.setBackground(new Color(203, 239, 255));
-
-		JScrollPane scr = new JScrollPane();
-		scr.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scr.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scr.setBounds(10, 46, 650, 308);
-		scr.setBackground(Utils.primaryColor);
-		ScrollBarCustom scp = new ScrollBarCustom();
-		scp.setScrollbarColor(new Color(203, 203, 203));
-		scr.setVerticalScrollBar(scp);
-		pnlThongKe.add(scr);
-
-		tblThongKe = new JTable() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-
-			@Override
-			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-				Component c = super.prepareRenderer(renderer, row, column);
-				if (row % 2 == 0)
-					c.setBackground(Color.WHITE);
-				else
-					c.setBackground(new Color(232, 232, 232));
-				return c;
-			}
-		};
-		tblThongKe.setModel(new DefaultTableModel(
-				new Object[][] { { "MKH0001", "Nguyễn Phương Anh", "090190002456", "Nữ", "0314595218", "MHD001" }, },
-				new String[] { "Mã KH", "Họ tên khách", "CCCD", "Giới tính", "SĐT khách", "Mã hoá đơn" }));
-		tblThongKe.getColumnModel().getColumn(0).setPreferredWidth(70);
-		tblThongKe.getColumnModel().getColumn(1).setPreferredWidth(190);
-		tblThongKe.getColumnModel().getColumn(2).setPreferredWidth(110);
-		tblThongKe.getColumnModel().getColumn(3).setPreferredWidth(70);
-		tblThongKe.getColumnModel().getColumn(4).setPreferredWidth(100);
-		tblThongKe.getColumnModel().getColumn(5).setPreferredWidth(100);
-		// Cam
-		tblThongKe.getTableHeader().setBackground(new Color(255, 195, 174));
-		// Xanh
-		tblThongKe.getTableHeader().setBackground(Utils.primaryColor);
-		tblThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		tblThongKe.setBackground(Utils.secondaryColor);
-		tblThongKe.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tblThongKe.getTableHeader()
-				.setPreferredSize(new Dimension((int) tblThongKe.getTableHeader().getPreferredSize().getWidth(), 36));
-		tblThongKe.getTableHeader().setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		tblThongKe.setRowHeight(36);
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-
-		tblThongKe.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-		scr.setViewportView(tblThongKe);
-
+			ChiTietDatPhong chiTietDatPhong = chiTietDichVu.getChiTietDatPhong();
+			preparedStatement = connection
+					.prepareStatement("UPDATE [dbo].[ChiTietDichVu] SET [soLuong] " + (isSoLuongTang ? "+" : "-")
+							+ "= ? WHERE [dichVu] = ? AND [donDatPhong] = ? AND [phong] = ? AND [gioVao] = ?");
+			preparedStatement.setInt(1, chiTietDichVu.getSoLuong());
+			preparedStatement.setString(2, chiTietDichVu.getDichVu().getMaDichVu());
+			preparedStatement.setString(3, chiTietDatPhong.getDonDatPhong().getMaDonDatPhong());
+			preparedStatement.setString(4, chiTietDatPhong.getPhong().getMaPhong());
+			preparedStatement.setString(5, Time.valueOf(chiTietDatPhong.getGioVao()).toString());
+			res = preparedStatement.executeUpdate() > 0;
+			if (!res)
+				return rollback();
+			return commit();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
+	/**
+	 * Cập nhật số lượng dịch vụ
+	 * 
+	 * @param maDV
+	 * @param maDP
+	 * @param maPhong
+	 * @param soLuongMua
+	 * @return
+	 */
+	public boolean capNhatSoLuongDichVu(String maDV, String maDP, String maPhong, int soLuongMua) {
+		boolean res = false;
+		PreparedStatement preparedStatement;
+		String sql = "UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ? and phong = ?";
+		try {
+			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setInt(1, soLuongMua);
+			preparedStatement.setString(2, maDV);
+			preparedStatement.setString(3, maDP);
+			preparedStatement.setString(4, maPhong);
+			res = preparedStatement.executeUpdate() > 0;
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	/**
+	 * Get tất cả chi tiết dịch vụ theo mã đơn đặt phòng và mã phòng
+	 * 
+	 * @param maDonDatPhong
+	 * @param maPhong
+	 * @return
+	 */
+	public List<ChiTietDichVu> getAllChiTietDichVu(String maDonDatPhong, String maPhong) {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		String sql = "SELECT CTDV.*, DV.*, CTDV.soLuong AS SOLUONGBAN FROM [dbo].[ChiTietDichVu] CTDV "
+				+ "JOIN [dbo].[ChiTietDatPhong] CTDP ON CTDV.donDatPhong = CTDP.donDatPhong "
+				+ "AND CTDV.PHONG = CTDP.phong AND CTDV.gioVao = CTDP.gioVao "
+				+ "JOIN [dbo].[DichVu] DV ON DV.maDichVu = CTDV.dichVu "
+				+ "WHERE CTDV.[phong] = ? AND CTDV.[donDatPhong] = ? AND [gioRa] IS NULL";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, maPhong);
+			preparedStatement.setString(2, maDonDatPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			ChiTietDichVu chiTietDichVu;
+			DichVu dichVu;
+			LoaiDichVu loaiDichVu;
+			while (resultSet.next()) {
+				chiTietDichVu = getChiTietDichVu(resultSet);
+
+				loaiDichVu = new LoaiDichVu(resultSet.getString(10));
+				dichVu = new DichVu(resultSet.getString(6), resultSet.getString(7), resultSet.getInt(8),
+						resultSet.getString(9), loaiDichVu, resultSet.getDouble(11), false);
+				chiTietDichVu.setDichVu(dichVu);
+
+				list.add(chiTietDichVu);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	public List<ChiTietDichVu> getAllChiTietDichVuTheoMaDatPhong(String maDP, String maPhong) {
+		List<ChiTietDichVu> list = new ArrayList<>();
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM ChiTietDichVu INNER JOIN DonDatPhong ON "
+							+ "ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
+							+ "WHERE  maDonDatPhong = ? and phong = ?");
+
+			preparedStatement.setString(1, maDP);
+			preparedStatement.setString(2, maPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getChiTietDichVu(resultSet));
+			resultSet.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year, String maNhanVien) {
+		return getChiTietDichVu(day, month, year, maNhanVien, "");
+	}
+
+	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year, String maNhanVien, String maKhachHang) {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		String sql = "SELECT CTDV.*, DV.*, ngayNhanPhong FROM [dbo].[DonDatPhong] DDP "
+				+ "JOIN [dbo].[ChiTietDichVu] CTDV ON DDP.maDonDatPhong = CTDV.donDatPhong "
+				+ "JOIN [dbo].[DichVu] DV ON DV.maDichVu = CTDV.dichVu "
+				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ? AND [khachHang] LIKE ?";
+
+		if (month > 0)
+			sql += " AND MONTH([ngayNhanPhong]) = ?";
+		if (day > 0)
+			sql += " AND DAY([ngayNhanPhong]) = ?";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setInt(1, year);
+			preparedStatement.setString(2, "%" + maNhanVien + "%");
+			preparedStatement.setString(3, "%" + maKhachHang + "%");
+			if (month > 0)
+				preparedStatement.setInt(4, month);
+			if (day > 0)
+				preparedStatement.setInt(5, day);
+
+			ResultSet resultSet = preparedStatement.executeQuery();
+			ChiTietDichVu chiTietDichVu;
+			DichVu dichVu;
+			String maDichVu, tenDichVu, donViTinh, loaiDichVu;
+			int soLuong;
+			double giaMua;
+			LocalDate ngayNhanPhong;
+			while (resultSet.next()) {
+				chiTietDichVu = getChiTietDichVu(resultSet);
+
+				maDichVu = resultSet.getString("maDichVu");
+				tenDichVu = resultSet.getString("tenDichVu");
+				soLuong = resultSet.getInt("soLuong");
+				donViTinh = resultSet.getString("donViTinh");
+				loaiDichVu = resultSet.getString("loaiDichVu");
+				giaMua = resultSet.getDouble("giaMua");
+				dichVu = new DichVu(maDichVu, tenDichVu, soLuong, donViTinh, new LoaiDichVu(loaiDichVu), giaMua, false);
+				chiTietDichVu.setDichVu(dichVu);
+
+				ngayNhanPhong = resultSet.getDate("ngayNhanPhong").toLocalDate();
+				chiTietDichVu.getChiTietDatPhong().getDonDatPhong().setNgayNhanPhong(ngayNhanPhong);
+
+				list.add(chiTietDichVu);
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	private ChiTietDichVu getChiTietDichVu(ResultSet resultSet) throws SQLException {
+		String maDV = resultSet.getString("dichVu");
+		String maDP = resultSet.getString("donDatPhong");
+		String phong = resultSet.getString("phong");
+		Time gioVao = resultSet.getTime("gioVao");
+		int soLuong = resultSet.getInt(5);
+
+		return new ChiTietDichVu(new DichVu(maDV),
+				new ChiTietDatPhong(new DonDatPhong(maDP), new Phong(phong), gioVao.toLocalTime()), soLuong);
+	}
+
+	public ChiTietDichVu getChiTietDichVuTheoMa(String maDichVu, String maDatPhong, String maPhong) {
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(
+					"SELECT * FROM ChiTietDichVu INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu INNER JOIN "
+							+ "DonDatPhong ON ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
+							+ "WHERE maDichVu = ? and maDonDatPhong = ? and phong = ?");
+			preparedStatement.setString(1, maDichVu);
+			preparedStatement.setString(2, maDatPhong);
+			preparedStatement.setString(3, maPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next())
+				return getChiTietDichVu(resultSet);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public List<ChiTietDichVu> getDichVuTheoPhieuDatPhong(String datPhong) {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		String sql = "SELECT * FROM [dbo].[ChiTietDichVu] WHERE [donDatPhong] = ?";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, datPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getChiTietDichVu(resultSet));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	public List<ChiTietDichVu> getDichVuTheoPhieuDatPhongVaPhong(String datPhong, String maPhong) {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		String sql = "SELECT * FROM ChiTietDichVu WHERE donDatPhong = ? and phong = ? ";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, datPhong);
+			preparedStatement.setString(2, maPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getChiTietDichVu(resultSet));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	public boolean themChiTietDichVu(ChiTietDichVu chiTietDichVu) {
+		int res = 0;
+		PreparedStatement preparedStatement;
+		Connection connection = ConnectDB.getConnection();
+		try {
+			connection.setAutoCommit(false);
+			preparedStatement = connection
+					.prepareStatement("UPDATE [dbo].[DichVu] SET [soLuong] -= ? WHERE [maDichVu] = ?");
+			preparedStatement.setInt(1, chiTietDichVu.getSoLuong());
+			preparedStatement.setString(2, chiTietDichVu.getDichVu().getMaDichVu());
+			res = preparedStatement.executeUpdate();
+			if (res <= 0)
+				return rollback();
+
+			preparedStatement = connection.prepareStatement("INSERT ChiTietDichVu VALUES (?, ?, ?, ?, ?)");
+			preparedStatement.setString(1, chiTietDichVu.getDichVu().getMaDichVu());
+			preparedStatement.setString(2, chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getMaDonDatPhong());
+			preparedStatement.setString(3, chiTietDichVu.getChiTietDatPhong().getPhong().getMaPhong());
+			preparedStatement.setTime(4, Time.valueOf(chiTietDichVu.getChiTietDatPhong().getGioVao()));
+			preparedStatement.setInt(5, chiTietDichVu.getSoLuong());
+			res = preparedStatement.executeUpdate();
+			if (res <= 0)
+				return rollback();
+
+			preparedStatement.close();
+			return commit();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean xoaChiTietDichVu(String maDichVu, String maDatPhong, String maPhong) {
+		int res = 0;
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement("DELETE ChiTietDichVu "
+					+ "FROM   ChiTietDatPhong INNER JOIN ChiTietDichVu ON ChiTietDatPhong.donDatPhong = ChiTietDichVu.donDatPhong "
+					+ "AND ChiTietDatPhong.phong = ChiTietDichVu.phong AND ChiTietDatPhong.gioVao = ChiTietDichVu.gioVao "
+					+ "INNER JOIN DichVu ON ChiTietDichVu.dichVu = DichVu.maDichVu "
+					+ "WHERE dichVu =  ? and ChiTietDichVu.donDatPhong = ? and ChiTietDichVu.phong = ?");
+			preparedStatement.setString(1, maDichVu);
+			preparedStatement.setString(2, maDatPhong);
+			preparedStatement.setString(3, maPhong);
+			res = preparedStatement.executeUpdate();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res > 0;
+	}
 }
