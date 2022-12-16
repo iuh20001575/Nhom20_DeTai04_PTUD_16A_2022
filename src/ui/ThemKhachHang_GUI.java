@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -116,7 +115,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener {
 		pnlRow2.add(txtCCCD);
 
 		txtNgaySinh = new TextField();
-		txtNgaySinh.setIcon(new ImageIcon("Icon\\add-event 2.png"));
+		txtNgaySinh.setIcon(Utils.getImageIcon("add-event 2.png"));
 		txtNgaySinh.setLineColor(new Color(149, 166, 248));
 		txtNgaySinh.setLabelText("Ngày sinh:");
 		txtNgaySinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -258,7 +257,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener {
 				return Color.WHITE;
 			}
 		});
-		btnLuu.setIcon(new ImageIcon("Icon\\floppy-disk 1.png"));
+		btnLuu.setIcon(Utils.getImageIcon("floppy-disk 1.png"));
 		btnLuu.setRadius(8);
 		btnLuu.setForeground(Color.WHITE);
 		btnLuu.setFont(new Font("Segoe UI", Font.PLAIN, 32));
@@ -276,7 +275,7 @@ public class ThemKhachHang_GUI extends JPanel implements ItemListener {
 				return Color.WHITE;
 			}
 		});
-		btnHuy.setIcon(new ImageIcon("Icon\\cancelled 1.png"));
+		btnHuy.setIcon(Utils.getImageIcon("cancelled 1.png"));
 		btnHuy.setRadius(8);
 		btnHuy.setForeground(Color.WHITE);
 		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 32));

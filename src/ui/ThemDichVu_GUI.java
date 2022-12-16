@@ -10,7 +10,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -102,7 +101,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 				return Color.WHITE;
 			}
 		});
-		btnLuu.setIcon(new ImageIcon("Icon\\floppy-disk 1.png"));
+		btnLuu.setIcon(Utils.getImageIcon("floppy-disk 1.png"));
 		btnLuu.setRadius(8);
 		btnLuu.setForeground(Color.WHITE);
 		btnLuu.setFont(new Font("Segoe UI", Font.PLAIN, 32));
@@ -111,7 +110,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		btnLuu.setColor(new Color(140, 177, 180));
 		btnLuu.setBorderColor(new Color(203, 239, 255));
 		btnLuu.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnLuu.setBounds(280, 420, 250, 50);
+		btnLuu.setBounds(501, 420, 250, 50);
 		pnlContainer.add(btnLuu);
 
 		btnLuu.addMouseListener(new MouseAdapter() {
@@ -145,7 +144,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 				return Color.WHITE;
 			}
 		});
-		btnHuy.setIcon(new ImageIcon("Icon\\cancelled 1.png"));
+		btnHuy.setIcon(Utils.getImageIcon("cancelled 1.png"));
 		btnHuy.setRadius(8);
 		btnHuy.setForeground(Color.WHITE);
 		btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 32));
@@ -154,7 +153,7 @@ public class ThemDichVu_GUI extends JPanel implements ItemListener {
 		btnHuy.setColor(new Color(140, 177, 180));
 		btnHuy.setBorderColor(new Color(203, 239, 255));
 		btnHuy.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnHuy.setBounds(570, 420, 250, 50);
+		btnHuy.setBounds(201, 420, 250, 50);
 		pnlContainer.add(btnHuy);
 // sự kiện nút hủy
 		btnHuy.addMouseListener(new MouseAdapter() {

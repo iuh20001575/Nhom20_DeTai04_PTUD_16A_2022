@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
@@ -241,15 +242,6 @@ public class Main extends JFrame {
 		StackPanel.push(panelUI);
 	}
 
-	public void addPnlBody(JPanel pnl, String title, int index, int indexSubmenu, boolean b) {
-		if (!b)
-			return;
-		PanelUI panelUI = new PanelUI(pnl, title, index, indexSubmenu);
-		menu.setSelectedMenu(index, indexSubmenu);
-		addPnlBody(panelUI);
-		StackPanel.push(panelUI);
-	}
-
 	/**
 	 * Thay đổi phần container UI
 	 *
@@ -357,7 +349,9 @@ public class Main extends JFrame {
 					pnl = new QuanLyPhong_GUI(_this);
 					break;
 				case Utils.troGiupItem:
-					Utils.openFile(_this.getClass().getResource("/PTUD_HDSD.pdf").toString());
+					JOptionPane.showMessageDialog(null,
+							_this.getClass().getResource("/PTUD_HDSD.pdf").getFile().substring(6));
+					Utils.openFile(_this.getClass().getResource("/PTUD_HDSD.pdf").getFile().substring(6));
 					return;
 				default:
 					title = "Trang chủ";

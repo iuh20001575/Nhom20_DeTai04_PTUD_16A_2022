@@ -13,7 +13,6 @@ import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -110,7 +109,7 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 		pnlRow2.add(txtCCCD);
 
 		txtNgaySinh = new TextField();
-		txtNgaySinh.setIcon(new ImageIcon("Icon\\add-event 2.png"));
+		txtNgaySinh.setIcon(Utils.getImageIcon("add-event 2.png"));
 		txtNgaySinh.setLineColor(new Color(149, 166, 248));
 		txtNgaySinh.setLabelText("Ngày sinh:");
 		txtNgaySinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -246,7 +245,7 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 				return Color.WHITE;
 			}
 		});
-		btnLuu.setIcon(new ImageIcon("Icon\\floppy-disk 1.png"));
+		btnLuu.setIcon(Utils.getImageIcon("floppy-disk 1.png"));
 		btnLuu.setRadius(8);
 		btnLuu.setForeground(Color.WHITE);
 		btnLuu.setFont(new Font("Segoe UI", Font.PLAIN, 32));
@@ -255,7 +254,7 @@ public class CapNhatKhachHang_GUI extends JPanel implements ItemListener {
 		btnLuu.setColor(new Color(140, 177, 180));
 		btnLuu.setBorderColor(new Color(203, 239, 255));
 		btnLuu.setBorder(new EmptyBorder(0, 0, 0, 0));
-		btnLuu.setBounds(434, 0, 250, 50);
+		btnLuu.setBounds(300, 0, 250, 50);
 		pnlActions.add(btnLuu);
 
 		btnLuu.addMouseListener(new MouseAdapter() {

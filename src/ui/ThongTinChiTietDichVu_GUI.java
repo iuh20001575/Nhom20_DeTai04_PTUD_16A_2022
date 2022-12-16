@@ -8,7 +8,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.metal.MetalButtonUI;
@@ -98,7 +97,7 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		pnlContainer.add(txtGiaMua);
 
 		Button btnCapNhat = new Button("Cập nhật");
-		btnCapNhat.setIcon(new ImageIcon("Icon\\edit 1.png"));
+		btnCapNhat.setIcon(Utils.getImageIcon("edit 1.png"));
 		btnCapNhat.setFocusable(false);
 		btnCapNhat.setRadius(8);
 		btnCapNhat.setBorderColor(Utils.secondaryColor);
@@ -112,7 +111,7 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 		pnlContainer.add(btnCapNhat);
 
 		Button btnHuy = new Button("Hủy");
-		btnHuy.setIcon(new ImageIcon("Icon\\cancelled 1.png"));
+		btnHuy.setIcon(Utils.getImageIcon("cancelled 1.png"));
 		btnHuy.setFocusable(false);
 		btnHuy.setRadius(8);
 		btnHuy.setBorderColor(Utils.secondaryColor);
@@ -130,7 +129,7 @@ public class ThongTinChiTietDichVu_GUI extends JPanel implements ItemListener {
 			}
 		});
 		btnLuu.setEnabled(false);
-		btnLuu.setIcon(new ImageIcon("Icon\\floppy-disk 1.png"));
+		btnLuu.setIcon(Utils.getImageIcon("floppy-disk 1.png"));
 		btnLuu.setRadius(8);
 		btnLuu.setForeground(Color.WHITE);
 		btnLuu.setFont(new Font("Segoe UI", Font.PLAIN, 32));

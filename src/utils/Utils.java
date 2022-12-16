@@ -286,9 +286,8 @@ public class Utils {
 	public static void openFile(String pathname) {
 		try {
 			File file = new File(pathname);
-			if (!Desktop.isDesktopSupported()) {
+			if (!Desktop.isDesktopSupported())
 				return;
-			}
 			Desktop desktop = Desktop.getDesktop();
 			if (file.exists())
 				desktop.open(file);
