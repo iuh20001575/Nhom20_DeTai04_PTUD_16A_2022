@@ -55,6 +55,7 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 	public HoaDon_GUI(String maHoaDon, String ngayLap, String tenKhach, String tenNV, String gioVaoPhong,
 			String gioRaPhong, String thoiGianSuDung, String tongTienPhong, String tongTienDV,
 			List<ChiTietDatPhong> dsChiTietDatPhong, List<ChiTietDichVu> dsChiTietDichVu) {
+
 		setTitle("Hoá đơn tính tiền");
 		this.getContentPane().setBackground(new Color(242, 246, 252));
 		setBounds((Utils.getScreenWidth() - 500) / 2, 0, 500, Utils.getBodyHeight() + 40);
@@ -388,7 +389,8 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		pnlTongTien.add(lblTongTien, BorderLayout.WEST);
 
 		JLabel lblTongTienKQ = new JLabel("");
-		lblTongTienKQ.setText(Utils.formatTienTe(Double.parseDouble(tongTienDV) + Double.parseDouble(tongTienPhong)));
+		lblTongTienKQ.setText(
+				Utils.formatTienTe((Double.parseDouble(tongTienDV) + Double.parseDouble(tongTienPhong)) * 1.1));
 		lblTongTienKQ.setBounds(0, 0, 299, 28);
 		lblTongTienKQ.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		lblTongTienKQ.setForeground(new Color(100, 100, 100));

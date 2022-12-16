@@ -297,18 +297,50 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 					new JDialogCustom(main, components.jDialog.JDialogCustom.Type.warning).showMessage("Warning",
 							"Vui lòng chọn hoá đơn muốn xem chi tiết!");
 				} else {
-
+					LocalTime timeNow = LocalTime.now();
 					String maHoaDon = (String) tableModel.getValueAt(row, 0);
-					String maDatPhong = maHoaDon.replace("HD", "MDP");
+					String maDonDatPhong = maHoaDon.replace("HD", "MDP");
 					String ngayLap = (String) tableModel.getValueAt(row, 4);
 					String tenKhach = (String) tableModel.getValueAt(row, 2);
 					String tenNV = (String) tableModel.getValueAt(row, 3);
+					int hours, minutes, hieu = 0;
+					double tongTienPhong = 0, tongTienDichVu = 0;
+					Phong phong;
+					DonDatPhong donDatPhongChon = donDatPhong_DAO.getDatPhong(maDonDatPhong);
 					List<ChiTietDatPhong> dsChiTietDatPhong = chiTietDatPhong_DAO
-							.getAllChiTietDatPhong(donDatPhong_DAO.getDatPhong(maDatPhong));
-					List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO.getDichVuTheoPhieuDatPhong(maDatPhong);
+							.getAllChiTietDatPhong(donDatPhong_DAO.getDatPhong(maDonDatPhong));
+					List<ChiTietDichVu> dsChiTietDichVu = chiTietDichVu_DAO.getDichVuTheoPhieuDatPhong(maDonDatPhong);
+
+					List<ChiTietDatPhong> dsChiTietDatPhongThanhToan = chiTietDatPhong_DAO
+							.getAllChiTietDatPhongThanhToan();
+					for (ChiTietDatPhong chiTietDatPhong : dsChiTietDatPhongThanhToan) {
+						if (chiTietDatPhong.getDonDatPhong().getMaDonDatPhong()
+								.equals(donDatPhongChon.getMaDonDatPhong())) {
+							phong = phong_DAO.getPhong(chiTietDatPhong.getPhong().getMaPhong());
+							LocalTime gioRa = chiTietDatPhong.getGioRa() == null ? timeNow : chiTietDatPhong.getGioRa();
+							LocalTime gioVao = chiTietDatPhong.getGioVao();
+							hours = gioRa.getHour() - gioVao.getHour();
+							minutes = gioRa.getMinute() - gioVao.getMinute();
+							hieu = hours * 60 + minutes;
+							tienPhong = hieu;
+							tienPhong *= phong.getGiaTien();
+							tienPhong *= 1.0 / 60;
+							tongTienPhong += tienPhong;
+
+						}
+					}
+
+					for (ChiTietDichVu chiTietDichVu : dsChiTietDichVu) {
+						if (chiTietDichVu.getChiTietDatPhong().getDonDatPhong().getMaDonDatPhong()
+								.equals(maDonDatPhong)) {
+							tongTienDichVu += dichVu_DAO.getDichVuTheoMa(chiTietDichVu.getDichVu().getMaDichVu())
+									.getGiaBan() * chiTietDichVu.getSoLuong();
+						}
+					}
 
 					HoaDon_GUI jFrame = new HoaDon_GUI(maHoaDon, ngayLap, tenKhach, tenNV, gioVaoPhong, gioRaPhong,
-							thoiGianSuDung, tongTienPhong + "", tienDichVu + "", dsChiTietDatPhong, dsChiTietDichVu);
+							thoiGianSuDung, tongTienPhong + "", tongTienDichVu + "", dsChiTietDatPhong,
+							dsChiTietDichVu);
 					jFrame.setVisible(true);
 
 				}
@@ -316,6 +348,7 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 		});
 
 		btnTimKiem.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(tableModel);
@@ -330,6 +363,7 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 					sorter.setRowFilter(RowFilter.regexFilter(txtNgayLap.getText()));
 				}
 			}
+
 		});
 	}
 
