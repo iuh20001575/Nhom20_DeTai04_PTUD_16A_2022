@@ -13,7 +13,6 @@ import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -102,7 +101,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 		pnlRow2.add(txtCCCD);
 
 		txtNgaySinh = new TextField();
-		txtNgaySinh.setIcon(new ImageIcon("Icon\\add-event 2.png"));
+		txtNgaySinh.setIcon(Utils.getImageIcon("add-event 2.png"));
 		txtNgaySinh.setLineColor(new Color(149, 166, 248));
 		txtNgaySinh.setLabelText("Ngày sinh:");
 		txtNgaySinh.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -238,7 +237,7 @@ public class XemKhachHang_GUI extends JPanel implements ItemListener {
 				return Color.WHITE;
 			}
 		});
-		btnCapNhat.setIcon(new ImageIcon("Icon\\floppy-disk 1.png"));
+		btnCapNhat.setIcon(Utils.getImageIcon("floppy-disk 1.png"));
 		btnCapNhat.setRadius(8);
 		btnCapNhat.setForeground(Color.WHITE);
 		btnCapNhat.setFont(new Font("Segoe UI", Font.PLAIN, 32));

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -128,7 +127,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 
 		Button btnSearch = new Button("Tìm");
 		btnSearch.setFocusable(false);
-		btnSearch.setIcon(new ImageIcon("Icon\\searching.png"));
+		btnSearch.setIcon(Utils.getImageIcon("searching.png"));
 		btnSearch.setRadius(4);
 		btnSearch.setForeground(Color.WHITE);
 		btnSearch.setColor(new Color(134, 229, 138));
@@ -158,7 +157,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		txtSearch.setColumns(10);
 
 		btnDanhSachXoa = new Button("DS ngừng KD");
-		btnDanhSachXoa.setIcon(new ImageIcon("Icon\\listdelete.png"));
+		btnDanhSachXoa.setIcon(Utils.getImageIcon("listdelete.png"));
 		btnDanhSachXoa.setRadius(4);
 		btnDanhSachXoa.setForeground(Color.WHITE);
 		btnDanhSachXoa.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -171,7 +170,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		pnlSearchForm.add(btnDanhSachXoa);
 
 		btnDanhSachTonTai = new Button("DS còn KD");
-		btnDanhSachTonTai.setIcon(new ImageIcon("Icon\\requirement.png"));
+		btnDanhSachTonTai.setIcon(Utils.getImageIcon("requirement.png"));
 		btnDanhSachTonTai.setVisible(false);
 		btnDanhSachTonTai.setForeground(Color.WHITE);
 		btnDanhSachTonTai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -192,7 +191,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnXem = new Button("Xem");
 
 		btnXem.setFocusable(false);
-		btnXem.setIcon(new ImageIcon("Icon\\searching.png"));
+		btnXem.setIcon(Utils.getImageIcon("searching.png"));
 		btnXem.setRadius(4);
 		btnXem.setForeground(Color.WHITE);
 		btnXem.setColor(new Color(134, 229, 138));
@@ -207,7 +206,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnThem = new Button("Thêm");
 
 		btnThem.setFocusable(false);
-		btnThem.setIcon(new ImageIcon("Icon\\add 1.png"));
+		btnThem.setIcon(Utils.getImageIcon("add 1.png"));
 		btnThem.setRadius(4);
 		btnThem.setForeground(Color.WHITE);
 		btnThem.setColor(new Color(134, 229, 138));
@@ -222,7 +221,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnSua = new Button("Sửa");
 
 		btnSua.setFocusable(false);
-		btnSua.setIcon(new ImageIcon("Icon\\update 1.png"));
+		btnSua.setIcon(Utils.getImageIcon("update 1.png"));
 		btnSua.setRadius(4);
 		btnSua.setForeground(Color.WHITE);
 		btnSua.setColor(new Color(134, 229, 138));
@@ -237,7 +236,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnXoa = new Button("Xóa");
 
 		btnXoa.setFocusable(false);
-		btnXoa.setIcon(new ImageIcon("Icon\\download 1.png"));
+		btnXoa.setIcon(Utils.getImageIcon ("download 1.png"));
 		btnXoa.setRadius(4);
 		btnXoa.setForeground(Color.WHITE);
 		btnXoa.setColor(new Color(134, 229, 138));
@@ -252,7 +251,7 @@ public class QuanLyDichVu_GUI extends JPanel {
 		btnKhoiPhuc = new Button("Khôi phục");
 
 		btnKhoiPhuc.setFocusable(false);
-		btnKhoiPhuc.setIcon(new ImageIcon("Icon\\restore.png"));
+		btnKhoiPhuc.setIcon(Utils.getImageIcon("restore.png"));
 		btnKhoiPhuc.setRadius(4);
 		btnKhoiPhuc.setForeground(Color.WHITE);
 		btnKhoiPhuc.setColor(new Color(134, 229, 138));

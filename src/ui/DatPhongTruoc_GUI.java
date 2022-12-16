@@ -834,7 +834,7 @@ public class DatPhongTruoc_GUI extends JFrame implements ItemListener {
 				}
 			} else
 				for (int j = 0; j < 60; j += 5)
-					cmbPhut.addItem(Utils.convertIntToString(j);
+					cmbPhut.addItem(Utils.convertIntToString(j));
 		} else {
 //			Ngày nhận phòng > ngày hiện tại
 			for (int i = gioMoCua; i < gioDongCua; ++i)

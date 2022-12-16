@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -117,7 +116,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		txtTimKiem.setColumns(10);
 
 		btnTimKiem = new Button("Tìm kiếm");
-		btnTimKiem.setIcon(new ImageIcon("Icon\\search_34x34.png"));
+		btnTimKiem.setIcon(Utils.getImageIcon("search_34x34.png"));
 		btnTimKiem.setFocusable(false);
 		btnTimKiem.setRadius(9);
 		btnTimKiem.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -129,7 +128,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		pnlTimKiem.add(btnTimKiem);
 
 		btnDanhSachXoa = new Button("DS đã xóa");
-		btnDanhSachXoa.setIcon(new ImageIcon("Icon\\listdelete.png"));
+		btnDanhSachXoa.setIcon(Utils.getImageIcon("listdelete.png"));
 		btnDanhSachXoa.setRadius(9);
 		btnDanhSachXoa.setForeground(Color.WHITE);
 		btnDanhSachXoa.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -142,7 +141,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		pnlTimKiem.add(btnDanhSachXoa);
 
 		btnDanhSachTonTai = new Button("DS chưa xóa");
-		btnDanhSachTonTai.setIcon(new ImageIcon("Icon\\requirement.png"));
+		btnDanhSachTonTai.setIcon(Utils.getImageIcon("requirement.png"));
 		btnDanhSachTonTai.setRadius(9);
 		btnDanhSachTonTai.setVisible(false);
 		btnDanhSachTonTai.setForeground(Color.WHITE);
@@ -162,7 +161,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		pnlThoiGian.setLayout(null);
 
 		JLabel lnlIcon = new JLabel("");
-		lnlIcon.setIcon(new ImageIcon("Icon\\clock (1) 1.png"));
+		lnlIcon.setIcon(Utils.getImageIcon("clock (1) 1.png"));
 		lnlIcon.setBounds(0, 0, 64, 64);
 		pnlThoiGian.add(lnlIcon);
 
@@ -194,7 +193,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		pnlActions.setLayout(null);
 
 		btnThem = new Button("Thêm");
-		btnThem.setIcon(new ImageIcon("Icon\\add 1.png"));
+		btnThem.setIcon(Utils.getImageIcon("add 1.png"));
 		btnThem.setFocusable(false);
 		btnThem.setRadius(9);
 		btnThem.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -206,7 +205,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		pnlActions.add(btnThem);
 
 		btnSua = new Button("Thêm");
-		btnSua.setIcon(new ImageIcon("Icon\\update 1.png"));
+		btnSua.setIcon(Utils.getImageIcon("update 1.png"));
 		btnSua.setText("Sửa");
 		btnSua.setFocusable(false);
 		btnSua.setRadius(9);
@@ -220,7 +219,7 @@ public class QuanLyPhong_GUI extends JPanel {
 
 		btnXoa = new Button("Thêm");
 		btnXoa.setText("Xóa");
-		btnXoa.setIcon(new ImageIcon("Icon\\download 1.png"));
+		btnXoa.setIcon(Utils.getImageIcon("download 1.png"));
 		btnXoa.setFocusable(false);
 		btnXoa.setRadius(9);
 		btnXoa.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -234,7 +233,7 @@ public class QuanLyPhong_GUI extends JPanel {
 		btnKhoiPhuc = new Button("Khôi phục");
 
 		btnKhoiPhuc.setFocusable(false);
-		btnKhoiPhuc.setIcon(new ImageIcon("Icon\\restore.png"));
+		btnKhoiPhuc.setIcon(Utils.getImageIcon("restore.png"));
 		btnKhoiPhuc.setRadius(9);
 		btnKhoiPhuc.setForeground(Color.WHITE);
 		btnKhoiPhuc.setFont(new Font("Segoe UI", Font.PLAIN, 20));

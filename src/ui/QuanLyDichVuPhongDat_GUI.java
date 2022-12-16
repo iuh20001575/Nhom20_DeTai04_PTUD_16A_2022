@@ -17,7 +17,6 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -252,7 +251,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 		btnSearchSoDienThoai.setColor(Utils.primaryColor);
 		btnSearchSoDienThoai.setColorOver(Utils.getOpacity(Utils.primaryColor, 0.9f));
 		btnSearchSoDienThoai.setColorClick(Utils.getOpacity(Utils.primaryColor, 0.8f));
-		btnSearchSoDienThoai.setIcon(new ImageIcon("Icon\\user_searching.png"));
+		btnSearchSoDienThoai.setIcon(Utils.getImageIcon("user_searching.png"));
 		btnSearchSoDienThoai.setBounds(410, 2, 50, 50);
 		pnlBody.add(btnSearchSoDienThoai);
 
@@ -349,7 +348,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 				}
 			}
 		});
-		btnChonDichVu.setIcon(new ImageIcon("Icon\\rightArrow_32x32.png"));
+		btnChonDichVu.setIcon(Utils.getImageIcon("rightArrow_32x32.png"));
 		btnChonDichVu.setBounds(0, 70, 36, 36);
 		pnlActions.add(btnChonDichVu);
 
@@ -424,7 +423,7 @@ public class QuanLyDichVuPhongDat_GUI extends JFrame implements ItemListener {
 				}
 			}
 		});
-		btnXoaDichVu.setIcon(new ImageIcon("Icon\\bin.png"));
+		btnXoaDichVu.setIcon(Utils.getImageIcon("bin.png"));
 		btnXoaDichVu.setBounds(0, 130, 36, 36);
 		pnlActions.add(btnXoaDichVu);
 

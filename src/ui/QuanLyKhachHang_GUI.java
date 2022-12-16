@@ -9,7 +9,6 @@ import java.awt.event.MouseEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -95,7 +94,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		Button btnSearch = new Button("Tìm");
 
 		btnSearch.setFocusable(false);
-		btnSearch.setIcon(new ImageIcon("Icon\\searching.png"));
+		btnSearch.setIcon(Utils.getImageIcon("searching.png"));
 		btnSearch.setRadius(4);
 		btnSearch.setForeground(Color.WHITE);
 		btnSearch.setColor(new Color(134, 229, 138));
@@ -148,7 +147,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 			}
 		});
 		btnKhachHangView.setFocusable(false);
-		btnKhachHangView.setIcon(new ImageIcon("Icon\\user 1.png"));
+		btnKhachHangView.setIcon(Utils.getImageIcon("user 1.png"));
 		btnKhachHangView.setBounds(-2, -2, 150, 40);
 		btnKhachHangView.setRadius(4);
 		btnKhachHangView.setForeground(Color.WHITE);
@@ -162,7 +161,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 		Button btnKhachHangAdd = new Button("Thêm");
 		btnKhachHangAdd.setFocusable(false);
-		btnKhachHangAdd.setIcon(new ImageIcon("Icon\\add-user (2) 1.png"));
+		btnKhachHangAdd.setIcon(Utils.getImageIcon("add-user (2) 1.png"));
 		btnKhachHangAdd.setRadius(4);
 		btnKhachHangAdd.setForeground(Color.WHITE);
 		btnKhachHangAdd.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -183,7 +182,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 		Button btnKhachHangEdit = new Button("Sửa");
 		btnKhachHangEdit.setFocusable(false);
-		btnKhachHangEdit.setIcon(new ImageIcon("Icon\\edit 2.png"));
+		btnKhachHangEdit.setIcon(Utils.getImageIcon("edit 2.png"));
 		btnKhachHangEdit.setRadius(4);
 		btnKhachHangEdit.setForeground(Color.WHITE);
 		btnKhachHangEdit.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -211,7 +210,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 
 		Button btnKhachHangRemove = new Button("Xóa");
 		btnKhachHangRemove.setFocusable(false);
-		btnKhachHangRemove.setIcon(new ImageIcon("Icon\\unemployed 1.png"));
+		btnKhachHangRemove.setIcon(Utils.getImageIcon("unemployed 1.png"));
 		btnKhachHangRemove.setRadius(4);
 		btnKhachHangRemove.setForeground(Color.WHITE);
 		btnKhachHangRemove.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -251,7 +250,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		Button btnKhachHangRestore = new Button("Khôi phục");
 		btnKhachHangRestore.setFocusable(false);
 		btnKhachHangRestore.setVisible(false);
-		btnKhachHangRestore.setIcon(new ImageIcon("Icon\\restore.png"));
+		btnKhachHangRestore.setIcon(Utils.getImageIcon("restore.png"));
 		btnKhachHangRestore.setRadius(4);
 		btnKhachHangRestore.setForeground(Color.WHITE);
 		btnKhachHangRestore.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -289,7 +288,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		});
 
 		Button btnLamMoi = new Button("Làm mới");
-		btnLamMoi.setIcon(new ImageIcon("Icon\\refresh.png"));
+		btnLamMoi.setIcon(Utils.getImageIcon("refresh.png"));
 		btnLamMoi.setRadius(4);
 		btnLamMoi.setForeground(Color.WHITE);
 		btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -302,7 +301,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		pnlActions.add(btnLamMoi);
 
 		Button btnDanhSachXoa = new Button("DS đã xóa");
-		btnDanhSachXoa.setIcon(new ImageIcon("Icon\\listdelete.png"));
+		btnDanhSachXoa.setIcon(Utils.getImageIcon("listdelete.png"));
 		btnDanhSachXoa.setRadius(4);
 		btnDanhSachXoa.setForeground(Color.WHITE);
 		btnDanhSachXoa.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -315,7 +314,7 @@ public class QuanLyKhachHang_GUI extends JPanel {
 		pnlActions.add(btnDanhSachXoa);
 
 		Button btnDanhSachTonTai = new Button("DS chưa xóa");
-		btnDanhSachTonTai.setIcon(new ImageIcon("Icon\\requirement.png"));
+		btnDanhSachTonTai.setIcon(Utils.getImageIcon("requirement.png"));
 		btnDanhSachTonTai.setVisible(false);
 		btnDanhSachTonTai.setForeground(Color.WHITE);
 		btnDanhSachTonTai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
