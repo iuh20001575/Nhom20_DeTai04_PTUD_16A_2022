@@ -67,7 +67,7 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		
 		pnlContent = new PanelRound();
 		pnlContent.setBackground(new Color(242, 246, 252));
-		pnlContent.setBounds(10, 10, 500, 650);
+		pnlContent.setBounds(10, 10, 500, 550);
 		this.add(pnlContent);
 		pnlContent.setLayout(null);
 
@@ -402,13 +402,13 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		btnBack.setBorderColor(Utils.primaryColor);
 		btnBack.setRadius(10);
 		btnBack.setFont(new Font("Arial", Font.BOLD, 16));
-		btnBack.setBounds(40, 560, 160, 44);
+		btnBack.setBounds(40, 575, 160, 44);
 		btnBack.setColorOver(Utils.primaryColor);
 		btnBack.setColorTextOver(Color.WHITE);
 		btnBack.setColorTextOut(Color.WHITE);
 		btnBack.setColorClick(Utils.primaryColor);
 		btnBack.setBorder(new EmptyBorder(0, 0, 0, 0));
-		pnlContent.add(btnBack);
+		this.add(btnBack);
 
 		btnInHD = new Button("Xuất PDF");
 		btnInHD.setFocusable(false);
@@ -417,13 +417,13 @@ public class PhieuDatPhongTruoc_PDF extends JFrame implements ItemListener {
 		btnInHD.setBorderColor(Utils.primaryColor);
 		btnInHD.setRadius(10);
 		btnInHD.setFont(new Font("Arial", Font.BOLD, 16));
-		btnInHD.setBounds(280, 560, 160, 44);
+		btnInHD.setBounds(280, 575, 160, 44);
 		btnInHD.setColorOver(Utils.primaryColor);
 		btnInHD.setColorTextOver(Color.WHITE);
 		btnInHD.setColorTextOut(Color.WHITE);
 		btnInHD.setColorClick(Utils.primaryColor);
 		btnInHD.setBorder(new EmptyBorder(0, 0, 0, 0));
-		pnlContent.add(btnInHD);
+		this.add(btnInHD);
 
 		btnBack.addMouseListener(new MouseAdapter() {
 			@Override
