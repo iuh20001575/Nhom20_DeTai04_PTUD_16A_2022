@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
+import java.net.URL;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -283,9 +284,9 @@ public class Utils {
 	 * 
 	 * @param pathname
 	 */
-	public static void openFile(String pathname) {
+	public static void openFile(URL url) {
 		try {
-			File file = new File(pathname);
+			File file = new File(url.toURI());
 			if (!Desktop.isDesktopSupported())
 				return;
 			Desktop desktop = Desktop.getDesktop();

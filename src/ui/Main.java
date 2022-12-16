@@ -349,9 +349,8 @@ public class Main extends JFrame {
 					pnl = new QuanLyPhong_GUI(_this);
 					break;
 				case Utils.troGiupItem:
-					JOptionPane.showMessageDialog(null,
-							_this.getClass().getResource("/PTUD_HDSD.pdf").getFile().substring(6));
-					Utils.openFile(_this.getClass().getResource("/PTUD_HDSD.pdf").getFile().substring(6));
+					JOptionPane.showMessageDialog(null, _this.getClass().getResource("/PTUD_HDSD.pdf").toString());
+					Utils.openFile(_this.getClass().getResource("/bin/PTUD_HDSD.pdf"));
 					return;
 				default:
 					title = "Trang chủ";
