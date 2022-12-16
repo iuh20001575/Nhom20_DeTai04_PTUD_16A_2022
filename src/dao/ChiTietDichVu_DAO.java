@@ -60,6 +60,33 @@ public class ChiTietDichVu_DAO extends DAO {
 	}
 
 	/**
+	 * Cập nhật số lượng dịch vụ
+	 * 
+	 * @param maDV
+	 * @param maDP
+	 * @param maPhong
+	 * @param soLuongMua
+	 * @return
+	 */
+	public boolean capNhatSoLuongDichVu(String maDV, String maDP, String maPhong, int soLuongMua) {
+		boolean res = false;
+		PreparedStatement preparedStatement;
+		String sql = "UPDATE ChiTietDichVu SET soLuong = ? WHERE dichVu = ? and donDatPhong = ? and phong = ?";
+		try {
+			preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setInt(1, soLuongMua);
+			preparedStatement.setString(2, maDV);
+			preparedStatement.setString(3, maDP);
+			preparedStatement.setString(4, maPhong);
+			res = preparedStatement.executeUpdate() > 0;
+			preparedStatement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	/**
 	 * Get tất cả chi tiết dịch vụ theo mã đơn đặt phòng và mã phòng
 	 * 
 	 * @param maDonDatPhong
@@ -100,12 +127,38 @@ public class ChiTietDichVu_DAO extends DAO {
 		return list;
 	}
 
+	public List<ChiTietDichVu> getAllChiTietDichVuTheoMaDatPhong(String maDP, String maPhong) {
+		List<ChiTietDichVu> list = new ArrayList<>();
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM ChiTietDichVu INNER JOIN DonDatPhong ON "
+							+ "ChiTietDichVu.donDatPhong = DonDatPhong.maDonDatPhong "
+							+ "WHERE  maDonDatPhong = ? and phong = ?");
+
+			preparedStatement.setString(1, maDP);
+			preparedStatement.setString(2, maPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getChiTietDichVu(resultSet));
+			resultSet.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
 	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year, String maNhanVien) {
+		return getChiTietDichVu(day, month, year, maNhanVien, "");
+	}
+
+	public List<ChiTietDichVu> getChiTietDichVu(int day, int month, int year, String maNhanVien, String maKhachHang) {
 		List<ChiTietDichVu> list = new ArrayList<>();
 		String sql = "SELECT CTDV.*, DV.*, ngayNhanPhong FROM [dbo].[DonDatPhong] DDP "
 				+ "JOIN [dbo].[ChiTietDichVu] CTDV ON DDP.maDonDatPhong = CTDV.donDatPhong "
 				+ "JOIN [dbo].[DichVu] DV ON DV.maDichVu = CTDV.dichVu "
-				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ?";
+				+ "WHERE YEAR([ngayNhanPhong]) = ? AND DDP.[trangThai] = N'Đã trả' AND nhanVien LIKE ? AND [khachHang] LIKE ?";
 
 		if (month > 0)
 			sql += " AND MONTH([ngayNhanPhong]) = ?";
@@ -116,10 +169,11 @@ public class ChiTietDichVu_DAO extends DAO {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setInt(1, year);
 			preparedStatement.setString(2, "%" + maNhanVien + "%");
+			preparedStatement.setString(3, "%" + maKhachHang + "%");
 			if (month > 0)
-				preparedStatement.setInt(3, month);
+				preparedStatement.setInt(4, month);
 			if (day > 0)
-				preparedStatement.setInt(4, day);
+				preparedStatement.setInt(5, day);
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 			ChiTietDichVu chiTietDichVu;
@@ -193,6 +247,25 @@ public class ChiTietDichVu_DAO extends DAO {
 		try {
 			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
 			preparedStatement.setString(1, datPhong);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getChiTietDichVu(resultSet));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	public List<ChiTietDichVu> getDichVuTheoPhieuDatPhongVaPhong(String datPhong, String maPhong) {
+		List<ChiTietDichVu> list = new ArrayList<>();
+		String sql = "SELECT * FROM ChiTietDichVu WHERE donDatPhong = ? and phong = ? ";
+
+		try {
+			PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql);
+			preparedStatement.setString(1, datPhong);
+			preparedStatement.setString(2, maPhong);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next())
