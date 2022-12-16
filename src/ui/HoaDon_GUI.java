@@ -296,6 +296,7 @@ public class HoaDon_GUI extends JFrame implements ItemListener {
 		pnlTienDV.setRoundTopRight(10);
 		pnlTienDV.setRoundBottomLeft(10);
 		pnlTienDV.setLayout(null);
+		pnlTienDV.setLayout(null);
 		pnlContent.add(pnlTienDV);
 
 		JPanel pnlTongTienDV = new JPanel();

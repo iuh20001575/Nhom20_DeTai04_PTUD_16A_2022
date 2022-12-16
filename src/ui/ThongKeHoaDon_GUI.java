@@ -60,7 +60,16 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 	private List<ChiTietDichVu> dsChiTietDichVu;
 	private String gioVaoPhong, gioRaPhong, thoiGianSuDung;
 	private KhachHang_DAO khachHang_DAO;
+	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
+	private ChiTietDichVu_DAO chiTietDichVu_DAO;
+	private DichVu_DAO dichVu_DAO;
+	private DonDatPhong_DAO donDatPhong_DAO;
+	private List<ChiTietDichVu> dsChiTietDichVu;
+	private String gioVaoPhong, gioRaPhong, thoiGianSuDung;
+	private KhachHang_DAO khachHang_DAO;
 	private Main main;
+	private NhanVien_DAO nhanVien_DAO;
+	private Phong_DAO phong_DAO;
 	private NhanVien_DAO nhanVien_DAO;
 	private Phong_DAO phong_DAO;
 	private DefaultTableModel tableModel;
@@ -69,6 +78,13 @@ public class ThongKeHoaDon_GUI extends JPanel implements ItemListener {
 	private JTextField txtMaHD, txtTenKhach, txtTenNhanVien, txtNgayLap;
 
 	public ThongKeHoaDon_GUI(Main jFrame) {
+		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
+		chiTietDichVu_DAO = new ChiTietDichVu_DAO();
+		donDatPhong_DAO = new DonDatPhong_DAO();
+		khachHang_DAO = new KhachHang_DAO();
+		nhanVien_DAO = new NhanVien_DAO();
+		phong_DAO = new Phong_DAO();
+		dichVu_DAO = new DichVu_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
 		chiTietDichVu_DAO = new ChiTietDichVu_DAO();
 		donDatPhong_DAO = new DonDatPhong_DAO();

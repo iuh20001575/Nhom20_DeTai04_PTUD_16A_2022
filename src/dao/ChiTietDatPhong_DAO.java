@@ -28,6 +28,28 @@ public class ChiTietDatPhong_DAO extends DAO {
 		phong_DAO = new Phong_DAO();
 	}
 
+	public List<ChiTietDatPhong> getAllChiTietDatPhongThanhToan() {
+		List<ChiTietDatPhong> list = new ArrayList<>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			preparedStatement = ConnectDB.getConnection()
+					.prepareStatement("SELECT * FROM ChiTietDatPhong WHERE gioRa is not NULL");
+
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next())
+				list.add(getChiTietDatPhong(resultSet));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(preparedStatement, resultSet);
+		}
+
+		return list;
+	}
+
 	/**
 	 * Get tất cả các chi tiết đặt phòng theo đơn đặt phòng
 	 * 
