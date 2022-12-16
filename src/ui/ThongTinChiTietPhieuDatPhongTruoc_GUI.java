@@ -29,7 +29,6 @@ import dao.ChiTietDatPhong_DAO;
 import dao.DonDatPhong_DAO;
 import dao.KhachHang_DAO;
 import dao.NhanVien_DAO;
-import dao.Phong_DAO;
 import entity.ChiTietDatPhong;
 import entity.DonDatPhong;
 import entity.KhachHang;
@@ -76,7 +75,6 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 	private ThongTinChiTietPhieuDatPhongTruoc_GUI _this;
 	private Button btnHuyPhong;
 	private Button btnNhanPhong;
-	private ChiTietDatPhong chiTietDatPhong;
 	private ChiTietDatPhong_DAO chiTietDatPhong_DAO;
 	private DonDatPhong donDatPhong;
 	private DonDatPhong_DAO donDatPhong_DAO;
@@ -84,12 +82,10 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 	private JFrame jFrameSub;
 	private KhachHang khachHang;
 	private KhachHang_DAO khachHang_DAO;
-	private List<Phong> listPhong;
 	private String maDatPhong;
 	private Main main;
 	private NhanVien nhanVien;
 	private NhanVien_DAO nhanVien_DAO;
-	private Phong_DAO phong_DAO;
 	private PanelEvent pnlSuaPhong;
 	private PanelEvent pnlXuatPDF;
 	private TextField txtKhachHang;
@@ -109,7 +105,6 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 	 */
 	public ThongTinChiTietPhieuDatPhongTruoc_GUI(Main main, ChiTietDatPhong chiTietDatPhong) {
 		glass = new Glass();
-		this.chiTietDatPhong = chiTietDatPhong;
 		this.main = main;
 		_this = this;
 		int padding = (int) Math.floor((Utils.getBodyHeight() - 428) / 5);
@@ -119,7 +114,6 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 		khachHang_DAO = new KhachHang_DAO();
 		nhanVien_DAO = new NhanVien_DAO();
 		chiTietDatPhong_DAO = new ChiTietDatPhong_DAO();
-		phong_DAO = new Phong_DAO();
 
 		maDatPhong = chiTietDatPhong.getDonDatPhong().getMaDonDatPhong();
 		donDatPhong = donDatPhong_DAO.getDatPhong(maDatPhong);
@@ -401,7 +395,6 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 			public void mouseClicked(MouseEvent e) {
 				if (!btnNhanPhong.isEnabled())
 					return;
-				boolean res = false;
 
 				List<Phong> listPhong = new ArrayList<>();
 				List<ChiTietDatPhong> listChiTietDatPhong = chiTietDatPhong_DAO.getAllChiTietDatPhong(donDatPhong);
@@ -443,7 +436,6 @@ public class ThongTinChiTietPhieuDatPhongTruoc_GUI extends JPanel implements Ite
 					return;
 				}
 
-				res = donDatPhong_DAO.nhanPhongTrongPhieuDatPhongTruoc(donDatPhong, listPhong);
 				JDialogCustom jDialogCustom = new JDialogCustom(main);
 
 				jDialogCustom.getBtnOK().addMouseListener(new MouseAdapter() {
