@@ -709,6 +709,14 @@ public class ThanhToan_GUI extends JFrame implements ItemListener {
 			lblTienDichVu.setText(Utils.formatTienTe(tongTienDichVu));
 			tienThanhToan *= 1.1;
 			lblTienThanhToan.setText(Utils.formatTienTe(tienThanhToan));
+
+			new ThanhToan_PDF(datPhong.getMaDonDatPhong(), nhanVien.getHoTen(), khachHang.getHoTen(),
+					Utils.convertLocalTimeToString(datPhong.getGioNhanPhong()) + " - "
+							+ Utils.formatDate(datPhong.getNgayNhanPhong()),
+					cmbSoDienThoai.getSelectedItem().toString(),
+					((gio > 0 ? gio + " giờ" : "") + " " + (phut > 0 ? phut + " phút" : "")).trim(), tableModel,
+					Utils.formatTienTe(tongTienDichVu), Utils.formatTienTe(tongTien),
+					Utils.formatTienTe(tienThanhToan));
 		} else {
 			lblTenKhach.setText("");
 			lblTenNhanVien.setText("");

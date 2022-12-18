@@ -1,21 +1,26 @@
 package ui;
 
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Desktop;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.io.File;
+import java.io.FileOutputStream;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
+import javax.swing.border.LineBorder;
 import javax.swing.table.TableModel;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfTemplate;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public class ThanhToan_PDF extends JFrame {
 
@@ -31,8 +36,6 @@ public class ThanhToan_PDF extends JFrame {
 	private JLabel lblTienThanhToan;
 	private JLabel lblTongThoiLuong;
 	private JPanel pnlContent;
-	private DefaultTableModel tableModel;
-	private JTable tbl;
 	private JPanel pnlContainer;
 	private int heightTable;
 
@@ -314,58 +317,94 @@ public class ThanhToan_PDF extends JFrame {
 		lblTienThanhToan_1.setBounds(125, 0, 162, 24);
 		pnlTienThanhToan_1.add(lblTienThanhToan_1);
 
-		tbl = new JTable() {
-			/**
-			 *
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean getShowVerticalLines() {
-				return false;
-			}
-		};
-
-		tableModel = new DefaultTableModel(
-				new String[] { "STT", "Tên dịch vụ", "Số lượng/Thời gian", "Đơn giá", "Thành tiền" }, 0);
-		JTableHeader tblHeader = tbl.getTableHeader();
-		TableColumnModel tableColumnModel = tbl.getColumnModel();
-
-		tbl.setModel(tableModel);
-		tbl.setFocusable(false);
-		tblHeader.setBackground(Color.white);
-		tbl.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		tblHeader.setPreferredSize(new Dimension(596, 24));
-		tblHeader.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		tbl.setRowHeight(24);
-		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
-		dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
-		tableColumnModel.getColumn(0).setCellRenderer(dtcr);
-		tableColumnModel.getColumn(2).setCellRenderer(dtcr);
-		tableColumnModel.getColumn(3).setCellRenderer(dtcr);
-		tableColumnModel.getColumn(4).setCellRenderer(dtcr);
+		JPanel pnlConTainerTable = new JPanel();
+		pnlConTainerTable.setBorder(new LineBorder(new Color(0, 0, 0)));
+		pnlConTainerTable.setLayout(null);
+		pnlConTainerTable.setBackground(Color.WHITE);
 
 		int rowCount = jTable.getRowCount();
-		for (int i = 0; i < rowCount; i++) {
-			tableModel.addRow(new String[] { jTable.getValueAt(i, 0).toString(), jTable.getValueAt(i, 1).toString(),
-					jTable.getValueAt(i, 2).toString(), jTable.getValueAt(i, 3).toString(),
-					jTable.getValueAt(i, 4).toString() });
+		for (int i = 0; i <= rowCount; i++) {
+			pnlConTainerTable.add(getRowPanel(new Rectangle(0, 24 * i, 596, 24)));
 		}
 
-		heightTable = 24 * (rowCount + 1) + 50;
-		tbl.setBounds(0, 98, 596, heightTable);
+		heightTable = 24 * (rowCount + 1);
+		pnlConTainerTable.setBounds(0, 108, 596, heightTable);
 		pnlFooter.setBounds(0, 118 + heightTable, 596, 88);
 		pnlBody.setBounds(10, 65, 596, 291 + heightTable);
+		pnlBody.add(pnlConTainerTable);
 		pnlContainer.setBounds(0, 0, 616, 291 + heightTable);
 		setBounds(0, 0, 616, 291 + heightTable);
-		pnlBody.add(tbl);
+
+		Document document = new Document();
+		try {
+			String path = "HoaDon" + maDatPhong + ".pdf";
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
+			document.open();
+
+			PdfContentByte cb = writer.getDirectContent();
+			PdfTemplate tp = cb.createTemplate(616, 846);
+			@SuppressWarnings("deprecation")
+			Graphics2D g2 = tp.createGraphicsShapes(616, 846);
+			java.awt.Font font = new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 14);
+			g2.setFont(font);
+			pnlContainer.print(g2);
+			g2.dispose();
+			cb.addTemplate(tp, 0, 0);
+
+			File pdfFile = new File(path);
+			if (Desktop.isDesktopSupported()) {
+				Desktop.getDesktop().open(pdfFile);
+			}
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		} finally {
+			if (document.isOpen()) {
+				document.close();
+			}
+		}
 	}
-	
+
 	public int getHeightPanel() {
 		return 291 + heightTable;
 	}
 
 	public JPanel getPanel() {
 		return pnlContainer;
+	}
+
+	private JPanel getRowPanel(Rectangle rectangle) {
+		JPanel panel = new JPanel();
+		panel.setBounds(rectangle);
+		panel.setLayout(null);
+		panel.setBackground(Color.WHITE);
+		Font font = new Font("Segoe UI", Font.PLAIN, 14);
+
+		JLabel lblSTT = new JLabel("STT");
+		lblSTT.setFont(font);
+		lblSTT.setBounds(0, 0, 40, 24);
+		panel.add(lblSTT);
+
+		JLabel lblTen = new JLabel("Tên");
+		lblTen.setFont(font);
+		lblTen.setBounds(40, 0, 160, 24);
+		panel.add(lblTen);
+
+		JLabel lblSoLuong = new JLabel("Số lượng");
+		lblSoLuong.setFont(font);
+		lblSoLuong.setBounds(200, 0, 150, 24);
+		panel.add(lblSoLuong);
+
+		JLabel lblGiaThanh = new JLabel("Giá thành");
+		lblGiaThanh.setFont(font);
+		lblGiaThanh.setBounds(350, 0, 123, 24);
+		panel.add(lblGiaThanh);
+
+		JLabel lblThanhTien = new JLabel("Thành tiền");
+		lblThanhTien.setFont(font);
+		lblThanhTien.setBounds(473, 0, 123, 24);
+		panel.add(lblThanhTien);
+
+		return panel;
 	}
 }
